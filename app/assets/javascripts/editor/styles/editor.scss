@@ -354,6 +354,15 @@ $desktop-width: 1024px;
   width: 100%;
 }
 
+/** Widget Placeholder */
+.react-editor-widget-placeholder {
+  border: 2px solid #D8D8D8;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 20px;
+  display: flex;
+}
+
 /** Toolbar */
 
 .react-editor-toolbar-container {

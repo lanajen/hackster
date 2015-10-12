@@ -9,6 +9,7 @@ import Carousel from './Carousel';
 import Video from './Video';
 import File from './File';
 import Placeholder from './Placeholder';
+import WidgetPlaceholder from './WidgetPlaceholder';
 import ImageToolbar from './ImageToolbar';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
@@ -154,7 +155,8 @@ const Editable = React.createClass({
             id: v.id,
             figcaption: v.figcaption,
             embed: v.embed,
-            service: v.service
+            service: v.service || null,
+            type: v.type || null
           };
         });
         item.video = cleaned;
@@ -188,12 +190,11 @@ const Editable = React.createClass({
     this.props.actions.insertCE(storeIndex);
   },
 
-  render() {
-    /** Temp fix for Rails router pagination.  This block should never get hit;  its parent (Editor Container) should handle the cancellation. */
-    if(this.props.hashLocation !== '#story') {
-      return null;
-    }
+  handleDeleteWidget(storeIndex) {
+    this.props.actions.deleteComponent(storeIndex);
+  },
 
+  render() {
     let dom = this.props.editor.dom;
     let content = dom.map((item, index) => {
       let html;
@@ -215,6 +216,8 @@ const Editable = React.createClass({
         return <File key={index} storeIndex={index} fileData={item.data} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
       } else if(item.type === 'Placeholder') {
         return <Placeholder key={index} storeIndex={index} hash={item.hash} insertCE={this.handlePlaceholderClick} />
+      } else if (item.type === 'WidgetPlaceholder') {
+        return <WidgetPlaceholder key={index} storeIndex={index} widgetData={item.data} hash={item.hash} deleteWidget={this.handleDeleteWidget}/>
       } else {
         return null;
       }

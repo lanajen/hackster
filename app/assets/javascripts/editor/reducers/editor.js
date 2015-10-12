@@ -1035,7 +1035,8 @@ function _insertPlaceholder(dom) {
     let mediaTypes = {
       'Carousel': true,
       'Video': true,
-      'File': true
+      'File': true,
+      'WidgetPlaceholder': true
     };
 
     if(mediaTypes[component.type] && (index > 0 && mediaTypes[dom[index-1].type])) {

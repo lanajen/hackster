@@ -3,6 +3,7 @@ import Utils from '../utils/DOMUtils';
 import _ from 'lodash';
 import FigCaption from './FigCaption';
 import ImageToolbar from './ImageToolbar';
+import WidgetPlaceholder from './WidgetPlaceholder';
 
 const Video = React.createClass({
 
@@ -117,7 +118,8 @@ const Video = React.createClass({
 
     if( (target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe')) ||
         (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) ||
-        (target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe')) &&
+        (target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe')) ||
+        (target.nodeName === 'IMG' && target.classList.contains('react-editor-iframe')) &&
         this.props.editor.showImageToolbar === false 
       ) {
       this.props.actions.toggleImageToolbar(true, {
@@ -133,20 +135,31 @@ const Video = React.createClass({
     }
   },
 
+  handleDeleteWidget(storeIndex) {
+    this.props.actions.deleteComponent(storeIndex);
+  },
+
   render: function() {
     let data = this.props.videoData[0];
     let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
                      : (null);
 
-    let video = data.service === 'mp4'
-              ? (<video style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" preload="metadata" controls="controls">
-                  <source type="video/mp4" src={data.embed} />
-                  <a href={data.embed} alt={data.alt}>{data.embed}</a>
-                 </video>)
-              : (<iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} alt={data.alt} frameBorder="0"></iframe>);
+    let video;
+    /** mp4 and image are for URLWidgets. */
+    if(data.service === 'mp4') {
+      video = (<video style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" preload="metadata" controls="controls">
+                <source type="video/mp4" src={data.embed} />
+                <a href={data.embed} alt={data.alt}>{data.embed}</a>
+               </video>);
+    } else if(data.type === 'image') {
+      video = (<img style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} />);
+    } else {
+      video = (<iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} alt={data.alt} frameBorder="0"></iframe>);
+    }
+
     return (
-      <div className="react-editor-video" 
+      <div className="react-editor-video"
            data-hash={this.props.hash}
            data-video-id={data.id}
            onFocus={this.handleFocus} 

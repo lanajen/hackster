@@ -149,7 +149,7 @@ module.exports = {
     if(match && match.length) {
       let id = match[obj.index],
           embed = obj.embed(id);
-      return { id: id, embed: embed, service: service };
+      return { id: id, embed: embed, service: service, type: 'iframe' };
     } else {
       // TODO: Handle Error!
       return null;

@@ -26,6 +26,7 @@ const Utils = {
         anchorNode: null
       };
     } else {
+      sel = rangy.getSelection();
       let range = sel.getRangeAt(0),
           commonAncestorContainer = range.commonAncestorContainer,
           parentNode = this.getRootParentElement(range.startContainer),
@@ -206,6 +207,17 @@ const Utils = {
     };
   },
 
+  getRangesOfSelectedEl(el, range) {
+    let indexes = {};
+    let clone = range.cloneRange();
+    clone.selectNodeContents(el);
+    clone.setEnd(range.endContainer, range.endOffset);
+    indexes.end = clone.toString().length;
+    clone.setStart(range.startContainer, range.startOffset);
+    indexes.start = indexes.end - clone.toString().length;
+    return indexes;
+  },
+
   createULGroups(startContainer, endContainer, parentNode) {
     let groups = [], group = [], cont = false, child;
 
@@ -341,6 +353,19 @@ const Utils = {
         isChildOf = true;
       }
     }
+    return isChildOf;
+  },
+
+  isChildOfCode(node) {
+    let isChildOf = false;
+
+    while(node.parentNode && node.parentNode.classList && !node.parentNode.classList.contains('content-editable')) {
+      if(node.nodeName === 'CODE') {
+        isChildOf = true;
+      }
+      node = node.parentNode;
+    }
+
     return isChildOf;
   },
 
@@ -592,6 +617,7 @@ const Utils = {
       'A': 'anchor',
       'BLOCKQUOTE': 'blockquote',
       'PRE': 'pre',
+      'CODE': 'code',
       'UL': 'ul'
     };
 
@@ -633,7 +659,7 @@ const Utils = {
         if(child.firstChild && child.childNodes.length) {
           let nodes = [].slice.apply(child.children);
           nodes.forEach(node => {
-            if(!node.childNodes && !node.textContent.length) {
+            if(node.nodeName === 'SPAN' && !node.textContent.length) {
               child.removeChild(node);
             }
           });
@@ -851,8 +877,8 @@ const Utils = {
 
   convertVideoSrc(map, mainCallback) {
     async.map(map, (item, callback) => {
-      if(item.type === 'Video') {
-        let videoData = Helpers.getVideoData(item.video[0].src);
+      if(item.type === 'Video' && item.video[0].type == 'iframe') {
+        let videoData = Helpers.getVideoData(item.video[0].embed);
         if(!videoData) {
           console.log('BUNK', item);
           return callback(null, null);
@@ -890,7 +916,7 @@ const Utils = {
   createContainers(html) {
     let tree = html.map((el, index) => {
       let mediaData, carousel, video, newEl;
-      /** If top element is a carousel widget, video or file, we create the markup for those elements.
+      /** If top element is a carousel widget or video, we create the markup for those elements.
         * Else if the top element is a image, create a Carousel.
         * Else, recurse through the element.
         *     If theres images in the element, we're going to convert it to a Carousel.
@@ -902,10 +928,22 @@ const Utils = {
           mediaData = this.getCarouselData(el);
           newEl = this.createCarousel(mediaData);
           return newEl;
-        } else if(el.attribs['data-type'] === 'url') {
-          /** Handle Video */
+        } else if(el.attribs['data-type'] === 'video') {
+          /** Primarily for mp4. */
           mediaData = this.getVideoData(el);
           newEl = this.createVideo(mediaData);
+          return newEl;
+        } else if(el.attribs['data-type'] === 'url') {
+          /** Handle Video, Image & Repo as URL Widgets. */
+          mediaData = this.getURLWidgetData(el);
+
+          /** Repo gets transformed into a placeholder. */
+          if(mediaData[0].type === 'repo') {
+            newEl = this.createWidgetPlaceholder(mediaData[0]);
+          } else {
+            newEl = this.createVideo(mediaData);
+          }
+
           return newEl;
         } else if(el.attribs['data-type'] === 'file') {
           /** Handle File */
@@ -917,10 +955,17 @@ const Utils = {
             newEl = this.createFile(mediaData);
           }
           return newEl;
-        } else if(el.attribs['data-type'] === 'widget' && el.children && el.children[0].attribs.class.indexOf('old_code_widget') !== -1) {
-          /** Handle Code Widget */
-          newEl = this.createCodeBlock(el);
+        } else if(el.attribs['data-type'] === 'widget') {
+          if(el.children && el.children[0].attribs.class.indexOf('old_code_widget') !== -1) {
+            /** Handle Code Widget */
+            newEl = this.createCodeBlock(el);
+          } else if(el.children && el.children[0].attribs.class.indexOf('parts_widget') !== -1) {
+            mediaData = this.getWidgetPlaceholderData(el);
+            newEl = this.createWidgetPlaceholder(mediaData);
+          }
           return newEl;
+        } else {
+          return null;
         }
       } else if(el.name === 'img') {
         /** Handle Carousel */
@@ -941,7 +986,8 @@ const Utils = {
           };
         }
       }
-    }).filter(item => { return item !== null; });;
+
+    }).filter(item => { return item !== null; });
 
     return tree;
   },
@@ -1014,25 +1060,38 @@ const Utils = {
     };
   },
 
-  getVideoData(element) {
-    let src, figcaption, alt;
+  getURLWidgetData(element) {
+    let src, figcaption, type, widgetType;
 
     (function recurse(el) {
       if(!el.children) {
-        return;
+        return el;
       } else {
-        /** If root element is a video, get the url from its attribute. */
+        /** Get the url from the root element. */
         if(el.attribs.class && el.attribs.class.indexOf('embed-frame') !== -1 && el.attribs['data-type'] === 'url') {
           src = el.attribs['data-url'];
+          type = 'iframe';
         }
 
         el.children.forEach(child => {
-          if(child.name === 'img' && child.attribs.src.length) {
-            src = child.attribs.src;
-            alt = child.attribs.alt || '';
+          /** Sets type to image. */
+          if(child.attribs && child.attribs.class && child.attribs.class.indexOf('embed-img') !== -1) {
+            type = 'image';
           }
 
-          if(child.name === 'div' && child.attribs.class.indexOf('embed-figcaption') !== -1) {
+          /** Get the video url from the iframe attribute rather than the embed url. */
+          if(child.name === 'iframe' && child.attribs.src) {
+            src = child.attribs.src;
+          }
+
+          /** Gets code repo url widgets */
+          if(child.attribs && child.attribs['data-repo']) {
+            type = 'repo';
+            widgetType = child.attribs.class;
+          }
+
+          /** Grabs video figcaptions. */
+          if(child.name === 'div' && child.attribs.class && child.attribs.class.indexOf('embed-figcaption') !== -1) {
             figcaption = child.children.length ? child.children[0].data : '';
           }
 
@@ -1043,9 +1102,10 @@ const Utils = {
     }(element));
 
     return [{
-      src: src,
-      alt: alt,
-      figcaption: figcaption || ''
+      embed: src,
+      figcaption: figcaption || '',
+      type: type || '',
+      widgetType: widgetType || ''
     }];
   },
 
@@ -1142,6 +1202,56 @@ const Utils = {
     return { id: id, caption: caption, url: url, content: content };
   },
 
+  getVideoData(el) {
+    let src, figcaption;
+
+    (function recurse(el) {
+      if(!el.children) {
+        return el;
+      } else {
+        /** Get the url from the root element. */
+        if(el.attribs.class && el.attribs.class.indexOf('embed-frame') !== -1 && el.attribs['data-type'] === 'url') {
+          src = el.attribs['data-url'];
+        }
+
+        el.children.forEach(child => {
+          /** Get the video src from the source tag if it wasn't supplied in the parent. */
+          if(src === undefined && child.name === 'source') {
+            src = child.attribs['src'];
+          }
+
+          /** Grabs video figcaptions. */
+          if(child.name === 'div' && child.attribs.class && child.attribs.class.indexOf('embed-figcaption') !== -1) {
+            figcaption = child.children.length ? child.children[0].data : '';
+          }
+
+          recurse(child);
+        });
+      }
+
+    }(element));
+
+    return [{
+      embed: src,
+      figcaption: figcaption || '',
+      service: 'mp4',
+      type: ''
+    }]
+  },
+
+  getWidgetPlaceholderData(el) {
+    let id, widgetType;
+
+    id = el.attribs['data-widget-id'];
+    widgetType = el.children[0].attribs.class.split(' ').pop();
+
+    return {
+      id: id,
+      type: 'widget',
+      widgetType: widgetType
+    };
+  },
+
   createModel(data) {
     return {
       attribs: data.attribs,
@@ -1191,6 +1301,14 @@ const Utils = {
       type: 'CE',
       json: [PRE]
     };
+  },
+
+  createWidgetPlaceholder(data) {
+    return {
+      type: 'WidgetPlaceholder',
+      data: data,
+      hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    }
   },
 
   recurseAndReturnEl(parentEl, elName) {

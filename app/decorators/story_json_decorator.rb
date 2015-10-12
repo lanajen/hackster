@@ -15,7 +15,7 @@ module StoryJsonDecorator
         when 'Video'
           video = item['video'][0]
           data = { url: video['embed'], caption: video['figcaption'] }
-          embed_html data, 'Video'
+          embed_html data, 'Url'
         when 'File'
           if(item['data']['id'] != nil)
             data = { id: item['data']['id'] }
@@ -23,6 +23,15 @@ module StoryJsonDecorator
           else
             ''
           end 
+        when 'WidgetPlaceholder'
+          # URL Widgets with a type of 'repo' get transformed into WidgetPlaceholders.  'embed' is the url.
+          if item['data']['type'] == 'repo'
+            data = { url: item['data']['embed']}
+            embed_html data, 'Url'
+          else
+            data = { id: item['data']['id']}
+            embed_html data, 'Widget'
+          end
         else
           ''
         end
@@ -47,11 +56,14 @@ module StoryJsonDecorator
       case type
       when 'Carousel'
         h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash] }
-      when 'Video'
+      when 'Url'
         embed = Embed.new url: data[:url], default_caption: data[:caption]
         h.render partial: "api/embeds/embed", locals: { embed: embed, caption: data[:caption] }
       when 'File'
         embed = Embed.new file_id: data[:id]
+        h.render partial: "api/embeds/embed", locals: { embed: embed }
+      when 'Widget'
+        embed = Embed.new widget_id: data[:id]
         h.render partial: "api/embeds/embed", locals: { embed: embed }
       else
         ''
