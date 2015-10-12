@@ -447,6 +447,10 @@ class Project < ActiveRecord::Base
     joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
   end
 
+  def self.with_type content_type
+    where "projects.hproperties @> hstore('content_type', ?)", content_type
+  end
+
   def approve_later! *args
     next_time_slot = get_next_time_slot Project.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot

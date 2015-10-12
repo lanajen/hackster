@@ -3,6 +3,8 @@
   condition: "@challenge.activate_pre_contest?"
 - q: Did I win the contest? When will I receive my prize?
   a: <p>If you are a winner we will contact you by email directly to arrange the shipment of your prize.</p>
+- q: Somebody copied my entry! What can I do?
+  a: "When judging entries we take into account the submission date. When an entry is clearly plagiarized from another, we favor the original entry. However we might favor newer entries when they're considerably better from the original. If you believe the result of the judging is unfair, please email us at contests@hackster.io to appeal."
 - q: What are the entry requirements?
   a: "<%= raw @challenge.requirements %>"
   condition: "@challenge.requirements.present?"

@@ -27,6 +27,10 @@ class ProjectsController < ApplicationController
       @projects = @projects.where(difficulty: params[:difficulty])
     end
 
+    if params[:type].try(:to_sym).in? Project::CONTENT_TYPES.values
+      @projects = @projects.with_type(params[:type])
+    end
+
     @projects = @projects.paginate(page: safe_page_params)
 
     respond_to do |format|

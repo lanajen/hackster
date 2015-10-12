@@ -68,6 +68,14 @@ module PlatformHelper
       @projects.merge(Project.send(Project::SORTING[sort]))
     end
 
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+      @projects = @projects.joins(:project).merge(Project.where(difficulty: params[:difficulty]))
+    end
+
+    if params[:type].try(:to_sym).in? Project::CONTENT_TYPES.values
+      @projects = @projects.joins(:project).merge(Project.with_type(params[:type]))
+    end
+
     if options[:type]
       @projects = @projects.joins(:project).merge(Project.where(type: options[:type]))  # fails without joins
     end

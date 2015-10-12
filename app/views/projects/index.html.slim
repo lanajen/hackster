@@ -17,21 +17,21 @@
               ' Sort by
               span.caret
             ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', projects_path(sort: 'updated', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', projects_path(sort: 'popular', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', projects_path(sort: 'recent', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', projects_path(sort: 'respected', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', projects_path(sort: 'trending', by: params[:by])
+              li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', projects_path(sort: 'updated', by: params[:by], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', projects_path(sort: 'popular', by: params[:by], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', projects_path(sort: 'recent', by: params[:by], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', projects_path(sort: 'respected', by: params[:by], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', projects_path(sort: 'trending', by: params[:by], difficulty: params[:difficulty], type: params[:type])
 
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-              ' Filter by
+              ' Date published
               span.caret
             ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', projects_path(sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', projects_path(by: '7days', sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', projects_path(by: '30days', sort: params[:sort])
+              li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', projects_path(sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
+              / li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', projects_path(by: '7days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', projects_path(by: '30days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
               / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
 
           .btn-group
@@ -39,17 +39,31 @@
               ' Difficulty
               span.caret
             ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', projects_path
-              li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', projects_path(difficulty: 'beginner')
-              li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', projects_path(difficulty: 'intermediate')
-              li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced')
-              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', projects_path(difficulty: 'hardcore')
+              li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', projects_path(by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', projects_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', projects_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', projects_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
+
+          .btn-group
+            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+              ' Type
+              span.caret
+            ul.dropdown-menu.pull-right
+              li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', projects_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', projects_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', projects_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', projects_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', projects_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
       hr
         .clearfix
 
-    .col-xs-12
-      .row.thumb-list  class=@switch_style
-        - @projects.each_with_index do |project, i|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'explore', ref_id: "#{params[:sort]}_#{params[:by]}", offset: i }
-      .row
-        .col-xs-12.text-center= will_paginate @projects
+    - if @projects.exists?
+      .col-xs-12
+        .row.thumb-list
+          - @projects.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'explore', ref_id: "#{params[:sort]}_#{params[:by]}", offset: i }
+        .row
+          .col-xs-12.text-center= will_paginate @projects
+    - else
+      .col-xs-12 Looks like there's no match, please extend your filters!
