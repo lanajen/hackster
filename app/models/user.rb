@@ -561,7 +561,7 @@ class User < ActiveRecord::Base
   end
 
   def parts_missing_from_toolbox
-    used_parts.where.not(platform_id: nil).reorder('') - owned_parts
+    used_parts.where.not(platform_id: nil, slug: nil).reorder('') - owned_parts
   end
 
   def profile_needs_care?
