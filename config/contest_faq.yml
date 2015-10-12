@@ -1,0 +1,35 @@
+- q: Do I need to participate in the pre-contest to submit a project?
+  a: "<p>No, you're welcome to submit an entry for the contest even if you haven't participated or won in the pre-contest.</p>"
+  condition: "@challenge.activate_pre_contest?"
+- q: Did I win the contest? When will I receive my prize?
+  a: <p>If you are a winner we will contact you by email directly to arrange the shipment of your prize.</p>
+- q: What are the entry requirements?
+  a: "<%= raw @challenge.requirements %>"
+  condition: "@challenge.requirements.present?"
+- q: What are the judging criteria?
+  a: "<%= raw @challenge.judging_criteria %>"
+  condition: "@challenge.judging_criteria.present?"
+- q: What are the prizes?
+  a: >
+    <ul>
+      <% @challenge.prizes.each do |prize| %>
+        <li><%= prize.name %> will receive: <% if prize.description.present? %><%= prize.description %><% elsif prize.cash_value.present? %><%= number_to_currency prize.cash_value, precision: 0 %><% end %><% if prize.quantity > 1 %> (<%= prize.quantity %> are available)<% end %>.</li>
+      <% end %>
+    </ul>
+- q: What is the contest timeline?
+  a: "<%= render 'challenges/timeline', challenge: @challenge %>"
+- q: When will winners be announced? Where can I see the list?
+  a: >
+    <% if @challenge.pre_winners_announced_date.present? %>
+      <p>Pre-contest winners will be announced on <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+    <% end %>
+    <% if @challenge.winners_announced_date.present? %>
+      <p>Contest winners will be announced on <%= l @challenge.winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+    <% end %>
+  condition: "@challenge.pre_winners_announced_date.present? or @challenge.winners_announced_date.present?"
+- q: Who is eligible to participate?
+  a: "<%= raw @challenge.eligibility %>"
+  condition: "@challenge.eligibility.present?"
+- q: What are the steps to enter the contest?
+  a: "<%= raw @challenge.how_to_enter %>"
+  condition: "@challenge.how_to_enter.present?"

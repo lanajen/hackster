@@ -2,7 +2,7 @@
   - if can? :admin, @challenge
     .alert.alert-info.alert-flat.text-center
       strong> This challenge is ready to be judged!
-      = link_to 'Go to the judging dashboard', challenge_entries_path(@challenge), class: 'alert-link'
+      = link_to 'Go to the judging dashboard', challenge_admin_entries_path(@challenge), class: 'alert-link'
   - else
     .alert.alert-info.alert-flat.text-center
       strong> This contest is over and the winners are being selected.

@@ -113,3 +113,165 @@
 .mute-date {
   color: #888;
 }
+.highlight-date {
+  color: #3c763d;
+  border-left: 3px solid #3c763d;
+  padding-left: 8px;
+}
+
+.challenge-idea {
+  padding: 10px;
+  background: #fff;
+  margin-bottom: 20px;
+  .img-container {
+    img {
+      width: 100%;
+    }
+  }
+  h3 {
+    margin: 20px 0 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  .author {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+  }
+  .field {
+    margin-bottom: 20px;
+  }
+  .field-title {
+    font-weight: bold;
+  }
+  .more {
+    display: none;
+  }
+}
+
+.challenge-idea-thumbs {
+  .challenge-idea {
+    .description {
+      height: 15em;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 15px;
+      &:after {
+        content: "";
+        height: 60%;
+        display: block;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        @include background(linear-gradient(top, transparent 0%, #fff 100%));
+      }
+    }
+    .more {
+      display: block;
+    }
+  }
+}
+
+#challenge-idea-popup {
+  .challenge-idea {
+    padding: 0;
+    .field:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.challenge-thumb-full {
+  background: #fff;
+  margin-bottom: 20px;
+  height: 300px;
+  & > .row {
+    height: 100%;
+  }
+  .details-container {
+    height: 100%;
+  }
+  .details {
+    height: 100%;
+    position: relative;
+    padding: 20px 0 20px 20px;
+    h4 {
+      margin: 0 0 10px;
+    }
+    .sponsor {
+
+    }
+    .bottom {
+      position: absolute;
+      bottom: 20px;
+    }
+    .date {
+      font-size: 0.8em;
+      color: #777;
+      margin-bottom: 5px;
+    }
+  }
+  .cover {
+    @include background-cover;
+    height: 300px;
+  }
+  .prize {
+    padding: 20px 20px 20px 0;
+    h5 {
+      text-transform: uppercase;
+      background: #22F175;
+      padding: 5px 10px;
+      color: #fff;
+      margin: 0 0 25px;
+      display: inline-block;
+      font-weight: bold;
+      font-size: 0.7em;
+      @include border-radius(4px);
+    }
+    img {
+      margin-bottom: 10px;
+      max-height: 150px;
+    }
+    .description {
+      font-size: 0.8em;
+    }
+  }
+}
+
+.faq-category {
+  font-size: 1em;
+}
+
+.faq-entry {
+  margin-bottom: 40px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+.faq-question {
+  margin: 0 0 10px;
+  font-weight: bold;
+  font-size: 1em;
+  .anchor {
+    margin-left: 5px;
+    font-size: 0.9em;
+    display: none;
+  }
+  &:hover {
+    .anchor {
+      display: inline;
+    }
+  }
+}
+.faq-answer {
+  padding-left: 20px;
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.back-to-top {
+  a {
+    font-size: 0.8em;
+    color: #777;
+  }
+}

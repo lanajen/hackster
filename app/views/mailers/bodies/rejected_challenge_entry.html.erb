@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>We are sorry to inform you that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> did not qualify because it did not meet eligibility requirements. Please refer to <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1) %>">the challenge rules</a> for more information.</p>
+<p>We are sorry to inform you that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> did not qualify because it did not meet eligibility requirements. Please refer to <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, ref: 'emailnotif') %>">the challenge rules</a> for more information.</p>
 
 <% if @context[:challenge].in_progress? %>
   <p>You are welcome to submit it again after you make it comply with the requirements, or to submit another entry. Submissions are open until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.</p>

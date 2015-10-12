@@ -2,6 +2,20 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
+  def add_missing_parts_to_users_toolbox
+    User.not_hackster.user_name_set.each do |user|
+      CronTask.perform_async 'add_missing_parts_to_user_toolbox', user.id
+    end
+  end
+
+  def add_missing_parts_to_user_toolbox id
+    return unless user = User.find_by_id(id)
+
+    user.parts_missing_from_toolbox.each do |part|
+      user.owned_parts << part
+    end
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -64,8 +78,10 @@ class CronTask < BaseWorker
     CronTask.perform_async 'generate_users'
     CronTask.perform_async 'update_mailchimp'
     CronTask.perform_async 'update_mailchimp_for_challenges'
+    CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
   end
 
@@ -122,6 +138,24 @@ class CronTask < BaseWorker
     end
   end
 
+  def send_challenge_reminder
+    Challenge::REMINDER_TIMES.each do |time|
+      # pre-contest
+      challenges = Challenge.where("CAST(challenges.hproperties -> 'activate_pre_contest' AS BOOLEAN) = 't' AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) < ? AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) > ?", time.from_now.to_i, (time.from_now - 1.day).to_i)
+
+      challenges.each do |challenge|
+        NotificationCenter.notify_all :ending_soon, :challenge, challenge.id, 'pre_contest_ending_soon'
+      end
+
+      # contest
+      challenges = Challenge.where("challenges.end_date < ? AND challenges.end_date > ?", time.from_now, time.from_now - 1.day)
+
+      challenges.each do |challenge|
+        NotificationCenter.notify_all :ending_soon, :challenge, challenge.id
+      end
+    end
+  end
+
   def update_mailchimp
     MailchimpNewsletterListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
   end
@@ -141,11 +175,19 @@ class CronTask < BaseWorker
       project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
+
+      # platform followers
       users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # user followers
       users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
+      # list followers
       lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
       users += lists.map{|l| l.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # part owners
+      users += Part.joins(:projects).distinct('parts.id').where.not(parts: { platform_id: nil }).where(projects: { id: project_ids }).map{|p| p.owners.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
       users.uniq!
 

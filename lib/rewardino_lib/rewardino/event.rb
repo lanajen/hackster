@@ -36,7 +36,7 @@ module Rewardino
       end
 
       def min_redeemable_points
-        StoreProduct.cheapest.unit_cost || MIN_REDEEMABLE_POINTS
+        StoreProduct.available.cheapest.unit_cost || MIN_REDEEMABLE_POINTS
       end
     end
 

@@ -1,6 +1,6 @@
 class FileNameGenerator
-  def initialize phrase
-    @phrase = phrase
+  def initialize *phrase
+    @phrase = phrase.join(' ')
   end
 
   def to_s

@@ -21,7 +21,7 @@ function resizeModal(id) {
     m.trigger('modal:open');
   });
 
-  var height = Math.max(-(p.height() / 2), -($(window).height() / 2 - 20));  // 20 for padding
+  var height = Math.max(-(p.outerHeight() / 2), -($(window).height() / 2 - 20));  // 20 for padding
   p.css('margin-top', height);
 }
 
@@ -56,7 +56,7 @@ $(function () {
   body.on('click', '.modal-open', function(e){
     e.preventDefault();
     target = $(this).data('target');
-    openModal(target);
+    openModal(target, this);
   });
 
   $(document).ajaxComplete(function(event, request) {

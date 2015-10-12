@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150928215952) do
+ActiveRecord::Schema.define(version: 20151011220556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,16 @@ ActiveRecord::Schema.define(version: 20150928215952) do
     t.integer "challenge_id"
     t.integer "user_id"
     t.integer "roles_mask"
+  end
+
+  create_table "challenge_ideas", force: :cascade do |t|
+    t.integer  "challenge_id"
+    t.integer  "user_id"
+    t.string   "name"
+    t.hstore   "properties"
+    t.string   "workflow_state"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "challenge_projects", force: :cascade do |t|
@@ -549,8 +559,11 @@ ActiveRecord::Schema.define(version: 20150928215952) do
     t.string   "difficulty",              limit: 255
     t.string   "type",                    limit: 15,  default: "Project", null: false
     t.string   "locale",                  limit: 2,   default: "en"
+    t.string   "hid"
+    t.hstore   "hproperties"
   end
 
+  add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree

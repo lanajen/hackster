@@ -7,23 +7,15 @@ class ChallengeEntriesController < ApplicationController
   def index
     authorize! :admin, @challenge
     @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
-    @challenge = @challenge.decorate
 
-    @approved_entries_count = @entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).count
-    @rejected_entries_count = @entries.where(workflow_state: 'unqualified').count
-    @new_entries_count = @entries.where(workflow_state: 'new').count
-
-    # determines how many of each prizes were awarded and how many are left
-    if @challenge.judging?
-      assigned_prizes = {}
-      @entries.joins(:prizes).pluck('prizes.id').each do |id|
-        assigned_prizes[id] = 0 unless id.in? assigned_prizes
-        assigned_prizes[id] += 1
+    respond_to do |format|
+      format.html do
+        @challenge = @challenge.decorate
       end
-      @prizes = {}
-      @challenge.prizes.each do |prize|
-        quantity = prize.quantity - assigned_prizes[prize.id].to_i
-        @prizes[prize] = quantity unless quantity.zero?
+      format.csv do
+        file_name = FileNameGenerator.new(@challenge.name, 'entries')
+        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
+        headers['Content-Type'] ||= 'text/csv'
       end
     end
   end
@@ -60,25 +52,25 @@ class ChallengeEntriesController < ApplicationController
       when 'moderating'
         if params[:commit] == 'Save'
           flash[:notice] = "Changes saved."
-          challenge_entries_path(@challenge)
+          challenge_admin_entries_path(@challenge)
         else
           if next_entry = @challenge.entries.where(workflow_state: :new).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry needing moderation!"
-            challenge_entries_path(@challenge)
+            challenge_admin_entries_path(@challenge)
           end
         end
       when 'judging'
         if params[:commit] == 'Save'
           flash[:notice] = "Changes saved."
-          challenge_entries_path(@challenge)
+          challenge_admin_entries_path(@challenge)
         else
           if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id, workflow_state: :unqualified }).where(challenge_projects: { prize_id: nil }).joins(:project).order(:created_at).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry submitted!"
-            challenge_entries_path(@challenge)
+            challenge_admin_entries_path(@challenge)
           end
         end
       else
@@ -96,7 +88,7 @@ class ChallengeEntriesController < ApplicationController
     else
       flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
     end
-    redirect_to challenge_entries_path(@challenge)
+    redirect_to challenge_admin_entries_path(@challenge)
   end
 
   def destroy
@@ -105,7 +97,7 @@ class ChallengeEntriesController < ApplicationController
     if current_user.id == @entry.user_id
       redirect_to challenge_path(@challenge), notice: "Your entry has been withdrawn."
     else
-      redirect_to challenge_entries_path(@challenge), notice: "Entry deleted."
+      redirect_to challenge_admin_entries_path(@challenge), notice: "Entry deleted."
     end
   end
 

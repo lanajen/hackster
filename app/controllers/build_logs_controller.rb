@@ -1,6 +1,6 @@
 class BuildLogsController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
-  before_filter :load_project, except: [:destroy, :show_redirect]
+  before_filter :load_project_with_hid, except: [:destroy, :show_redirect]
   before_filter :load_log, only: [:show]
   before_filter :load_and_authorize_resource, only: [:edit, :update, :destroy]
   layout 'project'
@@ -30,7 +30,7 @@ class BuildLogsController < ApplicationController
     @log = @project.build_logs.new
     @log.user_id = current_user.id
     @log.save validate: false
-    redirect_to edit_project_log_path(@project.user_name_for_url, @project.slug, @log.id)
+    redirect_to edit_project_log_path(@project.user_name_for_url, @project.slug_hid, @log.id)
   end
 
   def create
@@ -39,7 +39,7 @@ class BuildLogsController < ApplicationController
     @log.user = current_user
 
     if @log.save
-      redirect_to project_log_path(@project.user_name_for_url, @project.slug, @log.sub_id), notice: 'Log created.'
+      redirect_to project_log_path(@project.user_name_for_url, @project.slug_hid, @log.sub_id), notice: 'Log created.'
     else
       render 'new'
     end
@@ -52,7 +52,7 @@ class BuildLogsController < ApplicationController
 
   def update
     if @log.update_attributes(params[:build_log])
-      redirect_to project_log_path(@project.user_name_for_url, @project.slug, @log.sub_id), notice: 'Log updated.'
+      redirect_to project_log_path(@project.user_name_for_url, @project.slug_hid, @log.sub_id), notice: 'Log updated.'
     else
       render 'edit'
     end
@@ -62,7 +62,7 @@ class BuildLogsController < ApplicationController
     @project = @log.threadable
     @log.destroy
 
-    redirect_to project_logs_path(@project.user_name_for_url, @project.slug), notice: "\"#{@log.title}\" was deleted."
+    redirect_to project_logs_path(@project), notice: "\"#{@log.title}\" was deleted."
   end
 
   private

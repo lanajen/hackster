@@ -351,12 +351,23 @@ HackerIo::Application.routes.draw do
         get 'participants' => 'challenges#participants'
         get 'projects' => 'challenges#projects'
         patch '' => 'challenges#update'
+        resources :ideas, controller: :challenge_ideas, only: [:new, :create, :edit, :update]
+        get 'ideas' => 'challenges#ideas'
+        get 'faq' => 'challenges#faq'
       end
       # get 'challenges/:slug' => 'challenges#show', as: :challenge
       resources :challenges, except: [:show, :update] do
-        resources :entries, controller: :challenge_entries do
+        get 'admin/dashboard' => 'challenges#dashboard', as: :admin
+        resources :entries, controller: :challenge_entries, only: [:index], path: 'admin/entries', as: :admin_entries
+        resources :ideas, controller: :challenge_ideas, only: [:index], path: 'admin/ideas', as: :admin_ideas
+        resources :entries, controller: :challenge_entries, except: [:index, :show] do
+          put 'update_workflow' => 'challenge_entries#update_workflow', on: :member
           get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
           patch 'address' => 'addresses#update', on: :member
+        end
+        resources :faq_entries, except: [:show, :destroy]
+        resources :ideas, controller: :challenge_ideas, only: [:show] do
+          put 'update_workflow' => 'challenge_ideas#update_workflow', on: :member
         end
         resources :registrations, controller: :challenge_registrations, only: [:create, :destroy] do
           get 'create' => 'challenge_registrations#create', on: :collection, as: :create
@@ -364,7 +375,19 @@ HackerIo::Application.routes.draw do
         post 'projects' => 'challenges#enter', on: :member, as: :enter
         post 'unlock' => 'challenges#unlock', on: :member
         put 'update_workflow' => 'challenges#update_workflow', on: :member
+        patch 'update_mailchimp' => 'challenges#update_mailchimp', on: :member
       end
+
+      resources :faq_entries, only: [:destroy]
+
+      resources :challenge_entries, only: [], as: :challenge_single_entry do
+        resources :respects, only: [:create], controller: 'votes' do
+          get 'create' => 'votes#create', on: :collection, as: :create
+          delete '' => 'votes#destroy', on: :collection
+        end
+      end
+
+      resources :challenge_ideas, only: [:destroy], as: :challenge_single_idea
 
       # resources :skill_requests, path: 'cupidon' do
       #   resources :comments, only: [:create]
@@ -540,9 +563,7 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    get 'projects/e/:user_name/:id' => 'external_projects#show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
-    delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
-    get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
+    get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
 
     get ':user_name/powers/:slug' => 'products#show', as: :product
 
@@ -598,16 +619,29 @@ HackerIo::Application.routes.draw do
       get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
-    scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-      get '' => 'projects#show', as: ''
-      delete '' => 'projects#destroy'
-      patch '' => 'projects#update'
-      get 'embed' => 'projects#embed', as: :embed
-      get 'print' => 'projects#print', as: :print
-      resources :issues do
-        patch 'update_workflow', on: :member
+    constraints(SelfHostedProjectPage) do
+      scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/, constraints: { format: /(html|json|js)/ } do
+        get '' => 'projects#show', as: ''
+        delete '' => 'projects#destroy'
+        patch '' => 'projects#update'
+        get 'embed' => 'projects#embed', as: :embed
+        get 'print' => 'projects#print', as: :print
+        resources :issues do
+          patch 'update_workflow', on: :member
+        end
+        resources :logs, controller: :build_logs
       end
-      resources :logs, controller: :build_logs
+    end
+    constraints(ExternalProjectPage) do
+      get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+
+    # old routes, kept for not break existing links
+    scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+      get '' => 'projects#show', as: ''
+      get 'embed' => 'projects#embed', as: :embed
+      get 'issues' => 'issues#index'
+      get 'logs' => 'build_logs#index'
     end
 
     constraints(ClientSite) do

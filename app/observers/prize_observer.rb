@@ -13,7 +13,7 @@ class PrizeObserver < ActiveRecord::Observer
 
   private
     def expire_cache record
-      Cashier.expire "challenge-#{record.challenge_id}-prizes"
+      Cashier.expire "challenge-#{record.challenge_id}-prizes", "challenge-#{record.challenge_id}-faq"
       record.challenge.purge
     end
 end

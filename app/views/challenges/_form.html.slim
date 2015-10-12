@@ -27,24 +27,25 @@
           = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @challenge.cover_image.try(:imgix_url), help_block: 'A high definition shot, at least 1600px wide and 430px high.', attribute_type: 'cover_image', image_version: nil, model: 'challenge' }
           = f.input :video_link, label: 'Video link'
           = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
-          = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "Maximum 140 characters. Default: '#{@challenge.decorate.default_tweet}'"
+          = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "Leave room for the URL! Default: '#{@challenge.decorate.default_tweet}'"
 
       .panel.panel-default
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
-          #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
-            = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
-              #datepicker.input-group
-                = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
-                span.input-group-addon
-                  i.fa.fa-calendar
-            = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
+          /
+            = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
+            #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
+              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
+                #datepicker.input-group
+                  = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
+                  span.input-group-addon
+                    i.fa.fa-calendar
+              = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
 
           = f.input :activate_pre_contest, as: :boolean, inline_label: 'Enable pre-contest', label: false, hint: "This will allow participants to submit ideas to win hardware which they can use to enter the contest."
           #pre_contest_settings style=(@challenge.activate_pre_contest ? '' : 'display:none')
-            = f.input :idea_survey_link, label: 'Idea form link', hint: 'The link to the form where ideas for the pre-contest will be collected.'
+            / # = f.input :idea_survey_link, label: 'Idea form link', hint: 'The link to the form where ideas for the pre-contest will be collected.'
             = f.input :pre_contest_start_date_dummy, label: 'Pre-contest start date', wrapper_html: { id: 'pre_contest_start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to submit ideas for the pre-contest starting this date. Times are PT (-08)." do
               #datepicker.input-group
                 = f.input_field :pre_contest_start_date_dummy, as: :string, label: false
@@ -63,6 +64,27 @@
                 span.input-group-addon
                   i.fa.fa-calendar
             = f.input :pre_winners_announced_date, as: :hidden, input_html: { id: 'pre_winners_announced_date' }
+            .form-group
+              .col-md-4
+                label.control-label Extra fields for pre-contest
+                .help-block.text-right If you want more than a name, image and description.
+              .col-md-8
+                table#sortable.table.table-sortable
+                  thead
+                    th Field label
+                    th Required
+                    th
+                  tbody
+                    = f.simple_fields_for :challenge_idea_fields, wrapper: false do |f_field|
+                      tr.fields
+                        td style='min-width: 80%' = f_field.input :label, label: false
+                        td= f_field.input :required, label: false, as: :boolean
+                        td
+                          = f_field.input :position, as: :hidden, input_html: { class: 'position' }
+                          = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
+                    tr.sortable-disabled
+                      td colspan=3 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
+
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
             #datepicker.input-group
@@ -84,8 +106,8 @@
           = f.input :winners_announced_date, as: :hidden, input_html: { id: 'winners_announced_date' }
 
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
-          = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
-          = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          / = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
+          = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor', style: 'max-height: 600px' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :judging_criteria, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -116,7 +138,7 @@
                       i.fa.fa-bars.handle
                       = f_prize.input :id, as: :hidden
                       = f_prize.input :position, as: :hidden, input_html: { class: 'position' }
-                    td  style='width:20%'
+                    td style='width:20%'
                       table
                         tr
                           td= f_prize.input :name, label: false, wrapper: false, placeholder: 'Eg: First place'
@@ -126,14 +148,14 @@
                             - if image and image.file_url
                               = image_tag image.file_url, class: 'img-responsive'
                             = f_image.input :file, label: false, as: :file
-                    td  style='width:30%'  = f_prize.input :description, label: false, wrapper: false, input_html: { rows: 4 }, placeholder: 'Eg: iPad Air'
+                    td style='width:30%'  = f_prize.input :description, label: false, wrapper: false, input_html: { rows: 4 }, placeholder: 'Eg: iPad Air'
                     td= f_prize.input :cash_value, label: false, wrapper: false
                     td style='width:15%' = f_prize.input :link, label: false, wrapper: false
                     td= f_prize.input :quantity, label: false, wrapper: false
                     td= f_prize.input :requires_shipping, label: false, wrapper: false
                     td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'
               tr.sortable-disabled
-                td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success nested-field-table'
+                td colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success nested-field-table'
 
       .panel.panel-default
         .panel-heading
@@ -185,7 +207,9 @@
           .panel-body
             = f.input :platform_id, label: 'Promoted platform', collection: Platform.order(:full_name)
             = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub (only when challenge is active).', as: :boolean
-            .col-md-8.col-md-offset-4 -or-
+            .form-group
+              .col-md-8.col-md-offset-4
+                strong.text-danger USE THE FOLLOWING ONLY IF SPONSOR DOESN'T HAVE A PLATFORM ON HACKSTER:
             = f.input :sponsor_name
             = f.input :sponsor_link
             = f.input :custom_css, as: :text
@@ -202,6 +226,7 @@
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
             = f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
+            = f.input :disable_pre_contest_winners, as: :boolean, inline_label: 'Disable pre-contest winners', label: false
 
       .panel.panel-default
         .panel-heading

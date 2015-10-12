@@ -30,6 +30,10 @@ class NotificationDecorator < ApplicationDecorator
       challenge = notifiable
       challenge_link = h.link_to challenge.name, challenge
       case event
+      when :launched_pre_contest
+        "#{challenge_link} is now accepting ideas!"
+      when :launched_contest
+        "#{challenge_link} is now open for submissions!"
       when :completed
         "The challenge #{challenge_link} is now closed for submissions. Time to award prizes!"
       end
@@ -42,6 +46,14 @@ class NotificationDecorator < ApplicationDecorator
         "Your entry for #{challenge_link} has been approved."
       when :awarded
         "Congratulations! Your entry for #{challenge_link} has been awarded a prize. Follow instructions sent to your email to claim it."
+      end
+    when ChallengeIdea
+      idea = notifiable
+      challenge = idea.challenge
+      challenge_link = h.link_to challenge.name, challenge
+      case event
+      when :approved
+        "Your idea for #{challenge_link} has been approved."
       end
     when Comment
       comment = notifiable
@@ -101,7 +113,15 @@ class NotificationDecorator < ApplicationDecorator
         end
       end
     when Issue
-      ''  # TODO
+      issue = notifiable
+      project = issue.threadable
+      author_link = h.link_to issue.user.name, issue.user
+      project_link = h.link_to project.name, project
+      issue_link = h.link_to 'an issue', h.issue_path(project, issue)
+      case event
+      when :new
+        "#{author_link} posted #{issue_link} in #{project_link}."
+      end
     when Project, ExternalProject
       project = notifiable
       project_link = h.link_to project.name, project

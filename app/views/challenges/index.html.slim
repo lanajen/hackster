@@ -6,15 +6,14 @@
           .row
             .col-xs-12
               h1
-                | Take part in challenges
-              p Show us what you're made of by entering our sponsored challenges and take the chance to win awesome prizes!
+                | Take part in contests
+              p Show us what you're made of by entering our sponsored contests and take the chance to win awesome prizes!
               hr
 
           - if @active_challenges.any?
-            h2 Challenges open for submission
-            .row
-              - @active_challenges.each do |challenge|
-                = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
+            h2 Contests open for submission
+            - @active_challenges.each do |challenge|
+              = render partial: 'challenge_thumb_full', locals: { challenge: challenge.decorate, thumb_size: :large }
 
           - if !user_signed_in? or !current_user.subscribed_to? :email, 'newsletter'
             section.subscribe-block.text-center-mobile style='background:none;border:0;padding:15px 0;'
@@ -26,12 +25,12 @@
                   .pull-right-desktop= render 'shared/mailchimp_form', source: 'challenge-index'
 
           - if @coming_challenges.any?
-            h2 Challenges starting soon
+            h2 Contests starting soon
             .row
               - @coming_challenges.each do |challenge|
                 = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
 
-          h2 Past challenges
+          h2 Past contests
           .row
             - @past_challenges.each do |challenge|
               = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
@@ -39,5 +38,5 @@
     #bottom-bar
       .container.text-center
         p
-          ' Want to launch your own challenge?
-          = link_to 'Contact us', 'mailto:adam@hackster.io?subject=Launch+a+challenge', class: 'btn btn-primary'
+          ' Want to launch your own contest?
+          = link_to 'Contact us', 'mailto:adam@hackster.io?subject=Launch+a+contest', class: 'btn btn-primary'

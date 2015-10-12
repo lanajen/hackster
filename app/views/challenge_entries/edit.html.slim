@@ -37,7 +37,7 @@
               .col-md-4
                 = f.submit 'Save', class: 'btn btn-primary'
                 = f.submit 'Save and next', class: 'btn btn-default'
-                = link_to 'Cancel', challenge_entries_path(@challenge), class: 'btn btn-link btn-sm'
+                = link_to 'Cancel', challenge_admin_entries_path(@challenge), class: 'btn btn-link btn-sm'
     #iframe-container
       #dragbar
       iframe  src="#{url_for(@project)}?blank_frame=1" frameborder="0"

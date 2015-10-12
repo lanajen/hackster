@@ -6,15 +6,16 @@
 # ]
 
 class NotificationHandler
-  attr_accessor :event, :context_type, :context_id, :model
+  attr_accessor :event, :context_type, :context_id, :model, :user_roles
 
-  def initialize event, context_type, context_id
+  def initialize event, context_type, context_id, user_roles=[]
     @event = event
     @context_type = context_type
     @context_id = context_id
     @model = if is_class? context_type.camelize.to_s
       context_type.camelize.to_s.constantize.find_by_id context_id
     end
+    @user_roles = user_roles
   end
 
   def notify_all template=nil
@@ -31,7 +32,7 @@ class NotificationHandler
   end
 
   def notify_via_web
-    if context = get_context_for('web')
+    if context = get_context_for('web', user_roles)
       Notification.generate event, context
     end
   end
@@ -47,7 +48,7 @@ class NotificationHandler
       @template
     end
 
-    def get_context_for notification_type
+    def get_context_for notification_type, user_roles=[]
       context = {}
       # context[context_type.to_sym] = context[:model] = model if model
 
@@ -67,9 +68,13 @@ class NotificationHandler
         user.subscribed_to?(notification_type, 'new_badge') ? context[:user] = user : context[:users] = []
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
-        context[:users] = challenge.admins
-        if event.in? [:launched_contest, :launched_pre_contest]
-          context[:users] += challenge.registrants
+        if event.in? [:ending_soon]
+          context[:users] = challenge.registrants.includes(:challenge_entries).reject{|u| challenge.id.in? u.challenge_entries.map(&:challenge_id) }
+        else
+          context[:users] = challenge.admins
+          if event.in? [:launched_contest, :launched_pre_contest, :judged]
+            context[:users] += challenge.registrants
+          end
         end
       when :challenge_entry, :challenge_entry_admin
         context[:model] = entry = context[:entry] = ChallengeEntry.find context_id
@@ -82,6 +87,15 @@ class NotificationHandler
           context[:author] = entry.user
           context[:users] = challenge.admins
         end
+      when :challenge_idea
+        context[:model] = idea = context[:idea] = ChallengeIdea.find context_id
+        context[:challenge] = challenge = idea.challenge
+        context[:user] = idea.user
+      when :challenge_idea_admin
+        context[:model] = idea = context[:idea] = ChallengeIdea.find context_id
+        context[:author] = idea.user
+        context[:challenge] = challenge = idea.challenge
+        context[:users] = challenge.admins
       when :challenge_registration
         context[:model] = registration = context[:registration] = ChallengeRegistration.find context_id
         context[:challenge] = challenge = registration.challenge
@@ -161,8 +175,8 @@ class NotificationHandler
       when :issue
         context[:model] = issue = context[:issue] = Issue.find(context_id)
         project = context[:project] = issue.threadable
-        context[:author] = issue.user
-        context[:users] = project.users
+        context[:author] = author = issue.user
+        context[:users] = project.users - [author]
       when :log_line
         context[:error] = LogLine.find(context_id)
       when :mass_announcement
@@ -317,6 +331,14 @@ class NotificationHandler
         list = List.find(project.followable_id)
         relations[list] = {} unless list.in? relations.keys
         relations[list][project.id] = project
+      end
+
+      # get projects newly made public by owned parts
+      part_projects = user.subscribed_to?(notification_type, 'new_projects') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:parts).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = parts.id AND follow_relations.followable_type = 'Part'").where.not(parts: { platform_id: nil }).where(follow_relations: { user_id: user.id }) : []
+      part_projects.each do |project|
+        part = Part.find(project.followable_id)
+        relations[part] = {} unless part.in? relations.keys
+        relations[part][project.id] = project
       end
 
       # arrange projects so that we know how they're related to followables

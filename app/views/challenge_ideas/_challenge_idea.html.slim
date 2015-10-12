@@ -1,0 +1,22 @@
+.challenge-idea
+  .img-container= idea.decorate.image_tag :medium_fill
+  .description
+    h3= idea.name
+    p.author
+      ' By
+      - user = idea.user
+      => image_tag user.decorate.avatar(:tiny), class: 'img-circle'
+      = link_to idea.user.name, idea.user
+    .field= raw idea.description
+    - idea.challenge.challenge_idea_fields.each_with_index do |field, i|
+      .field
+        .field-title
+          strong
+            = field.label
+            | :
+        - if field = idea.send("cfield#{i}")
+          - field.split(/\r\n/).each do |string|
+            = string
+            br
+
+  = link_to 'View the full idea &rarr;'.html_safe, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }

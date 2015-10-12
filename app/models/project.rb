@@ -8,6 +8,47 @@ class Project < ActiveRecord::Base
   }
   DEFAULT_CONTENT_TYPE = :tutorial
   DEFAULT_NAME = 'Untitled'
+  DEFAULT_TAGS = [
+    'Animals',
+    'Art',
+    'Audio',
+    'Cars',
+    'Clocks',
+    'Communication',
+    'Data Collection',
+    'Disability Reduction',
+    'Drones',
+    'Embedded',
+    'Energy Efficiency',
+    'Entertainment System',
+    'Environmental Sensing',
+    'Food And Drinks',
+    'Games',
+    'Garden',
+    'Greener Planet',
+    'Health',
+    'Helicopters',
+    'Home Automation',
+    'Human Welfare',
+    'Internet Of Things',
+    'Kids',
+    'Lights',
+    'Music',
+    'Passenger Vehicles',
+    'Pets',
+    'Planes',
+    'Plants',
+    'Recycling',
+    'Remote Control',
+    'Robots',
+    'Security',
+    'Smartwatches',
+    'Smart appliances',
+    'Transportation',
+    'Wardriving',
+    'Wearables',
+    'Weather',
+  ]
   DIFFICULTIES = {
     'Beginner' => :beginner,
     'Intermediate' => :intermediate,
@@ -147,16 +188,16 @@ class Project < ActiveRecord::Base
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
-  validate :tags_length_is_valid
+  validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   # before_validation :check_if_current
   before_validation :delete_empty_part_ids
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
+  before_create :generate_hid
   before_save :ensure_name
-  before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
-  # before_create :set_columns_count
-  before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  before_save :generate_slug, if: proc {|p| !p.persisted? }
+  before_update :update_slug, if: proc{|p| p.name_changed? }
   after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
@@ -328,7 +369,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.live
-    where(private: false)
+    public
   end
 
   def self.last_7days
@@ -638,7 +679,7 @@ class Project < ActiveRecord::Base
   end
 
   # def to_param
-    # "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
+  #   [slug, hid].join('-')
   # end
 
   def to_tracker
@@ -669,7 +710,11 @@ class Project < ActiveRecord::Base
 
   def prepare_tweet
     prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
-    to_tweet(prepend)
+    TweetBuilder.new(self).tweet(prepend)
+  end
+
+  def product_tags_string_changed?
+    (product_tags_string_was || '').split(',').map{|t| t.strip } != (product_tags_string || '').split(',').map{|t| t.strip }
   end
 
   def to_js opts={}
@@ -690,54 +735,6 @@ class Project < ActiveRecord::Base
     }
   end
 
-  def to_tweet prepend='', append=''
-    # we have 113-118 characters to play with
-
-    message = prepend
-
-    message << name.gsub(/\.$/, '')
-
-    if guest_name.present?
-      message << " by #{guest_name}"
-    else
-      user = users.first
-      if user
-        message << " by #{user.name}"
-        if link = user.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
-          message << " (@#{handle})"
-        end
-      end
-    end
-
-    tags = platforms.map do |platform|
-      out = platform.hashtag
-      if link = platform.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
-        out << " (@#{handle})"
-      end
-      out
-    end
-    message << " with #{tags.to_sentence}" if tags.any?
-
-    size = message.size + (is_idea? ? 28 : 23)
-    message << " hackster.io/#{uri}"  # links are shortened to 22 characters
-
-    # we add tags until character limit is reached
-    tags = product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
-    if tags.any?
-      tags.each do |tag|
-        new_size = size + tag.size + 1
-        if new_size <= 140
-          message << " #{tag}"
-          size += " #{tag}".size
-        else
-          break
-        end
-      end
-    end
-
-    message
-  end
-
   def unlocked?
     !locked?
   end
@@ -752,7 +749,7 @@ class Project < ActiveRecord::Base
   end
 
   def uri user_name=user_name_for_url
-    "#{user_name}/#{slug}"
+    "#{user_name}/#{slug_hid}"
   end
 
   def user_name_for_url
@@ -806,20 +803,22 @@ class Project < ActiveRecord::Base
     end
 
     def generate_slug
-      return unless name.present?
+      return 'untitled' if name.blank?
 
-      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
-      parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
+      self.slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
+    end
 
-      # make sure it doesn't exist
-      if result = parent.where(projects: {slug: slug}).any?
-        # if it exists add a 1 and increment it if necessary
-        slug += '1'
-        while parent.where(projects: {slug: slug}).any?
-          slug.succ!
-        end
+    def generate_hid
+      exists = true
+      while exists
+        hid = SecureRandom.hex(3)
+        exists = Project.exists?(hid: hid)
       end
-      self.slug = slug
+      self.hid = hid
+    end
+
+    def slug_hid
+      [slug, hid].join('-')
     end
 
     def remove_whitespaces_from_html text
@@ -869,7 +868,7 @@ class Project < ActiveRecord::Base
     end
 
     def tags_length_is_valid
-      errors.add :product_tags_array, 'too many tags (20 max, choose wisely!)' if product_tags_array.length > 20
+      errors.add :product_tags_array, 'too many tags (3 max, choose wisely!)' if product_tags_array.length > 3
     end
 
     def widgets_to_text

@@ -4,6 +4,6 @@ class BuildLogWidget < Widget
   end
 
   def default_label
-    'Build logs'
+    'Project logs'
   end
 end

@@ -1,0 +1,27 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that winners for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> have been selected and are as follows:</p>
+
+<% @context[:challenge].prizes.each do |prize| %>
+  <p><strong><%= prize.name %></strong> awarded to:
+  <% if prize.quantity == 1 %>
+    <% project = prize.projects.first %>
+    <%= project.users.map{|u| u.name }.to_sentence %> for <a href="<%= u.project_url(project, ref: 'emailnotif') %>"><%= project.name %></a>.</p>
+  <% else %>
+    </p>
+    <ul>
+      <% prize.projects.each do |project| %>
+        <li><%= project.users.map{|u| u.name }.to_sentence %> for <a href="<%= u.project_url(project, ref: 'emailnotif') %>"><%= project.name %></a>.</li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
+<p>We would like to thank you for participating, and are looking forward to your participation in <a href="<%= u.challenges_url(ref: 'emailnotif') %>">our other contests</a>.</p>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

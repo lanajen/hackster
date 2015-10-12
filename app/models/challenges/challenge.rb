@@ -2,6 +2,7 @@ class Challenge < ActiveRecord::Base
   PAST_STATES = %w(judging judged)
   OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
+  REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
@@ -10,6 +11,7 @@ class Challenge < ActiveRecord::Base
 
   include HstoreColumn
   include HstoreCounter
+  include TablelessAssociation
   include Workflow
 
   belongs_to :platform
@@ -17,6 +19,8 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
+  has_many :faq_entries, as: :threadable
+  has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
@@ -30,6 +34,7 @@ class Challenge < ActiveRecord::Base
   has_many :registrations, dependent: :destroy, class_name: 'ChallengeRegistration'
   has_many :registrants, -> { order(:full_name) }, through: :registrations, source: :user
   has_many :votes, through: :entries
+  has_many_tableless :challenge_idea_fields, order: :position
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
@@ -64,6 +69,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_pre_contest_winners, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
@@ -93,6 +99,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :winners_announced_date, :datetime
 
   counters_column :hcounters_cache
+  has_counter :ideas, 'ideas.approved.count'
   has_counter :projects, 'projects.valid.count'
   has_counter :registrations, 'registrations.count'
 
@@ -189,6 +196,28 @@ class Challenge < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def dates
+    return @dates if @dates
+
+    @dates = []
+
+    if activate_pre_registration
+      @dates << { date: pre_registration_date, label: 'Registration opens' } if pre_registration_start_date
+    end
+
+    if activate_pre_contest
+      @dates << { date: pre_contest_start_date, label: 'Pre-contest opens' } if pre_contest_start_date
+      @dates << { date: pre_contest_end_date, label: 'Pre-contest closes' } if pre_contest_end_date
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date and not disable_pre_contest_winners?
+    end
+
+    @dates << { date: start_date, label: 'Project submissions open' } if start_date
+    @dates << { date: end_date, label: 'Project submissions close' } if end_date
+    @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+
+    @dates
   end
 
   def disable_projects_tab?

@@ -26,7 +26,9 @@ class ProjectDecorator < ApplicationDecorator
   end
 
   def story_json
-    if !model.story_json.nil?
+    return @story_json if @story_json
+
+    @story_json = if model.story_json.present?
       parse_story_json model.story_json
     else
       ''

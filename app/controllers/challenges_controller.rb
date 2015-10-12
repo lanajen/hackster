@@ -1,16 +1,16 @@
 class ChallengesController < ApplicationController
-  before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
-  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :update]
-  before_filter :authorize_and_set_cache, only: [:show, :brief, :projects]
-  before_filter :load_platform, only: [:show, :brief, :projects, :participants]
+  before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
+  before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
+  before_filter :load_platform, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants]
-  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants]
-  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
-  skip_before_filter :track_visitor, only: [:show, :brief, :projects]
-  skip_after_filter :track_landing_page, only: [:show, :brief, :projects]
+  skip_before_filter :track_visitor, only: [:show, :brief, :projects, :ideas]
+  skip_after_filter :track_landing_page, only: [:show, :brief, :projects, :ideas]
 
   def index
     title 'Hardware challenges'
@@ -51,11 +51,57 @@ class ChallengesController < ApplicationController
       format.csv do
         authorize! :admin, @challenge
         @registrations = @challenge.registrations.includes(:user).order("users.full_name ASC")
-        file_name = FileNameGenerator.new(@challenge.name)
+        file_name = FileNameGenerator.new(@challenge.name, 'participants')
         headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
         headers['Content-Type'] ||= 'text/csv'
       end
     end
+  end
+
+  def ideas
+    title "#{@challenge.name} ideas"
+    @ideas = @challenge.ideas.approved.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
+  end
+
+  def faq
+    title "#{@challenge.name} FAQ"
+    @faq_entries = @challenge.faq_entries.public.order("LOWER(threads.title) ASC")
+    # template = ERB.new
+    # template.result(binding)
+    conf = YAML.load(File.new("#{Rails.root}/config/contest_faq.yml").read)
+    @general_faqs = conf
+  end
+
+  def dashboard
+    @challenge = Challenge.find params[:challenge_id]
+    authorize! :admin, @challenge
+
+    if @challenge.activate_pre_contest?
+      @ideas = @challenge.ideas.joins(:user).order(:created_at)
+      @approved_ideas_count = @ideas.where(workflow_state: ChallengeIdea::APPROVED_STATES).count
+      @rejected_ideas_count = @ideas.where(workflow_state: 'rejected').count
+      @new_ideas_count = @ideas.where(workflow_state: 'new').count
+    end
+
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
+    @approved_entries_count = @entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).count
+    @rejected_entries_count = @entries.where(workflow_state: 'unqualified').count
+    @new_entries_count = @entries.where(workflow_state: 'new').count
+
+    # determines how many of each prizes were awarded and how many are left
+    if @challenge.judging?
+      assigned_prizes = {}
+      @entries.joins(:prizes).pluck('prizes.id').each do |id|
+        assigned_prizes[id] = 0 unless id.in? assigned_prizes
+        assigned_prizes[id] += 1
+      end
+      @prizes = {}
+      @challenge.prizes.each do |prize|
+        quantity = prize.quantity - assigned_prizes[prize.id].to_i
+        @prizes[prize] = quantity unless quantity.zero?
+      end
+    end
+    @challenge = @challenge.decorate
   end
 
   def update
@@ -159,8 +205,8 @@ class ChallengesController < ApplicationController
 
     def set_challenge_entrant
       if @challenge.disable_registration or @has_registered = (user_signed_in? and ChallengeRegistration.has_registered? @challenge, current_user)
-        @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
-        @is_challenge_entrant = @current_entries.any?
+        @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : {})
+        @is_challenge_entrant = @current_entries.values.select{|v| v.any? }.any?
       end
     end
 
@@ -169,7 +215,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules projects brief participants)
+      if self.action_name.to_s.in? %w(show rules projects brief participants ideas faq)
         'challenge'
       else
         current_layout

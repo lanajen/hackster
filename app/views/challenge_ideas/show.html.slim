@@ -1,0 +1,19 @@
+p
+  = link_to "&larr; Return to challenge pre-contest moderation dashboard".html_safe, challenge_admin_ideas_path(@challenge)
+
+p style="margin-top:20px"
+  ==> link_to @challenge.name, @challenge, target: '_blank'
+  small
+    ' Judging ideas
+
+.row
+  .col-md-offset-2.col-md-6.col-sm-8.col-sm-offset-2= render partial: 'challenge_ideas/challenge_idea', locals: { idea: @idea }
+
+  .col-md-3.col-sm-2
+    p
+      strong> Status:
+      = @idea.workflow_state
+    - if @idea.can_approve?
+      = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'approve'), class: 'btn btn-success', data: { method: :put, confirm: 'Are you sure you want to approve this idea?' }
+    - if @idea.can_reject?
+      = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'reject'), class: 'btn btn-danger', data: { method: :put, confirm: 'Are you sure you want to reject this idea?' }

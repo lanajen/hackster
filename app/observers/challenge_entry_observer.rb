@@ -21,12 +21,11 @@ class ChallengeEntryObserver < ActiveRecord::Observer
     end
     expire_cache record
     NotificationCenter.notify_all :approved, :challenge_entry, record.id
-    MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id, 'challenge_entry' if record.challenge.mailchimp_setup?
   end
 
   def after_disqualify record
     expire_cache record
-    NotificationCenter.notify_all :rejected, :challenge_entry, record.id
+    NotificationCenter.notify_via_email :rejected, :challenge_entry, record.id
   end
 
   def after_give_award record
@@ -42,9 +41,6 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   alias_method :after_create, :after_destroy
   alias_method :after_disqualify, :after_destroy
 
-  # def after_award_not_given record
-  #   NotificationCenter.notify_all :awarded, :challenge_entry, record.id
-  # end
   private
     def expire_cache record
       record.challenge.update_counters only: [:projects]

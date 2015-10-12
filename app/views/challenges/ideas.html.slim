@@ -1,0 +1,33 @@
+= content_for :head do
+  meta(name="robot" content="noindex nofollow")
+
+- cache ["challenge-#{@challenge.id}-ideas", safe_page_params], tag: ["challenge-#{@challenge.id}-ideas"] do
+  .container
+    - if @ideas.any?
+      .row.challenge-idea-thumbs
+        - @ideas.each do |idea|
+          .col-md-4.col-sm-6= render 'challenge_ideas/challenge_idea', idea: idea
+      .text-center= will_paginate @ideas
+    - else
+      p No ideas yet.
+
+
+= content_for :js do
+
+  .popup-overlay.modal-popup id='challenge-idea-popup' data-width=600
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left style='padding:40px 40px 30px'
+        button.close data-target='#challenge-idea-popup' &times;
+
+        .challenge-idea
+
+        a.close-btn href='javascript:void(0)' data-target='#challenge-idea-popup' Close
+
+  javascript:
+    $('#challenge-idea-popup').on('modal:opening', function(e){
+      console.log(e);
+      var btn = $(e.relatedTarget);
+      var html = btn.closest('.challenge-idea').html();
+      $(this).find('.challenge-idea').html(html);
+    });
