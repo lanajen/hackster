@@ -194,10 +194,10 @@ class Project < ActiveRecord::Base
   before_validation :delete_empty_part_ids
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
+  before_create :generate_hid
   before_save :ensure_name
-  before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
-  # before_create :set_columns_count
-  before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  before_save :generate_slug, if: proc {|p| !p.persisted? }
+  before_update :update_slug, if: proc{|p| p.name_changed? }
   after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
@@ -678,7 +678,7 @@ class Project < ActiveRecord::Base
   end
 
   # def to_param
-    # "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
+  #   [slug, hid].join('-')
   # end
 
   def to_tracker
@@ -748,7 +748,7 @@ class Project < ActiveRecord::Base
   end
 
   def uri user_name=user_name_for_url
-    "#{user_name}/#{slug}"
+    "#{user_name}/#{slug_hid}"
   end
 
   def user_name_for_url
@@ -802,20 +802,22 @@ class Project < ActiveRecord::Base
     end
 
     def generate_slug
-      return unless name.present?
+      return 'untitled' if name.blank?
 
-      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
-      parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
+      self.slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
+    end
 
-      # make sure it doesn't exist
-      if result = parent.where(projects: {slug: slug}).any?
-        # if it exists add a 1 and increment it if necessary
-        slug += '1'
-        while parent.where(projects: {slug: slug}).any?
-          slug.succ!
-        end
+    def generate_hid
+      exists = true
+      while exists
+        hid = SecureRandom.hex(3)
+        exists = Project.exists?(hid: hid)
       end
-      self.slug = slug
+      self.hid = hid
+    end
+
+    def slug_hid
+      [slug, hid].join('-')
     end
 
     def remove_whitespaces_from_html text

@@ -91,7 +91,7 @@ class SitemapController < ApplicationController
     def external_projects_pages offset=0
       sitemap_scope(external_projects_query, offset).map do |project|
         {
-          loc: "#{external_project_url(project)}",
+          loc: "#{project_url(project)}",
           changefreq: 'monthly',
           lastmod: project.updated_at.strftime("%F"),
         }

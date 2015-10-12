@@ -22,7 +22,7 @@
       section.section-thumbs
         h4 Admin actions
         p.small.text-muted Issues are a great way to keep track of your project's TODO list, like features you want to add in the future or bugs that need to be fixed.
-        = link_to 'Post a new issue', new_project_issue_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+        = link_to 'Post a new issue', new_project_issue_path(@project.user_name_for_url, @project.slug_hid), class: 'btn btn-primary btn-sm'
 
   .row
     .col-xs-12

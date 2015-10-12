@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
+  before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
+  before_filter :load_project, only: [:redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
   respond_to :html
@@ -268,7 +269,7 @@ class ProjectsController < ApplicationController
     when Product
       product_path(project)
     when ExternalProject
-      external_project_path(project)
+      project_path(project)
     else
       url_for(project)
     end

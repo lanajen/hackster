@@ -82,14 +82,6 @@ module UrlHelper
     end
   end
 
-  def external_project_path project, opts={}
-    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
-  end
-
-  def external_project_url project, opts={}
-    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
-  end
-
   def feedback_comments_path issue, opts={}
     issue_comments_path(issue, opts)
   end
@@ -165,11 +157,11 @@ module UrlHelper
   end
 
   def issue_path project, issue, opts={}
-    project_issue_path(project.user_name_for_url, project.slug, issue.sub_id, opts)
+    project_issue_path(project.user_name_for_url, project.slug_hid, issue.sub_id, opts)
   end
 
   def issue_url project, issue, opts={}
-    project_issue_url(project.user_name_for_url, project.slug, issue.sub_id, opts)
+    project_issue_url(project.user_name_for_url, project.slug_hid, issue.sub_id, opts)
   end
 
   def issue_form_path_for project, issue, opts={}
@@ -194,18 +186,18 @@ module UrlHelper
   end
 
   def log_path project, log, opts={}
-    project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+    project_log_path(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
   end
 
   def log_url project, log, opts={}
-    project_log_url(project.user_name_for_url, project.slug, log.sub_id, opts)
+    project_log_url(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
   end
 
   def log_form_path_for project, log, opts={}
     if log.persisted?
-      project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+      project_log_path(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
     else
-      project_logs_path(project.user_name_for_url, project.slug, opts)
+      project_logs_path(project.user_name_for_url, project.slug_hid, opts)
     end
   end
 
@@ -329,11 +321,11 @@ module UrlHelper
   end
 
   def project_issues_path project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super params_for_project(project).merge(opts).merge(use_route: nil)
   end
 
   def project_logs_path project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super params_for_project(project).merge(opts).merge(use_route: nil)
   end
 
   def project_embed_url project, opts={}
@@ -388,9 +380,7 @@ module UrlHelper
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'ExternalProject'
-        options = params_for_external_project options
-      when 'Project'
+      when 'Project', 'ExternalProject'
         options = params_for_project options
       end
     end
@@ -501,14 +491,6 @@ module UrlHelper
       }
     end
 
-    def params_for_external_project project, force_params={}
-      {
-        id: "#{project.id}-#{project.slug}",
-        user_name: project.user_name_for_url,
-        use_route: 'external_project',
-      }.merge(force_params)
-    end
-
     def params_for_product project, force_params={}
       {
         user_name: project.user_name_for_url,
@@ -519,7 +501,7 @@ module UrlHelper
 
     def params_for_project project, force_params={}
       {
-        project_slug: project.slug,
+        project_slug: project.slug_hid,
         user_name: project.user_name_for_url,
         use_route: 'project',
       }

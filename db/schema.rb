@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151005201029) do
+ActiveRecord::Schema.define(version: 20151011220556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -559,8 +559,11 @@ ActiveRecord::Schema.define(version: 20151005201029) do
     t.string   "difficulty",              limit: 255
     t.string   "type",                    limit: 15,  default: "Project", null: false
     t.string   "locale",                  limit: 2,   default: "en"
+    t.string   "hid"
+    t.hstore   "hproperties"
   end
 
+  add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree

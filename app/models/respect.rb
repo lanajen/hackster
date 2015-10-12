@@ -10,22 +10,22 @@ class Respect < ActiveRecord::Base
 
   def self.create_for user, respectable
     if user
-      user.respects.create respectable_id: respectable.id, respectable_type: respectable.class.name
+      user.respects.create respectable_id: respectable.id, respectable_type: respectable.model_name.to_s
     else
-      Respect.create respectable_id: respectable.id, respectable_type: respectable.class.name, user_id: 0
+      Respect.create respectable_id: respectable.id, respectable_type: respectable.model_name.to_s, user_id: 0
     end
   end
 
   def self.destroy_for user, respectable
     if user
-      user.respects.where(respectable_id: respectable.id, respectable_type: respectable.class.name).destroy_all
+      user.respects.where(respectable_id: respectable.id, respectable_type: respectable.model_name.to_s).destroy_all
     else
-      Respect.where(respectable_id: respectable.id, respectable_type: respectable.class.name, user_id: 0).last.try(:destroy)
+      Respect.where(respectable_id: respectable.id, respectable_type: respectable.model_name.to_s, user_id: 0).last.try(:destroy)
     end
   end
 
   def self.to_be? user, respectable
-    where(respectable_id: respectable.id, respectable_type: respectable.class.name, user_id: user.id).any?
+    where(respectable_id: respectable.id, respectable_type: respectable.model_name.to_s, user_id: user.id).any?
   end
 
   def association_name_for_notifications
