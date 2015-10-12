@@ -44,11 +44,13 @@ module.exports = {
     return isValid;
   },
 
-  isUrlValid: function(url, stringsToMatch) {
-    let validExtensions = this.URL_EXTENSIONS;
-    let key = stringsToMatch.filter(function(item) {
+  isUrlValid(url) {
+    let validExtensions = Object.keys(this.URL_EXTENSIONS);
+    let key = validExtensions.filter(function(item) {
+      url = url.replace(/youtu\.be/, 'youtube');
       return url.match(item);
     });
+
     // If key is empty, we have nothing to test and the url isn't valid.
     if(!key.length) { return false; }
 
@@ -58,12 +60,59 @@ module.exports = {
 
   getVideoData(url) {
     url = url.replace(/youtu\.be/, 'youtube');
-    let type = url.match(/(youtube|vimeo|vine)/);
+    let type = url.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
-    if(!service) { return null; }
+    console.log('TEST', type, service, url);
 
+    if(!service) { return null; }
+    let Exts = this.URL_EXTENSIONS;
     let regExps = {
+      'autodesk': {
+        regexp: Exts['autodesk360'],
+        embed: id => `https://myhub.autodesk360.com/${id}?mode=embed`,
+        index: 1
+      },
+      'circuits': {
+        regexp: Exts['circuits'],
+        embed: id => `https://123d.circuits.io/circuits/${id}/embed`,
+        index: 1
+      },
+      'channel9': {
+        regexp: Exts['channel9'],
+        embed: id => `https://channel9.msdn.com/${id}/player`,
+        index: 1
+      },
+      'codebender': {
+        regexp: Exts['codebender'],
+        embed: id => `https://codebender.cc/embed/${id}`,
+        index: 1
+      },
+      'instagram': {
+        regexp: Exts['instagram'],
+        embed: id => `https://instagram.com/p/${id}/embed/`,
+        index: 1
+      },
+      'kickstarter': {
+        regexp: Exts['kickstarter'],
+        embed: id => `https://www.kickstarter.com/projects/${id}/widget/video.html`,
+        index: 1
+      },
+      'mp4': {
+        regexp: Exts['mp4'],
+        embed: id => id,
+        index: 0
+      },
+      'sketchfab': {
+        regexp: Exts['sketchfab'],
+        embed: id => `https://sketchfab.com/models/${id}/embed`,
+        index: 1
+      },
+      'snip2code': {
+        regexp: Exts['snip2code'],
+        embed: id => `http://www.snip2code.com/Embed/${id}`,
+        index: 1
+      },
       'vimeo': {
         regexp: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
         requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
@@ -74,6 +123,16 @@ module.exports = {
         regexp: /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13})$/,
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
         embed: id => `https://vine.co/v/${id}/embed/simple\\`,
+        index: 1
+      },
+      'upverter': {
+        regexp: Exts['upverter'],
+        embed: id=> `https://upverter.com/eda/embed/#designId=${id},actionId=`,
+        index: 1
+      },
+      'ustream': {
+        regexp: Exts['ustream'],
+        embed: id => `http://www.ustream.tv/embed/${id}?html5ui`,
         index: 1
       },
       'youtube': {
@@ -89,10 +148,8 @@ module.exports = {
 
     if(match && match.length) {
       let id = match[obj.index],
-          link = obj.requestLink(id),
           embed = obj.embed(id);
-
-      return { id: id, link: link, embed: embed, service: service };
+      return { id: id, embed: embed, service: service };
     } else {
       // TODO: Handle Error!
       return null;
@@ -112,7 +169,11 @@ module.exports = {
     return ID;
   },
 
-  createRandomNumber: function() {
+  getVimeoId(url) {
+
+  },
+
+  createRandomNumber() {
     let random = uuid.v4();
     return random;
   },
@@ -128,14 +189,16 @@ module.exports = {
 
   URL_EXTENSIONS: {
     autodesk360: /myhub\.autodesk360\.com\/([a-z0-9]+\/shares\/public\/[a-zA-Z0-9]+)/,
-    bitbucket: /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/,
+    bitbucket: /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/, // TODO
     circuits: /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/,
+    channel9: /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/,
     codebender: /codebender\.cc\/sketch:([0-9]+)/,
+    fritzing: /fritzing\.org\/projects\/([0-9a-z-]+)/, 
     gist: /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/,
-    github: /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/,
+    github: /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/, // TODO
     instagram: /instagram\.com\/p\/([a-zA-Z\-0-9]+)/,
     kickstarter: /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/,
-    oshpark: /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/,
+    oshpark: /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/, // TODO
     sketchfab: /sketchfab\.com\/models\/([a-z0-9]+)/,
     snip2code: /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/,
     upverter: /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/,
@@ -144,7 +207,7 @@ module.exports = {
     vine: /vine\.co\/v\/([a-zA-Z0-9]+)/,
     youtube: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
     youmagine: /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/,
-    mp4: /(.+\.(?:mp4)(?:\?.*)?)$/i
+    mp4: /(.+\.(?:mp4)(?:\?.*)?)$/i 
   },
 
   LANGUAGES: [

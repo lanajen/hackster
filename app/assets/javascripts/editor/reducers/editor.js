@@ -361,7 +361,7 @@ export default function(state = initialState, action) {
 
     case Editor.handlePastedHTML:
       dom = state.dom;
-      newDom = handlePastedHTML(dom, action.html, action.storeIndex);
+      newDom = handlePastedHTML(dom, action.html, action.depth, action.storeIndex);
       newDom = _mergeAdjacentCE(newDom);
       newDom = _insertPlaceholder(newDom);
       return {
@@ -485,7 +485,7 @@ function transformBlockElement(dom, tag, position, cleanChildren, storeIndex) {
 
     component.json.splice(position, 1, el);
     // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
-    if(el.type.displayName !== undefined && el.type.displayName.toLowerCase() === 'pre' && position === dom.length-1) {
+    if(el.type.displayName !== undefined && el.type.displayName === 'PRE' && position === component.json.length-1) {
       component.json = appendParagraph(component.json);
     }
 
@@ -574,7 +574,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
       } 
 
       // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
-      if(el.type.displayName !== undefined && el.type.displayName.toLowerCase() === 'pre' && position === dom.length-1) {
+      if(el.type.displayName !== undefined && el.type.displayName === 'PRE' && position === json.length-1) {
         json = appendParagraph(json);
       }
     }
@@ -1175,7 +1175,9 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   return dom;
 }
 
-function handlePastedHTML(dom, html, storeIndex) {
+function handlePastedHTML(dom, html, depth, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
   let reactified = html.map(item => {
     if(item.type === 'CE') {
       let json = createArrayOfComponents(item.json);
@@ -1185,10 +1187,22 @@ function handlePastedHTML(dom, html, storeIndex) {
       return item;
     }
   });
-  storeIndex += 1;
-  reactified.forEach((item, index) => {
-    dom.splice(storeIndex+index, 0, item)
-  });
+
+  if(reactified.length > 1) {
+    console.log('GREAT THAN ONE!');
+    // We need to splice the current depth of the current component.  Add all these things then create a new CE if there was anything after
+    // our current depth.  RETURN A ROOTHASH on CURSOR POSITION.
+    // storeIndex += 1;
+    // reactified.forEach((item, index) => {
+    //   dom.splice(storeIndex+index, 0, item)
+    // });
+  } else {
+    reactified[0].json.forEach((item, index) => {
+      json.splice(depth+index, 0, item);
+    });
+    component.json = json;
+    dom.splice(storeIndex, 1, component);
+  }
   return dom;
 }
 

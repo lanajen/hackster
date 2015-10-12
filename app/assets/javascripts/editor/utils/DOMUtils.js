@@ -1265,7 +1265,7 @@ const Utils = {
         let name;
 
         /** Remove these nodes immediately. */
-        if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
+        if(item.name === 'br' || item.name === 'script' || item.name === 'comment' || item.name === 'meta') {
           return null;
         }
 

@@ -86,7 +86,9 @@ const ContentEditable = React.createClass({
         let parentNode = Utils.getRootParentElement(node);
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
           // console.log('TSK TSK TSK', node);
-          node.parentNode.removeChild(node);
+          if(node.parentNode !== null) {
+            node.parentNode.removeChild(node);
+          }
         }
 
         /** Quick sweep on UL children.  Makes sure they're list items. */
@@ -109,6 +111,7 @@ const ContentEditable = React.createClass({
 
   setCursorOnUpdate() {
     let cursorPosition = this.props.editor.cursorPosition;
+    /** Means we added another Component and we should do nothing in this CE. */
     if(cursorPosition.rootHash !== React.findDOMNode(this).getAttribute('data-hash')) { return; }
 
     let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(React.findDOMNode(this)));
@@ -282,7 +285,7 @@ const ContentEditable = React.createClass({
            * Handles video parser when enter is pressed.
            */
           let url = Utils.getRootParentElement(anchorNode).textContent.trim();
-          if(url.split(' ').length < 2 && Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
+          if(url.split(' ').length < 2 && Helpers.isUrlValid(url)) {
             this.preventEvent(e);
             let videoData = Helpers.getVideoData(url);
             if(!videoData) { 
@@ -299,8 +302,16 @@ const ContentEditable = React.createClass({
           }
           break;
 
-        case 'H3':
         case 'PRE':
+          if(hasTextAfterCursor) {
+            this.delayedUpdate();
+          } else {
+            this.preventEvent(e);
+            this.createBlockElement('pre', depth, true, this.props.storeIndex);
+          }
+          break;
+
+        case 'H3':
         case 'BLOCKQUOTE':
           if(hasTextAfterCursor) {
             this.delayedUpdate();
@@ -519,7 +530,8 @@ const ContentEditable = React.createClass({
     if(window.clipboardData && window.clipboardData.getData) {  // IE
       pastedText = window.clipboardData.getData('Text');
     } else if(e.clipboardData && e.clipboardData.getData) {
-      if(e.clipboardData.types.indexOf('text/html') === 1) {
+      let clipboardDataTypes = [].slice.apply(e.clipboardData.types);
+      if(clipboardDataTypes.indexOf('text/html') === 1) {
         pastedText = e.clipboardData.getData('text/html');
         dataType = 'html';
       } else {
@@ -540,7 +552,7 @@ const ContentEditable = React.createClass({
           let clean = results.filter(item => {
             return item.type === 'CE' ? true : false;
           });
-          this.props.actions.handlePastedHTML(clean, this.props.storeIndex);
+          this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
           this.props.actions.forceUpdate(true);
         })
         .catch(err => { console.log('ERR0R', err); });

@@ -91,17 +91,21 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     if project.story_json.nil? && !project.description.nil?
       render json: { description: project.decorate.description, story: nil }
     elsif !project.story_json.nil?
-      story = project.story_json.map {|c|
-        if(c['type'] == 'Carousel')
-          c['images'] = c['images'].map {|i|
+      # do the same for file.
+      story = project.story_json.map do |c|
+        if c['type'] == 'Carousel'
+          c['images'] = c['images'].map do |i|
             i['url'] = Image.find(i['id']).decorate.file_url
             i
-          }
+          end
+          c
+        elsif c['type'] == 'File'
+          c['data']['url'] = Attachment.find(c['data']['id']).file_url
           c
         else 
           c
         end
-      }
+      end
       render json: { description: nil, story: story.to_json }
     else
       render json: { description: '', story: nil }

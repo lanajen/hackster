@@ -115,7 +115,11 @@ const Video = React.createClass({
       this.props.actions.toggleImageToolbar(false, {});
     }
 
-    if((target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe') || target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) && this.props.editor.showImageToolbar === false) {
+    if( (target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe')) ||
+        (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) ||
+        (target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe')) &&
+        this.props.editor.showImageToolbar === false 
+      ) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,
@@ -134,17 +138,27 @@ const Video = React.createClass({
     let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
                      : (null);
+
+    let video = data.service === 'mp4'
+              ? (<video style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" preload="metadata" controls="controls">
+                  <source type="video/mp4" src={data.embed} />
+                  <a href={data.embed} alt={data.alt}>{data.embed}</a>
+                 </video>)
+              : (<iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} alt={data.alt} frameBorder="0"></iframe>);
     return (
       <div className="react-editor-video" 
            data-hash={this.props.hash}
-           onKeyDown={this.handleKeyDown}
+           data-video-id={data.id}
+           onFocus={this.handleFocus} 
+           onKeyDown={this.handleKeyDown} 
            onMouseOver={this.handleMouseOver}
            tabIndex={0}>
         <div className="react-editor-video-inner">
           <figure className="react-editor-figure" data-type="video">
-            <div className="react-editor-image-wrapper">
-              <iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} frameBorder="0"></iframe>
+            <div style={{ height: this.state.height }} className="react-editor-image-wrapper">
+              {video}
               <FigCaption className="react-editor-figcaption"
+                          style={{ width:data.width }}
                           handleFigCaptionKeys={this.handleFigCaptionKeys}
                           setFigCaptionText={this.handleFigCaptionText.bind(this, 0)}
                           html={data.figcaption || 'caption (optional)'}

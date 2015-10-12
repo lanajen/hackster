@@ -342,10 +342,11 @@ export function toggleErrorMessenger(show, msg) {
   };
 }
 
-export function handlePastedHTML(html, storeIndex) {
+export function handlePastedHTML(html, depth, storeIndex) {
   return {
     type: Editor.handlePastedHTML,
     html: html,
+    depth: depth,
     storeIndex: storeIndex
   };
 }
