@@ -7,6 +7,10 @@
       .box-content
         = simple_form_for current_user, url: notifications_path, html: { method: :patch, class: 'form-vertical widget-form', autocomplete: "off" } do |f|
           = f.error_notification
+          p
+            => link_to 'Enable all', 'javascript:enableAll()'
+            ' |
+            => link_to 'Disable all', 'javascript:disableAll()'
           input name='user[email_subscriptions][]' value='' type='hidden'
           input name='user[web_subscriptions][]' value='' type='hidden'
           table.table
@@ -30,8 +34,18 @@
                   td= User::SUBSCRIPTIONS[:web][sub]
                   td
                   td= check_box_tag 'user[web_subscriptions][]', sub, current_user.subscribed_to?('web', sub)
-          = f.input :project_email_frequency_proxy, collection: User::PROJECT_EMAIL_FREQUENCIES, label: 'I want to be notified of new projects from lists, platforms and users I follow:'
+          = f.input :project_email_frequency_proxy, collection: User::PROJECT_EMAIL_FREQUENCIES, label: 'I want to be notified of new projects catered to me:'
 
           .form-actions
             = f.button :submit, "Save changes", class: 'btn btn-primary'
             = link_to 'Cancel', user_path(current_user), class: 'btn btn-link btn-sm'
+
+= content_for :js do
+
+  javascript:
+    function enableAll() {
+      $('input[type=checkbox]').prop('checked', true);
+    }
+    function disableAll() {
+      $('input[type=checkbox]').prop('checked', false);
+    }
