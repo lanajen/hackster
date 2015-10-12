@@ -60,6 +60,10 @@ class Conversation < ActiveRecord::Base
     User.joins("INNER JOIN receipts ON receipts.user_id = users.id").joins("INNER JOIN comments ON receipts.receivable_id = comments.id AND receipts.receivable_type = 'Comment'").joins("INNER JOIN conversations ON comments.commentable_id = conversations.id AND comments.commentable_type = 'Conversation'").where(conversations: { id: id }).distinct('users.id')
   end
 
+  def sender
+    @sender ||= (sender_id.present? ? User.find_by_id(sender_id) : nil)
+  end
+
   private
     def create_message
       message = messages.new raw_body: body
@@ -80,6 +84,8 @@ class Conversation < ActiveRecord::Base
     end
 
     def sender_is_not_spamming
+      return if sender.is? :trusted
+
       if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
 
         errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at hi@hackster.io if you believe this is a mistake."
@@ -88,6 +94,8 @@ class Conversation < ActiveRecord::Base
     end
 
     def subject_is_unique
+      return if sender.is? :trusted
+
       if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
         errors.add :subject, 'has already been used recently. No spam please!'
         self.is_spam = true

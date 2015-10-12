@@ -212,6 +212,9 @@ class Ability
     can :manage, Part, platform_id: @platform.id
   end
 
+  def trusted
+  end
+
   private
     def can_enter_challenge? challenge
       challenge.disable_registration or ChallengeRegistration.has_registered? challenge, @user

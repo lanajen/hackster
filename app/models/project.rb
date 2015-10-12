@@ -220,15 +220,15 @@ class Project < ActiveRecord::Base
   has_counter :widgets, 'widgets.count'
 
   store :properties, accessors: []
-  hstore_column :properties, :celery_id, :string
-  hstore_column :properties, :content_type, :string
-  hstore_column :properties, :guest_twitter_handle, :string
-  hstore_column :properties, :locked, :boolean
-  hstore_column :properties, :private_issues, :boolean
-  hstore_column :properties, :private_logs, :boolean
-  hstore_column :properties, :review_comment, :string
-  hstore_column :properties, :review_time, :datetime
-  hstore_column :properties, :reviewer_id, :string
+  hstore_column :hproperties, :celery_id, :string
+  hstore_column :hproperties, :content_type, :string
+  hstore_column :hproperties, :guest_twitter_handle, :string
+  hstore_column :hproperties, :locked, :boolean
+  hstore_column :hproperties, :private_issues, :boolean
+  hstore_column :hproperties, :private_logs, :boolean
+  hstore_column :hproperties, :review_comment, :string
+  hstore_column :hproperties, :review_time, :datetime
+  hstore_column :hproperties, :reviewer_id, :string
 
   self.per_page = 18
 

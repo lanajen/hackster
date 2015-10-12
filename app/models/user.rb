@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
     'Once per week' => :weekly,
     'Once per month' => :monthly,
   }
-  ROLES = %w(admin confirmed_user beta_tester moderator)
+  ROLES = %w(admin confirmed_user beta_tester moderator trusted)
   SUBSCRIPTIONS = {
     email: {
       'newsletter' => 'Newsletter',
