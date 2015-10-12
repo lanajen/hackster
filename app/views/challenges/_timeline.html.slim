@@ -1,0 +1,12 @@
+- cache ["challenge-#{challenge.id}-timeline"], tag: ["challenge-#{challenge.id}-timeline"] do
+  - challenge.dates.each_with_index do |date, i|
+      div class=class_for_timeline(challenge.dates, i)
+        p style='margin-bottom:0'
+          strong>
+            | #{date[:label]}:
+        p
+          - if date[:format]
+            = l date[:date], format: date[:format]
+          - else
+            => l date[:date].in_time_zone(PDT_TIME_ZONE)
+            | PT

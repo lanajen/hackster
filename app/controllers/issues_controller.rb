@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
-  before_filter :load_project
+  before_filter :load_project_with_hid
   before_filter :load_issue, only: [:show, :edit, :update, :destroy, :update_workflow]
   layout 'project'
 
@@ -29,7 +29,7 @@ class IssuesController < ApplicationController
     @issue.user = current_user
 
     if @issue.save
-      redirect_to project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), notice: 'Issue created.'
+      redirect_to project_issue_path(@project.user_name_for_url, @project.slug_hid, @issue.sub_id), notice: 'Issue created.'
     else
       render 'new'
     end
@@ -43,7 +43,7 @@ class IssuesController < ApplicationController
   def update
     authorize! :edit, @issue
     if @issue.update_attributes(params[:issue])
-      redirect_to project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), notice: 'Issue updated.'
+      redirect_to project_issue_path(@project.user_name_for_url, @project.slug_hid, @issue.sub_id), notice: 'Issue updated.'
     else
       render 'edit'
     end

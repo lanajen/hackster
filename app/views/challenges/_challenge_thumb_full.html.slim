@@ -1,0 +1,33 @@
+.challenge-thumb-full
+  .row
+    .col-md-3.details-container
+      .details
+        h4= link_to challenge.name, challenge
+        - if platform = challenge.platform.try(:decorate)
+          .small
+            ' Sponsored by
+            => image_tag platform.avatar(:tiny)
+            strong= link_to platform.name, platform
+
+        .bottom
+          .date
+            ' Participation is open until:
+            br
+            strong= l challenge.end_date, format: :long_date
+          = link_to 'Participate in this contest', challenge, class: 'btn btn-primary'
+    .col-md-9
+      .row
+        .col-md-9
+          .cover style="background-image:url('#{challenge.cover_image(:medium)}')"
+        .col-md-3
+          .prize
+            - if prize = challenge.prizes.first
+              h5
+                i.fa.fa-star
+                span Top prize
+
+              - if prize.image
+                = image_tag prize.image.imgix_url(:medium)
+              - if prize.description.present?
+                .description
+                  = prize.description

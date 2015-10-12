@@ -3,13 +3,13 @@ class ChallengeEntryDecorator < ApplicationDecorator
     case model.workflow_state.to_sym
     when :new
       'Awaiting moderation'
-    when :qualified
+    when :qualified, :approved
       'Approved'
-    when :unqualified
+    when :unqualified, :rejected
       'Rejected'
-    when :awarded
+    when :awarded, :won
       'Awarded a prize!'
-    when :unawarded
+    when :unawarded, :lost
       'Did not win. Next time!'
     when :fulfilled
       'Prize sent'

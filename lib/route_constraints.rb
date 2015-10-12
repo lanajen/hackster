@@ -39,3 +39,22 @@ class UserPage < PageWithSlug
     sluggable_is_model? 'User', request
   end
 end
+
+class ProjectPage
+  def self.project_is_type? model, request
+    return false unless slug = request.params['project_slug'] and hid = slug.match(/-?([a-f0-9]{6})\Z/)
+    project = Project.find_by_hid(hid[1]) and project.type == model
+  end
+end
+
+class SelfHostedProjectPage < ProjectPage
+  def self.matches?(request)
+    project_is_type? 'Project', request
+  end
+end
+
+class ExternalProjectPage < ProjectPage
+  def self.matches?(request)
+    project_is_type? 'ExternalProject', request
+  end
+end

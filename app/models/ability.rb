@@ -70,7 +70,12 @@ class Ability
 
     can :create, ChallengeEntry do |entry|
       challenge = entry.challenge
-      challenge.disable_registration or ChallengeRegistration.has_registered? challenge, @user
+      can_enter_challenge?(challenge) and challenge.open_for_submissions?
+    end
+
+    can :create, ChallengeIdea do |idea|
+      challenge = idea.challenge
+      can_enter_challenge?(challenge) and challenge.pre_contest_in_progress?
     end
 
     can :create, ChallengeRegistration do |registration|
@@ -171,8 +176,8 @@ class Ability
       @user.is_active_member? assignment.promotion
     end
 
-    can :manage, ChallengeEntry, user_id: @user.id
-    can :admin, ChallengeEntry do |entry|
+    can :manage, [ChallengeEntry, ChallengeIdea], user_id: @user.id
+    can :admin, [ChallengeEntry, ChallengeIdea] do |entry|
       ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end
 
@@ -206,4 +211,9 @@ class Ability
   def platform
     can :manage, Part, platform_id: @platform.id
   end
+
+  private
+    def can_enter_challenge? challenge
+      challenge.disable_registration or ChallengeRegistration.has_registered? challenge, @user
+    end
 end

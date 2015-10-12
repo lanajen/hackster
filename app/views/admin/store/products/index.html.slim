@@ -14,7 +14,9 @@ table.table.table-striped
     tr
       th= model_class.human_attribute_name(:source)
       th= model_class.human_attribute_name(:orders)
+      th= model_class.human_attribute_name(:in_stock)
       th= model_class.human_attribute_name(:available)
+      th= model_class.human_attribute_name(:cost)
       th= model_class.human_attribute_name(:created_at)
       th=t '.actions', :default => t("helpers.actions")
   tbody
@@ -22,7 +24,9 @@ table.table.table-striped
       tr
         td= link_to product.source.name, product.source
         td= product.orders_count
+        td= product.in_stock
         td= product.available
+        td= product.unit_cost
         td= l product.created_at
         td
           ul.list-unstyled

@@ -8,7 +8,7 @@
       h4.text-center= popup_title
 
       = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: "#{id}-form", data: { remote: true, modal: popup_id }, class: 'remote form-within-modal' } do |f|
-        = f.simple_fields_for :widgets, widget_class.new do |f_widget|
+        .mg-20= f.simple_fields_for :widgets, widget_class.new do |f_widget|
           = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
           = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
           = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Title'

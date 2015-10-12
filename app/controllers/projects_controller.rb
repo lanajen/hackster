@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
+  before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
+  before_filter :load_project, only: [:redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
   respond_to :html
@@ -52,9 +53,9 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
-    @hardware_parts = @project.part_joins.hardware
-    @software_parts = @project.part_joins.software
-    @tool_parts = @project.part_joins.tool
+    @hardware_parts = @project.part_joins.hardware.includes(part: :image)
+    @software_parts = @project.part_joins.software.includes(part: :image)
+    @tool_parts = @project.part_joins.tool.includes(part: :image)
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
@@ -75,10 +76,9 @@ class ProjectsController < ApplicationController
       end
     end
 
+    @comments = @project.comments.includes(:parent, user: :avatar)
     if is_whitelabel?
-      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-    else
-      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @comments = @comments.joins(:user).where(users: { enable_sharing: true })
     end
 
     if @project.has_assignment?
@@ -268,7 +268,7 @@ class ProjectsController < ApplicationController
     when Product
       product_path(project)
     when ExternalProject
-      external_project_path(project)
+      project_path(project)
     else
       url_for(project)
     end

@@ -191,6 +191,8 @@ $select2target = null;
                 input.each(function(i, el){
                   if ($(el).is('select') && typeof($(el).data('select2')) != 'undefined') {
                     $(el).trigger('change');
+                  } else {
+                    $(el).val('');
                   }
                 });
               } else if (input.hasClass('select2')) {

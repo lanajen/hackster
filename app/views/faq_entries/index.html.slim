@@ -1,0 +1,25 @@
+p
+  = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
+
+h1
+  | #{@challenge.name}: FAQ
+
+p= link_to 'New FAQ entry', new_challenge_faq_entry_path(@challenge), class: 'btn btn-sm btn-success'
+
+table.table.table-striped
+  thead
+    tr
+      th Question
+      th Status
+      th
+  tbody
+    - if @faq_entries.any?
+      - @faq_entries.each do |entry|
+        tr
+          td= entry.title
+          td= entry.private ? 'Private' : 'Published'
+          td
+            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_faq_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
+            = link_to content_tag(:i, '', class: 'fa fa-trash-o'), faq_entry_path(entry), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this entry?', container: 'body' }
+    - else
+      td.text-center colspan=3 No FAQ entries yet

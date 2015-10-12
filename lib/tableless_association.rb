@@ -17,7 +17,7 @@ module TablelessAssociation
       end
 
       self.send :define_method, association_name do
-        get_association association_name, association_model
+        get_association association_name, association_model, opts
       end
       self.send :define_method, "#{association_name}=" do |val|
         set_association association_name, association_model, val
@@ -35,7 +35,7 @@ module TablelessAssociation
   end
 
   module InstanceMethods
-    def get_association association_name, association_model
+    def get_association association_name, association_model, opts={}
       association_instance = instance_variable_get "@#{association_name}"
       return association_instance if association_instance
 
@@ -44,17 +44,22 @@ module TablelessAssociation
       association_instance = if val.present?
         YAML::load(val).map do |attrs|
           attrs.except!(:_destroy, '_destroy')
-          association_model.new attrs.merge(parent_id: id)
+          association_model.new attrs
         end
       else
         []
       end
+
+      if opts[:order] and association_instance.first.try(:respond_to?, opts[:order])
+        association_instance = association_instance.sort_by{|v| v.send(opts[:order]) || 0 }
+      end
+
       instance_variable_set "@#{association_name}", association_instance
     end
 
     def new_association association_name, association_model, attrs={}
       records = send("#{association_name}")
-      records << association_model.new(attrs.merge(parent_id: id))
+      records << association_model.new(attrs)
 
       _set_association association_name, records
     end

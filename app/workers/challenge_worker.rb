@@ -6,6 +6,8 @@ class ChallengeWorker < BaseWorker
       entry.has_prize? ? entry.give_award! : entry.give_no_award!
     end
     expire_cache challenge
+
+    NotificationCenter.notify_all :judged, :challenge, record.id
   end
 
   private

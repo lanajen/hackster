@@ -15,7 +15,8 @@
       .col-md-4
         section.section-thumbs
           h4 Admin actions
-          = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+          p.small.text-muted While you can show the final state of your project on the main project, page, logs are great to keep a tab on your progress. Think of it as a mini-blog for your project.
+          = link_to 'Post a new project log', new_project_log_path(@project.user_name_for_url, @project.slug_hid), class: 'btn btn-primary btn-sm'
 
   .row
     .col-xs-12

@@ -1,11 +1,17 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> has been accepted. Hurray!</p>
+<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has been accepted. Hurray!</p>
 
 <p>Please note that you have not won any prizes yet; this email simply confirms that your entry is eligible to participate in the contest.</p>
 
 <% if @context[:challenge].in_progress? %>
-  <p>You now have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT polish your write-up, fix bugs, and make it the best entry of all so you can win the contest!</p>
+  <p>
+    You now have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT polish your write-up, fix bugs, and make it the best entry of all so you can win the contest!
+
+    <% if @context[:challenge].winners_announced_date %>
+      Winners will be announced on <%= l @context[:challenge].winners_announced_date, format: :short_date %>.
+    <% end %>
+  </p>
 <% end %>
 
 <p>Cheers,<br> The Hackster.io team</p>

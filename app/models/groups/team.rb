@@ -21,7 +21,7 @@ class Team < Group
     cached_members = members
     cached_members = members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
     self.generated_user_name = if full_name.present?
-      super()
+      full_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
     else
       (cached_members.size == 1 ? cached_members.first.user.user_name : id.to_s)
     end

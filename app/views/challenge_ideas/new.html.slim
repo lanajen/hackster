@@ -1,0 +1,10 @@
+.row
+  .col-md-8.col-md-offset-2
+    .box
+      .box-title
+        h2
+          ' Participate in
+          strong=> link_to @challenge.name, @challenge
+          ' by submitting an idea
+      .box-content
+        = render 'form'

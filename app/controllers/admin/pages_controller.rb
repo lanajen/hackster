@@ -78,7 +78,7 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def build_logs
-    title "Admin / Build logs - #{safe_page_params}"
+    title "Admin / Project logs - #{safe_page_params}"
 
     @logs = BuildLog.order(created_at: :desc).paginate(page: safe_page_params)
   end
