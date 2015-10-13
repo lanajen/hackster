@@ -70,9 +70,9 @@ class ProjectDecorator < ApplicationDecorator
 
   def to_share_message
     platforms = model.known_platforms
-    sentences = ['I love this', 'Check this out', 'Cool stuff', 'Awesome project', 'Nice hack']
+    sentences = ['I love this:', 'Check this out:', 'Cool stuff:', 'Awesome project:', 'Nice!']
 
-    "#{sentences.sample}: #{model.name} by #{model.guest_name.presence || model.users.map{|u| u.twitter_handle || u.name }.to_sentence}#{ ' with ' + platforms.map{|t| t.twitter_handle.presence || t.name }.to_sentence if platforms.any? }"
+    "#{sentences.sample} #{model.name} by #{model.guest_name.presence || model.users.map{|u| u.twitter_handle || u.name }.to_sentence}#{ ' with ' + platforms.map{|t| t.twitter_handle.presence || t.name }.to_sentence if platforms.any? }"
   end
 
   def to_personnal_tweet

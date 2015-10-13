@@ -5,6 +5,11 @@
 class Part < ActiveRecord::Base
   DEFAULT_SORT = 'alpha'
   EDITABLE_STATES = %w(new pending_review)
+  KNOWN_TYPES = {
+    'hardware' => 'component',
+    'software' => 'app',
+    'tool' => 'tool',
+  }
   INVALID_STATES = %w(rejected retired)
   SORTING = {
     'alpha' => :sorted_by_full_name,

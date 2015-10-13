@@ -1,0 +1,137 @@
+= content_for :head do
+  = render 'meta_tags'
+
+= inserts_stats_for @project
+
+= content_for :no_container do
+  - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
+
+    / = render 'projects/project_embed_popup'
+
+    #content.project-page class="project-#{@project.id}"
+      .wrapper780.protip-show
+        section.section-no-container.protip-section-heading.clearfix
+          - if @can_edit
+            .pull-right-desktop
+              - if @project.public?
+                a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
+                  i.fa.fa-share-square-o
+                  span Share
+                - if current_user.is?(:admin) and !current_user.is_team_member? @project
+                  = render partial: 'respects/protip_button', locals: { respectable: @project }
+              .btn-group
+                a.btn.btn-default.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
+                  - if @project.public?
+                    - if @project.pending_review? or @project.unpublished?
+                      span Public - Pending review
+                    - else
+                      span Public
+                  - else
+                    span
+                      i.fa.fa-lock
+                      span Private
+                  i.fa.fa-caret-down
+                = link_to 'Edit', edit_project_path(@project), class: 'btn btn-default'
+
+          - elsif @project.private?
+            p.pull-right-desktop
+              i.fa.fa-lock>
+              | This protip is private.
+          - else
+            .pull-right-desktop
+              = render partial: 'respects/protip_button', locals: { respectable: @project }
+              a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
+                i.fa.fa-share-square-o
+                span Share
+
+          .media.protip-author.pull-left-desktop
+            .media-left
+              = link_to image_tag(@author.avatar(:mini), alt: @author.name, class: 'img-circle media-object'), @author
+            .media-body
+              .media-heading= link_to @author.name, @author
+              ul.list-inline.project-stats
+                li
+                  span.stat-figure> = number_with_delimiter @project.impressions_count
+                  = pluralize_without_count @project.impressions_count, 'view'
+                li
+                  span.stat-figure> = number_with_delimiter @project.respects_count
+                  = pluralize_without_count @project.respects_count, 'respect'
+
+        - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
+
+          section.section-container.section-no-title
+            section.section-content.clearfix
+              .protip-section-title
+                .protip-mark Protip
+                h1
+                  ==> @project.name
+                p= @project.one_liner
+
+                - if @parts.exists?
+                  ul.list-inline.protip-parts
+                    - @parts.each do |part|
+                      li
+                        - part = part.decorate
+                        - if part.image
+                          = image_tag part.image(:tiny)
+                        - if part.has_own_page?
+                          = link_to part.name, part
+                        - else
+                          = part.name
+
+              .protip-section-img
+                = image_tag @project.cover_image(:medium)
+
+          - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
+
+            section.section-container.section-no-title
+              .section-content
+                .medium-editor= @project.description
+
+          section#team.section-container
+            h2.section-title
+              span.title
+                ' Posted by
+            .section-content
+              - @project.team_members.each do |member|
+                = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
+
+              - if @project.product_tags_cached.any?
+                ul.list-inline.tags
+                  - @project.product_tags_cached.map{|t| t.downcase }.each do |tag|
+                    li= link_to tag, tag_path(tag), class: 'tag tag-invert'
+
+              .clearfix.small.text-muted
+                - if @project.license
+                  .pull-left-desktop
+                    ' Licensed under
+                    a target='_blank' href=@project.license.url = @project.license.abbr
+
+                - if @project.made_public_at
+                  .pull-right-desktop
+                    i.fa.fa-clock-o
+                    span= l @project.made_public_at, format: :long_date
+
+              / # = render 'actions'
+
+          / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
+          / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
+          section#comments.section-container.section-collapsible
+            h2.section-title
+              a.title.title-toggle href=''
+                ' Comments
+                i.fa.fa-chevron-down
+                i.fa.fa-chevron-up
+            .section-content
+              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this protip? How could it be improved? Please be respectful and constructive.' }
+
+    / - if @project.public?
+      - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
+        - if @other_projects.count > 0
+          section.other-projects
+            .container
+              section.section-thumbs
+                h4 style='border:0' Related protips
+              .row
+                - @other_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }

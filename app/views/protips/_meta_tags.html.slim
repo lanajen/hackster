@@ -1,0 +1,28 @@
+- cache [I18n.locale, "project-#{@project.id}-meta-tags"], tags: ["project-#{@project.id}-meta-tags", "team-#{@project.team_id}"], expires_in: 24.hours do
+  meta(property="og:title" content=@project.name)
+  - if @project.one_liner.present?
+    meta(property="og:description" content="#{@project.one_liner} - by #{@author.name}.")
+  meta(property="og:image" content=@project.cover_image(:cover_thumb))
+  meta(property="og:image:width" content='400')
+  meta(property="og:image:height" content='300')
+  meta(property="og:url" content=project_url(@project))
+  meta(property="og:site_name" content=site_name)
+  meta(property="twitter:card" content="product")
+  - if site_twitter.present?
+    meta(property="twitter:site" content=site_twitter)
+  meta(property="twitter:domain" content=site_domain)
+  meta(property="twitter:title" content=@project.name)
+  meta(property="twitter:description" content=@project.one_liner)
+  - if @parts.exists?
+    meta(property="twitter:data2" content=@parts.map(&:name).to_sentence)
+    meta(property="twitter:label2" content="PROTIP")
+  - if user = @project.users.first and handle = user.twitter_handle
+    meta(property="twitter:creator" content=handle)
+  meta(property="twitter:data1" content=@author.name)
+  meta(property="twitter:label1" content="POSTED BY")
+  meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
+  meta(property="twitter:image:width" content='400')
+  meta(property="twitter:image:height" content='300')
+  link(rel="canonical" href=project_url(@project, subdomain: 'www', locale: I18n.default_www_locale))
+  - if @project.product_tags_string.present? or @parts.exists?
+    meta(name='keywords' content="#{(@project.product_tags_cached + @parts.map(&:name)).join(',')}")

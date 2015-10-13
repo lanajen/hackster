@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
     'external' => 'ExternalProject',
     'normal' => 'Project',
     'product' => 'Product',
+    'protip' => 'Protip',
   }
 
   include Checklist
@@ -170,7 +171,7 @@ class Project < ActiveRecord::Base
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :hardware_part_joins_attributes, :tool_part_joins_attributes,
-    :software_part_joins_attributes, :locale
+    :software_part_joins_attributes, :locale, :protip
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :logo, :team_members,
@@ -180,7 +181,7 @@ class Project < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true, unless: proc { |p| p.external? }
+  validates :content_type, presence: true, if: proc { |p| p.type == 'Project' }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -274,7 +275,7 @@ class Project < ActiveRecord::Base
   add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
   add_checklist :difficulty, 'Skill level'
   add_checklist :product_tags_string, 'Tags'
-  add_checklist :description, 'Story'
+  add_checklist :description, 'Story', 'Sanitize.clean(description).try(:strip).present?'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
   add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
@@ -508,6 +509,10 @@ class Project < ActiveRecord::Base
     type == 'ExternalProject'
   end
 
+  def identifier
+    'project'
+  end
+
   def product
     product?
   end
@@ -518,6 +523,14 @@ class Project < ActiveRecord::Base
 
   def product?
     type == 'Product'
+  end
+
+  def protip=(val)
+    self.type = 'Protip' if val
+  end
+
+  def protip?
+    type == 'Protip'
   end
 
   def force_basic_validation!
@@ -791,7 +804,7 @@ class Project < ActiveRecord::Base
     end
 
     def delete_empty_part_ids
-      (hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
+      (part_joins + hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
         part_join.delete if part_join.part_id.blank?
       end
     end

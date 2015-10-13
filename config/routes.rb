@@ -544,7 +544,7 @@ HackerIo::Application.routes.draw do
       get 'signed_url', on: :collection
     end
 
-    resources :projects, except: [:index, :show, :update, :destroy] do
+    resources :projects, only: [:new, :create] do
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member
@@ -566,6 +566,14 @@ HackerIo::Application.routes.draw do
         get 'create' => 'respects#create', on: :collection, as: :create
         delete '' => 'respects#destroy', on: :collection
       end
+    end
+
+    constraints(SelfHostedProjectPage) do
+      get 'projects/:id/edit' => 'projects#edit', as: :edit_project
+    end
+
+    constraints(ProtipPage) do
+      get 'projects/:id/edit' => 'protips#edit', as: :edit_protip
     end
 
     get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
@@ -639,6 +647,12 @@ HackerIo::Application.routes.draw do
     end
     constraints(ExternalProjectPage) do
       get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    constraints(ProtipPage) do
+      scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
+        get '' => 'protips#show', as: ''
+        patch '' => 'projects#update'
+      end
     end
 
     # old routes, kept for not break existing links

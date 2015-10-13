@@ -320,6 +320,10 @@ module UrlHelper
     super params
   end
 
+  def project_private_sharing_url project, opts={}
+    project_url(project, opts.merge(auth_token: project.security_token))
+  end
+
   def project_issues_path project, opts={}
     super params_for_project(project).merge(opts).merge(use_route: nil)
   end

@@ -388,7 +388,7 @@ $(function() {
 
       var tmpSaveMode = _.saveMode;
       _.saveMode = 'auto';
-      _.saveModel();
+      _.saveModel(successCallback, failCallback, formData);
       _.saveMode = tmpSaveMode;
     },
 
@@ -1921,6 +1921,7 @@ function insertEmbedTag(url, node) {
         link = '<a href="' + data.url + '" target="_blank" rel="nofollow">' + data.url + '</a>';
         node.html(link);
       }
+      editor.triggerInput();
     },
     complete: function(data){
       editor.hideLoadingBar();

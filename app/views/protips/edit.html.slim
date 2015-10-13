@@ -1,0 +1,164 @@
+= content_for :no_container do
+  - if @show_admin_bar
+    .admin-bar
+      .row
+        .col-sm-1
+          - review_details = ''
+          - if @project.review_time
+            - review_details += "Last reviewed on #{l @project.review_time}"
+          - if reviewer = User.find_by_id(@project.reviewer_id)
+            - review_details += " by #{reviewer.name}."
+          - if @project.review_comment.present?
+            - review_details += " Commented: #{@project.review_comment}"
+          span.label.label-default.istooltip title=review_details data-placement="bottom"= @project.workflow_state
+        .col-sm-8.text-center
+          = form_tag update_workflow_project_path(@project), method: :patch
+            - if @project.can_approve?
+              label>
+                input> type='radio' name='event' value='approve'
+                | Approve now
+              label>
+                input> type='radio' name='event' value='approve_later'
+                | Approve later
+
+            - if @project.can_reject?
+              label>
+                input> type='radio' name='event' value='reject'
+                | Reject
+            - if @project.can_mark_needs_work?
+              label>
+                input> type='radio' name='event' value='mark_needs_work'
+                | Set aside for later review
+            div style='width:150px;display: inline-block;vertical-align: top;'
+              textarea.form-control name='comment' rows=1 placeholder='Review comment (internal)'
+            input.btn.btn-sm.btn-primary type='submit' value='Submit review'
+            = link_to content_tag(:i, '', class: 'fa fa-envelope-o') + content_tag(:span, 'Email authors'), "mailto:#{@project.users.pluck(:email).join(',')}?subject=Your+project+needs+a+couple+updates&body=Hi,\n\rProject:+#{@project.name}\n\rLink:+#{project_url(@project)}", class: 'btn btn-default btn-sm', target: '_blank'
+        .col-sm-3 style='text-align: right;'
+          - if @project.checklist_completed?
+            i.fa.fa-check.text-success
+            span Checklist complete!
+          - else
+            i.fa.fa-times.text-danger
+            span
+              a.toggle-checklist> href='#'
+                strong= pluralize @project.checklist_todo.size, 'item'
+                i.fa.fa-caret-down
+              | to complete
+            = render 'projects/forms/checklist'
+
+  #content.wrapper780
+    = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload project-editor remote' }, wrapper: :bootstrap3_horizontal do |f|
+      .row
+        .col-xs-12
+          .header.clearfix
+            h3.pull-left
+              | Edit protip
+            .pull-right
+              ul.list-unstyled.list-inline
+                - if current_user.is? :admin, :moderator
+                  - unless params[:show_admin_bar]
+                    = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'
+                  li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
+                li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+                li= link_to 'Go back to protip', @project, class: 'btn-link btn-sm'
+          hr
+
+
+      .alert.alert-danger.error-message style='display:none'
+        p Please check for errors below:
+
+      = render 'projects/forms/checklist'
+
+      .row
+        .col-xs-12
+          .panel.panel-default
+            .panel-heading
+              h4 General settings
+            .panel-body
+              = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
+              = f.input :one_liner, as: :text, input_html: { rows: 3 },
+                hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
+              div data-anchor='cover_image'
+                = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+              = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
+              = f.input :difficulty, collection: Project::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+              = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the protip. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
+
+      .row
+        .col-xs-12
+          .panel.panel-default data-anchor='description'
+            .panel-heading
+              h4 Description
+            .panel-body
+              = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
+
+              p.small.text-muted
+                strong> Tip:
+                | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
+              #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+
+                #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
+
+      .row
+        .col-xs-12
+          .panel.panel-default data-anchor='parts'
+            .panel-heading
+              h4 This protip is for the following product
+            .panel-body
+              p.small.text-muted
+                strong> For example:
+                | If the protip is "How to communicate with an Arduino UNO via serial", select Arduino UNO below; if the protip is "How to install Windows 10 IoT Core on a Raspberry Pi 2", select Windows 10 IoT Core and Raspberry Pi 2 below. Please only select the main product(s).
+
+              #parts= render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: nil, human_type: 'product', options: { prompt: 'Select a product', label: 'Product', part_type: nil, show_quantity: false, link_type: 'store_link', disable_comment: true } }
+
+          .panel.panel-default
+            .panel-heading
+              h4 Danger zone
+            .panel-body
+              .form-group
+                .col-md-8.col-xs-offset-4= link_to 'Delete protip', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+
+      .row
+        .col-xs-12
+          hr
+          .pull-right
+            ul.list-unstyled.list-inline
+              li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+              li= link_to 'Go back to protip', @project, class: 'btn-link btn-sm'
+
+= content_for :js do
+
+  javascript:
+    $(function(){
+      $("#project_product_tags_array").select2({
+        tags: true,
+        tokenSeparators: [','],
+        width: '100%'
+      });
+
+      editor.activate();
+
+      var saving = false;
+
+      $('form.project-editor input[type=submit]').on('click', function(e){
+        editor.unsavedChanges = false;
+        saving = true;
+      });
+
+      $('form.project-editor')
+      .on("ajax:beforeSend", function(xhr, settings){
+        $('.error-message').hide();
+      })
+      .on('ajax:error', function(xhr, status){
+        $('.error-message').show();
+        smoothScrollTo('#content');
+        saving = false;
+      })
+      .on('ajax:success', function(xhr, status){
+        if (saving) {
+          window.location.href = "#{project_path(@project)}";
+        }
+      });
+    });
+
+= render 'projects/forms/part_form'

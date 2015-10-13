@@ -19,7 +19,7 @@
               .col-md-4
                 label.control-label Private sharing link
               .col-md-8
-                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
+                input.form-control  type='text' value=project_private_sharing_url(@project) onclick='this.select();' style='color: #666;background:#ddd'
                 p.help-block Use this link if you want to share your project while keeping it private.
 
           = f.input :new_slug, label: 'Project URL', wrapper: :addon do

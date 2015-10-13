@@ -276,12 +276,21 @@ Rewardino::Triggers = Rewardino::Trigger.all
 Rewardino::Event.create!({
   code: :approved_project,
   name: 'Project approved',
-  description: "One of your project got approved to show on Hackster",
+  description: "One of your projects got approved to show on Hackster",
   points: 50,
   date_method: -> (project) { project.review_time || project.made_public_at },
   # model_table: 'projects',
   models_method: -> (user) { user.projects.own.self_hosted.approved },
   users_count_method: -> (project) { project.team_members_count }
+})
+
+Rewardino::Event.create!({
+  code: :approved_protip,
+  name: 'Protip approved',
+  description: "One of your protips got approved to show on Hackster",
+  points: 15,
+  date_method: -> (project) { project.review_time || project.made_public_at },
+  models_method: -> (user) { user.projects.protips.approved }
 })
 
 # Rewardino::Event.create!({
