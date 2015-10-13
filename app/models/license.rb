@@ -1,4 +1,5 @@
 class License
+  DEFAULT = 'http://opensource.org/licenses/GPL-3.0'
   LICENSE_TYPES = {
     'http://opensource.org/licenses/Apache-2.0' => {
       name: 'Apache License 2.0 (Apache-2.0)',

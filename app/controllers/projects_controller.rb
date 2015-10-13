@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
       @projects = @projects.where(difficulty: params[:difficulty])
     end
 
-    if params[:type].try(:to_sym).in? Project::CONTENT_TYPES.values
+    if params[:type].try(:to_sym).in? Project::PUBLIC_CONTENT_TYPES.values
       @projects = @projects.with_type(params[:type])
     end
 
@@ -166,6 +166,12 @@ class ProjectsController < ApplicationController
       # @project.approve!
       @project.private = true
       event = 'Created project'
+    end
+
+    if @project.external?
+      @project.content_type = :external
+    elsif @project.protip?
+      @project.content_type = :protip
     end
 
     if current_platform

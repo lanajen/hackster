@@ -1,11 +1,17 @@
 class Project < ActiveRecord::Base
 
-  CONTENT_TYPES = {
+  PUBLIC_CONTENT_TYPES = {
     'Getting started guide' => :getting_started,
     'Showcase (no or incomplete instructions)' => :showcase,
     'Teardown/Unboxing' => :teardown,
     'Tutorial (complete instructions)' => :tutorial,
   }
+  PRIVATE_CONTENT_TYPES = {
+    'Link to third party website' => :external,
+    'Protip' => :protip,
+    'Workshop' => :workshop,
+  }
+  CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES)
   DEFAULT_CONTENT_TYPE = :tutorial
   DEFAULT_NAME = 'Untitled'
   DEFAULT_TAGS = [
@@ -76,6 +82,7 @@ class Project < ActiveRecord::Base
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
     'Product' => 'Product',
+    'Protip' => 'Protip',
   }
   MACHINE_TYPES = {
     'external' => 'ExternalProject',
@@ -659,7 +666,7 @@ class Project < ActiveRecord::Base
   def license
     return @license if @license
     val = read_attribute(:license)
-    @license = License.new val if val.present?
+    @license = License.new(val.present? ? val : License::DEFAULT)
   end
 
   def locked?

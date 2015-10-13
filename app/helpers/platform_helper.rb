@@ -51,7 +51,7 @@ module PlatformHelper
     per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
 
     return unless platform = options[:platform] || @platform
-    options[:type] ||= %w(Project ExternalProject)
+    options[:type] ||= %w(Project ExternalProject Protip)
     per_page = per_page - 1 if !options[:disable_ideas] and platform.accept_project_ideas and !options[:type] == 'Product'
 
     sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
@@ -72,7 +72,7 @@ module PlatformHelper
       @projects = @projects.joins(:project).merge(Project.where(difficulty: params[:difficulty]))
     end
 
-    if params[:type].try(:to_sym).in? Project::CONTENT_TYPES.values
+    if params[:type].try(:to_sym).in? Project::PUBLIC_CONTENT_TYPES.values
       @projects = @projects.joins(:project).merge(Project.with_type(params[:type]))
     end
 

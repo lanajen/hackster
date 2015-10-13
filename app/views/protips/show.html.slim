@@ -20,7 +20,7 @@
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
                   = render partial: 'respects/protip_button', locals: { respectable: @project }
               .btn-group
-                a.btn.btn-default.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
+                a.btn.btn-default.btn-sm.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
                   - if @project.public?
                     - if @project.pending_review? or @project.unpublished?
                       span Public - Pending review
@@ -31,7 +31,7 @@
                       i.fa.fa-lock
                       span Private
                   i.fa.fa-caret-down
-                = link_to 'Edit', edit_project_path(@project), class: 'btn btn-default'
+                = link_to 'Edit', edit_project_path(@project), class: 'btn btn-default btn-sm'
 
           - elsif @project.private?
             p.pull-right-desktop
@@ -74,7 +74,7 @@
                         - part = part.decorate
                         - if part.image
                           = image_tag part.image(:tiny)
-                        - if part.has_own_page?
+                        - if part.has_own_page? and !is_whitelabel?
                           = link_to part.name, part
                         - else
                           = part.name
