@@ -431,6 +431,10 @@ class Project < ActiveRecord::Base
     where(type: 'Product')
   end
 
+  def self.protips
+    where(type: 'Protip')
+  end
+
   def self.scheduled_to_be_approved
     approved.where("projects.made_public_at > ?", Time.now).order(:made_public_at)
   end
