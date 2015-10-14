@@ -4,7 +4,9 @@ class ChallengeRegistrationObserver < ActiveRecord::Observer
     NotificationCenter.notify_via_email :new, :challenge_registration, record.id
 
     challenge = record.challenge
-    FollowRelation.add record.user, challenge.platform if challenge.platform
+    challenge.sponsors.each do |sponsor|
+      FollowRelation.add record.user, sponsor
+    end
     MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id if challenge.mailchimp_setup?
   end
 

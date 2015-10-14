@@ -3,11 +3,15 @@
     .col-md-3.details-container
       .details
         h4= link_to challenge.name, challenge
-        - if platform = challenge.platform.try(:decorate)
-          .small
-            ' Sponsored by
-            => image_tag platform.avatar(:tiny)
-            strong= link_to platform.name, platform
+        .small.challenge-sponsors
+          ' Sponsored by
+          ul.list-unstyled
+            - challenge.sponsors.each do |sponsor|
+              li
+                => image_tag sponsor.decorate.avatar(:tiny)
+                strong= link_to sponsor.name, sponsor
+              - unless challenge.sponsors[-1] == sponsor
+                li and
 
         .bottom
           .date

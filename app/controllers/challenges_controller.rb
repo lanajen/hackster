@@ -2,7 +2,7 @@ class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_platform, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_sponsors, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
@@ -16,14 +16,14 @@ class ChallengesController < ApplicationController
     title 'Hardware challenges'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
-    @active_challenges = Challenge.public.active.ends_first
-    @coming_challenges = Challenge.public.coming.starts_first
-    @past_challenges = Challenge.public.past.ends_last
+    @active_challenges = Challenge.public.active.ends_first.includes(sponsors: :avatar)
+    @coming_challenges = Challenge.public.coming.starts_first.includes(sponsors: :avatar)
+    @past_challenges = Challenge.public.past.ends_last.includes(sponsors: :avatar)
   end
 
   def show
     title @challenge.name
-    # @embed = Embed.new(url: @challenge.video_link)
+    @prizes = @challenge.prizes.includes(:image)
 
     if @challenge.judged? and !@challenge.disable_projects_tab
       load_projects
@@ -178,8 +178,8 @@ class ChallengesController < ApplicationController
       authorize! self.action_name.to_sym, @challenge
     end
 
-    def load_platform
-      @platform = @challenge.platform.try(:decorate)
+    def load_sponsors
+      @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
     end
 
     def load_projects
