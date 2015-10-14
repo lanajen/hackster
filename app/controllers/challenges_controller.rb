@@ -2,7 +2,7 @@ class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_sponsors, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
@@ -23,7 +23,6 @@ class ChallengesController < ApplicationController
 
   def show
     title @challenge.name
-    @prizes = @challenge.prizes.includes(:image)
 
     if @challenge.judged? and !@challenge.disable_projects_tab
       load_projects
@@ -178,8 +177,9 @@ class ChallengesController < ApplicationController
       authorize! self.action_name.to_sym, @challenge
     end
 
-    def load_sponsors
+    def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
+      @prizes = @challenge.prizes.includes(:image)
     end
 
     def load_projects
