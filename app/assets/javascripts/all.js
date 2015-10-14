@@ -459,7 +459,7 @@ $(function () {
     showSignupPopupOrNot();
   }
 
-  $('.hljs-active code').each(function(i, block) {
+  $('.hljs-active :not(.highlight) > pre').each(function(i, block) {
     hljs.highlightBlock(block);
   });
 });
