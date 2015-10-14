@@ -51,5 +51,3 @@
   };
 
 })(jQuery);
-
-hljs.initHighlightingOnLoad();
