@@ -37,4 +37,16 @@ module ProjectHelper
       class: 'form-group'
     )
   end
+
+  def modal_name_for_widget widget, embed_id
+    id = case widget.identifier
+    when 'embed_widget'
+      embed_id
+    when 'code_widget'
+      'code-editor'
+    else
+      'upload'
+    end
+    "##{id}-popup"
+  end
 end
