@@ -19,7 +19,7 @@
                   span Share
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
                   = render partial: 'respects/protip_button', locals: { respectable: @project }
-              .btn-group
+              .btn-group style='margin-left:5px'
                 a.btn.btn-default.btn-sm.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
                   - if @project.public?
                     - if @project.pending_review? or @project.unpublished?
