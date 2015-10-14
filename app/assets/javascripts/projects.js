@@ -88,8 +88,11 @@ $select2target = null;
     }
 
     $('body').on('click', '.new-comment input[type="submit"]', function(e){
-      $(this).parent().parent().submit();
-      $(this).replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+      var form = $(this).closest('form')
+      if (form.hasClass('remote')) {
+        $(this).replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+        form.submit();
+      }
     });
 
     checkIfCommentsHaveSameDepthYoungerSiblings();
