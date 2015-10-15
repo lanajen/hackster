@@ -635,8 +635,6 @@ HackerIo::Application.routes.draw do
     constraints(SelfHostedProjectPage) do
       scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/, constraints: { format: /(html|json|js)/ } do
         get '' => 'projects#show', as: ''
-        delete '' => 'projects#destroy'
-        patch '' => 'projects#update'
         get 'embed' => 'projects#embed', as: :embed
         get 'print' => 'projects#print', as: :print
         resources :issues do
@@ -649,10 +647,11 @@ HackerIo::Application.routes.draw do
       get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
     end
     constraints(ProtipPage) do
-      scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
-        get '' => 'protips#show', as: ''
-        patch '' => 'projects#update'
-      end
+      get ':user_name/:project_slug' => 'protips#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
+      patch '' => 'projects#update'
+      delete '' => 'projects#destroy'
     end
 
     # old routes, kept for not break existing links

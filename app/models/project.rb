@@ -469,7 +469,8 @@ class Project < ActiveRecord::Base
     approve! *args
   end
 
-  def get_next_time_slot last_scheduled_slot=Time.now
+  def get_next_time_slot last_scheduled_slot
+    last_scheduled_slot ||= Time.now
     days = ((last_scheduled_slot - Time.now) / SECONDS_IN_A_DAY).round
     per_day = 2 + days
     hour_interval = 24.to_f / per_day
