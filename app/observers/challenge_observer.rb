@@ -1,8 +1,10 @@
 class ChallengeObserver < ActiveRecord::Observer
   def after_update record
-    if record.activate_banners_changed? and record.open_for_submissions? and platform = record.platform
-      platform.active_challenge = record.display_banners?
-      platform.save if platform.active_challenge_changed?
+    if record.activate_banners_changed? and record.open_for_submissions?
+      record.sponsors.each do |platform|
+        platform.active_challenge = record.display_banners?
+        platform.save if platform.active_challenge_changed?
+      end
     end
 
     # expire or purge only once
@@ -42,9 +44,10 @@ class ChallengeObserver < ActiveRecord::Observer
   def after_pre_launch record
     NotificationCenter.notify_via_email :pre_launched, :challenge, record.id
     if record.display_banners?
-      platform = record.platform
-      platform.active_challenge = true
-      platform.save
+      record.sponsors.each do |platform|
+        platform.active_challenge = true
+        platform.save
+      end
     end
     expire_cache record
     expire_index
@@ -64,9 +67,10 @@ class ChallengeObserver < ActiveRecord::Observer
   def after_launch_contest record
     NotificationCenter.notify_all :launched_contest, :challenge, record.id
     if record.display_banners?
-      platform = record.platform
-      platform.active_challenge = true
-      platform.save
+      record.sponsors.each do |platform|
+        platform.active_challenge = true
+        platform.save
+      end
     end
     expire_cache record
     expire_index
@@ -94,7 +98,7 @@ class ChallengeObserver < ActiveRecord::Observer
 
   private
     def disable_challenge_on_platform record
-      if platform = record.platform
+      record.sponsors.each do |platform|
         platform.active_challenge = false
         platform.save
       end
