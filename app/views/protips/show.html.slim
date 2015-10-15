@@ -46,9 +46,17 @@
 
           .media.protip-author.pull-left-desktop
             .media-left
-              = link_to image_tag(@author.avatar(:mini), alt: @author.name, class: 'img-circle media-object'), @author
+              - if @project.guest_name.present?
+                span
+                  .media-object style="height:40px;width:1px"
+              - else
+                = link_to image_tag(@author.avatar(:mini), alt: @author.name, class: 'img-circle media-object'), @author
             .media-body
-              .media-heading= link_to @author.name, @author
+              .media-heading
+                - if @project.guest_name.present?
+                  = @project.guest_name
+                - else
+                  = link_to @author.name, @author
               ul.list-inline.project-stats
                 li
                   span.stat-figure> = number_with_delimiter @project.impressions_count
@@ -102,8 +110,22 @@
               span.title
                 ' Posted by
             .section-content
-              - @project.team_members.each do |member|
-                = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
+              - if @project.guest_name.present?
+                .member-thumb
+                  p.user-name= @project.guest_name
+
+                  p
+                    ' Are you
+                    span.user-name= @project.guest_name
+                    ' ?
+                    span.text-muted Claim this project and add it to your profile.
+                  - if user_signed_in?
+                    = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
+                  - else
+                    = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
+              - else
+                - @project.team_members.each do |member|
+                  = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
 
               - if @project.product_tags_cached.any?
                 ul.list-inline.tags

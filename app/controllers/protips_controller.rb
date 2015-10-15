@@ -29,7 +29,7 @@ class ProtipsController < ApplicationController
     # @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     # @other_projects = @other_projects.with_group current_platform if is_whitelabel?
 
-    @author = @project.users.includes(:avatar).first.decorate
+    @author = @project.users.includes(:avatar).first.try(:decorate)
 
     # if @project.public?
     #   @respecting_users = @project.respecting_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
