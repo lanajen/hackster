@@ -60,7 +60,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     end
 
     if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:project]
-      if @panel.in? %w(hardware publish team software)
+      if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
         render 'projects/forms/update'
       else
         render 'projects/forms/checklist', status: :ok

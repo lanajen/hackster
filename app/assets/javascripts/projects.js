@@ -312,6 +312,7 @@ $select2target = null;
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
         sortTable();
+        $(this).trigger('pe:loaded');
       })
       .on('ajax:error', 'form.remote', function(xhr, status){
         $('.pe-save').slideDown(200);

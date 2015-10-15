@@ -88,6 +88,15 @@
               .section-content
                 .medium-editor= @project.description
 
+          - if @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).exists?
+            section#team.section-container
+              h2.section-title
+                span.title
+                  ' Attachments
+              .section-content
+                - @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).order(:position, :id).each do |widget|
+                  = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
           section#team.section-container
             h2.section-title
               span.title
