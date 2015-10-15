@@ -100,7 +100,7 @@ const ContentEditable = React.createClass({
               let li = document.createElement('li');
               li.textContent = child.textContent;
               node.replaceChild(li, child);
-            } else if(child.nodeName !== 'LI' && child.textContent.match(/^[\u21B5|\s+]{1}$/) !== null || child.textContent.length < 1) {
+            } else if(child.nodeName !== 'LI' && (child.textContent.match(/^[\u21B5|\s+]{1}$/) !== null || child.textContent.length < 1)) {
               node.removeChild(child);
             }
           });
@@ -114,18 +114,20 @@ const ContentEditable = React.createClass({
     /** Means we added another Component and we should do nothing in this CE. */
     if(cursorPosition.rootHash !== React.findDOMNode(this).getAttribute('data-hash')) { return; }
 
-    let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(React.findDOMNode(this)));
+    let CE = React.findDOMNode(this);
+    CE.focus();
+
+    let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(CE));
     let node = cursorPosition.node || rootNode.children[cursorPosition.pos];
     if(!node) { return; }
     let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos) || rootNode;
     let el = (this.props.editor.setCursorToNextLine && nodeByHash.nextSibling !== undefined) ? nodeByHash.nextSibling : nodeByHash;
 
-    if(el === undefined || el === null) {
-      return;
-    }
+    if(el === undefined || el === null) { return; }
 
     let { sel, range } = Utils.getSelectionData();
     let textNode, offset;
+
     /** If Enter was pressed and we need to focus the next line, grab the first element at position 0. */
     if(this.props.editor.setCursorToNextLine) {
       textNode = Utils.getFirstTextNode(el);
@@ -136,9 +138,7 @@ const ContentEditable = React.createClass({
     }
 
     /** Abort if something went wrong. */
-    if(!textNode) {
-      return;
-    }
+    if(!textNode) { return; }
 
     /** Protects setStart from an index that was deleted. */
     if(textNode.textContent.length < offset) {
@@ -176,14 +176,30 @@ const ContentEditable = React.createClass({
         */
       Utils.maintainImmediateChildren(CE);
 
-      /** Recursively cleans up all br and empty tags. */
-      if(e.keyCode === 8 && Utils.isImmediateChildOfContentEditable(parentNode, CE)
-         && !parentNode.classList.contains('react-editor-carousel') && !parentNode.classList.contains('react-editor-video')) {
-        Utils.removeEmptyTags(parentNode);
+      /** On Backspace; Cleans up browser adds on specific line. */
+      if(e.keyCode === 8 
+         && Utils.isImmediateChildOfContentEditable(parentNode, CE)
+         && !parentNode.classList.contains('react-editor-carousel') 
+         && !parentNode.classList.contains('react-editor-video')
+         && parentNode.nodeName !== 'UL') {
+        let clone = range.cloneRange();
+        Utils.maintainImmediateNode(parentNode);
+        this.emitChange();
+        /** Chrome sets the cursor to 0, we need to reset it here at the correct position. */
+        sel = rangy.getSelection();
+        range = sel.getRangeAt(0);
+        range.setStart(Utils.getFirstTextNode(range.startContainer), clone.startOffset);
+        sel.setSingleRange(range);
+      }
+
+      /** On Enter; Cleans up browser adds on specific line. */
+      if(e.keyCode === 13 && parentNode.previousSibling & parentNode.nodeName !== 'UL') {
+        Utils.maintainImmediateNode(parentNode.previousSibling);
+        this.emitChange();
       }
 
       /** Cleans up UL tags. */
-      if(e.keyCode === 8 && parentNode.nodeName === 'UL' && parentNode.childNodes.length < 1) {
+      if(e.keyCode === 8 && parentNode.nodeName === 'UL' && parentNode.children.length === 1 && parentNode.children[0].textContent < 1) {
         this.props.actions.transformBlockElement('p', depth, true, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       } else if(e.keyCode === 8 && range.startContainer.nodeName === 'LI' && range.startContainer.textContent.length < 1) {
@@ -354,17 +370,19 @@ const ContentEditable = React.createClass({
 
   handleBackspace(e) {
     let { sel, range, parentNode, depth, anchorNode } = Utils.getSelectionData();
+    let CE = React.findDOMNode(this);
     if(sel.rangeCount) {
 
       /** Remove CE unless its the first or last. */
       if(depth <= 1 && this.props.storeIndex !== this.props.editor.dom.length-1
-         && this.props.storeIndex !== 0 && React.findDOMNode(this).textContent.length < 1) {
+         && this.props.storeIndex !== 0 && CE.textContent.length < 1) {
          this.preventEvent(e);
          this.props.actions.deleteComponent(this.props.storeIndex);
       }
 
-      /** Maintains the first element as a P when user is deleting things. */
-      if(depth === 0 && parentNode.textContent.length < 1 && React.findDOMNode(this).children.length < 2) {
+      /** Maintains the first & last element as a P when user is deleting things. */
+      if((this.props.storeIndex === 0 || this.props.storeIndex === this.props.editor.dom.length-1) 
+               && depth === 0 && parentNode.textContent.length < 1 && CE.children.length < 2) {
         this.preventEvent(e);
       }
 
@@ -375,11 +393,17 @@ const ContentEditable = React.createClass({
         this.props.actions.forceUpdate(true);
       }
 
-      /** If user deleted the paragraph under a PRE, create a new one. */
-      if(React.findDOMNode(this).lastChild.nodeName === 'PRE' && depth === React.findDOMNode(this).children.length) {
-        this.createBlockElement('p', depth, false, this.props.storeIndex);
-        this.props.actions.forceUpdate(true);
+      /** Firefox will empty the entire CE if user selects all and deletes.
+        * This prevents that.
+       */
+      if(range.toHtml() === CE.innerHTML) {
+        this.preventEvent(e);
       }
+
+      /** If user deleted the paragraph under a PRE, create a new one. */
+      // if(CE.lastChild && CE.lastChild.nodeName === 'PRE' && depth === CE.children.length) {
+      //   this.createBlockElement('p', depth, false, this.props.storeIndex);
+      // }
     }
   },
 
@@ -410,11 +434,28 @@ const ContentEditable = React.createClass({
       let nodeToFocus = Editable.children[this.props.storeIndex-1];
       nodeToFocus.focus();
     }
+
     /** Cursor is in a CE and moving down to a media element. */
     if(e.keyCode === 40 && depth === CE.children.length-1 && this.props.storeIndex < this.props.editor.dom.length-1) {
       let Editable = Utils.getParentOfCE(CE);
       let nodeToFocus = Editable.children[this.props.storeIndex+1];
       nodeToFocus.focus();
+    }
+
+    /** 
+     * Primarily for Firefox.
+     * This will look ahead going up or down the main children branch and seeing if there are empty parapraphs.
+     * Firefox will stunt the getSelection API and return the contenteditable div always.  The fix is to add a br tag before we
+     * get to the node.  Note that the parsers clean up every br at every render.
+     */
+    if(e.keyCode === 40 && parentNode.nextSibling) {
+      if(parentNode.nextSibling.childNodes.length < 1) {
+        parentNode.nextSibling.appendChild(document.createElement('br'));
+      }
+    } else if(e.keyCode === 38 && parentNode.previousSibling) {
+      if(parentNode.previousSibling.childNodes.length < 1) {
+        parentNode.previousSibling.appendChild(document.createElement('br'));
+      }
     }
   },
 
@@ -424,10 +465,17 @@ const ContentEditable = React.createClass({
   },
 
   onKeyDown(e) {
-    let { parentNode } = Utils.getSelectionData();
+    let { sel, range, parentNode, anchorNode } = Utils.getSelectionData();
+    let CE = React.findDOMNode(this);
+
+    /** Primarily for Firefox.  Sets the range from CE to the first P. */
+    if(CE.children.length === 1 && CE.firstChild.textContent < 1 && !CE.firstChild.childNodes[0]) {
+      range.selectNodeContents(CE.firstChild);
+      sel.setSingleRange(range);
+    }
 
     /** If user deleted the paragraph under a PRE */
-    if(React.findDOMNode(this).lastChild && React.findDOMNode(this).lastChild.nodeName === 'PRE') {
+    if(CE.lastChild && CE.lastChild.nodeName === 'PRE') {
       let { depth } = Utils.getSelectionData();
       if(depth === null) { return; }
       this.createBlockElement('p', depth, false, this.props.storeIndex);

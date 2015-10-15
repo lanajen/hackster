@@ -3,6 +3,13 @@ import Utils from '../utils/DOMUtils';
 
 const FigCaption = React.createClass({
 
+  componentDidUpdate(prevProps) {
+    /** Sets the cursor to the end of the figcaption when user is typing. */
+    if(prevProps.html !== this.props.html) {
+      // Utils.setCursorByNode(React.findDOMNode(this));
+    }
+  },
+
   handleInput(e) {
     let html = React.findDOMNode(e.target).textContent;
     this.props.setFigCaptionText(html);

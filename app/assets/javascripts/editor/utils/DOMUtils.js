@@ -686,29 +686,55 @@ const Utils = {
     });
   },
 
-  removeEmptyTags(el) {
-    (function recurse(parent) {
-      let children = parent.childNodes,
-          child, i = 0;
+  /** 
+   * Maintains a specific line when the DOM is being mutated by the browser or execCommand.
+   * We clean up adjacent tags and remove empty nested tags.
+   */
+  maintainImmediateNode(node) {
+    let childNodes;
+    (function recurse(node) {
+      if(!node.childNodes && !node.childNodes.length) {
+        return;
+      } else {
+        childNodes = [].slice.apply(node.childNodes);
+        childNodes.forEach((child, index) => {
 
-      if(!children.length) { return; }
+          /** Merges two nodes with the same nodeName. */
+          if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName) {
+            child.previousSibling.textContent += child.textContent;
+            node.removeChild(child);
+          }
 
-      for(i = 0; i <= children.length; i++) {
-        let child = children[i];
-        /** Since we're removing things from children recursively, the index will change if was removed from the DOM. */
-        if(child === undefined) {
-          child = children[i-1];
-        }
+          /** Remove BR and Empty tags. */
+          if((child.nodeName === 'BR' || child.textContent.length < 1) && (child.nodeName !== 'LI' && child.nodeName !== 'UL')) {
+            node.removeChild(child);
+          }
 
-        if(child === undefined) { return; }
-        recurse(child);
+          /** Handles Chromes CE bug that adds span tags with inline styles.
+            * We look for length > 2 because the styles we care about are much longer than that.  
+            * The length < 2 styles will be cleaned up by our Parser.
+           */
+          if(child.nodeName === 'SPAN' && child.style && child.style.length > 2 && child.previousSibling !== null) {
+            child.previousSibling.innerHTML += child.innerHTML;
+            node.removeChild(child);
+          }
 
-        if(child.nodeName === 'BR' || child.textContent.length < 1) {
-          parent.removeChild(child);
-        }
-
+          recurse(child);
+        });
       }
-    }(el, null));
+    }(node));
+  },
+
+  mergeAdjacentElements(parentNode) {
+    let children = [].slice.apply(parentNode.childNodes);
+
+    children.forEach(child => {
+      if(child.nextSibling && child.nextSibling.nodeName === child.nodeName) {
+        let nextData = child.nextSibling.innerHTML;
+        child.innerHTML += nextData;
+        parentNode.removeChild(child.nextSibling);
+      }
+    });
   },
 
   isChildOfParentByClass(child, parentClass) {
@@ -754,7 +780,6 @@ const Utils = {
           a.href = href;
           a.textContent = url;
           /** Replace the current text with our new anchor. */
-          console.log('HIT', range, child, url);
           range.setStart(child, index);
           range.setEnd(child, index + url.length);
           range.deleteContents();
@@ -880,7 +905,6 @@ const Utils = {
       if(item.type === 'Video' && item.video[0].type == 'iframe') {
         let videoData = Helpers.getVideoData(item.video[0].embed);
         if(!videoData) {
-          console.log('BUNK', item);
           return callback(null, null);
         }
         item.video[0] = Object.assign({}, videoData, item.video[0]);

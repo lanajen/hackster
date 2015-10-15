@@ -149,7 +149,7 @@ $desktop-width: 1024px;
 .react-editor-carousel {
   width: 100%;
   height: auto;
-  max-height: 514px;
+  // max-height: 514px;
   margin-bottom: 10px;
   margin-top: 10px;
   display: flex;
@@ -186,12 +186,13 @@ $desktop-width: 1024px;
         z-index: 0;
         width: 100%;
         height: auto;
-        max-height: 487px;
+        max-height: 100%;
         position: relative;
 
         .react-editor-image {
           height: auto;
           min-height: 100px;
+          max-height: 487px;
           flex: 1;
           z-index: 1;
           align-self: center;
@@ -294,13 +295,14 @@ $desktop-width: 1024px;
         z-index: 0;
         width: 100%;
         height: auto;
-        max-height: 487px;
+        max-height: 100%;
         position: relative;
 
         .react-editor-iframe {
           width: 100%;
           max-width: 686px;
           height: auto;
+          max-height: 487px;
           flex: 1;
           z-index: 1;
           align-self: center;

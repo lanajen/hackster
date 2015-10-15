@@ -53,10 +53,17 @@ const Toolbar = React.createClass({
     }
   },
 
+  focusCE() {
+    let rootHash = this.props.editor.cursorPosition.rootHash;
+    let currentCE = document.querySelector(`div[data-hash="${rootHash}"]`);
+    currentCE.focus();
+  },
+
   handleExecCommand(tagType, valueArg) {
     valueArg = valueArg || null;
     if(document) {
       document.execCommand(tagType, false, valueArg);
+      this.focusCE();
       
       let { sel, anchorNode, parentNode } = Utils.getSelectionData();
 
@@ -167,7 +174,8 @@ const Toolbar = React.createClass({
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
-    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+    if(range.startOffset !== range.endOffset 
+       && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
 
       let ranges = { start: range.startOffset, end: range.endOffset };
@@ -242,6 +250,8 @@ const Toolbar = React.createClass({
         /** Let the store know about the mutation. */
         this.props.actions.getLatestHTML(true);
       }
+      /** Focus current Content Editable. */
+      this.focusCE();
     } else {
       this.handleBlockElementTransform(tagType);
     }
@@ -271,7 +281,7 @@ const Toolbar = React.createClass({
       return;
     }
 
-     if(startContainerParent.nodeName === 'UL') {  // Undo UL.
+    if(startContainerParent.nodeName === 'UL') {  // Undo UL.
       if(range.startContainer.nodeType === 3 || range.startContainer.localName === 'li') { // Is TextNode.  The cursor is placed after element or multiline select.
         
         if(startContainerParent !== endContainerParent) { // Multiple block elements are selected.
@@ -307,6 +317,8 @@ const Toolbar = React.createClass({
       } else {
         return;
       }
+      /** Focus current Content Editable. */
+      this.focusCE();
     } else {  // Build UL.
       if(startContainerParent === endContainerParent) { // One block element is selected.
         elements = [{ depth: Utils.findChildsDepthLevel(startContainerParent, startContainerParent.parentNode) }];
@@ -330,6 +342,8 @@ const Toolbar = React.createClass({
 
     }
     this.props.actions.forceUpdate(true);
+    /** Focus current Content Editable. */
+    this.focusCE();
   },
 
   handleLinkClick() {
@@ -369,6 +383,8 @@ const Toolbar = React.createClass({
           href = 'http://' + href;
         }
         this.handleExecCommand('createLink', href);
+        /** Focus current Content Editable. */
+        this.focusCE();
         /** Grabs the selection again after the DOM was mutated by execCommand. */
         sel = rangy.getSelection();
         sel.setSingleRange(range);
