@@ -469,9 +469,12 @@ class Project < ActiveRecord::Base
     approve! *args
   end
 
-  def get_next_time_slot last_scheduled_slot
-    last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(1*60..4*60).minutes  # every 1 to 4 hours == about 10 a day
+  def get_next_time_slot last_scheduled_slot=Time.now
+    days = ((last_scheduled_slot - Time.now) / SECONDS_IN_A_DAY).round
+    per_day = 2 + days
+    hour_interval = 24.to_f / per_day
+    minute_interval = hour_interval * 60
+    last_scheduled_slot + minute_interval.minutes
   end
 
   def scheduled_to_be_approved?

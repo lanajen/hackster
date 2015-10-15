@@ -2,10 +2,12 @@
   .top-banner-image-inner {
     h1 {
       margin-bottom: 15px;
+      text-shadow: 1px 1px 1px #333;
     }
     .media {
       padding: 150px 0;
       text-align: center;
+      text-shadow: 1px 1px 1px #666;
     }
     .sponsored {
       margin: 20px 0 0;
@@ -17,6 +19,9 @@
       a {
         color: #fff;
         font-weight: bold;
+      }
+      li {
+        margin-left: 5px;
       }
     }
   }
@@ -40,7 +45,6 @@
   }
   li {
     display: inline;
-    margin-left: 5px;
   }
 }
 
