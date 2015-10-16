@@ -9,6 +9,8 @@ class Project < BaseProject
   CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES)
   DEFAULT_CONTENT_TYPE = :tutorial
 
+  is_impressionable counter_cache: true, unique: :session_hash
+
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy

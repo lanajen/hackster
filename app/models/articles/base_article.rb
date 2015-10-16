@@ -49,8 +49,6 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
