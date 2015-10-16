@@ -459,7 +459,8 @@ $(function() {
         });
         _.lastSaved = new Date().getTime();
       } else if (_.saveMode == 'form') {
-        $('#project_description').val(modelData.description);
+        console.log('saving modeldata', modelData.description);
+        $('#base_article_description').val(modelData.description);
       }
     },
 

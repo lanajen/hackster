@@ -47,7 +47,7 @@ class FollowersController < ApplicationController
 
   private
     def load_followable
-      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Part Project User)
+      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Part BaseArticle User)
 
       @followable = params[:followable_type].constantize.find params[:followable_id]
     end

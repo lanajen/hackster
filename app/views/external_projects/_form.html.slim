@@ -34,10 +34,10 @@
             = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
               .row
                 .col-md-6
-                  = hidden_field_tag 'project[start_date(3i)]', '1'
-                  = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+                  = hidden_field_tag 'base_article[start_date(3i)]', '1'
+                  = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'base_article[start_date(2i)]' })
                 .col-md-6
-                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'base_article[start_date(1i)]' })
           - else
             = f.input :name, label: 'Device name'
             = f.input :one_liner, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },

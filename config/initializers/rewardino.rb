@@ -90,7 +90,7 @@ Rewardino::Trigger.set ['comments#create', 'comments#destroy'], {
   action: :set_badge,
   badge_code: :commented_on_project,
   condition: -> (context) {
-    context.instance_variable_get('@commentable').class == Project
+    context.instance_variable_get('@commentable').class == BaseArticle
   },
 }
 
@@ -138,7 +138,7 @@ Rewardino::Trigger.set 'admin/projects#update', {
   action: :set_badge,
   badge_code: :created_project,
   condition: -> (context) {
-    context.instance_variable_get('@project').approved?
+    context.instance_variable_get('@base_article').approved?
   },
   nominee_variable: '@team_members',
   background: true,
@@ -285,12 +285,12 @@ Rewardino::Event.create!({
 })
 
 Rewardino::Event.create!({
-  code: :approved_protip,
-  name: 'Protip approved',
-  description: "One of your protips got approved to show on Hackster",
+  code: :approved_article,
+  name: 'Article approved',
+  description: "One of your articles got approved to show on Hackster",
   points: 15,
   date_method: -> (project) { project.review_time || project.made_public_at },
-  models_method: -> (user) { user.projects.protips.approved }
+  models_method: -> (user) { user.projects.articles.approved }
 })
 
 # Rewardino::Event.create!({
@@ -310,7 +310,7 @@ Rewardino::Event.create!({
 #   points: 10,
 #   date_method: -> (comment) { comment.created_at },
 #   # model_table: 'comments',
-#   models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
+#   models_method: -> (user) { user.comments.where(commentable_type: 'BaseArticle') }
 # })
 
 Rewardino::Event.create!({
@@ -320,7 +320,7 @@ Rewardino::Event.create!({
   points: 5,
   date_method: -> (respect) { respect.created_at },
   # model_table: 'respects',
-  models_method: -> (user) { Respect.where(respectable_type: 'Project').joins('INNER JOIN projects ON projects.id = respects.respectable_id').joins('INNER JOIN groups ON groups.id = projects.team_id').joins('INNER JOIN members ON members.group_id = groups.id').where('members.user_id = ?', user.id) },
+  models_method: -> (user) { Respect.where(respectable_type: 'BaseArticle').joins('INNER JOIN projects ON projects.id = respects.respectable_id').joins('INNER JOIN groups ON groups.id = projects.team_id').joins('INNER JOIN members ON members.group_id = groups.id').where('members.user_id = ?', user.id) },
   users_count_method: -> (respect) { respect.respectable.team_members_count }
 })
 
@@ -337,7 +337,7 @@ Rewardino::Event.create!({
   compute_method: -> (event, user, date) {
     date = nil
     event.points.each do |conf|
-      models = Impression.where(impressionable_type: 'Project').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where(projects: { id: user.projects.own.where("projects.impressions_count >= ?", conf[:every]).pluck(:id) }).order(:created_at)
+      models = Impression.where(impressionable_type: 'BaseArticle').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where(projects: { id: user.projects.own.where("projects.impressions_count >= ?", conf[:every]).pluck(:id) }).order(:created_at)
       # models = models.where("#{event.model_table}.#{event.date_method} > ?", date) if date
       models.group_by(&:impressionable_id).each do |id, group|
 

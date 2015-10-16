@@ -325,7 +325,7 @@
                           i.fa.fa-lock>
                           | This project is private so only #{who.to_sentence} can see it.
                       - if @project.can_be_public? or current_user.try(:is?, :admin)
-                        p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+                        p= link_to 'Publish publicly', project_path(@project, base_article: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
                       - else
                         = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
                       p
@@ -374,7 +374,7 @@
                 - else
                   section.section-thumbs#team
                     h4
-                      - if @project.project.team.full_name.present?
+                      - if @project.team.full_name.present?
                         = @project.team.name
                       - elsif @project.team_members_count > 1
                         | Team members

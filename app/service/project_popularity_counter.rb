@@ -15,8 +15,8 @@ class ProjectPopularityCounter
   def initialize project, defaults={}
     @project = project
     @defaults = defaults
-    @defaults[:median_impressions] ||= Project.median_impressions
-    @defaults[:median_respects] ||= Project.median_respects
+    @defaults[:median_impressions] ||= BaseArticle.median_impressions
+    @defaults[:median_respects] ||= BaseArticle.median_respects
     @defaults[:time_period] ||= DEFAULT_TIME_PERIOD
   end
 

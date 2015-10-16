@@ -71,7 +71,7 @@ class SitemapController < ApplicationController
     end
 
     def projects_query
-      Project.indexable
+      BaseArticle.indexable
     end
 
     def projects_pages offset=0
@@ -85,7 +85,7 @@ class SitemapController < ApplicationController
     end
 
     def external_projects_query
-      Project.external.approved
+      ExternalProject.approved
     end
 
     def external_projects_pages offset=0

@@ -18,7 +18,7 @@
                   i.fa.fa-share-square-o
                   span Share
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
-                  = render partial: 'respects/protip_button', locals: { respectable: @project }
+                  = render partial: 'respects/article_button', locals: { respectable: @project }
               .btn-group style='margin-left:5px'
                 a.btn.btn-default.btn-sm.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
                   - if @project.public?
@@ -36,10 +36,10 @@
           - elsif @project.private?
             p.pull-right-desktop
               i.fa.fa-lock>
-              | This protip is private.
+              | This article is private.
           - else
             .pull-right-desktop
-              = render partial: 'respects/protip_button', locals: { respectable: @project }
+              = render partial: 'respects/article_button', locals: { respectable: @project }
               a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                 i.fa.fa-share-square-o
                 span Share
@@ -70,7 +70,7 @@
           section.section-container.section-no-title
             section.section-content.clearfix
               .protip-section-title
-                .protip-mark Protip
+                .protip-mark= @project.content_type.to_s.humanize
                 h1
                   ==> @project.name
                 p= @project.one_liner
@@ -154,7 +154,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this protip? How could it be improved? Please be respectful and constructive.' }
+              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
 
     / - if @project.public?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
@@ -162,7 +162,7 @@
           section.other-projects
             .container
               section.section-thumbs
-                h4 style='border:0' Related protips
+                h4 style='border:0' Related articles
               .row
                 - @other_projects.each do |project|
                   = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }

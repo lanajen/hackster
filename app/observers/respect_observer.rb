@@ -1,6 +1,6 @@
 class RespectObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type == 'Project'
+    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type == 'BaseArticle'
   end
 
   def after_create record
@@ -16,7 +16,7 @@ class RespectObserver < ActiveRecord::Observer
       case record.respectable
       when ChallengeEntry
         record.respectable.update_counters only: [:votes]
-      when Project
+      when BaseArticle
         record.respectable.update_counters only: [:respects]
         Cashier.expire "project-#{record.respectable_id}-respects", "project-#{record.respectable_id}"
         record.respectable.purge

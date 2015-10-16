@@ -15,7 +15,7 @@
   meta(property="twitter:description" content=@project.one_liner)
   - if @parts.exists?
     meta(property="twitter:data2" content=@parts.map(&:name).to_sentence)
-    meta(property="twitter:label2" content="PROTIP")
+    meta(property="twitter:label2" content="ARTICLE")
   - if user = @author and handle = user.twitter_handle
     meta(property="twitter:creator" content=handle)
   meta(property="twitter:data1" content=(@project.guest_name.presence || @author.try(:name)))

@@ -24,7 +24,7 @@ class ChallengeEntriesController < ApplicationController
     entry = @challenge.entries.new
     authorize! :create, entry
 
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
     @project.private = false

@@ -356,7 +356,7 @@ $select2target = null;
       $(this).trigger('change');
     });
 
-    $('#basics').on('change', '[name="project[cover_image_id]"]', function(e){
+    $('#basics').on('change', '[name="base_article[cover_image_id]"]', function(e){
       $('.pe-save').slideDown(200);
       $('.pe-save2').hide();
     });

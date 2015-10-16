@@ -20,7 +20,7 @@ class SearchController < ApplicationController
 
     begin
       @tag = CGI::unescape params[:tag]
-      @projects = Project.indexable.joins("INNER JOIN tags ON tags.taggable_id = projects.id AND tags.taggable_type = 'Project'").where(tags: { type: %w(ProductTag PlatformTag) }).where("LOWER(tags.name) = ?", @tag.downcase).uniq
+      @projects = BaseArticle.indexable.joins("INNER JOIN tags ON tags.taggable_id = projects.id AND tags.taggable_type = 'BaseArticle'").where(tags: { type: %w(ProductTag PlatformTag) }).where("LOWER(tags.name) = ?", @tag.downcase).uniq
       @projects = @projects.joins(:project_collections).where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }) if is_whitelabel?
       @projects = @projects.magic_sort.for_thumb_display.paginate(page: safe_page_params)
       @total = @projects.total_entries

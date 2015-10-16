@@ -22,8 +22,8 @@ module ProjectHelper
       option_val = options[:prompt]
     end
 
-    name = "project[#{[options[:part_type], 'part_joins_attributes'].compact.join('_')}][#{options[:i]}][part_id]"
-    option_id = ["project", options[:part_type], options[:i], "name"].compact.join('_')
+    name = "base_article[#{[options[:part_type], 'part_joins_attributes'].compact.join('_')}][#{options[:i]}][part_id]"
+    option_id = ["base_article", options[:part_type], options[:i], "name"].compact.join('_')
     content_tag(:div,
       content_tag(:label,
         content_tag(:abbr, '*', title: 'required') +

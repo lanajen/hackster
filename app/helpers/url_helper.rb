@@ -380,11 +380,11 @@ module UrlHelper
     when Platform
       options = params_for_group options
       options[:use_route] = 'platform_short'
-    when Project, ProjectDecorator
+    when BaseArticle
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'Project', 'ExternalProject'
+      when 'Project', 'ExternalProject', 'Article'
         options = params_for_project options
       end
     end

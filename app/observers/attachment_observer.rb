@@ -1,6 +1,6 @@
 class AttachmentObserver < ActiveRecord::Observer
   def after_process record
-    if record.attachable_type == 'Project'
+    if record.attachable_type == 'BaseArticle'
       case record.type
       when 'CoverImage'
         id = record.attachable_id

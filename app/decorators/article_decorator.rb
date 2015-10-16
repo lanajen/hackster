@@ -1,4 +1,4 @@
-class ProtipDecorator < ProjectDecorator
+class ArticleDecorator < BaseArticleDecorator
   def to_share_message
     sentences = ['I love this:', 'Check this out:', 'Cool stuff:', 'Awesome:', 'Nice!']
 

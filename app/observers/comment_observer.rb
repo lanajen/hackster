@@ -3,14 +3,14 @@ class CommentObserver < ActiveRecord::Observer
   def after_commit_on_create record
     return if record.disable_notification?
 
-    if record.commentable_type.in? %w(Issue Project Thought)
+    if record.commentable_type.in? %w(Issue BaseArticle Thought)
       NotificationCenter.notify_all :new, :comment, record.id
     end
     NotificationCenter.notify_all :mention, :comment_mention, record.id if record.has_mentions?
   end
 
   def after_create record
-    if record.commentable_type == 'Project'
+    if record.commentable_type == 'BaseArticle'
       project_id = record.commentable_id
       update_counters record
       expire_cache record
@@ -23,7 +23,7 @@ class CommentObserver < ActiveRecord::Observer
 
   def after_destroy record
     update_counters record
-    expire_cache record if record.commentable_type == 'Project'
+    expire_cache record if record.commentable_type == 'BaseArticle'
   end
 
   private
@@ -34,7 +34,7 @@ class CommentObserver < ActiveRecord::Observer
     end
 
     def update_counters record
-      if record.commentable_type == 'Project'
+      if record.commentable_type == 'BaseArticle'
         record.commentable.update_counters only: [:comments]
         record.user.update_counters only: [:comments] if record.user
       end

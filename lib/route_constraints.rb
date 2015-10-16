@@ -40,30 +40,30 @@ class UserPage < PageWithSlug
   end
 end
 
-class ProjectPage
-  def self.project_is_type? model, request
+class BaseArticlePage
+  def self.article_is_type? model, request
     if slug = request.params['project_slug'] and hid = slug.match(/-?([a-f0-9]{6})\Z/)
-      project = Project.find_by_hid(hid[1]) and project.type == model
+      project = BaseArticle.find_by_hid(hid[1]) and project.type == model
     elsif id = request.params['id']
-      project = Project.find_by_id(id) and project.type == model
+      project = BaseArticle.find_by_id(id) and project.type == model
     end
   end
 end
 
-class SelfHostedProjectPage < ProjectPage
+class ProjectPage < BaseArticlePage
   def self.matches?(request)
-    project_is_type? 'Project', request
+    article_is_type? 'Project', request
   end
 end
 
-class ExternalProjectPage < ProjectPage
+class ExternalProjectPage < BaseArticlePage
   def self.matches?(request)
-    project_is_type? 'ExternalProject', request
+    article_is_type? 'ExternalProject', request
   end
 end
 
-class ProtipPage < ProjectPage
+class ArticlePage < BaseArticlePage
   def self.matches?(request)
-    project_is_type? 'Protip', request
+    article_is_type? 'Article', request
   end
 end

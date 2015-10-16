@@ -185,7 +185,7 @@
   .popup-overlay-outer
     .popup-overlay-inner
       button.close data-target='#enter-popup' &times;
-      - link_params = { project: {platform_tags_string: @sponsors.map(&:name).join(',') } }
+      - link_params = { base_article: {platform_tags_string: @sponsors.map(&:name).join(',') } }
       - if user_signed_in?
         - if @user_projects.any?
           h2 Ready to submit your entry?

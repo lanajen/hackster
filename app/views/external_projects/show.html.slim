@@ -11,8 +11,6 @@
             .project-banner style="background-image: url(#{@project.cover_image})"
               .project-banner-inner
                 h1.project-title
-                  - if @project.is_idea?
-                    i.fa.fa-lightbulb-o.private-project-icon>
                   ==> @project.name
                   - if @project.license
                     a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}

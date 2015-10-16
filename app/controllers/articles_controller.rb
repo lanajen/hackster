@@ -1,4 +1,4 @@
-class ProtipsController < ApplicationController
+class ArticlesController < ApplicationController
   before_filter :load_project_with_hid, only: [:show, :update]
   before_filter :ensure_belongs_to_platform, only: [:show, :update]
   respond_to :html
@@ -20,9 +20,9 @@ class ProtipsController < ApplicationController
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
 
     title @project.name
-    @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware protips on Hackster.io."
+    @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware articles on Hackster.io."
     meta_desc @project_meta_desc
-    @project = ProtipDecorator.decorate(@project)
+    @project = @project.decorate
 
     @parts = @project.parts.alphabetical.includes(:image)
 
@@ -45,11 +45,10 @@ class ProtipsController < ApplicationController
   end
 
   def edit
-    @project = Protip.find params[:id]
+    @project = Article.find params[:id]
     authorize! :edit, @project
-    title 'Edit protip'
+    title 'Edit article'
     initialize_project
-    @project = @project.decorate
     @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
   end
 
@@ -57,13 +56,13 @@ class ProtipsController < ApplicationController
     authorize! :update, @project
     private_was = @project.private
 
-    if @project.update_attributes(params[:project])
+    if @project.update_attributes(params[:base_article])
       notice = "#{@project.name} was successfully updated."
       if private_was != @project.private
         if @project.private == false
           notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
           session[:share_modal] = 'published_share_prompt'
-          session[:share_modal_model] = 'protip'
+          session[:share_modal_model] = 'article'
           session[:share_modal_model_id] = @project.id
           session[:share_modal_time] = 'after_redirect'
 
@@ -82,8 +81,8 @@ class ProtipsController < ApplicationController
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
-      if params[:project].try(:[], 'private') == '0'
-        flash[:alert] = "Couldn't publish the protip, please email us at hi@hackster.io to get help."
+      if params[:base_article].try(:[], 'private') == '0'
+        flash[:alert] = "Couldn't publish this article, please email us at hi@hackster.io to get help."
       end
       redirect_to @project
     end

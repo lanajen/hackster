@@ -197,7 +197,6 @@ class ChallengesController < ApplicationController
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
         @user_projects = current_user.projects.own.self_hosted.where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
-        @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
         @user_projects = []
       end

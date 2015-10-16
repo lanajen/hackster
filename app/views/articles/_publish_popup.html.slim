@@ -3,9 +3,9 @@
     .alert.alert-warning.text-center
       p
         i.fa.fa-clock-o>
-        ' We're reviewing your protip before it can appear on the home page.
+        ' We're reviewing your article before it can appear on the home page.
         = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
-  = link_to 'Make private', project_path(@project, project: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block'
+  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block'
 - else
-  = link_to 'Publish', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-success btn-block'
+  = link_to 'Publish', project_path(@project, base_article: {  private: 0 } ), method: :patch, class: 'btn btn-success btn-block'
   = link_to 'Private sharing link', project_private_sharing_url(@project), class: 'btn btn-link btn-block'

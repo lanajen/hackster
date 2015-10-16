@@ -1,4 +1,7 @@
-class Product < ExternalProject
+class Product < BaseProject
+  PUBLIC_CONTENT_TYPES = {
+    'Product' => :product,
+  }
   is_impressionable counter_cache: true, unique: :session_hash
 
   def platform

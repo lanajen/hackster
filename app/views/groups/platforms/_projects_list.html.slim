@@ -2,7 +2,7 @@ h1.section-title Projects built by makers powered by #{@platform.name}
 
 .main-section-actions.clearfix.mg-30
   .pull-right
-    - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }), source: 'new_project')
+    - link = user_signed_in? ? new_project_path(base_article: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(base_article: { platform_tags_string: @platform.name }), source: 'new_project')
     ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
 
   .btn-group.btn-group-default.pull-left
@@ -66,4 +66,4 @@ h1.section-title Projects built by makers powered by #{@platform.name}
         p
           ' No projects here yet!
           - if @platform.platform_tags.any?
-            = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
+            = link_to "Create the first #{@platform.name} project", new_project_path(base_article: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'

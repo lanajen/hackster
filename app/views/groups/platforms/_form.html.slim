@@ -93,7 +93,7 @@
             strong Quick links:
             ul.list-inline style='display:inline'
               li= link_to 'Moderate projects', url_for([@group, :admin, :projects]), class: 'btn btn-link btn-sm'
-              li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }]), class: 'btn btn-link btn-sm'
+              li= link_to 'Link an external project', url_for([:new, :project, type: 'external', base_article: { platform_tags_string: @group.name }]), class: 'btn btn-link btn-sm'
           .col-md-6
             = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
             = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
@@ -147,7 +147,6 @@
             strong Quick links:
             ul.list-inline style='display:inline'
               li= link_to 'Manage products', url_for([@group, :products]), class: 'btn btn-link btn-sm'
-              / # = link_to "Add startup", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
           .col-md-6
             / # = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Showcase your products in your hub. Makers will still be able to add your products to their projects even if you disable this tab."

@@ -20,12 +20,12 @@ class Platform < Collection
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
   has_many :parts
 
-  has_many :part_projects, through: :parts, class_name: 'Project', source: :projects
+  has_many :part_projects, through: :parts, class_name: 'BaseArticle', source: :projects
   has_many :sub_parts, through: :parts, class_name: 'Part', source: :parent_parts
-  has_many :sub_parts_projects, through: :parts, class_name: 'Project', source: :parent_projects
+  has_many :sub_parts_projects, through: :parts, class_name: 'BaseArticle', source: :parent_projects
   has_many :sub_platforms, -> { uniq }, through: :sub_parts, class_name: 'Platform', source: :platform
 
-  has_many :projects, -> { where(type: %w(Project ExternalProject)) }, through: :project_collections do
+  has_many :projects, -> { where(type: %w(Project ExternalProject Article)) }, through: :project_collections do
     # TOOD: see if this can be delegated to ProjectCollection
     def visible
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
@@ -98,7 +98,7 @@ class Platform < Collection
   add_checklist :first_product, 'Add your first product', 'parts_count >= 1', goto: 'new_group_product_path(@group)', group: :get_started
   add_checklist :documentation, 'Add a link to your documentation', 'documentation_link.present?', hint: "Add a link to your documentation.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
   add_checklist :cta, 'Add a call-to-action', 'cta_link.present?', hint: "Add a call to action, for instance to buy your product.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
-  add_checklist_family :projects, 'projects_count >= %{n}', labels: { 1 => 'Add your first project (and approve it)', n: 'Reach %{n} projects' }, thresholds: [1, 10, 50, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 10 => :featured, n: :next_level }, goto: 'new_project_path(project: { platform_tags_string: @platform.name })'
+  add_checklist_family :projects, 'projects_count >= %{n}', labels: { 1 => 'Add your first project (and approve it)', n: 'Reach %{n} projects' }, thresholds: [1, 10, 50, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 10 => :featured, n: :next_level }, goto: 'new_project_path(base_article: { platform_tags_string: @platform.name })'
   add_checklist_family :followers, 'followers_count >= %{n}', labels: { 1 => 'Be your first follower', n: 'Reach %{n} followers' }, thresholds: [1, 25, 100, 500, 1_000, 2_500, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 25 => :featured, n: :next_level }, goto: 'create_followers_path(followable_type: "Group", followable_id: @platform.id)'
 
   # beginning of search methods

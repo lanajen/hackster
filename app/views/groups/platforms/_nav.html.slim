@@ -62,7 +62,7 @@ section.section-nav
                 li= link_to 'Manage products', url_for([@group, :products])
                 li.divider
                 li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
-                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', base_article: { platform_tags_string: @group.name }])
                 li.divider
                 li= link_to 'Post an announcement', platform_announcements_path(@group)
                 - if @platform.pro?
@@ -117,5 +117,5 @@ section.section-nav
                 li= link_to 'Invite admins', url_for([@group, :new, :invitations])
                 li.divider
                 li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
-                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', base_article: { platform_tags_string: @group.name }])
   .group-nav-placeholder

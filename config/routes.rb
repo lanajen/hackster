@@ -561,6 +561,9 @@ HackerIo::Application.routes.draw do
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
       end
+    end
+
+    resources :base_articles, only: [], path: 'articles' do
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
         get 'create' => 'respects#create', on: :collection, as: :create
@@ -568,12 +571,12 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    constraints(SelfHostedProjectPage) do
+    constraints(ProjectPage) do
       get 'projects/:id/edit' => 'projects#edit', as: :edit_project
     end
 
-    constraints(ProtipPage) do
-      get 'projects/:id/edit' => 'protips#edit', as: :edit_protip
+    constraints(ArticlePage) do
+      get 'projects/:id/edit' => 'articles#edit', as: :edit_article
     end
 
     get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
@@ -632,7 +635,7 @@ HackerIo::Application.routes.draw do
       get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
-    constraints(SelfHostedProjectPage) do
+    constraints(ProjectPage) do
       scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/, constraints: { format: /(html|json|js)/ } do
         get '' => 'projects#show', as: ''
         get 'embed' => 'projects#embed', as: :embed
@@ -646,8 +649,8 @@ HackerIo::Application.routes.draw do
     constraints(ExternalProjectPage) do
       get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
     end
-    constraints(ProtipPage) do
-      get ':user_name/:project_slug' => 'protips#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    constraints(ArticlePage) do
+      get ':user_name/:project_slug' => 'articles#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
     end
     scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
       patch '' => 'projects#update'

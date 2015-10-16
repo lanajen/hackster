@@ -57,7 +57,7 @@
         .col-xs-12
           .header.clearfix
             h3.pull-left
-              | Edit protip
+              | Edit article
             .pull-right
               ul.list-unstyled.list-inline
                 - if current_user.is? :admin, :moderator
@@ -78,14 +78,15 @@
               .panel-heading
                 h4 General settings
               .panel-body
-                = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
+                = f.input :content_type, collection: Article::PUBLIC_CONTENT_TYPES, label: 'Article type', required: true
+                = f.input :name, label: "Article name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
                 = f.input :one_liner, as: :text, input_html: { rows: 3 },
                   hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
                 div data-anchor='cover_image'
-                  = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+                  = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
                 = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: false
-                = f.input :difficulty, collection: Project::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
-                = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the protip. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
+                = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+                = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the article. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
 
       = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
         .row
@@ -99,7 +100,7 @@
                 p.small.text-muted
                   strong> Tip:
                   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-                #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+                #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your article here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
 
                   #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
@@ -114,7 +115,7 @@
               h4 Danger zone
             .panel-body
               .form-group
-                .col-md-8.col-xs-offset-4= link_to 'Delete protip', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+                .col-md-8.col-xs-offset-4= link_to 'Delete article', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
       .row
         .col-xs-12
@@ -158,7 +159,7 @@
 
   javascript:
     $(function(){
-      $("#project_product_tags_array").select2({
+      $("#base_article_product_tags_array").select2({
         tags: true,
         tokenSeparators: [','],
         width: '100%'
