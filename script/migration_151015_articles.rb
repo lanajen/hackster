@@ -9,5 +9,5 @@ Permission.where(permissible_type: 'Project').update_all(permissible_type: 'Base
 FollowRelation.where(followable_type: 'Project').update_all(followable_type: 'BaseArticle')
 ThreadPost.where(threadable_type: 'Project').update_all(threadable_type: 'BaseArticle')
 SlugHistory.where(sluggable_type: 'Project').update_all(sluggable_type: 'BaseArticle')
-Impression.where(impressionable_type: 'Project').update_all(impressionable_type: 'BaseArticle')
 Tag.where(taggable_type: 'Project').update_all(taggable_type: 'BaseArticle')
+Impression.where(impressionable_type: 'Project').update_all(impressionable_type: 'BaseArticle')
