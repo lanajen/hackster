@@ -41,11 +41,11 @@ class NotificationHandler
     def find_template
       return @template if @template
 
-      @template = "#{event}_#{context_type}"
+      elements = [event, context_type]
       if @model and @model.class.method_defined? :association_name_for_notifications
-        @template += '_for_' + @model.association_name_for_notifications.underscore
+        elements += ['for', @model.association_name_for_notifications.underscore]
       end
-      @template
+      @template = elements.join('_')
     end
 
     def get_context_for notification_type, user_roles=[]
