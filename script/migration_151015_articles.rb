@@ -11,3 +11,5 @@ ThreadPost.where(threadable_type: 'Project').update_all(threadable_type: 'BaseAr
 SlugHistory.where(sluggable_type: 'Project').update_all(sluggable_type: 'BaseArticle')
 Tag.where(taggable_type: 'Project').update_all(taggable_type: 'BaseArticle')
 Impression.where(impressionable_type: 'Project').update_all(impressionable_type: 'BaseArticle')
+
+Article.all.each{|a| if a.content_type == 'tutorial' ; a.content_type = :protip; a.save; end; }

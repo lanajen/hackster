@@ -8,6 +8,14 @@ module UrlHelper
     course_promotion_assignment_url params_for_assignment(assignment).merge(opts)
   end
 
+  def base_article_path article, opts={}
+    project_path article, opts
+  end
+
+  def base_article_url article, opts={}
+    project_url article, opts
+  end
+
   def challenge_path challenge, opts={}
     super challenge.slug, opts
   end
