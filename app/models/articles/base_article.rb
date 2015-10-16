@@ -227,7 +227,7 @@ class BaseArticle < ActiveRecord::Base
     {
       _id: id,
       name: name,
-      model: self.class.name.underscore,
+      model: self.class.model_name.to_s.underscore,
       one_liner: one_liner,
       description: description,
       product_tags: product_tags_string,
