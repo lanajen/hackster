@@ -38,7 +38,6 @@
       - else
         | #{@user.name} has no public projects.
 
-
       - if @other_projects and @other_projects.any?
         strong.text-muted
           ' Built with other platforms
@@ -47,6 +46,16 @@
           .row.project-list
             - @other_projects.each_with_index do |project|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www', locale: I18n.default_www_locale }
+
+      - if @articles.any?
+        hr
+        h2
+          ' Public articles
+          = content_tag(:span, @articles.count, class: 'badge')
+        .thumb-list
+          .row.project-list
+            - @articles.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userarticle', ref_id: @user.id, offset: i }
 
       - if user_is_current_or_admin? and @private_projects.any?
           hr

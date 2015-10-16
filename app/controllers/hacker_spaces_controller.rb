@@ -20,7 +20,7 @@ class HackerSpacesController < ApplicationController
     title @hacker_space.name
     meta_desc "Join the hacker space #{@hacker_space.name} on Hackster.io!"
 
-    @projects = @hacker_space.project_collections.visible.joins(:project).merge(Project.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
+    @projects = @hacker_space.project_collections.visible.joins(:project).merge(BaseArticle.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
 
     @members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
     @team_members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('team').map(&:user).select{|u| u.invitation_token.nil? }

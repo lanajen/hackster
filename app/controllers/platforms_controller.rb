@@ -58,9 +58,9 @@ class PlatformsController < ApplicationController
         if @followers.count < 5
           @followers = @platform.followers.top.limit(5)
         end
-        @projects = @platform.project_collections.includes(:project).visible.featured_order(I18n.short_locale).merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
+        @projects = @platform.project_collections.references(:project).includes(:project).visible.featured_order(I18n.short_locale).merge(BaseArticle.for_thumb_display_in_collection).merge(BaseArticle.magic_sort).limit(3)
         @parts = @platform.parts.visible.default_sort.limit(2) if @platform.parts_count > 0
-        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
+        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(BaseArticle.for_thumb_display_in_collection).merge(BaseArticle.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
         @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
@@ -173,13 +173,13 @@ class PlatformsController < ApplicationController
 
     load_analytics
 
-    @new_projects = graph_with_dates_for @new_projects_sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', Project.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
+    @new_projects = graph_with_dates_for @new_projects_sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', BaseArticle.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
 
-    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'Project views in the last 30 days', 'AreaChart'
+    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'BaseArticle views in the last 30 days', 'AreaChart'
 
     @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Page views in the last 30 days', 'AreaChart'
 
-    @new_respects = graph_with_dates_for @new_respects_sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'Project'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
+    @new_respects = graph_with_dates_for @new_respects_sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'BaseArticle'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
 
     @new_follows = graph_with_dates_for @new_follows_sql % @platform.id, 'Follows in the last 30 days', 'AreaChart', FollowRelation.where(followable_type: 'Group', followable_id: @platform.id).where('follow_relations.created_at < ?', 32.days.ago).count
 
@@ -274,27 +274,27 @@ class PlatformsController < ApplicationController
 
   private
     def load_projects_for_rss
-      per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
+      per_page = begin; [Integer(params[:per_page]), BaseArticle.per_page].min; rescue; BaseArticle.per_page end;  # catches both no and invalid params
 
       per_page = per_page - 1 if @platform.accept_project_ideas
 
-      sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
+      sort = if params[:sort] and params[:sort].in? BaseArticle::SORTING.keys
         params[:sort]
       else
         params[:sort] = 'recent'
       end
       @by = params[:by] || 'all'
 
-      @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).for_thumb_display
-      @projects = @projects.send(Project::SORTING[sort])
+      @projects = BaseArticle.joins(:visible_platforms).where("groups.id = ?", @platform.id).for_thumb_display
+      @projects = @projects.send(BaseArticle::SORTING[sort])
 
-      @projects = @projects.merge(Project.where(type: %w(Project ExternalProject)))
+      @projects = @projects.merge(BaseArticle.where(type: %w(BaseArticle ExternalProject)))
 
-      if @by and @by.in? Project::FILTERS.keys
+      if @by and @by.in? BaseArticle::FILTERS.keys
         @projects = if @by == 'featured'
           @projects.featured
         else
-          @projects.send(Project::FILTERS[@by])
+          @projects.send(BaseArticle::FILTERS[@by])
         end
       end
 

@@ -13,8 +13,8 @@ class Ability
       @user = resource
 
       can :read, [Comment, User, Thought, Challenge]
-      cannot :read, [Project, Group, SkillRequest]
-      can :read, [Project, Group], private: false
+      cannot :read, [BaseArticle, Group, SkillRequest]
+      can :read, [BaseArticle, Group], private: false
       can :read, Assignment do |assignment|
         assignment.promotion.private == false
       end
@@ -99,11 +99,11 @@ class Ability
 
     can [:update, :destroy], [Comment], user_id: @user.id
 
-    can :read, [Project, Widget] do |record|
+    can :read, [BaseArticle, Widget] do |record|
       record.visible_to? @user
     end
 
-    can :claim, Project do |project|
+    can :claim, BaseArticle do |project|
       project.external? or project.guest_name.present?
     end
 
@@ -130,7 +130,7 @@ class Ability
       @user.can? :join_team, team.project
     end
 
-    can :join_team, Project do |project|
+    can :join_team, BaseArticle do |project|
       project.event.present? and @user.is_member? project.event
     end
 
@@ -138,15 +138,15 @@ class Ability
       @user.is_member? community
     end
 
-    can :create, [Project, Community]
-    can [:manage, :enter_in_challenge], Project do |project|
+    can :create, [BaseArticle, Community]
+    can [:manage, :enter_in_challenge], BaseArticle do |project|
       @user.can? :manage, project.team
     end
-    cannot :edit_locked, Project
-    can :read, Project do |project|
+    cannot :edit_locked, BaseArticle
+    can :read, BaseArticle do |project|
       project.private? and @user.is_staff? project
     end
-    can [:update_team, :update_widgets, :comment], Project do |project|
+    can [:update_team, :update_widgets, :comment], BaseArticle do |project|
       @user.can? :manage, project
     end
 
@@ -204,12 +204,15 @@ class Ability
   end
 
   def moderator
-    can :manage, Project
+    can :manage, BaseArticle
     can :moderate, Group
   end
 
   def platform
     can :manage, Part, platform_id: @platform.id
+  end
+
+  def trusted
   end
 
   private

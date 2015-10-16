@@ -2,8 +2,11 @@
   h5= widget.name
   - if widget.comment.present?
     .comment= widget.comment
-  - if embed = widget.embed and embed.provider
-    .embed class=widget.embed.format
-      = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
+  - if embed = widget.embed
+    - if embed.provider
+      .embed class=widget.embed.format
+        = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
+    - elsif embed.url
+      p= link_to embed.url, embed.url, target: '_blank'
   - else
     p Unrecognized repository.

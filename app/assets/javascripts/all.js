@@ -458,6 +458,10 @@ $(function () {
   if ($('#signup-popup').length) {
     showSignupPopupOrNot();
   }
+
+  $('.hljs-active :not(.highlight) > pre').each(function(i, block) {
+    hljs.highlightBlock(block);
+  });
 });
 
 function closeNav(nav) {

@@ -1,0 +1,6 @@
+.media
+  a.media-left  href=project_path(article, ref: ref, ref_id: ref_id, offset: offset)
+    = image_tag article.cover_image(:cover_mini_thumb), class: 'media-object'
+  .media-body
+    b>= link_to article.name, project_path(article, ref: ref, ref_id: ref_id, offset: offset)
+    small.text-muted= article.content_type.to_s.humanize.downcase

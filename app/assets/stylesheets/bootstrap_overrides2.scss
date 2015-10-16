@@ -190,3 +190,33 @@ pre {
 .form-inline {
   display: inline;
 }
+
+.popover {
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 4px;
+}
+.popover-content {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+  li {
+    a {
+      padding: 10px 14px;
+      display: block;
+      font-weight: bold;
+      color: #666;
+      &:hover {
+        text-decoration: none;
+        color: #888;
+      }
+    }
+    &:not(:last-child) {
+      a {
+        border-bottom: 1px solid #ddd;
+      }
+    }
+  }
+}

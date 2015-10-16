@@ -11,20 +11,24 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
 
-    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
-    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = Project.indexable.for_thumb_display
+    @projects = BaseArticle.indexable.for_thumb_display
     if params[:sort]
-      @projects = @projects.send(Project::SORTING[params[:sort]])
+      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
     end
 
-    if @by and @by.in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[@by])
+    if @by and @by.in? BaseArticle::FILTERS.keys
+      @projects = @projects.send(BaseArticle::FILTERS[@by])
     end
 
-    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+    if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
       @projects = @projects.where(difficulty: params[:difficulty])
+    end
+
+    if params[:type].try(:to_sym).in? BaseArticle.content_types(%w(Project Article)).values
+      @projects = @projects.with_type(params[:type])
     end
 
     @projects = @projects.paginate(page: safe_page_params)
@@ -82,7 +86,7 @@ class ProjectsController < ApplicationController
     end
 
     if @project.has_assignment?
-      @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
+      @issue = Feedback.where(threadable_type: 'BaseArticle', threadable_id: @project.id).first
       @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end
 
@@ -96,7 +100,7 @@ class ProjectsController < ApplicationController
   end
 
   def claim
-    @project = Project.find_by_id!(params[:id]).decorate
+    @project = BaseArticle.find_by_id!(params[:id]).decorate
     authorize! :claim, @project
 
     @project.build_team unless @project.team
@@ -129,12 +133,12 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    model_class = if params[:type] and params[:type].in? Project::MACHINE_TYPES.keys
-      Project::MACHINE_TYPES[params[:type]].constantize
+    model_class = if params[:type] and params[:type].in? BaseArticle::MACHINE_TYPES.keys
+      BaseArticle::MACHINE_TYPES[params[:type]].constantize
     else
-      Project
+      BaseArticle
     end
-    @project = model_class.new params[:project]
+    @project = model_class.new params[:base_article]
     authorize! :create, @project
 
     initialize_project
@@ -148,12 +152,12 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    model_class = if params[:project] and params[:project][:type] and params[:project][:type].in? Project::MACHINE_TYPES.values
-      params[:project][:type].constantize
+    model_class = if params[:base_article] and params[:base_article][:type] and params[:base_article][:type].in? BaseArticle::MACHINE_TYPES.values
+      params[:base_article][:type].constantize
     else
-      Project
+      BaseArticle
     end
-    @project = model_class.new params[:project]
+    @project = model_class.new params[:base_article]
     authorize! :create, @project
 
     if @project.external? or @project.product?
@@ -162,6 +166,10 @@ class ProjectsController < ApplicationController
       # @project.approve!
       @project.private = true
       event = 'Created project'
+    end
+
+    if @project.external?
+      @project.content_type = :external
     end
 
     if current_platform
@@ -194,7 +202,6 @@ class ProjectsController < ApplicationController
     title 'Edit project'
     initialize_project
     @team = @project.team
-    @project = @project.decorate
     @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
   end
 
@@ -202,7 +209,7 @@ class ProjectsController < ApplicationController
     authorize! :update, @project
     private_was = @project.private
 
-    if @project.update_attributes(params[:project])
+    if @project.update_attributes(params[:base_article])
       notice = "#{@project.name} was successfully updated."
       if private_was != @project.private
         if @project.private == false
@@ -227,7 +234,7 @@ class ProjectsController < ApplicationController
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
-      if params[:project].try(:[], 'private') == '0'
+      if params[:base_article].try(:[], 'private') == '0'
         flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
       end
       redirect_to @project
@@ -236,7 +243,7 @@ class ProjectsController < ApplicationController
 
   def update_workflow
     if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
-      flash[:notice] = "Project state changed to: #{params[:event]}."
+      flash[:notice] = "Article state changed to: #{params[:event]}."
       redirect_to admin_projects_path(workflow_state: 'pending_review')
     else
       # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
@@ -263,7 +270,7 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    project = Project.last
+    project = BaseArticle.last
     url = case project
     when Product
       product_path(project)
@@ -299,7 +306,6 @@ class ProjectsController < ApplicationController
     end
 
     def initialize_project
-      @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
     end
 end

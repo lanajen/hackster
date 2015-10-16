@@ -1,0 +1,22 @@
+= simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+  input type='hidden' name='save' value='1'
+  input type='hidden' name='panel' value='protip_attachments'
+  .row
+    .col-xs-12
+      .panel.panel-default data-anchor='attachments'
+        .panel-heading
+          h4 Attachments
+        .panel-body
+
+          .btn-group
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
+              i.fa.fa-cloud-upload>
+              | Upload or paste code
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#upload-popup' data-field-type='FileWidget'
+              i.fa.fa-cloud-upload>
+              | Upload file
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#repo-popup'
+              i.fa.fa-link>
+              | Link existing repository
+
+          = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(GenericEmbedWidget FileWidget CodeWidget), embed_id: 'repo' }

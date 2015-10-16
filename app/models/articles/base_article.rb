@@ -1,54 +1,8 @@
-class Project < ActiveRecord::Base
+class BaseArticle < ActiveRecord::Base
 
-  CONTENT_TYPES = {
-    'Getting started guide' => :getting_started,
-    'Showcase (no or incomplete instructions)' => :showcase,
-    'Teardown/Unboxing' => :teardown,
-    'Tutorial (complete instructions)' => :tutorial,
-  }
-  DEFAULT_CONTENT_TYPE = :tutorial
+  self.table_name = :projects
+
   DEFAULT_NAME = 'Untitled'
-  DEFAULT_TAGS = [
-    'Animals',
-    'Art',
-    'Audio',
-    'Cars',
-    'Clocks',
-    'Communication',
-    'Data Collection',
-    'Disability Reduction',
-    'Drones',
-    'Embedded',
-    'Energy Efficiency',
-    'Entertainment System',
-    'Environmental Sensing',
-    'Food And Drinks',
-    'Games',
-    'Garden',
-    'Greener Planet',
-    'Health',
-    'Helicopters',
-    'Home Automation',
-    'Human Welfare',
-    'Internet Of Things',
-    'Kids',
-    'Lights',
-    'Music',
-    'Passenger Vehicles',
-    'Pets',
-    'Planes',
-    'Plants',
-    'Recycling',
-    'Remote Control',
-    'Robots',
-    'Security',
-    'Smartwatches',
-    'Smart appliances',
-    'Transportation',
-    'Wardriving',
-    'Wearables',
-    'Weather',
-  ]
   DIFFICULTIES = {
     'Beginner' => :beginner,
     'Intermediate' => :intermediate,
@@ -73,11 +27,13 @@ class Project < ActiveRecord::Base
     'updated' => :last_updated,
   }
   TYPES = {
+    'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
     'Product' => 'Product',
   }
   MACHINE_TYPES = {
+    'article' => 'Article',
     'external' => 'ExternalProject',
     'normal' => 'Project',
     'product' => 'Product',
@@ -93,26 +49,15 @@ class Project < ActiveRecord::Base
 
   editable_slug :slug
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
-  has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
-  has_many :awards
-  has_many :build_logs, as: :threadable, dependent: :destroy
-  has_many :challenge_entries, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
   has_many :commenters, -> { uniq true }, through: :comments_copy, source: :user
   has_many :communities, -> { where("groups.type = 'Community'") }, through: :project_collections, source_type: 'Group', source: :collectable
-  has_many :events, -> { where("groups.type = 'Event'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
-  has_many :grades
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
-  has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
-  has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
-  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
@@ -131,18 +76,12 @@ class Project < ActiveRecord::Base
       reorder("groups.full_name ASC").uniq
     end
   end
-  has_many :project_collections, dependent: :destroy
-  has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
-  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
-  has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
+  has_many :project_collections, dependent: :destroy, foreign_key: :project_id
+  has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection', foreign_key: :project_id
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
-  has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :permissions, as: :permissible
-  has_many :replicated_users, through: :follow_relations, source: :user
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
@@ -152,7 +91,6 @@ class Project < ActiveRecord::Base
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
-  has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :project_collection, class_name: 'ProjectCollection'
 
   sanitize_text :name
@@ -161,7 +99,7 @@ class Project < ActiveRecord::Base
   register_sanitizer :remove_whitespaces_from_html, :before_save, :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
-    :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
+    :featured, :featured_date, :cover_image_id, :license, :slug,
     :permissions_attributes, :slug_histories_attributes, :hide,
     :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link,
@@ -169,18 +107,16 @@ class Project < ActiveRecord::Base
     :community_ids, :new_group_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
-    :hardware_part_joins_attributes, :tool_part_joins_attributes,
-    :software_part_joins_attributes, :locale
+    :locale, :article
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
-  accepts_nested_attributes_for :images, :logo, :team_members,
+  accepts_nested_attributes_for :images, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
-    :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
-    :software_part_joins, allow_destroy: true
+    :project_collections, :part_joins, allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
-  validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true, unless: proc { |p| p.external? }
+  validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
+  validates :content_type, presence: true
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -203,32 +139,23 @@ class Project < ActiveRecord::Base
   taggable :product_tags, :platform_tags
 
   counters_column :counters_cache, long_format: true
-  has_counter :build_logs, 'build_logs.published.count'
   has_counter :comments, 'comments.count'
   has_counter :communities, 'groups.count'
-  has_counter :hardware_parts, 'hardware_parts.count'
-  has_counter :issues, 'issues.where(type: "Issue").count'
   has_counter :platforms, 'platforms.count'
   has_counter :platform_tags, 'platform_tags_cached.count'
   has_counter :product_tags, 'product_tags_cached.count'
-  has_counter :replications, 'replicated_users.count'
   has_counter :real_respects, 'respects.joins(:user).where.not("users.email ILIKE \'%@user.hackster.io\'").count'
   has_counter :respects, 'respects.count', accessor: false
-  has_counter :software_parts, 'software_parts.count'
   has_counter :team_members, 'users.count'
-  has_counter :tool_parts, 'tool_parts.count'
-  has_counter :widgets, 'widgets.count'
 
   store :properties, accessors: []
-  hstore_column :properties, :celery_id, :string
-  hstore_column :properties, :content_type, :string
-  hstore_column :properties, :guest_twitter_handle, :string
-  hstore_column :properties, :locked, :boolean
-  hstore_column :properties, :private_issues, :boolean
-  hstore_column :properties, :private_logs, :boolean
-  hstore_column :properties, :review_comment, :string
-  hstore_column :properties, :review_time, :datetime
-  hstore_column :properties, :reviewer_id, :string
+  hstore_column :hproperties, :celery_id, :string
+  hstore_column :hproperties, :content_type, :string
+  hstore_column :hproperties, :guest_twitter_handle, :string
+  hstore_column :hproperties, :locked, :boolean
+  hstore_column :hproperties, :review_comment, :string
+  hstore_column :hproperties, :review_time, :datetime
+  hstore_column :hproperties, :reviewer_id, :string
 
   self.per_page = 18
 
@@ -274,10 +201,6 @@ class Project < ActiveRecord::Base
   add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
   add_checklist :difficulty, 'Skill level'
   add_checklist :product_tags_string, 'Tags'
-  add_checklist :description, 'Story'
-  add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
-  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
-  add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
   # beginning of search methods
   include TireInitialization
@@ -322,6 +245,10 @@ class Project < ActiveRecord::Base
     where(workflow_state: :approved)
   end
 
+  def self.content_types classes=TYPES.values
+    classes.inject({}){|mem, c| c.constantize::PUBLIC_CONTENT_TYPES.merge(mem) }
+  end
+
   def self.need_review
     where(workflow_state: :pending_review)
   end
@@ -329,7 +256,7 @@ class Project < ActiveRecord::Base
   def self.custom_for user
     col_projects = select('projects.id').joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").where("fr1.user_id = ?", user.id).distinct("projects.id")
     user_projects = select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")
-    part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'Project'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
+    part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'BaseArticle'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
 
     indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).last_public.includes(:parts, :platforms, :project_collections, :users)
   end
@@ -423,6 +350,10 @@ class Project < ActiveRecord::Base
     where(type: 'Product')
   end
 
+  def self.articles
+    where(type: 'Article')
+  end
+
   def self.scheduled_to_be_approved
     approved.where("projects.made_public_at > ?", Time.now).order(:made_public_at)
   end
@@ -447,15 +378,23 @@ class Project < ActiveRecord::Base
     joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
   end
 
+  def self.with_type content_type
+    where "projects.hproperties @> hstore('content_type', ?)", content_type
+  end
+
   def approve_later! *args
-    next_time_slot = get_next_time_slot Project.scheduled_to_be_approved.last.try(:made_public_at)
+    next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot
     approve! *args
   end
 
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(1*60..4*60).minutes  # every 1 to 4 hours == about 10 a day
+    days = ((last_scheduled_slot - Time.now) / SECONDS_IN_A_DAY).round
+    per_day = 2 + days
+    hour_interval = 24.to_f / per_day
+    minute_interval = hour_interval * 60
+    last_scheduled_slot + minute_interval.minutes
   end
 
   def scheduled_to_be_approved?
@@ -466,10 +405,6 @@ class Project < ActiveRecord::Base
     (Time.now - (made_public_at || created_at)) / SECONDS_IN_A_DAY
   end
 
-  def all_issues
-    (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
-  end
-
   def buy_link_host
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
@@ -478,14 +413,6 @@ class Project < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
-  end
-
-  def credit_lines
-    @credit_lines ||= credits_widget.try(:credit_lines) || []
-  end
-
-  def credits_widget
-    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'Project').first_or_create
   end
 
   def disable_tweeting?
@@ -504,6 +431,10 @@ class Project < ActiveRecord::Base
     type == 'ExternalProject'
   end
 
+  def identifier
+    'base_article'
+  end
+
   def product
     product?
   end
@@ -516,6 +447,14 @@ class Project < ActiveRecord::Base
     type == 'Product'
   end
 
+  def article=(val)
+    self.type = 'Article' if val
+  end
+
+  def article?
+    type == 'Article'
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
@@ -526,12 +465,6 @@ class Project < ActiveRecord::Base
 
   def force_hide?
     assignment.try(:hide_all)
-  end
-
-  def generate_description_from_widgets
-    self.description = widgets_to_text
-
-    give_embed_style!
   end
 
   def give_embed_style!
@@ -574,53 +507,8 @@ class Project < ActiveRecord::Base
   #   tweed_id.present?
   # end
 
-  # the following methods make has_many relations work has_one style
-  def get_collection collection_type
-    send("#{collection_type}s").first
-  end
-
-  def get_collection_id collection_type
-    get_collection(collection_type).try(:id)
-  end
-
-  def set_collection_id id, collection_type
-    self.send("#{collection_type}s").destroy_all
-    self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
-  end
-
-  def set_collection collection, collection_type
-    self.send("#{collection_type}s").destroy_all
-    self.send("#{collection_type}s") << collection if collection
-  end
-
-  %w(assignment event hacker_space).each do |type|
-    define_method type do
-      get_collection type
-    end
-
-    define_method "#{type}=" do |val|
-      set_collection val, type
-    end
-
-    define_method "#{type}_id" do
-      get_collection_id type
-    end
-
-    define_method "#{type}_id=" do |val|
-      set_collection_id val, type
-    end
-  end
-
   def known_platforms
     Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", platform_tags_cached.map{|t| t.downcase })
-  end
-
-  def has_assignment?
-    assignment.present?
-  end
-
-  def has_no_assignment?
-    assignment.nil?
   end
 
   def has_default_name?
@@ -631,10 +519,6 @@ class Project < ActiveRecord::Base
     hide
   end
 
-  def is_idea?
-    workflow_state == 'idea'
-  end
-
   def image
     images.first
   end
@@ -642,23 +526,7 @@ class Project < ActiveRecord::Base
   def license
     return @license if @license
     val = read_attribute(:license)
-    @license = License.new val if val.present?
-  end
-
-  def locked?
-    locked
-  end
-
-  def logo_id=(val)
-    self.logo = Avatar.find_by_id(val)
-  end
-
-  def mark_as_idea
-    is_idea?
-  end
-
-  def mark_as_idea=(val)
-    self.workflow_state = (val.in?([1, '1', 't']) ? 'idea' : nil)
+    @license = License.new(val) if val.present?
   end
 
   # def name
@@ -684,8 +552,6 @@ class Project < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      external: external?,
-      has_logo: logo.present?,
       is_featured: featured,
       is_public: public?,
       project_id: id,
@@ -693,7 +559,7 @@ class Project < ActiveRecord::Base
       product_tags_count: product_tags_count,
       respects_count: respects_count,
       views_count: impressions_count,
-      widgets_count: widgets_count,
+      content_type: content_type,
     }
   end
 
@@ -708,7 +574,7 @@ class Project < ActiveRecord::Base
   end
 
   def prepare_tweet
-    prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
+    prepend = "New project: "  # 13 characters
     TweetBuilder.new(self).tweet(prepend)
   end
 
@@ -732,10 +598,6 @@ class Project < ActiveRecord::Base
       respects_count: respects_count,
       comments_count: comments_count,
     }
-  end
-
-  def unlocked?
-    !locked?
   end
 
   def update_slug
@@ -767,10 +629,6 @@ class Project < ActiveRecord::Base
     website
   end
 
-  def wip?
-    wip
-  end
-
   private
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
@@ -787,7 +645,7 @@ class Project < ActiveRecord::Base
     end
 
     def delete_empty_part_ids
-      (hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
+      (part_joins).each do |part_join|
         part_join.delete if part_join.part_id.blank?
       end
     end
@@ -811,7 +669,7 @@ class Project < ActiveRecord::Base
       exists = true
       while exists
         hid = SecureRandom.hex(3)
-        exists = Project.exists?(hid: hid)
+        exists = BaseArticle.exists?(hid: hid)
       end
       self.hid = hid
     end
@@ -822,10 +680,6 @@ class Project < ActiveRecord::Base
 
     def remove_whitespaces_from_html text
       text.gsub(/>\s{2,}/, "> ").gsub(/\s{2,}</, " <")
-    end
-
-    def set_columns_count
-      self.columns_count = 1
     end
 
     def slug_is_unique
@@ -868,20 +722,5 @@ class Project < ActiveRecord::Base
 
     def tags_length_is_valid
       errors.add :product_tags_array, 'too many tags (3 max, choose wisely!)' if product_tags_array.length > 3
-    end
-
-    def widgets_to_text
-      output = ''
-      # last_widget = widgets.last
-
-      widgets.each do |widget|
-        widget_content = widget.to_text
-        if widget_content.present?
-          output << widget.to_text
-          # output << '<hr>' unless last_widget == widget
-        end
-      end
-
-      output
     end
 end

@@ -78,7 +78,7 @@ class AssignmentsController < ApplicationController
   end
 
   def link
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     @project.assignment = @assignment
     @project.save
 

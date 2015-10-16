@@ -22,15 +22,15 @@ class CronTask < BaseWorker
       Group.find(c[1]).update_counters only: [:projects]
     end
 
-    CoverImage.select("id, count(id) as quantity").where("attachable_type = 'Project'").group(:attachable_id, :attachable_type).having("count(id) > 1").size.each do |c, count|
+    CoverImage.select("id, count(id) as quantity").where("attachable_type = 'BaseArticle'").group(:attachable_id, :attachable_type).having("count(id) > 1").size.each do |c, count|
       pid = c[0]
-      CoverImage.where(attachable_id: pid, attachable_type: 'Project').order(created_at: :asc).limit(count - 1).each{|cp| cp.delete }
+      CoverImage.where(attachable_id: pid, attachable_type: 'BaseArticle').order(created_at: :asc).limit(count - 1).each{|cp| cp.delete }
     end
   end
 
   def cleanup_buggy_unpublished
-    Project.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
-    Project.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
+    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
       project.update_attribute :workflow_state, :approved
     end
   end
@@ -172,7 +172,7 @@ class CronTask < BaseWorker
     end
 
     def send_project_notifications time_frame, email_frequency
-      project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
+      project_ids = BaseArticle.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
 

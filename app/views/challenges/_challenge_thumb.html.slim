@@ -10,9 +10,10 @@ div class=col_size
         .thumb-image-inner
           h4
             = link_to challenge.name, challenge
-            - if challenge.platform
-              br
-              a.small sponsored by #{challenge.platform.name}
+            br
+            a.small
+              ' sponsored by
+              = challenge.sponsors.pluck(:full_name).to_sentence
 
           - if thumb_size == :large
             p style='margin-bottom:0'

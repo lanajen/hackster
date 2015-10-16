@@ -1,6 +1,6 @@
 class ExternalProjectsController < ApplicationController
   before_filter :load_project_with_hid, only: [:show]
-  load_and_authorize_resource :project, parent: false, only: [:edit, :update]
+  before_filter :load_and_authorize_resource, only: [:edit, :update]
   respond_to :html
 
   def show
@@ -22,7 +22,7 @@ class ExternalProjectsController < ApplicationController
   end
 
   def redirect_to_show
-    @project = Project.external.find params[:id]
+    @project = ExternalProject.find params[:id]
     redirect_to @project, status: 301
   end
 
@@ -31,7 +31,7 @@ class ExternalProjectsController < ApplicationController
   end
 
   def update
-    if @project.update_attributes(params[:project])
+    if @project.update_attributes(params[:base_article])
       notice = "#{@project.name} was successfully updated."
       respond_with @project do |format|
         format.html do
@@ -40,8 +40,13 @@ class ExternalProjectsController < ApplicationController
         end
       end
     else
-      @project = @project.decorate
       render action: :edit
     end
   end
+
+  private
+    def load_and_authorize_resource
+      @project = ExternalProject.find params[:id]
+      authorize! self.action_name, @project
+    end
 end

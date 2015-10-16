@@ -2,7 +2,7 @@ class ProjectWorker < BaseWorker
   sidekiq_options unique: :all, queue: :critical
 
   def update_platforms id
-    return unless project = Project.find_by_id(id)
+    return unless project = BaseArticle.find_by_id(id)
 
     if project.private?
       project.platforms.delete_all

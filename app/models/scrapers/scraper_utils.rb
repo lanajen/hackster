@@ -14,11 +14,15 @@ module ScraperUtils
   def fetch_page page_url, file_name=nil
     page_url = 'http://' + page_url unless page_url =~ /^https?\:\/\//
     puts "Fetching page #{page_url}..."
+    @options = { allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
     5.times do
       begin
-        return open(page_url, allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
+        return open(page_url, @options).read
       rescue => e
         # raise e.inspect
+        if e.class == Zlib::DataError
+          @options['Accept-Encoding'] = 'plain'
+        end
         puts "Failed opening #{page_url}. Retrying in 1 second..."
         sleep 1
       end

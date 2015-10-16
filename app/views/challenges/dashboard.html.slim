@@ -2,13 +2,11 @@ p
   = link_to "&larr; Return to challenge page".html_safe, @challenge
 
 h1
-  | #{@challenge.name}: admin dashboard
+  | #{@challenge.name}: Entries dashboard
 
 p
   b> Challenge status:
   = @challenge.status
-
-p= link_to 'Admin FAQ', challenge_faq_entries_path(@challenge)
 
 p
   strong>= @challenge.registrations_count

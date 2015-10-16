@@ -36,7 +36,7 @@ class MembersController < ApplicationController
     if @group.update_attributes(params[@group.class.model_name.to_s.underscore.to_sym])
       if @project
         flash[:notice] = 'Team saved.'
-        respond_with Project.find(params[:project_id])
+        respond_with BaseArticle.find(params[:project_id])
       else
         flash[:notice] = 'Members saved.'
         redirect_to group_path(@group)
@@ -49,11 +49,11 @@ class MembersController < ApplicationController
   def update_guest_name
     authorize! :update, @project
 
-    if @project.update_attributes(params[:project])
+    if @project.update_attributes(params[:base_article])
       respond_with @project do |format|
         format.html do
           flash[:notice] = 'Team saved.'
-          respond_with Project.find(params[:project_id])
+          respond_with BaseArticle.find(params[:project_id])
         end
       end
 
@@ -71,7 +71,7 @@ class MembersController < ApplicationController
       elsif params[:promotion_id]
         @promotion = Promotion.find(params[:promotion_id])
       else
-        @project = Project.find(params[:project_id])
+        @project = BaseArticle.find(params[:project_id])
         @project.try(:team)
       end
       # @model_name = @group.class.model_name.to_s.underscore

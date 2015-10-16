@@ -27,14 +27,14 @@ class Api::V1::ListsController < Api::V1::BaseController
   end
 
   def link_project
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     @list.projects << @project unless ProjectCollection.exists? @project.id, 'Group', @list.id
 
     render status: :ok, nothing: true
   end
 
   def unlink_project
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     @list.projects.destroy @project
 
     render status: :ok, nothing: true

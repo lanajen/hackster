@@ -1,11 +1,11 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
   before_filter :public_api_methods, only: [:index, :show]
   before_filter :authenticate_user!, only: [:create, :update, :destroy]
-  load_and_authorize_resource only: [:create, :update, :destroy]
+  before_filter :load_and_authorize_resource, only: [:create, :update, :destroy]
 
   def index
-    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
-    by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
+    by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
     projects = if params[:platform_user_name]
       parent = Platform.find_by_user_name! params[:platform_user_name]
@@ -14,24 +14,24 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       end
       parent.projects
     else
-      Project
+      BaseArticle
     end
 
     projects = projects.indexable.for_thumb_display
 
     if params[:sort]
-      projects = projects.send(Project::SORTING[params[:sort]])
+      projects = projects.send(BaseArticle::SORTING[params[:sort]])
     end
 
-    if by and by.in? Project::FILTERS.keys
-      projects = projects.send(Project::FILTERS[by])
+    if by and by.in? BaseArticle::FILTERS.keys
+      projects = projects.send(BaseArticle::FILTERS[by])
     end
 
     @projects = projects.paginate(page: safe_page_params)
   end
 
   def show
-    @project = Project.where(id: params[:id]).public.first!
+    @project = BaseArticle.where(id: params[:id]).public.first!
   end
 
   def create
@@ -46,21 +46,21 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     @panel = params[:panel]
 
     # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
-    if params[:project].try(:[], :widgets_attributes)
+    if params[:base_article].try(:[], :widgets_attributes)
       widgets = {}
-      params[:project][:widgets_attributes].each do |i, widget|
+      params[:base_article][:widgets_attributes].each do |i, widget|
         widgets[i] = widget if widget['id'].present?
       end
       all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
       widgets.each do |i, widget|
         unless all.include? widget['id']
-          params[:project][:widgets_attributes].delete(i)
+          params[:base_article][:widgets_attributes].delete(i)
         end
       end
     end
 
-    if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:project]
-      if @panel.in? %w(hardware publish team software)
+    if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
+      if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
         render 'projects/forms/update'
       else
         render 'projects/forms/checklist', status: :ok
@@ -69,7 +69,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
       log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
       # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
-      render json: { project: @project.errors }, status: :unprocessable_entity
+      render json: { base_article: @project.errors }, status: :unprocessable_entity
     end
   rescue => e
     message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
@@ -84,4 +84,10 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
     render status: :ok, nothing: true
   end
+
+  private
+    def load_and_authorize_resource
+      @project = BaseArticle.find params[:project_id] || params[:id]
+      authorize! self.action_name, @project
+    end
 end

@@ -14,17 +14,21 @@
             - else
               ==> comment.user.decorate.name_link
 
-        span.text-muted
+        span.text-muted.comment-date
           ==> time_ago_in_words(comment.created_at)
           | ago
-      .reply-comment.user-signed-in style='display:none'
-        a.btn.btn-default.btn-sm.comment-reply href='' data-target="#comment-reply-#{comment_target}"
+
+    .comment-body= raw comment.body
+
+
+    ul.comment-actions.reply-comment.user-signed-in.list-inline style='display:none'
+      li
+        a.comment-reply href='' data-target="#comment-reply-#{comment_target}"
           - if comment.is_root?
             | Reply
           - else
             | Reply to conversation
-        - if can? :destroy, comment
-          = link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'btn-delete default-hidden btn btn-link btn-sm pull-left'
-        - else
-          = react_component('FlagButton', { currentUserId: current_user.try(:id), flaggable: { type: 'Comment', id: comment.id } }, { class: 'btn btn-sm btn-link btn-delete default-hidden pull-left' })
-    = raw comment.body
+      - if can? :destroy, comment
+        li= link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'default-hidden'
+      - else
+        li= react_component('FlagButton', { currentUserId: current_user.try(:id), flaggable: { type: 'Comment', id: comment.id } }, { class: 'default-hidden' })

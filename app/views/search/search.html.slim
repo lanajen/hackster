@@ -31,7 +31,7 @@
             .text-center= will_paginate @results
         - else
           .box-content.search-results
-            | No results for <i>#{params[:q]}</i>. <a href="/projects/new?project[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
+            | No results for <i>#{params[:q]}</i>. <a href="/projects/new?base_article[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
       - else
         .box-content.search-results
           | Go ahead, look something up!

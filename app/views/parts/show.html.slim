@@ -27,7 +27,7 @@
 
 .main-section-actions.clearfix.mg-30
   .pull-right
-    - hash = is_whitelabel? ? {} : { project: { platform_tags_string: @platform.name } }
+    - hash = is_whitelabel? ? {} : { base_article: { platform_tags_string: @platform.name } }
     - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash), source: 'new_project')
     ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
 
@@ -73,4 +73,4 @@
   p
     ' No projects here yet!
     - if @platform.platform_tags.any?
-      = link_to "Create the first project using #{@part.name}", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
+      = link_to "Create the first project using #{@part.name}", new_project_path(base_article: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'

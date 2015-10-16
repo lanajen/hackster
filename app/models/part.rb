@@ -5,6 +5,11 @@
 class Part < ActiveRecord::Base
   DEFAULT_SORT = 'alpha'
   EDITABLE_STATES = %w(new pending_review)
+  KNOWN_TYPES = {
+    'hardware' => 'component',
+    'software' => 'app',
+    'tool' => 'tool',
+  }
   INVALID_STATES = %w(rejected retired)
   SORTING = {
     'alpha' => :sorted_by_full_name,
@@ -27,9 +32,9 @@ class Part < ActiveRecord::Base
   has_many :owners, through: :follow_relations, class_name: 'User', source: :user
   has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
-  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
+  has_many :parent_projects, through: :sub_part_joins, source_type: 'BaseArticle', source: :partable
   has_many :part_joins, inverse_of: :part, dependent: :destroy
-  has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
+  has_many :projects, through: :part_joins, source_type: 'BaseArticle', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
 
   taggable :product_tags
@@ -161,7 +166,7 @@ class Part < ActiveRecord::Base
   def all_projects
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
-    Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
+    BaseArticle.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'BaseArticle'").where(part_joins: { part_id: ids })
   end
 
   def editable

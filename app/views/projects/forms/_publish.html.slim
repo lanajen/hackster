@@ -19,7 +19,7 @@
               .col-md-4
                 label.control-label Private sharing link
               .col-md-8
-                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
+                input.form-control  type='text' value=project_private_sharing_url(@project) onclick='this.select();' style='color: #666;background:#ddd'
                 p.help-block Use this link if you want to share your project while keeping it private.
 
           = f.input :new_slug, label: 'Project URL', wrapper: :addon do
@@ -29,10 +29,10 @@
           = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
             .row
               .col-md-6
-                = hidden_field_tag 'project[start_date(3i)]', '1'
-                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+                = hidden_field_tag 'base_article[start_date(3i)]', '1'
+                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'base_article[start_date(2i)]' })
               .col-md-6
-                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'base_article[start_date(1i)]' })
 
 
           / = render partial: 'projects/open_source_switch', locals: { f: f }

@@ -544,7 +544,7 @@ HackerIo::Application.routes.draw do
       get 'signed_url', on: :collection
     end
 
-    resources :projects, except: [:index, :show, :update, :destroy] do
+    resources :projects, only: [:new, :create] do
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member
@@ -561,11 +561,22 @@ HackerIo::Application.routes.draw do
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
       end
+    end
+
+    resources :base_articles, only: [], path: 'articles' do
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
         get 'create' => 'respects#create', on: :collection, as: :create
         delete '' => 'respects#destroy', on: :collection
       end
+    end
+
+    constraints(ProjectPage) do
+      get 'projects/:id/edit' => 'projects#edit', as: :edit_project
+    end
+
+    constraints(ArticlePage) do
+      get 'projects/:id/edit' => 'articles#edit', as: :edit_article
     end
 
     get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
@@ -624,11 +635,9 @@ HackerIo::Application.routes.draw do
       get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
-    constraints(SelfHostedProjectPage) do
+    constraints(ProjectPage) do
       scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/, constraints: { format: /(html|json|js)/ } do
         get '' => 'projects#show', as: ''
-        delete '' => 'projects#destroy'
-        patch '' => 'projects#update'
         get 'embed' => 'projects#embed', as: :embed
         get 'print' => 'projects#print', as: :print
         resources :issues do
@@ -639,6 +648,13 @@ HackerIo::Application.routes.draw do
     end
     constraints(ExternalProjectPage) do
       get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    constraints(ArticlePage) do
+      get ':user_name/:project_slug' => 'articles#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
+      patch '' => 'projects#update'
+      delete '' => 'projects#destroy'
     end
 
     # old routes, kept for not break existing links

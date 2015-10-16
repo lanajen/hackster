@@ -6,7 +6,7 @@
 = content_for :no_container do
   - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
-    #content.project-page class="project-#{@project.id}"
+    #content.project-page.hljs-active class="project-#{@project.id}"
       .container-desktop.container
         .row
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
@@ -325,7 +325,7 @@
                           i.fa.fa-lock>
                           | This project is private so only #{who.to_sentence} can see it.
                       - if @project.can_be_public? or current_user.try(:is?, :admin)
-                        p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+                        p= link_to 'Publish publicly', project_path(@project, base_article: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
                       - else
                         = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
                       p
@@ -374,7 +374,7 @@
                 - else
                   section.section-thumbs#team
                     h4
-                      - if @project.project.team.full_name.present?
+                      - if @project.team.full_name.present?
                         = @project.team.name
                       - elsif @project.team_members_count > 1
                         | Team members

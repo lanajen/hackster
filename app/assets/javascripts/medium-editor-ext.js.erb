@@ -388,7 +388,7 @@ $(function() {
 
       var tmpSaveMode = _.saveMode;
       _.saveMode = 'auto';
-      _.saveModel();
+      _.saveModel(successCallback, failCallback, formData);
       _.saveMode = tmpSaveMode;
     },
 
@@ -459,7 +459,8 @@ $(function() {
         });
         _.lastSaved = new Date().getTime();
       } else if (_.saveMode == 'form') {
-        $('#project_description').val(modelData.description);
+        console.log('saving modeldata', modelData.description);
+        $('#base_article_description').val(modelData.description);
       }
     },
 
@@ -1921,6 +1922,7 @@ function insertEmbedTag(url, node) {
         link = '<a href="' + data.url + '" target="_blank" rel="nofollow">' + data.url + '</a>';
         node.html(link);
       }
+      editor.triggerInput();
     },
     complete: function(data){
       editor.hideLoadingBar();

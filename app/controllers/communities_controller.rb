@@ -17,7 +17,7 @@ class CommunitiesController < ApplicationController
     title @community.name
     meta_desc "Join the community #{@community.name} on Hackster.io!"
 
-    @projects = @community.project_collections.visible.joins(:project).merge(Project.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
+    @projects = @community.project_collections.visible.joins(:project).merge(BaseArticle.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
     @members = @community.members.invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
 
     render "groups/shared/show"

@@ -22,7 +22,7 @@ class EventsController < ApplicationController
   def participants_list
     authorize! :manage, @event
 
-    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
+    @projects = @event.project_collections.visible.includes(:project).visible.merge(BaseArticle.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
 
     render "groups/events/participants_list"
   end
@@ -31,7 +31,7 @@ class EventsController < ApplicationController
     title @event.name
     meta_desc "See what's cooking at #{@event.name}."
 
-    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
+    @projects = @event.project_collections.visible.includes(:project).visible.merge(BaseArticle.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
     @awards = @event.awards
 
     render "groups/events/projects"

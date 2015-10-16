@@ -1,6 +1,6 @@
 class FollowRelationObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    unless record.skip_notification? or (record.followable_type == 'Group' and record.followable.email.blank?) or record.followable_type.in? %(Project Part)
+    unless record.skip_notification? or (record.followable_type == 'Group' and record.followable.email.blank?) or record.followable_type.in? %(BaseArticle Part)
       NotificationCenter.notify_all :new, :follow_relation, record.id
     end
   end
@@ -28,7 +28,7 @@ class FollowRelationObserver < ActiveRecord::Observer
       when 'HardwarePart', 'SoftwarePart', 'ToolPart', 'Part'
         record.followable.update_counters only: [:owners]
         record.user.update_counters only: [:owned_parts]
-      when 'Project'
+      when 'BaseArticle'
         record.followable.update_counters only: [:replications]
         record.user.update_counters only: [:replicated_projects]
         Cashier.expire "project-#{record.followable_id}-replications", "project-#{record.followable_id}"

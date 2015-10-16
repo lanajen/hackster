@@ -1,5 +1,5 @@
 class Admin::ProjectsController < Admin::BaseController
-  load_resource except: [:index, :new, :create]
+  before_filter :load_resource, except: [:index, :new, :create]
 
   def index
     title "Admin / Projects - #{safe_page_params}"
@@ -14,30 +14,30 @@ class Admin::ProjectsController < Admin::BaseController
 
     params[:sort_order] ||= 'DESC'
 
-    @projects = params[:approval_needed] ? Project.need_review : Project
-    @projects = filter_for @projects, @fields
+    @base_articles = params[:approval_needed] ? BaseArticle.need_review : BaseArticle
+    @base_articles = filter_for @base_articles, @fields
   end
 
   def new
     title "Admin / Projects / New"
 
-    model_class = if params[:type] and params[:type].in? Project::MACHINE_TYPES.keys
-      Project::MACHINE_TYPES[params[:type]].constantize
+    model_class = if params[:type] and params[:type].in? BaseArticle::MACHINE_TYPES.keys
+      BaseArticle::MACHINE_TYPES[params[:type]].constantize
     else
-      Project
+      BaseArticle
     end
-    @project = model_class.new params[:project]
+    @base_article = model_class.new params[:base_article]
   end
 
   def create
-    model_class = if params[:project] and params[:project][:type] and params[:project][:type].in? Project::MACHINE_TYPES.values
-      params[:project][:type].constantize
+    model_class = if params[:base_article] and params[:base_article][:type] and params[:base_article][:type].in? BaseArticle::MACHINE_TYPES.values
+      params[:base_article][:type].constantize
     else
-      Project
+      BaseArticle
     end
-    @project = model_class.new params[:project]
+    @base_article = model_class.new params[:base_article]
 
-    if @project.save
+    if @base_article.save
       redirect_to admin_projects_path, :notice => 'New project created'
     else
       render :new
@@ -45,12 +45,12 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def edit
-    title "Admin / Projects / Edit #{@project.name}"
+    title "Admin / Projects / Edit #{@base_article.name}"
   end
 
   def update
-    if @project.update_attributes(params[:project])
-      @team_members = @project.users
+    if @base_article.update_attributes(params[:base_article])
+      @team_members = @base_article.users
       redirect_to admin_projects_path, :notice => 'Project successfuly updated'
     else
       render :edit
@@ -58,12 +58,16 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def destroy
-    @project.destroy
+    @base_article.destroy
     redirect_to admin_projects_path, :notice => 'Project successfuly deleted'
   end
 
   private
     def check_authorization_for_admin
       raise CanCan::AccessDenied unless current_user.is? :admin, :moderator
+    end
+
+    def load_resource
+      @base_article =  BaseArticle.find params[:id]
     end
 end

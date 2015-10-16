@@ -88,8 +88,11 @@ $select2target = null;
     }
 
     $('body').on('click', '.new-comment input[type="submit"]', function(e){
-      $(this).parent().parent().submit();
-      $(this).replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+      var form = $(this).closest('form')
+      if (form.hasClass('remote')) {
+        $(this).replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+        form.submit();
+      }
     });
 
     checkIfCommentsHaveSameDepthYoungerSiblings();
@@ -309,6 +312,7 @@ $select2target = null;
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
         sortTable();
+        $(this).trigger('pe:loaded');
       })
       .on('ajax:error', 'form.remote', function(xhr, status){
         $('.pe-save').slideDown(200);
@@ -352,7 +356,7 @@ $select2target = null;
       $(this).trigger('change');
     });
 
-    $('#basics').on('change', '[name="project[cover_image_id]"]', function(e){
+    $('#basics').on('change', '[name="base_article[cover_image_id]"]', function(e){
       $('.pe-save').slideDown(200);
       $('.pe-save2').hide();
     });
@@ -890,7 +894,7 @@ function cEditorUpdateHeight(div, cEditor) {
 }
 
 function cleanUpSelectBlueprint() {
-  var targets = $('#software_part_joins_fields_blueprint, #hardware_part_joins_fields_blueprint, #tool_part_joins_fields_blueprint');
+  var targets = $('#part_joins_fields_blueprint, #software_part_joins_fields_blueprint, #hardware_part_joins_fields_blueprint, #tool_part_joins_fields_blueprint');
   targets = _.filter(targets, function(el){ return !$(el).hasClass('ready'); });
   $.each(targets, function(i, el){
     el = $(el);
@@ -915,9 +919,10 @@ function formatPart(result) {
 
   if (!result.part) {
     if (!result.element) {
-      var phrase = result.id == -1 ? "Can't find the right one?" : "No results for '" + _.escape(result.q) + "'";
+      var noMatchPhrase = result.id == -1 ? "Can't find the right one?" : "No results for '" + _.escape(result.q) + "'";
+      var newPhrase = 'Create a new ' + (result.type ? result.type : 'one');
 
-      return $("<span>" + phrase + " <a href='javascript:void(0)' class='btn btn-sm btn-success edit-in-modal modal-reset' data-modal='#parts-popup' data-value='" + _.escape(result.q) + "'>Create a new " + result.type + "</a></span>");
+      return $("<span>" + noMatchPhrase + " <a href='javascript:void(0)' class='btn btn-sm btn-success edit-in-modal modal-reset' data-modal='#parts-popup' data-value='" + _.escape(result.q) + "'>" + newPhrase + "</a></span>");
     }
 
     var el = $(result.element);

@@ -15,6 +15,7 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
+  has_and_belongs_to_many :sponsors, class_name: 'Group', dependent: :destroy
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
@@ -44,7 +45,7 @@ class Challenge < ActiveRecord::Base
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
-  attr_accessible :new_slug, :name, :prizes_attributes, :platform_id,
+  attr_accessible :new_slug, :name, :prizes_attributes, :sponsor_ids,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,

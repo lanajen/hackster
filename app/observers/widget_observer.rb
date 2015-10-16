@@ -25,7 +25,7 @@ class WidgetObserver < ActiveRecord::Observer
   private
     def expire record
       keys = []
-      if record.widgetable_type == 'Project'
+      if record.widgetable_type == 'BaseArticle'
         case record.type
         when 'CadRepoWidget', 'CadFileWidget'
           keys << "project-#{record.project_id}-cad"

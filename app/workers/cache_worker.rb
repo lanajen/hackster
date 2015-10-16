@@ -3,7 +3,7 @@ class CacheWorker < BaseWorker
 
   def warm_cache
     perform_time = Time.now
-    Project.indexable.most_popular.pluck(:id).each do |project_id|
+    BaseArticle.indexable.most_popular.pluck(:id).each do |project_id|
       self.class.perform_at perform_time, 'warm_project_cache', project_id
       perform_time += 0.5.seconds
     end
@@ -17,7 +17,7 @@ class CacheWorker < BaseWorker
   end
 
   def warm_project_cache id
-    project = Project.find id
+    project = BaseArticle.find id
     app.get '/' + project.uri unless Rails.cache.exist?(project)
     # fetch_url(APP_CONFIG['full_host'] + '/' + project.uri) unless Rails.cache.exist?(project)
   rescue

@@ -12,7 +12,7 @@ class Api::V1::FollowersController < Api::V1::BaseController
           h[:user] << f.followable_id
         when 'Group'
           h[:group] << f.followable_id
-        when 'Project'
+        when 'BaseArticle'
           h[:project] << f.followable_id
         when 'Part'
           h[:part] << f.followable_id
@@ -54,7 +54,7 @@ class Api::V1::FollowersController < Api::V1::BaseController
 
   private
     def load_followable
-      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Part Project User)
+      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Part BaseArticle User)
 
       @followable = params[:followable_type].constantize.find params[:followable_id]
     end
