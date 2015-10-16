@@ -29,7 +29,7 @@ class BaseArticle < ActiveRecord::Base
   TYPES = {
     'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
-    'Normal' => 'Project',
+    'Project' => 'Project',
     'Product' => 'Product',
   }
   MACHINE_TYPES = {
