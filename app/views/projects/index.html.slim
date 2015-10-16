@@ -53,6 +53,7 @@
               li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', projects_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', projects_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', projects_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', projects_path(type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', projects_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', projects_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
       hr
