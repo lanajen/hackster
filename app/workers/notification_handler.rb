@@ -66,6 +66,9 @@ class NotificationHandler
         context[:badge] = awarded_badge.badge
         user = awarded_badge.awardee
         user.subscribed_to?(notification_type, 'new_badge') ? context[:user] = user : context[:users] = []
+      when :base_article
+        context[:model] = base_article = context[:base_article] = context[:project] = BaseArticle.find(context_id)
+        context[:users] = base_article.users
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         if event.in? [:ending_soon]

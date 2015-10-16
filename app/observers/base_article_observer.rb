@@ -45,7 +45,7 @@ class BaseArticleObserver < ActiveRecord::Observer
     end
     record.users.each{|u| u.update_counters only: [:approved_projects] }
 
-    NotificationCenter.notify_all :approved, :project, record.id
+    NotificationCenter.notify_all :approved, :base_article, record.id
   end
 
   def after_rejected record
