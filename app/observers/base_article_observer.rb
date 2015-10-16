@@ -59,7 +59,6 @@ class BaseArticleObserver < ActiveRecord::Observer
 
   def before_create record
     record.reset_counters assign_only: true
-    record.private_issues = record.private_logs = !!!record.open_source
     record.last_edited_at = record.created_at
   end
 

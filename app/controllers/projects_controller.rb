@@ -136,7 +136,7 @@ class ProjectsController < ApplicationController
     model_class = if params[:type] and params[:type].in? BaseArticle::MACHINE_TYPES.keys
       BaseArticle::MACHINE_TYPES[params[:type]].constantize
     else
-      BaseArticle
+      Project
     end
     @project = model_class.new params[:base_article]
     authorize! :create, @project
@@ -155,7 +155,7 @@ class ProjectsController < ApplicationController
     model_class = if params[:base_article] and params[:base_article][:type] and params[:base_article][:type].in? BaseArticle::MACHINE_TYPES.values
       params[:base_article][:type].constantize
     else
-      BaseArticle
+      Project
     end
     @project = model_class.new params[:base_article]
     authorize! :create, @project

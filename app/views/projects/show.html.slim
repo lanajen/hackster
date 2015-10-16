@@ -380,9 +380,6 @@
                         | Team members
                       - else
                         | Author
-                      - if @can_edit
-                        = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
-
                     - @project.team_members.includes(:user, user: :avatar).each do |member|
                       = render partial: 'users/member_thumb_mini', locals: { member: member }
 
