@@ -82,10 +82,16 @@
                         - part = part.decorate
                         - if part.image
                           = image_tag part.image(:tiny)
-                        - if part.has_own_page? and !is_whitelabel?
-                          = link_to part.name, part
                         - else
-                          = part.name
+                          i.fa.fa-circle-o.small
+                        - if part.has_own_page? and !is_whitelabel?
+                          span= link_to part.name, part
+                        - elsif part.store_link.present?
+                          span= link_to part.name, part.store_link, target: '_blank', rel: 'nofollow'
+                        - elsif part.product_page_link.present?
+                          span= link_to part.name, part.product_page_link, target: '_blank', rel: 'nofollow'
+                        - else
+                          span= part.name
 
               .protip-section-img
                 = image_tag @project.cover_image(:medium)
@@ -132,21 +138,30 @@
                 - @project.team_members.each do |member|
                   = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
 
+              - if @project.credit_lines.any?
+                .member-thumb
+                  ' Thanks to
+                  = @project.credit_lines.map{|c| render('credit_line', credit_line: c) }.to_sentence.html_safe
+                  | .
+
               - if @project.product_tags_cached.any?
                 ul.list-inline.tags
                   - @project.product_tags_cached.map{|t| t.downcase }.each do |tag|
                     li= link_to tag, tag_path(tag), class: 'tag tag-invert'
 
-              .clearfix.small.text-muted
-                - if @project.license
-                  .pull-left-desktop
-                    ' Licensed under
-                    a target='_blank' href=@project.license.url = @project.license.abbr
-
+              p.small.text-muted
                 - if @project.made_public_at
-                  .pull-right-desktop
+                  span
                     i.fa.fa-clock-o
                     span= l @project.made_public_at, format: :long_date
+                  - if @project.license
+                    span style='padding:0 10px' -
+
+                - if @project.license
+                  span
+                    ' Licensed under
+                    a target='_blank' href=@project.license.url = @project.license.abbr
+                    | .
 
               / # = render 'actions'
 

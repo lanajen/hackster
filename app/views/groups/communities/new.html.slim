@@ -9,7 +9,7 @@
           = f.error_notification
 
           = f.input :full_name, label: 'Community name'
-          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: 'Max 140 characters'
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
 
           .avatar.file-drop.form-group  class="#{'has-error' if @community.errors[:avatar].present?}"
             .col-sm-4

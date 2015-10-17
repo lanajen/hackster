@@ -393,6 +393,14 @@ class BaseArticle < ActiveRecord::Base
     approve! *args
   end
 
+  def credit_lines
+    @credit_lines ||= credits_widget.try(:credit_lines) || []
+  end
+
+  def credits_widget
+    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'BaseArticle').first_or_create
+  end
+
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
     days = ((last_scheduled_slot - Time.now) / SECONDS_IN_A_DAY).round

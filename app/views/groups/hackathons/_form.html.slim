@@ -22,8 +22,8 @@
         span.input-group-addon hackster.io/hackathons/
         = f.input_field :user_name
       / = f.input :email
-      = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+      = f.input :mini_resume, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },
+        hint: 'A short sentence, max 140 characters'
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @hackathon.avatar.try(:imgix_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 

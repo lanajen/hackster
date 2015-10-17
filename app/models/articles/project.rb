@@ -39,14 +39,6 @@ class Project < BaseProject
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
-  def credit_lines
-    @credit_lines ||= credits_widget.try(:credit_lines) || []
-  end
-
-  def credits_widget
-    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'BaseArticle').first_or_create
-  end
-
   def identifier
     'project'
   end

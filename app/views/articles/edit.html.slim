@@ -108,6 +108,29 @@
 
       #protip_attachments= render 'projects/forms/protip_attachments'
 
+      = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+        .row
+          .col-xs-12
+            .panel.panel-default data-anchor='description'
+              .panel-heading
+                h4 Thank contributors
+              .panel-body
+                p.small.text-muted
+                  strong
+                    | Did anybody help you? Have you based your work on somebody else's? Use this section to thank these fine people.
+
+                - widget = @project.credits_widget
+                = f.simple_fields_for :widgets, widget do |f_cred|
+                  - widget.new_credit_line if widget.credit_lines.empty?
+                  .form-fields
+                    = f_cred.simple_fields_for :credit_lines do |f_credit|
+                      = f_credit.input :name, label: 'Contributor name'
+                      = f_credit.input :work, label: 'What they did'
+                      = f_credit.input :link, label: 'Link (optional)'
+                      .row
+                        .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+                    = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
+
       .row
         .col-xs-12
           .panel.panel-default
