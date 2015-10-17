@@ -54,12 +54,14 @@ class BaseArticle < ActiveRecord::Base
 
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
+  has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
   has_many :commenters, -> { uniq true }, through: :comments_copy, source: :user
   has_many :communities, -> { where("groups.type = 'Community'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
+  has_many :grades, foreign_key: :project_id
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
@@ -632,6 +634,24 @@ class BaseArticle < ActiveRecord::Base
     website
   end
 
+  %w(assignment).each do |type|
+    define_method type do
+      get_collection type
+    end
+
+    define_method "#{type}=" do |val|
+      set_collection val, type
+    end
+
+    define_method "#{type}_id" do
+      get_collection_id type
+    end
+
+    define_method "#{type}_id=" do |val|
+      set_collection_id val, type
+    end
+  end
+
   private
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
@@ -725,5 +745,24 @@ class BaseArticle < ActiveRecord::Base
 
     def tags_length_is_valid
       errors.add :product_tags_array, 'too many tags (3 max, choose wisely!)' if product_tags_array.length > 3
+    end
+
+    # the following methods make has_many relations work has_one style
+    def get_collection collection_type
+      send("#{collection_type}s").first
+    end
+
+    def get_collection_id collection_type
+      get_collection(collection_type).try(:id)
+    end
+
+    def set_collection_id id, collection_type
+      self.send("#{collection_type}s").destroy_all
+      self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
+    end
+
+    def set_collection collection, collection_type
+      self.send("#{collection_type}s").destroy_all
+      self.send("#{collection_type}s") << collection if collection
     end
 end
