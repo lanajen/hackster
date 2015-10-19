@@ -1,5 +1,5 @@
 import React from 'react';
-import { addToFollowing, removeFromFollowing, getFollowing } from '../utils/Requests';
+import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
 import _ from 'lodash';

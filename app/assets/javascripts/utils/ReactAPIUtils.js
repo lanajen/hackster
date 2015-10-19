@@ -13,10 +13,37 @@ module.exports = {
     });
   },
 
+  addToFollowing(id, type, source, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .post('/api/v1/followers')
+        .set('X-CSRF-Token', csrfToken)
+        .set('Accept', 'application/javascript')
+        .query({button: 'button_shorter'})
+        .query({followable_id: id})
+        .query({followable_type: type})
+        .query({source: source})
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   checkJob(jobId) {
     return new Promise((resolve, reject) => {
       request
         .get('/api/v1/jobs/' + jobId)
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  fetchFollowing(csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/followers')
+        .set('X-CSRF-Token', csrfToken)
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -61,6 +88,22 @@ module.exports = {
       request
         .post('/api/v1/jobs')
         .send({ type: jobType, user_id: userId })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  removeFromFollowing(id, type, source, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .del('/api/v1/followers')
+        .set('X-CSRF-Token', csrfToken)
+        .set('Accept', 'application/javascript')
+        .query({button: 'button_shorter'})
+        .query({followable_id: id})
+        .query({followable_type: type})
+        .query({source: source})
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
