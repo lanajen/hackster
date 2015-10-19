@@ -85,13 +85,13 @@
                         - else
                           i.fa.fa-circle-o.small
                         - if part.has_own_page? and !is_whitelabel?
-                          span= link_to part.name, part
+                          span= link_to part.full_name, part
                         - elsif part.store_link.present?
-                          span= link_to part.name, part.store_link, target: '_blank', rel: 'nofollow'
+                          span= link_to part.full_name, part.store_link, target: '_blank', rel: 'nofollow'
                         - elsif part.product_page_link.present?
-                          span= link_to part.name, part.product_page_link, target: '_blank', rel: 'nofollow'
+                          span= link_to part.full_name, part.product_page_link, target: '_blank', rel: 'nofollow'
                         - else
-                          span= part.name
+                          span= part.full_name
 
               .protip-section-img
                 = image_tag @project.cover_image(:medium)
@@ -163,10 +163,6 @@
                     a target='_blank' href=@project.license.url = @project.license.abbr
                     | .
 
-              / # = render 'actions'
-
-          / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
-          / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
           section#comments.section-container.section-collapsible
             h2.section-title
               a.title.title-toggle href=''
@@ -176,13 +172,13 @@
             .section-content
               = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
 
-    / - if @project.public?
+    - if @project.public?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
         - if @other_projects.count > 0
           section.other-projects
             .container
               section.section-thumbs
-                h4 style='border:0' Related articles
+                h4 style='border:0' Related articles and projects
               .row
                 - @other_projects.each do |project|
                   = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }
