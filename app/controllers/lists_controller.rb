@@ -114,10 +114,10 @@ class ListsController < ApplicationController
 
   private
     def load_projects
-      per_page = params[:per_page] ? [Integer(params[:per_page]), Project.per_page].min : Project.per_page
+      per_page = params[:per_page] ? [Integer(params[:per_page]), BaseArticle.per_page].min : BaseArticle.per_page
 
       @projects = if @list.enable_comments
-        @list.project_collections.joins(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection).paginate(page: safe_page_params, per_page: per_page)
+        @list.project_collections.joins(:project).visible.order('project_collections.workflow_state DESC').merge(BaseArticle.indexable_and_external.for_thumb_display_in_collection).paginate(page: safe_page_params, per_page: per_page)
       else
         @list.projects.visible.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end

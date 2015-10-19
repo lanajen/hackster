@@ -8,16 +8,16 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_projects
     defaults = {
-      median_impressions: Project.median_impressions,
-      median_respects: Project.median_respects,
+      median_impressions: BaseArticle.median_impressions,
+      median_respects: BaseArticle.median_respects,
     }
-    Project.indexable_and_external.pluck(:id).each do |project_id|
+    BaseArticle.indexable_and_external.pluck(:id).each do |project_id|
       self.class.perform_async 'compute_popularity_for_project', project_id, defaults
     end
   end
 
   def compute_popularity_for_project project_id, defaults={}
-    project = Project.find project_id
+    project = BaseArticle.find project_id
     project.update_counters
 
     count = ProjectPopularityCounter.new(project, defaults).adjusted_score

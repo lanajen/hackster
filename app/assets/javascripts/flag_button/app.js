@@ -54,7 +54,7 @@ const App = React.createClass({
     let icon = this.state.isLoading ? (<i className="fa fa-spin fa-spinner"></i>) :
                                       (this.state.flagged ? (<i className="fa fa-flag"></i>) :
                                       (<i className="fa fa-flag-o"></i>));
-    let toolTipTitle = this.state.flagged ? 'Flagged for spam' : 'Flag this for spam';
+    let toolTipTitle = this.state.flagged ? 'Flagged as inapropriate' : 'Flag this as inapropriate';
 
     return (
       <a href="javascript:void(0)" title={toolTipTitle} rel="tooltip" data-toggle="tooltip" data-placement='top' data-container='body' onClick={this.onFlagButtonClick} className='flag-btn' ref="btn">

@@ -185,6 +185,16 @@ html(lang="en")
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
                   = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
+                  /
+                    - popup = capture do
+                      div style='text-align:center'
+                        ul.list-unstyled
+                          li= link_to 'New project', new_project_path
+                          li= link_to 'New article', new_project_path(base_article: { article: true })
+                        = link_to content_tag(:i, '', class: 'fa fa-question-circle'), '', title: 'Learn more about projects vs articles', rel: 'tooltip'
+                    li
+                      a.nav-link href="javascript:void(0)" data-toggle="popover" data-content=popup.gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
+                        = content_tag(:i, '', class: 'fa fa-plus')
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
 
               #navbar-search

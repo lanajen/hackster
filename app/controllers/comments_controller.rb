@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
         project_path(commentable.threadable)
       when Issue
         issue_path(commentable.threadable, commentable)
-      when Project
+      when BaseArticle
         project_path(commentable)
       end
     end

@@ -5,7 +5,7 @@ class ProjectCollection < ActiveRecord::Base
   VALID_STATES = %w(featured approved)
 
   belongs_to :collectable, polymorphic: true
-  belongs_to :project
+  belongs_to :project, class_name: 'BaseArticle', foreign_key: :project_id
 
   validates :project_id, uniqueness: { scope: [:collectable_id, :collectable_type] }
 

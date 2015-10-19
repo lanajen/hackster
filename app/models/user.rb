@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
     'Once per week' => :weekly,
     'Once per month' => :monthly,
   }
-  ROLES = %w(admin confirmed_user beta_tester moderator)
+  ROLES = %w(admin confirmed_user beta_tester moderator trusted)
   SUBSCRIPTIONS = {
     email: {
       'newsletter' => 'Newsletter',
@@ -112,7 +112,7 @@ class User < ActiveRecord::Base
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
-  has_many :projects, through: :teams
+  has_many :projects, through: :teams, class_name: 'BaseArticle'
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
   has_many :receipts, dependent: :destroy do
@@ -120,9 +120,9 @@ class User < ActiveRecord::Base
       joins("INNER JOIN notifications ON notifications.id = receipts.receivable_id AND receipts.receivable_type = 'Notification'")
     end
   end
-  has_many :replicated_projects, source_type: 'Project', through: :follow_relations, source: :followable
+  has_many :replicated_projects, source_type: 'BaseArticle', through: :follow_relations, source: :followable
   has_many :respects, dependent: :destroy
-  has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
+  has_many :respected_projects, through: :respects, source: :respectable, source_type: 'BaseArticle'
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :thoughts
@@ -435,7 +435,7 @@ class User < ActiveRecord::Base
   end
 
   # def has_access? project
-  #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
+  #   permissions.where(permissible_type: 'BaseArticle', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'BaseArticle', permissible_id: project.id).any?
   # end
 
   def generate_password
@@ -484,7 +484,7 @@ class User < ActiveRecord::Base
       followable.in? followed_groups
     when Part
       followable.in? owned_parts
-    when Project
+    when BaseArticle
       followable.in? replicated_projects
     when User
       followable.in? followed_users
@@ -538,7 +538,7 @@ class User < ActiveRecord::Base
   end
 
   def live_comments
-    comments.by_commentable_type(Project).where("projects.private = 'f'")
+    comments.by_commentable_type(BaseArticle).where("projects.private = 'f'")
   end
 
   def live_visible_projects_count
@@ -561,7 +561,7 @@ class User < ActiveRecord::Base
   end
 
   def parts_missing_from_toolbox
-    used_parts.where.not(platform_id: nil).reorder('') - owned_parts
+    used_parts.where.not(platform_id: nil, slug: nil).reorder('') - owned_parts
   end
 
   def profile_needs_care?
@@ -594,7 +594,7 @@ class User < ActiveRecord::Base
     case respectable
     when ChallengeEntry
       respectable.id.in? voted_entries.map(&:id)
-    when Project
+    when BaseArticle
       respectable.id.in? respected_projects.map(&:id)
     end
   end

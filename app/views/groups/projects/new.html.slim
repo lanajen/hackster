@@ -110,6 +110,6 @@
 
             = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-            = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', required: true
+            = f.input :content_type, collection: Project::PUBLIC_CONTENT_TYPES, label: 'Project type', required: true
 
             = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

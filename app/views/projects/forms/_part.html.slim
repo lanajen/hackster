@@ -5,7 +5,8 @@ li.fields
         td colspan=2 style="background:white;padding:5px 0;"
           = f.input :id, as: :hidden, input_html: { class: 'id' }
           = f.input :position, as: :hidden, input_html: { class: 'position' }
-          input type='hidden' value="#{options[:part_type].capitalize}Part" data-field-type='type'
+          - if options[:part_type]
+            input type='hidden' value="#{options[:part_type].capitalize}Part" data-field-type='type'
           input.reset type='hidden' value=part.part_id data-field-type='id'
           input.reset type='hidden' value=part.part.try(:name) data-field-type='name'
           input.reset type='hidden' value=part.part.try(:store_link) data-field-type='store_link'
@@ -18,7 +19,6 @@ li.fields
             li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
             li= f.link_to_remove content_tag(:i, '', class: 'fa fa-times') + ' Delete', class: 'btn btn-danger btn-xs'
 
-
       - if options[:show_quantity]
         tr
           td style='width:85%'= select_tag_for_part_join part, options.merge(i: i)
@@ -29,11 +29,12 @@ li.fields
         tr
           td= select_tag_for_part_join part, options.merge(i: i)
 
-      tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
-        td colspan=2 = f.input :comment, label: 'Comment'
+      - unless options[:disable_comment]
+        tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
+          td colspan=2 = f.input :comment, label: 'Comment'
 
-      - if part.comment.blank?
-        tr
-          td colspan=2 style='padding:5px 10px'
-            ul.list-inline
-              li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'
+        - if part.comment.blank?
+          tr
+            td colspan=2 style='padding:5px 10px'
+              ul.list-inline
+                li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'

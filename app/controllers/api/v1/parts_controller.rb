@@ -15,14 +15,14 @@ class Api::V1::PartsController < Api::V1::BaseController
     end
 
     if params[:type].present?
-      params[:human_type] = {
-        'hardware' => 'component',
-        'software' => 'app',
-        'tool' => 'tool',
-      }[params[:type]]
-      params[:type] = params[:type].capitalize + 'Part'
+      if params[:type].in? Part::KNOWN_TYPES
+        params[:human_type] = Part::KNOWN_TYPES[params[:type]]
+        params[:type] = params[:type].capitalize + 'Part'
 
-      @parts = @parts.where(type: params[:type])
+        @parts = @parts.where(type: params[:type])
+      else
+        params[:human_type] = params[:type]
+      end
     end
 
     sort = params[:sort] || Part::DEFAULT_SORT

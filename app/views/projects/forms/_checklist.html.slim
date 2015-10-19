@@ -2,7 +2,7 @@
   .box
     .box-content
       strong Publish checklist
-      p.small.text-muted Before you publish this project, make sure that all these details are filled in:
+      p.small.text-muted Before you publish this #{@project.identifier}, make sure that all these details are filled in:
       ul.fa-ul.checklist
         - @project.checklist_todo.each do |item|
           li

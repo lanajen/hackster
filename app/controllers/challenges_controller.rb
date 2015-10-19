@@ -2,7 +2,7 @@ class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_platform, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
   before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
@@ -16,14 +16,13 @@ class ChallengesController < ApplicationController
     title 'Hardware challenges'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
-    @active_challenges = Challenge.public.active.ends_first
-    @coming_challenges = Challenge.public.coming.starts_first
-    @past_challenges = Challenge.public.past.ends_last
+    @active_challenges = Challenge.public.active.ends_first.includes(sponsors: :avatar)
+    @coming_challenges = Challenge.public.coming.starts_first.includes(sponsors: :avatar)
+    @past_challenges = Challenge.public.past.ends_last.includes(sponsors: :avatar)
   end
 
   def show
     title @challenge.name
-    # @embed = Embed.new(url: @challenge.video_link)
 
     if @challenge.judged? and !@challenge.disable_projects_tab
       load_projects
@@ -178,8 +177,9 @@ class ChallengesController < ApplicationController
       authorize! self.action_name.to_sym, @challenge
     end
 
-    def load_platform
-      @platform = @challenge.platform.try(:decorate)
+    def load_side_models
+      @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
+      @prizes = @challenge.prizes.includes(:image)
     end
 
     def load_projects
@@ -197,7 +197,6 @@ class ChallengesController < ApplicationController
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
         @user_projects = current_user.projects.own.self_hosted.where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
-        @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
         @user_projects = []
       end

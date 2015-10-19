@@ -1,4 +1,5 @@
 class License
+  DEFAULT = 'http://opensource.org/licenses/GPL-3.0'
   LICENSE_TYPES = {
     'http://opensource.org/licenses/Apache-2.0' => {
       name: 'Apache License 2.0 (Apache-2.0)',
@@ -13,7 +14,7 @@ class License
       deprecated: true, },
     'http://opensource.org/licenses/GPL-3.0' => {
       name: 'GNU General Public License, version 3 or later (GPL3+)',
-      abbr: 'GPL', },
+      abbr: 'GPL3+', },
     'http://opensource.org/licenses/gpl-license' => {
       name: 'GNU General Public License (GPL)',
       abbr: 'GPL',

@@ -3,7 +3,8 @@ module Checklist
     def add_checklist name, label, condition=nil, options={}
       gconfig = checklist_config.try(:dup) || {}
       group_name = options[:group].presence || :default
-      config = gconfig[group_name] || {}
+      config = gconfig[group_name].try(:dup) || {}
+
       item = {
         label: label,
         condition: condition.presence || "#{name}.present?",
@@ -30,6 +31,17 @@ module Checklist
         n_group = threshold.in?(groups.keys) ? groups[threshold] : groups[:n]
         add_checklist n_name, n_label, n_condition, { family: name, priority: threshold, group: n_group }.merge(options)
       end
+    end
+
+    def remove_checklist name, options={}
+      gconfig = checklist_config.try(:dup) || {}
+      group_name = options[:group].presence || :default
+      config = gconfig[group_name].try(:dup) || {}
+
+      config = config.except! name
+
+      gconfig[group_name] = config
+      self.checklist_config = gconfig
     end
   end
 

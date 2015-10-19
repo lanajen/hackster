@@ -21,7 +21,7 @@ class PartJoinObserver < ActiveRecord::Observer
   private
     def expire_cache record
       project = case record.partable
-      when Project
+      when BaseArticle
         record.partable
       when Widget
         record.partable.widgetable
@@ -36,10 +36,10 @@ class PartJoinObserver < ActiveRecord::Observer
     end
 
     def update_project record
-      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable.class.name == 'Project')
+      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable.class.name == 'BaseArticle')
 
       project = case record.partable
-      when Project
+      when BaseArticle
         record.partable
       when Widget
         record.partable.project

@@ -34,6 +34,6 @@ class Respect < ActiveRecord::Base
 
   private
     def user_is_not_team_member
-      errors.add :base, "You can't respect your own project!" if respectable_type == 'Project' and user and user.is_team_member?(respectable)
+      errors.add :base, "You can't respect your own #{respectable.identifier}!" if respectable_type == 'BaseArticle' and user and user.is_team_member?(respectable)
     end
 end

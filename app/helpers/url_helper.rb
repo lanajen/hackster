@@ -8,6 +8,14 @@ module UrlHelper
     course_promotion_assignment_url params_for_assignment(assignment).merge(opts)
   end
 
+  def base_article_path article, opts={}
+    project_path article, opts
+  end
+
+  def base_article_url article, opts={}
+    project_url article, opts
+  end
+
   def challenge_path challenge, opts={}
     super challenge.slug, opts
   end
@@ -320,6 +328,10 @@ module UrlHelper
     super params
   end
 
+  def project_private_sharing_url project, opts={}
+    project_url(project, opts.merge(auth_token: project.security_token))
+  end
+
   def project_issues_path project, opts={}
     super params_for_project(project).merge(opts).merge(use_route: nil)
   end
@@ -376,11 +388,11 @@ module UrlHelper
     when Platform
       options = params_for_group options
       options[:use_route] = 'platform_short'
-    when Project, ProjectDecorator
+    when BaseArticle
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'Project', 'ExternalProject'
+      when 'Project', 'ExternalProject', 'Article'
         options = params_for_project options
       end
     end

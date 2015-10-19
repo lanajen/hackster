@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151011220556) do
+ActiveRecord::Schema.define(version: 20151014190906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,6 +162,14 @@ ActiveRecord::Schema.define(version: 20151011220556) do
     t.hstore   "hproperties"
     t.hstore   "hcounters_cache"
   end
+
+  create_table "challenges_groups", id: false, force: :cascade do |t|
+    t.integer "group_id",     null: false
+    t.integer "challenge_id", null: false
+  end
+
+  add_index "challenges_groups", ["challenge_id"], name: "index_challenges_groups_on_challenge_id", using: :btree
+  add_index "challenges_groups", ["group_id"], name: "index_challenges_groups_on_group_id", using: :btree
 
   create_table "channels", force: :cascade do |t|
     t.string   "name"

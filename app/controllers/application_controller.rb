@@ -279,15 +279,15 @@ class ApplicationController < ActionController::Base
       @project = if user_name
         # find by slug history and redirect to newer url if ever
         project_slug = "#{params[:user_name]}/#{params[:project_slug]}"
-        project = Project.includes(:slug_histories).references(:slug_histories).where("LOWER(slug_histories.value) = ?", project_slug.downcase).first!
+        project = BaseArticle.includes(:slug_histories).references(:slug_histories).where("LOWER(slug_histories.value) = ?", project_slug.downcase).first!
         unless self.action_name == 'embed'
           redirect_to(url_for(project), status: 301) and return
         end
         project
       elsif params[:project_slug]
-        Project.where(projects: { slug: params[:project_slug].downcase }).first!
+        BaseArticle.where(projects: { slug: params[:project_slug].downcase }).first!
       else
-        Project.find params[:project_id] || params[:id]
+        BaseArticle.find params[:project_id] || params[:id]
       end
     end
 
@@ -296,7 +296,7 @@ class ApplicationController < ActionController::Base
 
       hid = params[:project_slug].match /-?([a-f0-9]{6})\Z/
 
-      if hid and @project = Project.find_by_hid(hid[1])
+      if hid and @project = BaseArticle.find_by_hid(hid[1])
         project_slug = "#{params[:user_name]}/#{params[:project_slug]}"
         if @project.uri != project_slug
           redirect_to @project and return

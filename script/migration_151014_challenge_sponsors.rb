@@ -1,0 +1,1 @@
+Challenge.find_each{|c| c.sponsors << c.platform if c.platform }
