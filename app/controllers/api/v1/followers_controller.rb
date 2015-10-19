@@ -5,6 +5,7 @@ class Api::V1::FollowersController < Api::V1::BaseController
 
   def index
     init_following = { user: [], group: [], project: [], part: [] }
+    @current_user = current_user
     @following = if user_signed_in?
       current_user.follow_relations.select(:followable_id, :followable_type).inject(init_following) do |h, f|
         case f.followable_type

@@ -1,5 +1,5 @@
 import React from 'react';
-import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
+import { addToFollowing, removeFromFollowing, getFollowing } from '../utils/Requests';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
 import _ from 'lodash';
@@ -12,13 +12,17 @@ const FollowButton = React.createClass({
     return {
       isHovered: false,
       isFollowing: null,
-      spinner: false
+      spinner: false,
+      currentUserId: null
     };
   },
 
   componentWillMount() {
-    this.initialSub = channel.subscribe('initial.store', function(store) {
-      this.setFollowing(store);
+    this.initialSub = channel.subscribe('initial.store', function(data) {
+      this.setFollowing(data.store);
+      this.setState({
+        currentUserId: data.currentUserId
+      });
     }.bind(this));
 
     this.updateSub = channel.subscribe('store.changed', function(store) {
@@ -127,7 +131,7 @@ const FollowButton = React.createClass({
   render: function() {
     let classes = this.getClasses();
     let classList = classes[this.props.buttonType] || classes['text'];
-    let disable = this.props.followable.type === 'User' && this.props.currentUserId === this.props.followable.id;
+    let disable = this.props.followable.type === 'User' && this.state.currentUserId === this.props.followable.id;
     let label;
 
     if(this.state.spinner) {
