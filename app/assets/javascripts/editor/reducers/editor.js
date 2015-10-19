@@ -112,6 +112,15 @@ export default function(state = initialState, action) {
         setCursorToNextLine: action.setCursorToNextLine
       };
 
+    case Editor.createBlockElementWithChildren:
+      dom = state.dom;
+      newDom = createBlockElementWithChildren(dom, action.children, action.tag, action.position, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom,
+        setCursorToNextLine: action.setCursorToNextLine
+      };
+
     case Editor.cleanElement:
       dom = state.dom;
       newDom = cleanElement(dom, action.depth, action.childDepth);
@@ -387,7 +396,12 @@ function handleInitialDOM(json) {
         attribs: {
           class: "react-editor-placeholder-text"
         },
-        children: []
+        children: [{
+          tag: 'br',
+          content: '',
+          attribs: {},
+          children: []
+        }]
       }]
     };
     CE.json = createArrayOfComponents(CE.json);
@@ -395,13 +409,24 @@ function handleInitialDOM(json) {
   } else {
     json = json.map(item => {
       if(item.type === 'CE') {
+        if(item.json.length === 1 && item.json[0].children.length < 1) {
+          item.json[0].children.push({
+            tag: 'br',
+            content: '',
+            attribs: {},
+            children: []
+          });
+        }
+
         item.json = createArrayOfComponents(item.json);
         if(item.json.length < 1) {
           let P = mapToComponent['p'];
           item.json.push(P({ 
             tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
             key: createRandomNumber(), 
-            children: [''] 
+            children: [
+              _createBR()
+            ] 
           }));
         }
         return item;
@@ -421,8 +446,11 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let reactEl = mapToComponent[tag];
-  let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-  let el = reactEl({key: createRandomNumber(), tagProps, children: ['']});
+  let el = reactEl({ 
+    key: createRandomNumber(), 
+    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+    children: [ _createBR() ]
+  });
 
 
   if(json.length < 1) {
@@ -431,6 +459,28 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
     json.splice(position+1, 0, el);
   }
 
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+
+  return dom;
+}
+
+function createBlockElementWithChildren(dom, children, tag, position, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let factory = mapToComponent[tag];
+  let htmlToKeep = createArrayOfComponents(children.htmlToKeep);
+  let htmlToAppend = createArrayOfComponents(children.htmlToAppend);
+  let newEl = factory({
+    key: createRandomNumber,
+    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+    children: htmlToAppend
+  });
+
+  let currentEl = React.cloneElement(json[position], {}, htmlToKeep);
+
+  json.splice(position, 1, currentEl);
+  json.splice(position+1, 0, newEl);
   component.json = json;
   dom.splice(storeIndex, 1, component);
 
@@ -474,13 +524,17 @@ function transformBlockElement(dom, tag, position, cleanChildren, storeIndex) {
 
   if(elToReplace !== undefined) {
     let displayName = elToReplace.type.displayName ? elToReplace.type.displayName : elToReplace.type;
-
-    if(tag === displayName.toLowerCase()) { // Revert tag to Paragraph.
+    /** Reverts tag to P. */
+    if(tag === displayName.toLowerCase()) {
       tag = 'p';
     }
     let reactEl = mapToComponent[tag];
     let tagProps = { hash: elToReplace.props.tagProps.hash } || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    let children = cleanChildren === true ? [''] : elToReplace.props.children;
+    let children = cleanChildren === true ? [ _createBR() ] : elToReplace.props.children;
+
+    /** Makes sure theres always a br in an empty tag. */
+    if(children.length < 1) { children = _createBR() }
+
     let el = reactEl({key: createRandomNumber(), tagProps, children: children });
 
     component.json.splice(position, 1, el);
@@ -556,7 +610,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   let children = elToReplace.props.children;
   let reactEl = mapToComponent[tag], el, tagProps, newChildren;
 
-  // If the UL is wrapped in another block el, this digs into the UL since all we care about is the lis to trasform. 
+  // If the UL is wrapped in another block el, this digs into the UL since all we care about is the lis to transform. 
   if(!Array.isArray(children) && children.type.displayName === 'UL') {
     children = children.props.children;
   }
@@ -591,7 +645,7 @@ function prependCE(dom, storeIndex) {
               style: {}, 
               className: '', 
               key: createRandomNumber(), 
-              children: [''] 
+              children: [ _createBR() ] 
             });
   let CE = {
     type: 'CE',
@@ -620,11 +674,11 @@ function insertCE(dom, storeIndex) {
 
 function _createCE() {
   let P = mapToComponent['p'];
-  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
               style: {}, 
               className: '', 
               key: createRandomNumber(), 
-              children: [''] 
+              children: [ _createBR() ] 
             });
   let CE = {
     type: 'CE',
@@ -633,6 +687,11 @@ function _createCE() {
   };
   CE.json.push(p);
   return CE;
+}
+
+function _createBR() {
+  let BR = mapToComponent['br'];
+  return BR({ key: createRandomNumber(), tagProps: {}, children: [] });
 }
 
 function setFigCaptionText(dom, figureIndex, storeIndex, html) {
@@ -867,7 +926,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
                   style: {}, 
                   className: '', 
                   key: createRandomNumber(), 
-                  children: ['']
+                  children: [ _createBR() ]
                 }));
       component.json = json;
       dom.splice(storeIndex, 1, component);
@@ -877,7 +936,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
                   style: {}, 
                   className: '', 
                   key: createRandomNumber(), 
-                  children: mediaType === 'Carousel' ? [removedNode.props.children] : ['']
+                  children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
                 }));
     dom.splice(storeIndex+1, itemsToRemove, media);
     dom.splice(storeIndex+2, 0, CE);
@@ -1152,7 +1211,7 @@ function handleSplitBlockElement(dom, tagType, nodes, depth, storeIndex) {
 function appendParagraph(dom) {
   let P = mapToComponent['p'];
   let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-  dom.push( P({ key: createRandomNumber(), tagProps, children: [''] }) );
+  dom.push( P({ key: createRandomNumber(), tagProps, children: [ _createBR() ] }) );
 
   return dom;
 }
@@ -1190,13 +1249,15 @@ function handlePastedHTML(dom, html, depth, storeIndex) {
   });
 
   if(reactified.length > 1) {
-    console.log('GREAT THAN ONE!');
+    console.log('GREAT THAN ONE!', reactified);
     // We need to splice the current depth of the current component.  Add all these things then create a new CE if there was anything after
     // our current depth.  RETURN A ROOTHASH on CURSOR POSITION.
     // storeIndex += 1;
     // reactified.forEach((item, index) => {
     //   dom.splice(storeIndex+index, 0, item)
     // });
+    let merged = _mergeAdjacentCE(reactified);
+    console.log();
   } else {
     reactified[0].json.forEach((item, index) => {
       json.splice(depth+index, 0, item);
@@ -1312,4 +1373,3 @@ function createArrayOfComponents(dom) {
     }).filter(item => { return item !== null || item !== undefined; });
   }(dom));
 }
-

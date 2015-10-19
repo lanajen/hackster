@@ -4,6 +4,7 @@ import rangy from 'rangy';
 import Sanitize from 'sanitize-html';
 import Validator from 'validator';
 import Utils from '../utils/DOMUtils';
+import Parser from '../utils/Parser';
 import Helpers from '../../utils/Helpers';
 import ImageUtils from '../../utils/Images';
 import Request from '../utils/Requests';
@@ -189,11 +190,12 @@ const ContentEditable = React.createClass({
         sel = rangy.getSelection();
         range = sel.getRangeAt(0);
         range.setStart(Utils.getFirstTextNode(range.startContainer), clone.startOffset);
+        range.collapse(true);
         sel.setSingleRange(range);
       }
 
       /** On Enter; Cleans up browser adds on specific line. */
-      if(e.keyCode === 13 && parentNode.previousSibling & parentNode.nodeName !== 'UL') {
+      if(e.keyCode === 13 && parentNode.previousSibling && parentNode.nodeName !== 'UL') {
         Utils.maintainImmediateNode(parentNode.previousSibling);
         this.emitChange();
       }
@@ -269,16 +271,31 @@ const ContentEditable = React.createClass({
     this.props.actions.forceUpdate(true);
   },
 
-  delayedUpdate() {
-    /** We delay this to let the browser handle slicing the text to a new line when Enter is pressed, then we take over asap. */
-    setTimeout(() => {
-      this.props.actions.setCursorToNextLine(true);
-      this.props.actions.forceUpdate(true);
-    }, 100);
+  createBlockElementWithChildren(parentNode, range, tag, depth, setCursorToNextLine, storeIndex) {
+
+    range.setEndAfter(parentNode.lastChild);
+    let contents = range.toHtml();
+    range.deleteContents();
+    /** If theres no text left over, just set the innerHtml to a br so we dont have to worry about left over inline tags. */
+    let lastHtml = !parentNode.textContent.length ? '<br/>' : parentNode.innerHTML;
+    let htmlToAppend = Parser.parseDOM(contents);
+    let htmlToKeep = Parser.parseDOM(lastHtml);
+    
+    Promise.all([htmlToKeep, htmlToAppend])
+      .then(results => {
+        let children = {
+          htmlToKeep: results[0],
+          htmlToAppend: results[1]
+        };
+        this.props.actions.createBlockElementWithChildren(children, tag, depth, setCursorToNextLine, storeIndex);
+        this.props.actions.forceUpdate(true);
+      })
+      .catch(err => { console.log(err); });
   },
 
-  handleEnterKey(e) { 
+  handleEnterKey(e) {
     let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData(); 
+
     if(sel.rangeCount) {
       let hasTextAfterCursor = false;
       let cursorOffset = startOffset;
@@ -292,55 +309,70 @@ const ContentEditable = React.createClass({
 
       switch(parentNode.nodeName) {
         case 'P':
-          /** Removes placeholder.  This is when Enter is pressed only, other keys are handled in keydown. */
+          this.preventEvent(e);
+
+          /** Removes placeholder.  This is for when Enter is pressed only.  The other keys are handled in keydown. */
           if(parentNode.classList.contains('react-editor-placeholder-text')) {
             parentNode.classList.remove('react-editor-placeholder-text');
             parentNode.textContent = '';
+            this.props.actions.getLatestHTML(true);
           }
+
           /**
            * Handles video parser when enter is pressed.
            */
-          let url = Utils.getRootParentElement(anchorNode).textContent.trim();
-          if(url.split(' ').length < 2 && Helpers.isUrlValid(url)) {
-            this.preventEvent(e);
+          let url = parentNode.textContent.trim();
+          // console.log('TRYING', url.split(' ').length < 2,  Helpers.isUrlValid(url));
+          if(url.split(' ').length < 2 && Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
             let videoData = Helpers.getVideoData(url);
             if(!videoData) { 
-              this.props.actions.toggleErrorMessenger(true, 'Sorry, that Video url smelled funny.');
+              // TODO: HANDLE VIDEO ERROR!
             } else {
+              this.props.actions.isDataLoading(true);
               this.props.actions.createMediaByType([videoData], depth, this.props.storeIndex, 'Video');
               this.props.actions.forceUpdate(true);
             }
           } else if(hasTextAfterCursor) {
-            this.delayedUpdate();
+            this.createBlockElementWithChildren(parentNode, range, 'p', depth, true, this.props.storeIndex);
           } else {
-            this.preventEvent(e);
             this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;
 
         case 'PRE':
+          this.preventEvent(e);
+
           if(hasTextAfterCursor) {
-            this.delayedUpdate();
+            this.createBlockElementWithChildren(parentNode, range, 'pre', depth, true, this.props.storeIndex);
           } else {
-            this.preventEvent(e);
             this.createBlockElement('pre', depth, true, this.props.storeIndex);
           }
           break;
 
         case 'H3':
-        case 'BLOCKQUOTE':
+          this.preventEvent(e);
+
           if(hasTextAfterCursor) {
-            this.delayedUpdate();
+            this.createBlockElementWithChildren(parentNode, range, 'h3', depth, true, this.props.storeIndex);
           } else {
-            this.preventEvent(e);
+            this.createBlockElement('p', depth, true, this.props.storeIndex);
+          }
+          break;
+
+        case 'BLOCKQUOTE':
+          this.preventEvent(e);
+
+          if(hasTextAfterCursor) {
+            this.createBlockElementWithChildren(parentNode, range, 'blockquote', depth, true, this.props.storeIndex);
+          } else {
             this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;
 
         case 'UL':
-          if((anchorNode.nodeName === 'LI'|| Utils.getListItemFromTextNode(anchorNode).nodeName === 'LI') && anchorNode.textContent.length < 1) {
+          let li = Utils.getListItemFromTextNode(anchorNode);
+          if((anchorNode.nodeName === 'LI'|| li.nodeName === 'LI') && li.textContent.length < 1) {
             this.preventEvent(e);
-            let li = Utils.getListItemFromTextNode(anchorNode);
             this.props.actions.removeListItemFromList(depth, Utils.getListItemPositions(li, li, li.parentNode)[0], this.props.storeIndex);
             this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
@@ -414,7 +446,6 @@ const ContentEditable = React.createClass({
         tab = document.createTextNode('    ');
     if(range) {
       range.insertNode(tab);
-      range.setEndAfter(tab);
       range.setStartAfter(tab);
       sel.setSingleRange(range)
     }
@@ -451,10 +482,20 @@ const ContentEditable = React.createClass({
     if(e.keyCode === 40 && parentNode.nextSibling) {
       if(parentNode.nextSibling.childNodes.length < 1) {
         parentNode.nextSibling.appendChild(document.createElement('br'));
+      } else if(parentNode.nodeName === 'UL') {
+        let li = Utils.getListItemFromTextNode(anchorNode);
+        if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.childNodes.length < 1) {
+          li.nextSibling.appendChild(document.createElement('br'));
+        }
       }
     } else if(e.keyCode === 38 && parentNode.previousSibling) {
       if(parentNode.previousSibling.childNodes.length < 1) {
         parentNode.previousSibling.appendChild(document.createElement('br'));
+      } else if(parentNode.nodeName === 'UL') {
+        let li = Utils.getListItemFromTextNode(anchorNode);
+        if(li.previousSibling && li.previousSibling.nodeName === 'LI' && li.previousSibling.childNodes.length < 1) {
+          li.previousSibling.appendChild(document.createElement('br'));
+        }
       }
     }
   },
@@ -574,6 +615,7 @@ const ContentEditable = React.createClass({
   handlePaste(e) {
     this.preventEvent(e);
     let pastedText, dataType;
+    let { parentNode, depth } = Utils.getSelectionData();
 
     if(window.clipboardData && window.clipboardData.getData) {  // IE
       pastedText = window.clipboardData.getData('Text');
@@ -589,9 +631,9 @@ const ContentEditable = React.createClass({
     }
 
     if(dataType === 'text') {
-      let clean = this.handleOnPasteSanitization(pastedText); 
-      e.target.innerHTML += clean;
-      Utils.setCursorByNode(React.findDOMNode(e.target));
+      let clean = this.handleOnPasteSanitization(pastedText);
+      parentNode.innerHTML += clean;
+      Utils.setCursorByNode(React.findDOMNode(parentNode));
       this.emitChange();
     } else {
       return Utils.parseDescription(pastedText)

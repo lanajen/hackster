@@ -16,6 +16,7 @@ export default {
     setCurrentStoreIndex: null,
     setProjectData: null,
     createBlockElement: null,
+    createBlockElementWithChildren: null,
     transformBlockElement: null,
     transformBlockElements: null,
     prependCE: null,

@@ -63,8 +63,6 @@ module.exports = {
     let type = url.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
-    console.log('TEST', type, service, url);
-
     if(!service) { return null; }
     let Exts = this.URL_EXTENSIONS;
     let regExps = {
@@ -122,7 +120,7 @@ module.exports = {
       'vine': {
         regexp: /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13})$/,
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
-        embed: id => `https://vine.co/v/${id}/embed/simple\\`,
+        embed: id => `https://vine.co/v/${id}/embed/simple`,
         index: 1
       },
       'upverter': {

@@ -25,12 +25,19 @@ export default {
   parseTree(html) {
     const blockEls = BlockElements;
 
-    function handler(html) {
+    function handler(html, depth) {
+
+      if(!html.length) {
+        return html;
+      }
+
       return _.map(html, (item) => {
         let name;
 
         /** Remove these nodes immediately. */
-        if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
+        if(item.name === 'script' || item.name === 'comment') {
+          return null;
+        } else if(item.name === 'br' && depth > 1) {
           return null;
         }
         /** Transform tags to whitelist. */
@@ -74,12 +81,12 @@ export default {
             tag: name || item.name,
             content: null,
             attribs: item.attribs,
-            children: handler.apply(this, [item.children || []])
+            children: handler.apply(this, [item.children || [], depth+1])
           }
         }
       }).filter(item => { return item !== null; });
     }
-    return handler.call(this, html);
+    return handler.call(this, html, 0);
   },
 
   transformTagNames(node) {

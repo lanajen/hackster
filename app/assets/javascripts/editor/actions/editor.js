@@ -64,6 +64,17 @@ export function createBlockElement(tag, position, setCursorToNextLine, storeInde
   };
 }
 
+export function createBlockElementWithChildren(children, tag, position, setCursorToNextLine, storeIndex) {
+  return {
+    type: Editor.createBlockElementWithChildren,
+    children: children,
+    tag: tag,
+    position: position,
+    setCursorToNextLine: setCursorToNextLine,
+    storeIndex: storeIndex
+  }
+}
+
 export function transformBlockElement(tag, position, cleanChildren, storeIndex) {
   return {
     type: Editor.transformBlockElement,

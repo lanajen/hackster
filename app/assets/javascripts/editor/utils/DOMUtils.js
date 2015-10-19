@@ -583,6 +583,11 @@ const Utils = {
 
     if(el.childNodes.length > 0) {
       firstChild = el.childNodes[0];
+      if(firstChild.nodeType !== 3) {
+        let text = document.createTextNode('');
+        el.insertBefore(text, firstChild);
+        firstChild = text;
+      }
       textNode = firstChild.nodeType === 3 ? firstChild : firstChild.childNodes[0];
 
       while(textNode && textNode.childNodes.length > 0 && textNode.childNodes[0].nodeType !== 3) {
@@ -655,6 +660,7 @@ const Utils = {
 
     children.forEach(child => {
       if(blockEls[child.nodeName]) {
+
         /** Removes empty span tags. */
         if(child.firstChild && child.childNodes.length) {
           let nodes = [].slice.apply(child.children);
@@ -664,6 +670,7 @@ const Utils = {
             }
           });
         }
+
         return; // Node is legit, boot out early.
       } else if(child.nodeName === 'BR') {
         CE.removeChild(child);
@@ -691,7 +698,7 @@ const Utils = {
    * We clean up adjacent tags and remove empty nested tags.
    */
   maintainImmediateNode(node) {
-    let childNodes;
+    let childNodes, self = this;
     (function recurse(node) {
       if(!node.childNodes && !node.childNodes.length) {
         return;
@@ -700,13 +707,15 @@ const Utils = {
         childNodes.forEach((child, index) => {
 
           /** Merges two nodes with the same nodeName. */
-          if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName) {
+          if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName
+             && child.nodeName !== 'LI' && child.nodeName !== 'UL') {
             child.previousSibling.textContent += child.textContent;
             node.removeChild(child);
           }
 
-          /** Remove BR and Empty tags. */
-          if((child.nodeName === 'BR' || child.textContent.length < 1) && (child.nodeName !== 'LI' && child.nodeName !== 'UL')) {
+          /** Remove BR & Empty tags. */
+          if((child.nodeName === 'BR' && node.textContent.length > 0) || 
+             (child.nodeName !== 'BR' && child.textContent.length < 1 && child.nodeName !== 'LI' && child.nodeName !== 'UL')) {
             node.removeChild(child);
           }
 
@@ -723,6 +732,19 @@ const Utils = {
         });
       }
     }(node));
+  },
+
+  getListOfElements(node) {
+    let elements = [];
+
+    while(node.childNodes.length) {
+      if(node.nodeType === 1) {
+        elements.push(node.nodeName);
+      }
+      node = node.childNodes[0];
+    }
+
+    return elements;
   },
 
   mergeAdjacentElements(parentNode) {
@@ -780,6 +802,7 @@ const Utils = {
           a.href = href;
           a.textContent = url;
           /** Replace the current text with our new anchor. */
+          console.log('HIT', range, child, url);
           range.setStart(child, index);
           range.setEnd(child, index + url.length);
           range.deleteContents();
@@ -905,6 +928,7 @@ const Utils = {
       if(item.type === 'Video' && item.video[0].type == 'iframe') {
         let videoData = Helpers.getVideoData(item.video[0].embed);
         if(!videoData) {
+          console.log('BUNK', item);
           return callback(null, null);
         }
         item.video[0] = Object.assign({}, videoData, item.video[0]);
@@ -1513,12 +1537,32 @@ const Utils = {
         return item;
       } else if(item.tag === 'div') {
         item.tag = 'p';
+
+        if(item.children.length < 1) {
+          item.children.push({
+            tag: 'br',
+            content: '',
+            attribs: {},
+            children: []
+          });
+        }
+
         return item;
       } else if(item.tag === 'span') {
         if(item.content && item.content === '\n' || item.content === ' ') {
           return null;
         } else {
           item.tag = 'p';
+
+          if(item.children.length < 1) {
+            item.children.push({
+              tag: 'br',
+              content: '',
+              attribs: {},
+              children: []
+            });
+          }
+
           return item;
         }
       } else if(item.tag === 'br') {

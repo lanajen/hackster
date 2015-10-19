@@ -70,13 +70,11 @@ $desktop-width: 1024px;
       border: 2px solid #ddd;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
       background: #fff;
 
     .box-content {
       p {
-        min-height: 28px;
+        display: block;
         margin-bottom: 10px;
         margin-top: 10px;
         padding: 0 4%;
@@ -88,24 +86,32 @@ $desktop-width: 1024px;
       }
 
       pre {
+        display: block;
         border-radius: 0;
         border: none;
-        height: auto;
-        min-height: 35px;
         padding-left: 15px;
         padding-top: 10px;
         margin: 0 4%;
-        color: #fff;
+        color: #666;
+        overflow: visible;
+        // This is set to short circuit a previously set global pre style.  Tsk tsk.
+        max-height: inherit;
       }
 
       blockquote {
+        display: block;
         border-left: 5px solid #777;
         margin: 10px 4%;
         color: #666;
       }
 
       ul {
+        display: block;
         color: #666;
+      }
+
+      h3 {
+        display: block;
       }
 
       .react-editor-placeholder-text {
@@ -186,13 +192,14 @@ $desktop-width: 1024px;
         z-index: 0;
         width: 100%;
         height: auto;
+        // max-height: 487px;
         max-height: 100%;
         position: relative;
 
         .react-editor-image {
-          height: auto;
-          min-height: 100px;
           max-height: 487px;
+          max-width: 100%;
+          height: auto;
           flex: 1;
           z-index: 1;
           align-self: center;
@@ -301,8 +308,8 @@ $desktop-width: 1024px;
         .react-editor-iframe {
           width: 100%;
           max-width: 686px;
-          height: auto;
           max-height: 487px;
+          height: auto;
           flex: 1;
           z-index: 1;
           align-self: center;
@@ -401,8 +408,9 @@ $desktop-width: 1024px;
       .toolbar-btn {
         display: flex;
         flex: 1;
+        align-items: center;
         justify-content: center;
-        color: #444;
+        color: #29B6F6;
         border: none;
         background-color: transparent;
         font-size: 1.6rem;
@@ -420,13 +428,13 @@ $desktop-width: 1024px;
 
         &.toolbar-btn-active {
           color: #E0E0E0;
-          background-color: #444;
+          background-color: #29B6F6;
           border-right: 1px solid #E0E0E0;
         }
 
         &:hover {
           color: #E0E0E0;
-          background-color: #444;
+          background-color: #29B6F6;
         }
       }
     }

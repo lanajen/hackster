@@ -47,7 +47,7 @@ const Editable = React.createClass({
       let input = document.createElement('input');
       input.type = 'hidden';
       input.id = 'story_json';
-      input.name = 'project[story_json]';
+      input.name = 'base_article[story_json]';
       form.insertBefore(input, form.firstChild);
     }
 

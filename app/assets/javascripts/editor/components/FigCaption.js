@@ -1,18 +1,29 @@
 import React from 'react';
-import Utils from '../utils/DOMUtils';
 
 const FigCaption = React.createClass({
 
-  componentDidUpdate(prevProps) {
-    /** Sets the cursor to the end of the figcaption when user is typing. */
-    if(prevProps.html !== this.props.html) {
-      // Utils.setCursorByNode(React.findDOMNode(this));
-    }
+  /** Easier to use state here than updating the cursor on every input. */
+  getInitialState() {
+    return {
+      html: null
+    };
+  },
+
+  componentWillMount() {
+    this.setState({
+      html: this.props.html
+    });
   },
 
   handleInput(e) {
     let html = React.findDOMNode(e.target).textContent;
-    this.props.setFigCaptionText(html);
+    this.setState({
+      html: html
+    });
+  },
+
+  handleBlur() {
+    this.props.setFigCaptionText(this.state.html);
   },
 
   handleKeyDown(e) {
@@ -24,7 +35,7 @@ const FigCaption = React.createClass({
       '40': true
     };
 
-    if(node.textContent === 'caption (optional)' && !arrowKeys[e.keyCode]) {
+    if(node.textContent === 'caption (optional)' && !arrowKeys[e.keyCode]) { 
       node.textContent = '';
     } else if(e.keyCode === 8 && node.textContent.length <= 1) {
       node.textContent = 'caption (optional)';
@@ -40,10 +51,16 @@ const FigCaption = React.createClass({
   },
 
   render() {
+    /** 
+      * We keep the main source of truth (this.props.html) coming from the reducer. 
+      * State is only held here to update the reducer once the component loses focus.
+      * This way the cursor stays where we want it and doesn't jump around on rerenders.
+      */
     return (
       <figcaption className={this.props.className}
                   style={this.props.style}
                   onInput={this.handleInput}
+                  onBlur={this.handleBlur}
                   onKeyDown={this.handleKeyDown}
                   contentEditable={true} 
                   dangerouslySetInnerHTML={{__html: this.props.html}}>
