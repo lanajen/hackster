@@ -40,12 +40,12 @@ class BaseArticleObserver < ActiveRecord::Observer
       record.post_new_tweet! unless record.hidden?
       record.made_public_at = Time.now
       record.save
+      NotificationCenter.notify_all :approved, :base_article, record.id
     elsif record.made_public_at > Time.now
       record.post_new_tweet_at! record.made_public_at unless record.hidden?
+      NotificationCenter.notify_all :approved, :base_article, record.id
     end
     record.users.each{|u| u.update_counters only: [:approved_projects] }
-
-    NotificationCenter.notify_all :approved, :base_article, record.id
   end
 
   def after_rejected record
