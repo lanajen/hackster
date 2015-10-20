@@ -23,7 +23,7 @@
                   span Share
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
                   = render partial: 'respects/article_button', locals: { respectable: @project }
-              div style='margin-left:5px' = render 'base_articles/manage_actions', { btn_size: 'btn-sm' }
+              span style='margin-left:5px' = render 'base_articles/manage_actions', { btn_size: 'btn-sm' }
 
           - elsif @project.private?
             p.pull-right-desktop
