@@ -2,6 +2,13 @@
   .box
     .box-title
       h2 Start a new project
+      .subheading
+        p
+          | Projects describe devices that you created, whether you're writing a full tutorial, showcasing the end result, or documenting your work in progress.
+          br
+          ' Not what you want?
+          => link_to 'Write an article', new_project_path(type: 'article')
+          | instead.
 
     .box-content
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
@@ -45,7 +52,7 @@
         strong> Is there an existing web page for this project?
         | Enter the URL below and we'll import it.
         br
-        small= link_to 'Need to import multiple pages at once?', new_project_import_path
+        small= link_to 'Click here to import multiple pages at once.', new_project_import_path
 
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group

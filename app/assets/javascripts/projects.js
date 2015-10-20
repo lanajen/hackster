@@ -219,45 +219,43 @@ $select2target = null;
       showEditorTab: function(tab) {
         var _ = this;
 
-        // console.log("showing " + tab);
-
-        // discardChanges();
-
-        // hide the medium media bar
-        $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
-        // hide discard button if story
-        if (tab == '#story') {
-          $('.pe-discard').hide();
-        } else {
-          $('.pe-discard').show();
-        }
-
-        $('.pe-save2').show();
-        $('.pe-save').slideUp(200);
-
-        $('.pe-nav a').removeClass('active');
-        $(tab + '-nav').addClass('active');
-
         var target = $(tab);
-        $('.pe-panel:visible').removeResize();
-        $('.pe-panel').hide();
-
-        target.fadeIn(100, function(){
+        if (target.length) {
+          // hide the medium media bar
+          $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
+          // hide discard button if story
           if (tab == '#story') {
             $('.pe-discard').hide();
-            $.each(codeEditor, function(i, el) {
-              heightUpdateFunction("#code-editor-" + el.id, el.ace);
-            });
+          } else {
+            $('.pe-discard').show();
           }
-          if (tab == '#story') {
-            loadSlickSlider();
-          }
-          target.resize(function(){ _.resizePeContainer() });
-        });
 
-        _.serializeForm();
+          $('.pe-save2').show();
+          $('.pe-save').slideUp(200);
 
-        window.scroll(0, 0);  // so it doesn't scroll to the div
+          $('.pe-nav a').removeClass('active');
+          $(tab + '-nav').addClass('active');
+
+          $('.pe-panel:visible').removeResize();
+          $('.pe-panel').hide();
+
+          target.fadeIn(100, function(){
+            if (tab == '#story') {
+              $('.pe-discard').hide();
+              $.each(codeEditor, function(i, el) {
+                heightUpdateFunction("#code-editor-" + el.id, el.ace);
+              });
+            }
+            if (tab == '#story') {
+              loadSlickSlider();
+            }
+            target.resize(function(){ _.resizePeContainer() });
+          });
+
+          _.serializeForm();
+
+          window.scroll(0, 0);  // so it doesn't scroll to the div
+        }
       },
 
       saveChanges: function() {

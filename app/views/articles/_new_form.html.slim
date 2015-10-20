@@ -2,6 +2,13 @@
   .box
     .box-title
       h2 Write a new article
+      .subheading
+        p
+          | Articles have a simpler template used for everything that is not a full project: protips ("how to do x?"), teardowns, and getting started guides.
+          br
+          ' Not what you want?
+          => link_to 'Create a project', new_project_path
+          | instead.
 
     .box-content
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
