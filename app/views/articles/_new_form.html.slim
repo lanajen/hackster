@@ -30,8 +30,6 @@
 
         / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-        = f.input :content_type, collection: Article::PUBLIC_CONTENT_TYPES, label: 'Article type', required: true
-
         .form-group
           .col-md-8.col-md-offset-4
             = f.button :submit, 'Continue', class: 'btn-block btn-primary'

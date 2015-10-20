@@ -121,7 +121,7 @@ class BaseArticle < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true
+  validates :content_type, presence: true, unless: proc { |p| p.content_type.nil? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -137,8 +137,8 @@ class BaseArticle < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_create :generate_hid
   before_save :ensure_name
-  before_save :generate_slug, if: proc {|p| !p.persisted? }
-  before_update :update_slug, if: proc{|p| p.name_changed? }
+  before_create :generate_slug
+  before_update :update_slug, if: proc {|p| p.name_changed? }
   after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
@@ -393,6 +393,10 @@ class BaseArticle < ActiveRecord::Base
     approve! *args
   end
 
+  def content_type_to_human
+    @content_type_to_human ||= self.class::CONTENT_TYPES_TO_HUMAN[content_type.try(:to_sym)]
+  end
+
   def credit_lines
     @credit_lines ||= credits_widget.try(:credit_lines) || []
   end
@@ -565,7 +569,6 @@ class BaseArticle < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      is_featured: featured,
       is_public: public?,
       project_id: id,
       project_name: name,

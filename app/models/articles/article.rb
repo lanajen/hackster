@@ -5,6 +5,7 @@ class Article < BaseArticle
     'Teardown/Unboxing' => :teardown,
   }
   DEFAULT_CONTENT_TYPE = :protip
+  CONTENT_TYPES_TO_HUMAN = PUBLIC_CONTENT_TYPES.invert
 
   is_impressionable counter_cache: true, unique: :session_hash
 

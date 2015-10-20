@@ -129,8 +129,7 @@ function showHelloWorld() {
 
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
-  setAffixableBottom();
-  affixDivs();
+  updatedScrollEventHandlers();
 });
 
 $(function () {
@@ -149,6 +148,42 @@ $(function () {
       updatedScrollEventHandlers();
     });
   });
+
+  $('body').on('input', '.form-save-on-input', function(e){
+    $(this).find('select').each(function(i, el) {
+      el = $(el);
+      var val = $(el).val();
+      el.find('option').removeAttr('selected');
+      el.find('option[value="' + val + '"]').attr('selected', 'selected');
+    });
+    $(this).submit();
+  });
+
+  $('body')
+    .on('ajax:beforeSend', '.form-save-on-input', function(){
+      $('body').addClass('app-loading');
+    })
+    .on('ajax:success', '.form-save-on-input', function(){
+      var popover = $(this).closest('.popover');
+      var id = popover.attr('id');
+      var a = $('[aria-describedby="' + id + '"]');
+      var html = popover.find('.popover-content').html();
+      a.attr('data-content', html);
+    })
+    .on('ajax:complete', '.form-save-on-input', function(){
+      $('body').removeClass('app-loading');
+    });
+
+  $('body')
+    .on('ajax:complete', '#project-form-prepublish', function(){
+      if ($(this).find('[name="base_article[content_type]"]').val().length) {
+        $('.content-type-indicator').addClass('content-type-present');
+        $('.content-type-indicator').removeClass('content-type-missing');
+      } else {
+        $('.content-type-indicator').addClass('content-type-missing');
+        $('.content-type-indicator').removeClass('content-type-present');
+      }
+    });
 
   // <% if Rails.env == 'dev' %>
   //   // fix image URLS so they work on dev

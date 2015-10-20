@@ -8,7 +8,7 @@
       editor.activate();
     });
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='story'
 
@@ -27,11 +27,8 @@
           p.small.text-muted
             strong> Tip:
             | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-          #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your project here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+          #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your project here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url=project_path(@project) data-save-mode='form'
 
             #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
-
-          / textarea.wym-editor
-            = @project.story
 
     = render 'projects/forms/pe_save'

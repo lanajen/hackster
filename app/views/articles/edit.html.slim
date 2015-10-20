@@ -44,7 +44,10 @@
                 strong= pluralize @project.checklist_todo.size, 'item'
                 i.fa.fa-caret-down
               | to complete
-            = render 'projects/forms/checklist'
+            .admin-checklist
+              .box
+                .box-content
+                  = render 'projects/forms/checklist'
 
   #content.wrapper780.pe-container
     .busy-overlay
@@ -68,9 +71,16 @@
                 li= link_to 'Save changes', 'javascript:void(0)', class: 'btn btn-primary pe-submit'
           hr
 
-      = render 'projects/forms/checklist'
+      .row
+        .col-xs-12
+          .panel.panel-default
+            .panel-heading
+              h4 Publish checklist
+            .panel-body
+              p.small.text-muted Before you publish this #{@project.identifier}, make sure that all these details are filled in:
+              = render 'projects/forms/checklist'
 
-      = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+      = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
 
         .row
           .col-xs-12
@@ -78,17 +88,15 @@
               .panel-heading
                 h4 General settings
               .panel-body
-                = f.input :content_type, collection: Article::PUBLIC_CONTENT_TYPES, label: 'Article type', required: true
                 = f.input :name, label: "Article name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
                 = f.input :one_liner, as: :text, input_html: { rows: 3 },
                   hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
                 div data-anchor='cover_image'
                   = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
-                = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: false
                 = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
                 = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the article. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
 
-      = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+      = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
         .row
           .col-xs-12
             .panel.panel-default data-anchor='description'
@@ -100,7 +108,7 @@
                 p.small.text-muted
                   strong> Tip:
                   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-                #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your article here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+                #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your article here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url=project_path(@project) data-save-mode='form'
 
                   #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
@@ -108,7 +116,7 @@
 
       #protip_attachments= render 'projects/forms/protip_attachments'
 
-      = simple_nested_form_for @project, url: "/api/v1/projects/#{@project.id}", html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+      = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
         .row
           .col-xs-12
             .panel.panel-default data-anchor='description'
@@ -130,15 +138,6 @@
                       .row
                         .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
                     = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
-
-      .row
-        .col-xs-12
-          .panel.panel-default
-            .panel-heading
-              h4 Danger zone
-            .panel-body
-              .form-group
-                .col-md-8.col-xs-offset-4= link_to 'Delete article', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
       .row
         .col-xs-12

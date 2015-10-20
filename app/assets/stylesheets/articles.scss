@@ -49,14 +49,6 @@
   }
 }
 
-.protip-mark {
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.9em;
-  margin-bottom: 5px;
-  color: #999;
-}
-
 .protip-section-heading {
   margin-bottom: 20px;
 }
@@ -88,5 +80,16 @@
 @media (max-width: 768px) {
   .section-no-container {
     padding: 0 20px;
+  }
+}
+
+.content-type-present {
+  & > .small {
+    display: none;
+  }
+}
+.content-type-missing {
+  & > form {
+    display: none;
   }
 }

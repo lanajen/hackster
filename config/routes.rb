@@ -546,6 +546,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :projects, only: [:new, :create] do
+      patch '' => 'projects#update', on: :member
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member

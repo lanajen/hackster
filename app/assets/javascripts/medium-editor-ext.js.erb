@@ -419,7 +419,7 @@ $(function() {
         _.showLoadingBar();
         _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-        $.ajax(_.modelUrl + '/' + _.modelId, {
+        $.ajax(_.modelUrl + '.js', {
           data: formData,
           // processData: false,
           // contentType: false,
@@ -459,7 +459,6 @@ $(function() {
         });
         _.lastSaved = new Date().getTime();
       } else if (_.saveMode == 'form') {
-        console.log('saving modeldata', modelData.description);
         $('#base_article_description').val(modelData.description);
       }
     },

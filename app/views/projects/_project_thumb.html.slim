@@ -27,9 +27,10 @@
               - if project.private?
                 i.fa.fa-lock>
               ==> link_to project.name, project_link, class: 'project-link-with-ref'
-              - if project.external?
+              / - if project.external?
                 i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
             p
+              => project.content_type_to_human
               - if project.external?
                 - if project.guest_name.present?
                   ' by

@@ -823,7 +823,7 @@ $select2target = null;
 
     $('.admin-bar .toggle-checklist').on('click', function(e){
       e.preventDefault();
-      $('.admin-bar #checklist').toggle();
+      $('.admin-bar .admin-checklist').toggle();
     });
 
     window.addEventListener("beforeunload", function (e) {

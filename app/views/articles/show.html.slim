@@ -10,6 +10,10 @@
 
     #content.project-page.hljs-active class="project-#{@project.id}"
       .wrapper780.protip-show
+        - if @project.content_type_to_human
+          section.section-no-container
+            .project-type
+              = @project.content_type_to_human
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
             .pull-right-desktop
@@ -19,19 +23,7 @@
                   span Share
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
                   = render partial: 'respects/article_button', locals: { respectable: @project }
-              .btn-group style='margin-left:5px'
-                a.btn.btn-default.btn-sm.dropdown-toggle href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
-                  - if @project.public?
-                    - if @project.pending_review? or @project.unpublished?
-                      span Public - Pending review
-                    - else
-                      span Public
-                  - else
-                    span
-                      i.fa.fa-lock
-                      span Private
-                  i.fa.fa-caret-down
-                = link_to 'Edit', edit_project_path(@project), class: 'btn btn-default btn-sm'
+              div style='margin-left:5px' = render 'base_articles/manage_actions', { btn_size: 'btn-sm' }
 
           - elsif @project.private?
             p.pull-right-desktop
@@ -70,7 +62,6 @@
           section.section-container.section-no-title
             section.section-content.clearfix
               .protip-section-title
-                .protip-mark= @project.content_type.to_s.humanize
                 h1
                   ==> @project.name
                 p= @project.one_liner

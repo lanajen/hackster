@@ -207,38 +207,75 @@ class ProjectsController < ApplicationController
 
   def update
     authorize! :update, @project
-    private_was = @project.private
 
-    if @project.update_attributes(params[:base_article])
-      notice = "#{@project.name} was successfully updated."
-      if private_was != @project.private
-        if @project.private == false
-          notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
-          session[:share_modal] = 'published_share_prompt'
-          session[:share_modal_model] = 'project'
-          session[:share_modal_model_id] = @project.id
-          session[:share_modal_time] = 'after_redirect'
+    respond_with @project do |format|
+      format.html do
+        private_was = @project.private
+        if @project.update_attributes(params[:base_article])
+          notice = "#{@project.name} was successfully updated."
+          if private_was != @project.private
+            if @project.private == false
+              notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
+              session[:share_modal] = 'published_share_prompt'
+              session[:share_modal_model] = 'project'
+              session[:share_modal_model_id] = @project.id
+              session[:share_modal_time] = 'after_redirect'
 
-          track_event 'Made project public', @project.to_tracker
-        elsif @project.private == false
-          notice = "#{@project.name} is now private again."
-        end
-      end
-      @project = @project.decorate
-      respond_with @project do |format|
-        format.html do
+              track_event 'Made project public', @project.to_tracker
+            elsif @project.private == false
+              notice = "#{@project.name} is now private again."
+            end
+          end
           flash[:notice] = notice
-          redirect_to @project
+        else
+          if params[:base_article].try(:[], 'private') == '0'
+            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+          end
         end
+        redirect_to @project
       end
 
-      track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
-    else
-      if params[:base_article].try(:[], 'private') == '0'
-        flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+      format.js do
+        @panel = params[:panel]
+
+        # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
+        if params[:base_article].try(:[], :widgets_attributes)
+          widgets = {}
+          params[:base_article][:widgets_attributes].each do |i, widget|
+            widgets[i] = widget if widget['id'].present?
+          end
+          all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
+          widgets.each do |i, widget|
+            unless all.include? widget['id']
+              params[:base_article][:widgets_attributes].delete(i)
+            end
+          end
+        end
+
+        begin
+          if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
+            if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
+              render 'projects/forms/update'
+            else
+              render 'projects/forms/checklist', status: :ok
+            end
+          else
+            message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
+            log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
+            # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+            render json: { base_article: @project.errors }, status: :unprocessable_entity
+          end
+        rescue => e
+          message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
+          log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
+          NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+          render status: :internal_server_error, nothing: true
+          raise e if Rails.env.development?
+        end
       end
-      redirect_to @project
     end
+
+    # track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
   end
 
   def update_workflow

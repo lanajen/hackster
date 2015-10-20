@@ -1,12 +1,18 @@
 class Project < BaseProject
   PUBLIC_CONTENT_TYPES = {
-    'Showcase (no or incomplete instructions)' => :showcase,
+    'Showcase (no or partial instructions)' => :showcase,
     'Tutorial (complete instructions)' => :tutorial,
+    'Work in progress' => :wip,
   }
   PRIVATE_CONTENT_TYPES = {
     'Workshop' => :workshop,
   }
   CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES)
+  CONTENT_TYPES_TO_HUMAN = {
+    showcase: 'Project showcase',
+    tutorial: 'Project tutorial',
+    wip: 'Project in progress',
+  }
   DEFAULT_CONTENT_TYPE = :tutorial
 
   is_impressionable counter_cache: true, unique: :session_hash
@@ -87,9 +93,5 @@ class Project < BaseProject
 
   def unlocked?
     !locked?
-  end
-
-  def wip?
-    wip
   end
 end

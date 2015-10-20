@@ -2,6 +2,9 @@ class ExternalProject < BaseProject
   PUBLIC_CONTENT_TYPES = {
     'Link to third party website' => :external,
   }
+  CONTENT_TYPES_TO_HUMAN = {
+    external: 'External link',
+  }
 
   validates :name, :website, :one_liner, :cover_image, presence: true
   before_save :ensure_is_hidden
@@ -12,6 +15,10 @@ class ExternalProject < BaseProject
 
   def self.model_name
     BaseArticle.model_name
+  end
+
+  def content_type_to_human
+    'External link'
   end
 
   def ensure_is_hidden
