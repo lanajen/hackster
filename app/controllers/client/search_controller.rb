@@ -7,14 +7,14 @@ class Client::SearchController < Client::BaseController
       begin
         opts = params.dup
         opts[:platform_id] = current_platform.id
-        opts[:type] = 'project'
+        opts[:type] = 'base_article'
         opts[:include_external] = true
         opts[:per_page] = BaseArticle.per_page
         @results = SearchRepository.new(opts).search.results
 
         if @results.empty? and !current_site.hide_alternate_search_results
           opts = params.dup
-          opts[:type] = 'project'
+          opts[:type] = 'base_article'
           opts[:per_page] = BaseArticle.per_page
           @results = @alternate_results = SearchRepository.new(opts).search.results
         end

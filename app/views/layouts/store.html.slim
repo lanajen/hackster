@@ -32,6 +32,17 @@
                     i.fa.fa-shopping-cart
                     span= current_order.order_lines_count
 
+        .alert.alert-warning
+          p
+            ' Next batch of orders will ship:
+            strong
+              - if Date.today.day <= 7
+                | this week
+              - else
+                ' first week of
+                = Date.today.next_month.strftime '%B'
+            | .
+
         = yield
 
 = render template: "layouts/#{current_layout}"

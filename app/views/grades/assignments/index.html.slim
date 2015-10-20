@@ -111,9 +111,10 @@ p
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
                   ' Not yet submitted
-                br
-                ' Last edited:
-                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
+                - if project.last_edited_at.present?
+                  br
+                  ' Last edited:
+                  = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
               td Pending
               td
               td
@@ -131,9 +132,10 @@ p
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
                   ' Not yet submitted
-                br
-                ' Last edited:
-                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
+                - if project.last_edited_at.present?
+                  br
+                  ' Last edited:
+                  = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
             td Pending
             td
             td

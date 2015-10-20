@@ -58,7 +58,7 @@
       .col-md-8
         ul
           - @part.part_joins.each do |part_join|
-            - project = part_join.try(:partable) ? (part_join.partable.class == BaseArticle ? part_join.partable : part_join.partable.widgetable) : nil
+            - project = part_join.try(:partable) ? (part_join.partable_type == 'BaseArticle' ? part_join.partable : part_join.partable.widgetable) : nil
             - if project
               li= link_to project.name, project
 

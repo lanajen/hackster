@@ -34,16 +34,16 @@
             = link_to linked_part.full_name, linked_part
       ul.links.list-inline
         - if part.store_link.present?
-          li= link_to 'Buy it', part.store_link, target: '_blank'
+          li= link_to 'Buy it', part.store_link, target: '_blank', rel: 'nofollow'
         - if part.product_page_link.present?
-          li= link_to 'Official page', part.product_page_link, target: '_blank'
+          li= link_to 'Official page', part.product_page_link, target: '_blank', rel: 'nofollow'
         - if part.get_started_link.present?
-          li= link_to 'Get started', part.get_started_link, target: '_blank'
+          li= link_to 'Get started', part.get_started_link, target: '_blank', rel: 'nofollow'
         - if part.documentation_link.present?
-          li= link_to 'Full documentation', part.documentation_link, target: '_blank'
+          li= link_to 'Full documentation', part.documentation_link, target: '_blank', rel: 'nofollow'
         - if part.libraries_link.present?
-          li= link_to 'Libraries', part.libraries_link, target: '_blank'
+          li= link_to 'Libraries', part.libraries_link, target: '_blank', rel: 'nofollow'
         - if part.datasheet_link.present?
-          li= link_to 'Datasheet', part.datasheet_link, target: '_blank'
+          li= link_to 'Datasheet', part.datasheet_link, target: '_blank', rel: 'nofollow'
         - if part.review_link.present?
-          li= link_to 'Hackster review', part.review_link, target: '_blank'
+          li= link_to 'Hackster review', part.review_link, target: '_blank', rel: 'nofollow'

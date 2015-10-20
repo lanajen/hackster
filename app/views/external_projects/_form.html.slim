@@ -25,8 +25,8 @@
         .panel-body
           - if @project.external?
             = f.input :name, label: 'Project name'
-            = f.input :one_liner, label: 'Mini description', as: :text, input_html: { rows: 4 },
-              hint: 'Maximum 140 characters'
+            = f.input :one_liner, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },
+              hint: 'A short sentence, max 140 characters'
             = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:imgix_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
             = f.input :platform_tags_string, as: :string, label: 'Built with', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
             = f.input :website, label: 'Project website'
@@ -41,7 +41,7 @@
           - else
             = f.input :name, label: 'Device name'
             = f.input :one_liner, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },
-              hint: 'Maximum 140 characters'
+              hint: 'A short sentence, max 140 characters'
             = f.input :description, hint: "Describe your device in more details.", input_html: { class: 'text-editor', rows: 20 }
             = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:imgix_url, :cover_mini_thumb), help_block: 'High definition shot for your device. Will be cropped to 4:3.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
             / # = f.input :platform_tags_string, label: 'Powered by', hint: 'Select the platform that powers your device', collection: Platform.public.order(:full_name).pluck(:full_name)

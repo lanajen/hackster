@@ -5,7 +5,7 @@
     .row
       = f.input :name, label: 'Title'
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+        hint: 'A short sentence, max 140 characters'
       = f.input :type, label: 'Template', collection: BaseArticle::TYPES
       = f.input :content_type, collection: Project::CONTENT_TYPES.merge(Article::PUBLIC_CONTENT_TYPES).merge(ExternalProject::PUBLIC_CONTENT_TYPES), label: 'Project type'
       = f.input :website, label: 'Project website'

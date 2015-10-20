@@ -82,10 +82,16 @@
                         - part = part.decorate
                         - if part.image
                           = image_tag part.image(:tiny)
-                        - if part.has_own_page? and !is_whitelabel?
-                          = link_to part.name, part
                         - else
-                          = part.name
+                          i.fa.fa-circle-o.small
+                        - if part.has_own_page? and !is_whitelabel?
+                          span= link_to part.full_name, part
+                        - elsif part.store_link.present?
+                          span= link_to part.full_name, part.store_link, target: '_blank', rel: 'nofollow'
+                        - elsif part.product_page_link.present?
+                          span= link_to part.full_name, part.product_page_link, target: '_blank', rel: 'nofollow'
+                        - else
+                          span= part.full_name
 
               .protip-section-img
                 = image_tag @project.cover_image(:medium)
@@ -108,7 +114,7 @@
           section#team.section-container
             h2.section-title
               span.title
-                ' Posted by
+                ' Written by
             .section-content
               - if @project.guest_name.present?
                 .member-thumb
@@ -123,30 +129,40 @@
                     = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
                   - else
                     = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
+                - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user).try(:decorate)
+                  .member-thumb.posted-by
+                    ' Posted by
+                    => link_to image_tag(poster.avatar(:mini), class: 'img-circle'), poster
+                    = link_to poster.name, poster
               - else
                 - @project.team_members.each do |member|
                   = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
+
+              - if @project.credit_lines.any?
+                .member-thumb
+                  ' Thanks to
+                  = @project.credit_lines.map{|c| render('credit_line', credit_line: c) }.to_sentence.html_safe
+                  | .
 
               - if @project.product_tags_cached.any?
                 ul.list-inline.tags
                   - @project.product_tags_cached.map{|t| t.downcase }.each do |tag|
                     li= link_to tag, tag_path(tag), class: 'tag tag-invert'
 
-              .clearfix.small.text-muted
-                - if @project.license
-                  .pull-left-desktop
-                    ' Licensed under
-                    a target='_blank' href=@project.license.url = @project.license.abbr
-
+              p.small.text-muted
                 - if @project.made_public_at
-                  .pull-right-desktop
+                  span
                     i.fa.fa-clock-o
                     span= l @project.made_public_at, format: :long_date
+                  - if @project.license
+                    span style='padding:0 10px' -
 
-              / # = render 'actions'
+                - if @project.license
+                  span
+                    ' Licensed under
+                    a target='_blank' href=@project.license.url = @project.license.abbr
+                    | .
 
-          / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
-          / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
           section#comments.section-container.section-collapsible
             h2.section-title
               a.title.title-toggle href=''
@@ -156,13 +172,13 @@
             .section-content
               = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
 
-    / - if @project.public?
+    - if @project.public?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
         - if @other_projects.count > 0
           section.other-projects
             .container
               section.section-thumbs
-                h4 style='border:0' Related articles
+                h4 style='border:0' Related articles and projects
               .row
                 - @other_projects.each do |project|
                   = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }
