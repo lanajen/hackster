@@ -1,21 +1,19 @@
 - if @project.public?
   - if (@project.pending_review? or @project.unpublished?)
-  .alert.alert-warning.text-center
-    p
-      i.fa.fa-clock-o>
-      ' We're reviewing your #{@project.identifier} before it can appear on the home page.
-      = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+    .alert.alert-warning.text-center
+      p
+        i.fa.fa-clock-o>
+        ' We're reviewing your #{@project.identifier} before it can appear on the home page.
+        = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
 - else
   - who = %w(you)
   - who += ['team members'] if @project.team_members_count > 1
   - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.model.respond_to?(:has_assignment?) and @project.has_assignment?
 
   .alert.alert-warning.text-center
-    span
-      p
-        i.fa.fa-lock>
-        | This project is private so only #{who.to_sentence} can see it.
-    - if @project.can_be_public? or current_user.try(:is?, :admin)
+    p
+      i.fa.fa-lock>
+      | This project is private so only #{who.to_sentence} can see it.
 
 - alert_color = @project.checklist_completed? ? 'success' : 'warning'
 .alert.text-center class="alert-#{alert_color}"
@@ -31,7 +29,7 @@
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
 - if @project.public?
-  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block'
+  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
 - else
   .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
     = simple_form_for @project, html: { id: 'project-form-publish' } do |f|

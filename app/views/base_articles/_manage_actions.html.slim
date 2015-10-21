@@ -1,4 +1,9 @@
 .btn-group
+  - if !@project.model.respond_to?(:unlocked?) or @project.unlocked? or can? :edit_locked, @project
+    = link_to 'Edit', edit_project_path(@project), class: "btn btn-default #{btn_size}"
+  - else
+    = link_to 'Locked for editing', 'javascript:void(0)', class: "btn btn-default #{btn_size} disabled"
+
   a.btn.btn-default class=btn_size href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'base_articles/publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
     - if @project.public?
       - if @project.pending_review? or @project.unpublished?
@@ -7,14 +12,10 @@
         span Public
     - else
       span
-        i.fa.fa-lock
-        span Private
+        / i.fa.fa-lock
+        span Publish
     i.fa.fa-caret-down
 
-  - if !@project.model.respond_to?(:unlocked?) or @project.unlocked? or can? :edit_locked, @project
-    = link_to 'Edit', edit_project_path(@project), class: "btn btn-default #{btn_size}"
-  - else
-    = link_to 'Locked for editing', 'javascript:void(0)', class: "btn btn-default #{btn_size} disabled"
   a.btn.btn-default.dropdown-toggle class=btn_size href='javascript:void(0)' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
     i.fa.fa-ellipsis-v
   ul.dropdown-menu.pull-right
