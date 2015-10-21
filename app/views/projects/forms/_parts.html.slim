@@ -1,9 +1,9 @@
 div id="#{type}-parts-form"
   ul.list-unstyled.parts-widget
-    - parts = project.send("#{type}_part_joins")
+    - parts = project.send([type, 'part_joins'].compact.join('_'))
     - parts.reload
     - parts.new if parts.empty?
     - parts.each_with_index do |part, i|
-      = f.simple_fields_for :"#{type}_part_joins", part, wrapper: false do |f_part|
+      = f.simple_fields_for [type, 'part_joins'].compact.join('_'), part, wrapper: false do |f_part|
         = render partial: "projects/forms/part", locals: { f: f_part, part: part, i: i, options: options }
-    = f.link_to_add "Add another #{human_type}", :"#{type}_part_joins", class: 'btn btn-success btn-sm btn-block'
+    = f.link_to_add "Add another #{human_type}", [type, 'part_joins'].compact.join('_'), class: 'btn btn-success btn-sm btn-block'

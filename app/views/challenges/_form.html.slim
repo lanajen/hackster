@@ -205,15 +205,16 @@
           .panel-heading
             h4 Admin stuff
           .panel-body
-            = f.input :platform_id, label: 'Promoted platform', collection: Platform.order(:full_name)
+            = f.association :sponsors, label: 'Sponsoring platforms', collection: Platform.order(:full_name)
             = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub (only when challenge is active).', as: :boolean
-            .form-group
-              .col-md-8.col-md-offset-4
-                strong.text-danger USE THE FOLLOWING ONLY IF SPONSOR DOESN'T HAVE A PLATFORM ON HACKSTER:
-            = f.input :sponsor_name
-            = f.input :sponsor_link
-            = f.input :custom_css, as: :text
-            = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @challenge.avatar.try(:imgix_url), help_block: "In case the challenge isn't tied to a platform.", attribute_type: 'avatar', image_version: :big, model: 'challenge' }
+            .hide
+              .form-group
+                .col-md-8.col-md-offset-4
+                  strong.text-danger USE THE FOLLOWING ONLY IF SPONSOR DOESN'T HAVE A PLATFORM ON HACKSTER:
+              = f.input :sponsor_name
+              = f.input :sponsor_link
+              = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @challenge.avatar.try(:imgix_url), help_block: "In case the challenge isn't tied to a platform.", attribute_type: 'avatar', image_version: :big, model: 'challenge' }
+              = f.input :custom_css, as: :text
             = f.simple_fields_for :challenge_admins do |f_admin|
               = f_admin.input :user_id, label: 'Admin user ID'
               = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
@@ -226,6 +227,7 @@
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
             = f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
+            = f.input :disable_pre_contest_winners, as: :boolean, inline_label: 'Disable pre-contest winners', label: false
 
       .panel.panel-default
         .panel-heading
@@ -258,77 +260,84 @@
 
 = content_for :head do
   = stylesheet_link_tag 'datepicker'
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"
 
 = content_for :js do
   = tinymce_assets
   = javascript_include_tag 'datepicker'
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"
 
   javascript:
-    $('.datetimepicker').datetimepicker({
-      icons: {
-        time: "fa fa-clock-o",
-        date: "fa fa-calendar",
-        up: "fa fa-arrow-up",
-        down: "fa fa-arrow-down"
-      },
-      sideBySide: true
-    });
+    $(function(){
+      $('.datetimepicker').datetimepicker({
+        icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+        },
+        sideBySide: true
+      });
 
-    $('#pre_registration_start_date_dummy').on('change', function(){
-      $('#pre_registration_start_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#pre_contest_start_date_dummy').on('change', function(){
-      $('#pre_contest_start_date').val($('#pre_contest_start_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#pre_contest_end_date_dummy').on('change', function(){
-      $('#pre_contest_end_date').val($('#pre_contest_end_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#start_date_dummy').on('change', function(){
-      $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#end_date_dummy').on('change', function(){
-      $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#winners_announced_date_dummy').on('change', function(){
-      $('#winners_announced_date').val($('#winners_announced_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#pre_winners_announced_date_dummy').on('change', function(){
-      $('#pre_winners_announced_date').val($('#pre_winners_announced_date_dummy').data("DateTimePicker").getDate());
-    });
-    $('#voting_end_date_dummy').on('change', function(){
-      $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
-    });
+      $("#challenge_sponsor_ids").select2({
+        tokenSeparators: [','],
+        width: '100%'
+      });
 
-    $('#challenge_activate_voting').on('change', function(){
-      if ($(this).is(':checked')) {
-        $('#voting_dates').slideDown();
-      } else {
-        $('#voting_dates').slideUp();
-      }
-    });
-    $('#challenge_activate_pre_registration').on('change', function(){
-      if ($(this).is(':checked')) {
-        $('#pre_registration_settings').slideDown();
-      } else {
-        $('#pre_registration_settings').slideUp();
-      }
-    });
-    $('#challenge_activate_pre_contest').on('change', function(){
-      if ($(this).is(':checked')) {
-        $('#pre_contest_settings').slideDown();
-      } else {
-        $('#pre_contest_settings').slideUp();
-      }
-    });
-    $('#challenge_activate_mailchimp_sync').on('change', function(){
-      if ($(this).is(':checked')) {
-        $('#mailchimp_settings').slideDown();
-      } else {
-        $('#mailchimp_settings').slideUp();
-      }
-    });
+      $('#pre_registration_start_date_dummy').on('change', function(){
+        $('#pre_registration_start_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#pre_contest_start_date_dummy').on('change', function(){
+        $('#pre_contest_start_date').val($('#pre_contest_start_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#pre_contest_end_date_dummy').on('change', function(){
+        $('#pre_contest_end_date').val($('#pre_contest_end_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#start_date_dummy').on('change', function(){
+        $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#end_date_dummy').on('change', function(){
+        $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#winners_announced_date_dummy').on('change', function(){
+        $('#winners_announced_date').val($('#winners_announced_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#pre_winners_announced_date_dummy').on('change', function(){
+        $('#pre_winners_announced_date').val($('#pre_winners_announced_date_dummy').data("DateTimePicker").getDate());
+      });
+      $('#voting_end_date_dummy').on('change', function(){
+        $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+      });
 
-    jQuery(function($) {
+      $('#challenge_activate_voting').on('change', function(){
+        if ($(this).is(':checked')) {
+          $('#voting_dates').slideDown();
+        } else {
+          $('#voting_dates').slideUp();
+        }
+      });
+      $('#challenge_activate_pre_registration').on('change', function(){
+        if ($(this).is(':checked')) {
+          $('#pre_registration_settings').slideDown();
+        } else {
+          $('#pre_registration_settings').slideUp();
+        }
+      });
+      $('#challenge_activate_pre_contest').on('change', function(){
+        if ($(this).is(':checked')) {
+          $('#pre_contest_settings').slideDown();
+        } else {
+          $('#pre_contest_settings').slideUp();
+        }
+      });
+      $('#challenge_activate_mailchimp_sync').on('change', function(){
+        if ($(this).is(':checked')) {
+          $('#mailchimp_settings').slideDown();
+        } else {
+          $('#mailchimp_settings').slideUp();
+        }
+      });
+
       tinyMCE.init({
         selector: 'textarea.text-editor',
         toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image media",

@@ -15,6 +15,7 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
+  has_and_belongs_to_many :sponsors, class_name: 'Group', dependent: :destroy
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
@@ -44,7 +45,7 @@ class Challenge < ActiveRecord::Base
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
-  attr_accessible :new_slug, :name, :prizes_attributes, :platform_id,
+  attr_accessible :new_slug, :name, :prizes_attributes, :sponsor_ids,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
@@ -69,6 +70,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_pre_contest_winners, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
@@ -209,7 +211,7 @@ class Challenge < ActiveRecord::Base
     if activate_pre_contest
       @dates << { date: pre_contest_start_date, label: 'Pre-contest opens' } if pre_contest_start_date
       @dates << { date: pre_contest_end_date, label: 'Pre-contest closes' } if pre_contest_end_date
-      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date and not disable_pre_contest_winners?
     end
 
     @dates << { date: start_date, label: 'Project submissions open' } if start_date

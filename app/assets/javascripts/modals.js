@@ -18,10 +18,11 @@ function resizeModal(id) {
 
   m.fadeIn(200, function(){
     $('body').addClass('modal-open');
+    m.addClass('open');
     m.trigger('modal:open');
   });
 
-  var height = Math.max(-(p.height() / 2), -($(window).height() / 2 - 20));  // 20 for padding
+  var height = Math.max(-(p.outerHeight() / 2), -($(window).height() / 2 - 20));  // 20 for padding
   p.css('margin-top', height);
 }
 
@@ -33,6 +34,7 @@ function closeModal(id) {
     m.trigger('modal:closed');
   });
   $('body').removeClass('modal-open');
+  m.removeClass('open');
   return false;
 }
 
@@ -47,7 +49,7 @@ $(function () {
     }, 2000);
   });
 
-  body.on('click', '.modal-popup .close, .modal-popup .close-btn', function(e){
+  body.on('click', '.modal-popup.open .close, .modal-popup .close-btn', function(e){
     e.preventDefault();
     target = $(this).data('target');
     closeModal(target);
@@ -69,7 +71,7 @@ $(function () {
     }
   });
 
-  body.on('click', '.modal-popup .popup-overlay-bg:not(.disable-click)', function(e){
+  body.on('click', '.modal-popup.open .popup-overlay-bg:not(.disable-click)', function(e){
     e.preventDefault();
     closeModal('#' + $(this).parent().attr('id'));
   });

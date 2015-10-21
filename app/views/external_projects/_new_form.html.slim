@@ -1,0 +1,68 @@
+.col-md-4.col-md-offset-4
+  .box
+    .box-title
+      h2
+        - if @project.external?
+          | Submit a link
+        - else
+          | Add a device
+
+    .box-content
+      = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload disable-on-submit' } do |f|
+        = f.error_notification
+
+        = f.input :type, as: :hidden
+        = f.input :website, label: (@project.external? ? 'Link to the project' : 'Main website'), required: true
+        = f.input :name, label: (@project.external? ? 'What is the project called?' : 'What is the device called?'), required: true
+        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', required: true, hint: 'A short sentence, max 140 characters'
+        - if @project.external?
+          - if user_signed_in?
+            = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
+          - else
+            = f.input :guest_name, label: 'Who should be credited for this hack?'
+        = f.input :product_tags_string, as: :hidden
+        = f.input :platform_tags_string, as: :hidden
+
+        .cover_image.file-drop.form-group  class="#{'has-error' if @project.errors[:cover_image].present?}"
+          - if @project.cover_image
+            = hidden_field_tag :cover_image_id, @project.cover_image.id
+          label.control-label
+            abbr>  title='required'  *
+            | Cover image
+          div
+            span.cover_image.image-preview.preview
+              - if @project.cover_image
+                = image_tag @project.cover_image.imgix_url(:cover_mini_thumb)
+            .btn-group
+              a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+              a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                i.fa.fa-link
+            p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
+            - if @project.errors[:cover_image]
+              span.help-block.has-error= @project.errors[:cover_image].to_sentence
+
+        = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
+
+        = f.button :submit, 'Submit', class: 'btn-block btn btn-primary'
+
+.col-md-3.col-md-offset-1
+  h4 What is this?
+  - if @project.external?
+    p
+      ' Do you know of an existing project page hosted on an external website that you would like to list
+      - if @project.platform_tags_string.present?
+        ' under
+        strong = @project.platform_tags_string
+      - else
+        | on your profile
+      | ?
+    p Submit it to #{site_name} by filling in this form. We'll give it a quick review and post it to the list.
+    / %p
+      strong PS:
+      | Be cool and credit the maker who built it if it's not you!
+  - elsif @project.product?
+    p
+      ' Want to showcase a commercial device made with
+      strong= @project.platform_tags_string
+      ' ?
+    p Submit it to #{site_name} by filling in this form. We'll give it a quick review and post it to the list.

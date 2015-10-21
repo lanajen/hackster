@@ -1,0 +1,18 @@
+h5
+  - case widget.document.try(:type)
+  - when 'ImageFile'
+    i.fa.fa-file-image-o
+  - when 'PdfFile'
+    i.fa.fa-file-pdf-o
+  - when 'SketchfabFile'
+    span.fa-stack.fa-stack-half
+      i.fa.fa-file-o.fa-stack-1x
+      i.fa.fa-cube.fa-stack-1x.fa-stack-half
+  - else
+    i.fa.fa-file-o
+  span= widget.name
+p
+  - if widget.document
+    = widget.document.file_name
+  - else
+    | No document

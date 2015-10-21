@@ -6,8 +6,11 @@
 = content_for :no_container do
   - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
-    #content.project-page class="project-#{@project.id}"
+    #content.project-page.hljs-active class="project-#{@project.id}"
       .container-desktop.container
+        - if @project.content_type_to_human
+          .project-type
+            = @project.content_type_to_human
         .row
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
 
@@ -50,8 +53,6 @@
                     h1.project-title
                       - if @project.is_idea?
                         i.fa.fa-lightbulb-o.private-project-icon>
-                      - if @project.wip
-                        span.istooltip style='vertical-align: middle;font-size: 50%;color: #ddd;margin-right: 5px;' title="Work in progress" WIP
                       ==> @project.name
                       - if @project.license
                         a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
@@ -91,7 +92,7 @@
                     .medium-editor= @project.description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
-                - if @hardware_parts.any?
+                - if @hardware_parts.exists?
                   section#components.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -108,7 +109,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
               - cache [I18n.locale, "project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
-                - if @tool_parts.any?
+                - if @tool_parts.exists?
                   section#tools.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -122,7 +123,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
-                - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+                - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).exists?
                   section#cad.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -134,7 +135,7 @@
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
               - cache [I18n.locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"] do
-                - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
+                - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).exists?
                   section#schematics.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -146,7 +147,7 @@
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
               - cache [I18n.locale, "project-#{@project.id}-software-parts"], tag: ["project-#{@project.id}-software-parts"] do
-                - if @software_parts.any?
+                - if @software_parts.exists?
                   section#apps.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -160,7 +161,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
-                - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
+                - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).exists?
                   section#code.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -217,7 +218,7 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      - if issues = @project.issues.where(type: 'Issue').open and issues.any?
+                      - if issues = @project.issues.where(type: 'Issue').open and issues.exists?
                         - issues.each do |issue|
                           .section-inset
                             .section-title
@@ -248,10 +249,21 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
+                  = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
           .col-md-4.right-column
             .container-mobile
+              - if @can_edit
+                section.section-thumbs
+                  / h4 Manage this project
+                  = render 'base_articles/manage_actions', { btn_size: '' }
+
+              - elsif @project.private?
+                .alert.alert-warning.text-center
+                  p
+                    i.fa.fa-lock>
+                    | This project is private.
+
               - if @can_edit
                 - if @project.assignment.present?
                   section.section-thumbs
@@ -288,64 +300,7 @@
 
               - if @project.public?
                 section.section-thumbs
-                  / h4 Do something awesome
                   = render 'actions'
-
-              - if @can_edit
-                section.section-thumbs
-                  h4 Manage this project
-
-                  - alert_color = @project.checklist_completed? ? 'success' : 'warning'
-                  .alert.text-center class="alert-#{alert_color}"
-                    span
-                      p
-                        i.fa.fa-list>
-                        = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
-                    .progress style="margin-bottom: 0"
-                      .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
-
-
-                  - if @project.public?
-                    - if @project.pending_review? or @project.unpublished?
-                      .alert.alert-warning.text-center
-                        span
-                          p
-                            i.fa.fa-clock-o>
-                            ' We're reviewing your project before it can appear on the home page and the communities you selected.
-                            = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
-
-                  - else
-                    - who = %w(you)
-                    - who += ['team members'] if @project.team_members_count > 1
-                    - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
-
-                    .alert.alert-warning.text-center
-                      span
-                        p
-                          i.fa.fa-lock>
-                          | This project is private so only #{who.to_sentence} can see it.
-                      - if @project.can_be_public? or current_user.try(:is?, :admin)
-                        p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
-                      - else
-                        = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
-                      p
-                        small
-                          = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
-
-                  - if @project.unlocked? or can? :edit_locked, @project
-                      = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
-                      .project-actions.text-center.tmg-10
-                        = link_to 'Project logs', project_logs_path(@project), class: 'btn btn-link btn-sm'
-                        = link_to 'Issue tracker', project_issues_path(@project), class: 'btn btn-link btn-sm'
-                  - else
-                    p This project is locked for editing.
-
-              - elsif @project.private?
-                .alert.alert-warning.text-center
-                  p
-                    i.fa.fa-lock>
-                    | This project is private.
-
 
               - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
                 - if @project.guest_name.present?
@@ -371,15 +326,12 @@
                 - else
                   section.section-thumbs#team
                     h4
-                      - if @project.project.team.full_name.present?
+                      - if @project.team.full_name.present?
                         = @project.team.name
                       - elsif @project.team_members_count > 1
                         | Team members
                       - else
                         | Author
-                      - if @can_edit
-                        = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
-
                     - @project.team_members.includes(:user, user: :avatar).each do |member|
                       = render partial: 'users/member_thumb_mini', locals: { member: member }
 
@@ -409,7 +361,7 @@
                           - else
                             span.user-name= credit_line.name
 
-              - if !is_whitelabel? and @communities.any? #@project.communities_count > 0
+              - if !is_whitelabel? and @communities.exists? #@project.communities_count > 0
                 section.section-thumbs
                   h4
                     | Communities this project is part of
@@ -433,7 +385,7 @@
                     h4 Made at
                     = link_to hacker_space.name, hacker_space_path(hacker_space)
 
-                - if @challenge_entries.any?
+                - if @challenge_entries.exists?
                   section.section-thumbs
                     h4 Challenges
                     - @challenge_entries.each do |entry|
@@ -474,27 +426,27 @@
                         li
                           a.smooth-scroll href="#about-project" data-target="#about-project"
                             | About this project
-                        - if @hardware_parts.any?
+                        - if @hardware_parts.exists?
                           li
                             a.smooth-scroll href="#components" data-target="#components"
                               | Components and supplies
-                        - if @tool_parts.any?
+                        - if @tool_parts.exists?
                           li
                             a.smooth-scroll href="#tools" data-target="#tools"
                               | Necessary tools and machines
-                        - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+                        - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).exists?
                           li
                             a.smooth-scroll href="#cad" data-target="#cad"
                               | Custom parts and enclosures
-                        - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?
+                        - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).exists?
                           li
                             a.smooth-scroll href="#schematics" data-target="#schematics"
                               | Schematics
-                        - if @software_parts.any?
+                        - if @software_parts.exists?
                           li
                             a.smooth-scroll href="#apps" data-target="#apps"
                               | Apps and online services
-                        - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
+                        - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).exists?
                           li
                             a.smooth-scroll href="#code" data-target="#code"
                               | Code

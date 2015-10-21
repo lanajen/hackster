@@ -51,7 +51,7 @@
     "webpack": "^1.10.1"
   },
   "scripts": {
-    "browserify": "browserify -t [babelify --optional runtime] -e ./client/assets/javascripts/follow_button/app.js -o ./app/assets/javascripts/bundle.js",
+    "browserify": "browserify -t [babelify --optional runtime] -o ./app/assets/javascripts/bundle.js",
     "build": "webpack --config ./client/webpack.config.js --progress --profile --colors",
     "test": "mocha --recursive --harmony --compilers js:babel/register --require ./app/assets/javascripts/tests/init.js ./app/assets/javascripts/**/**/__tests__/*-test.js"
   }

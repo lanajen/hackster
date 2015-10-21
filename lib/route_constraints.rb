@@ -39,3 +39,31 @@ class UserPage < PageWithSlug
     sluggable_is_model? 'User', request
   end
 end
+
+class BaseArticlePage
+  def self.article_is_type? model, request
+    if slug = request.params['project_slug'] and hid = slug.match(/-?([a-f0-9]{6})\Z/)
+      project = BaseArticle.find_by_hid(hid[1]) and project.type == model
+    elsif id = request.params['id']
+      project = BaseArticle.find_by_id(id) and project.type == model
+    end
+  end
+end
+
+class ProjectPage < BaseArticlePage
+  def self.matches?(request)
+    article_is_type? 'Project', request
+  end
+end
+
+class ExternalProjectPage < BaseArticlePage
+  def self.matches?(request)
+    article_is_type? 'ExternalProject', request
+  end
+end
+
+class ArticlePage < BaseArticlePage
+  def self.matches?(request)
+    article_is_type? 'Article', request
+  end
+end

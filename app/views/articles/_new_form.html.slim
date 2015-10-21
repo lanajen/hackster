@@ -1,0 +1,43 @@
+.col-md-8.col-md-offset-2
+  .box
+    .box-title
+      h2 Write a new article
+      .subheading
+        p
+          | Articles have a simpler template used for everything that is not a full project: protips ("how to do x?"), teardowns, and getting started guides.
+          br
+          ' Not what you want?
+          => link_to 'Create a project', new_project_path
+          ' instead.
+          = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'https://www.hackster.io/bigboystoys13/diymall-bluetooth-beacon-getting-started-656c6b', target: '_blank'
+
+    .box-content
+      = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
+        = f.error_notification
+
+        = f.input :type, as: :hidden
+        = f.input :name, label: 'Give it a short title'
+        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
+
+        / .form-group
+          .col-md-4
+            label.control-label Cover image
+          .col-md-8
+            .cover_image.file-drop
+              - if @project.cover_image
+                = hidden_field_tag :cover_image_id, @project.cover_image.id
+              div
+                span.cover_image.image-preview.preview
+                  - if @project.cover_image
+                    = image_tag @project.cover_image.imgix_url(:cover_mini_thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
+            p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
+
+        / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+
+        .form-group
+          .col-md-8.col-md-offset-4
+            = f.button :submit, 'Continue', class: 'btn-block btn-primary'

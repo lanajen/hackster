@@ -7,13 +7,16 @@
         - if user_is_current_or_admin?
           .pull-left
             ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
-          .pull-right
-            ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
-            small> or
-            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(type: 'external'), class: 'btn btn-default'
+          .btn-group.pull-right
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
+            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              i.fa.fa-ellipsis-v
+            ul.dropdown-menu.pull-right
+              li= link_to "New article", new_project_path(type: 'article')
+              li= link_to "Submit a link", new_project_path(type: 'external')
 
       h2
-        ' Public projects
+        ' Public projects and articles
         = content_tag(:span, @public_count, class: 'badge')
       - if @other_projects and @other_projects.any?
         strong.text-muted
@@ -38,7 +41,6 @@
       - else
         | #{@user.name} has no public projects.
 
-
       - if @other_projects and @other_projects.any?
         strong.text-muted
           ' Built with other platforms
@@ -51,7 +53,7 @@
       - if user_is_current_or_admin? and @private_projects.any?
           hr
           h2
-            ' Private projects
+            ' Private projects and articles
             = content_tag(:span, @private_projects.count, class: 'badge')
           .thumb-list
             .row.project-list
@@ -61,7 +63,7 @@
       - if @guest_projects.any?
         hr
         h2
-          ' Guest projects (posted on their behalf)
+          ' Guest projects and articles (posted on their behalf)
           = content_tag(:span, @guest_projects.count, class: 'badge')
         .thumb-list
           .row.project-list
@@ -110,7 +112,7 @@
 
       hr
       h2
-        ' Respected projects
+        ' Respected projects and articles
         = content_tag(:span, @respected_projects.count, class: 'badge')
       - if @respected_projects.any?
         .thumb-list

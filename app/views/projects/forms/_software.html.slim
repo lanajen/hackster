@@ -5,7 +5,7 @@
 = content_for :head do
   = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'software-form', data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { id: 'software-form', data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='software'
   input type='hidden' name='save' value='1'
@@ -30,49 +30,7 @@
               i.fa.fa-link>
               | Link existing repository
 
-          - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
-            table.table.table-decorated.table-hover.table-sortable
-              tbody
-                - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).order(:position, :id).each do |file|
-                  = f.simple_fields_for :widgets, file do |f_file|
-                    tr.fields
-                      td
-                        i.fa.fa-bars.handle
-                        = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
-                        = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
-                        = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
-                        = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
-                        - if file.type == 'CodeWidget'
-                          = f_file.input :raw_code, as: :text, label: false, input_html: { 'data-field-type' => 'raw_code', class: 'hidden' }
-                          = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }, label: 'Programming language'
-                          / # = f_file.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id' }
-                        - else
-                          = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
-                      td.details
-                        h5
-                          - if file.type == 'CodeWidget'
-                            - if file.raw_code.present?
-                              i.fa.fa-file-code-o
-                            - else
-                              i.fa.fa-file-o
-                          - else
-                            i.fa.fa-link
-                          span= file.name
-                        - if file.type == 'CodeWidget'
-                          p= file.human_language
-                        - else
-                          p= file.url
-                        - if file.comment.present?
-                          p.comment= plain_to_html file.comment
-                      td
-                        .actions
-                          - if file.type == 'CodeWidget'
-                            a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
-                              | Edit
-                          - else
-                            a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
-                              | Edit
-                          = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+          = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(CodeRepoWidget CodeWidget), embed_id: 'code-repository' }
 
       .box data-anchor='tools'
         .box-title.small-title

@@ -6,10 +6,9 @@
 
 = content_for :no_container do
   - cache [I18n.locale, 'home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
+
     section#home-banner
       .home-slide#hello-hackster
-        / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
-          = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container.text-center
           h1 Hackster is a community dedicated to learning hardware.
           .hack-selector-container
@@ -65,19 +64,6 @@
           .row
             - @challenges.each do |challenge|
               = render partial: 'challenges/challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
-            - challenge = Challenge.find(15).decorate
-            .col-sm-6
-              .category-col
-                .thumb.category-thumb.challenge-thumb
-                  .thumb-image.has-link-overlay class='thumb-image-mini' style="background-image:url('#{challenge.cover_image(:cover_wide_small)}')"
-                    = link_to '', challenge, class: 'link-overlay'
-                    .thumb-image-inner
-                      p Challenge over. Check out the winners!
-                      h4
-                        = link_to challenge.name, challenge
-                        - if challenge.platform
-                          br
-                          a.small sponsored by #{challenge.platform.name}
 
         .text-center
           = link_to 'View more challenges &rarr;'.html_safe, challenges_path, class: 'btn btn-default btn-sm hidden-xs'

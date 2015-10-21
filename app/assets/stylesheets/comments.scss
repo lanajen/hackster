@@ -1,0 +1,141 @@
+.comments {
+  .new-comment {
+    border: 1px solid #eeedf2;
+    @include border-radius(3px);
+    margin-bottom: 70px;
+    display: table;
+    width: 100%;
+    .form-group {
+      margin: 0;
+    }
+    .textarea-content{
+      display: table-cell;
+      width: 100%;
+      textarea {
+        background: #eeedf2;
+        @include border-radius(3px 0 0 3px);
+        box-shadow: none;
+        resize: none;
+        border: none;
+      }
+    }
+    .button-area {
+      display: table-cell;
+      vertical-align: middle;
+      padding: 0 10px;
+    }
+  }
+  .new-comment-reply {
+    .new-comment {
+      margin-bottom: 0;
+    }
+    position: relative;
+    margin-top: 20px;
+    display: none;
+    &:after {
+      content: "";
+      border-left: 1px solid #ddd;
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      height: 20px;
+    }
+  }
+  .single-comment {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid #ddd;
+    &:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+    h4 {
+      color: #333333;
+      font-size: 1em;
+    }
+    &:hover {
+      .default-hidden {
+        display: inline;
+      }
+    }
+    .comment-title {
+      margin-bottom: 10px;
+      .avatar {
+        float: left;
+        @include border-radius(50%);
+        overflow: hidden;
+        margin-right: 10px;
+        width: 40px;
+        height: 40px;
+      }
+      .profile-name {
+        float: left;
+        h4 {
+          margin: 0;
+        }
+      }
+    }
+  }
+  .comment-date {
+    font-size: 0.9em;
+  }
+  .single-comment-inner {
+  }
+  .comment-body {
+    margin-bottom: 10px;
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .comment-actions {
+    font-size: 0.9em;
+  }
+}
+@media (min-width: 768px) {
+  .comment-depth-1,
+  .comment-depth-2,
+  .comment-depth-3,
+  .comment-depth-4,
+  .comment-depth-5 {
+    position: relative;
+    &:before {
+      content: "";
+      height: 50%;
+      border-right: 3px solid #ddd;
+      position: absolute;
+      right: 100%;
+      top: 25%;
+      margin-right: 25px;
+    }
+  }
+  .comment-depth-1 {
+    margin-left: 50px;
+  }
+  .comment-depth-2 {
+    margin-left: 100px;
+  }
+  .comment-depth-3 {
+    margin-left: 150px;
+  }
+  .comment-depth-4 {
+    margin-left: 200px;
+  }
+  .comment-depth-5 {
+    margin-left: 250px;
+  }
+}
+@media (max-width: 768px) {
+  .comments {
+    .new-comment {
+      display: block;
+      .textarea-content{
+        display: block;
+      }
+      .button-area {
+        display: block;
+        padding: 10px;
+      }
+    }
+  }
+}

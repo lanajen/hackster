@@ -1,41 +1,280 @@
-<p>Hello there,</p>
 
-<p>There are new projects built by makers or with platforms you follow on <a href="https://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
+  <center>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" id="bodyTable"
+    width="100%" style=
+    "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding:0;background-color:#FFF;height:100%;margin:0;width:100%">
+    <tbody>
+        <tr>
+          <td align="center" id="bodyCell" valign="top" style=
+          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding-top:10px;padding-left:20px;padding-bottom:20px;padding-right:20px;border-top:0;height:100%;margin:0;width:100%">
+          <table border="0" cellpadding="0" cellspacing="0" id="templateContainer"
+            width="600" style=
+            "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;border:0 none #aaa;background-color:#fff;border-radius:0">
+            <tbody>
+                <tr>
+                  <td id="templateContainerInner" style=
+                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding:0">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style=
+                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                      <tr>
+                        <td align="center" valign="top" style=
+                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                          <table border="0" cellpadding="0" cellspacing="0" class=
+                          "templateRow" width="100%" style=
+                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                          <tbody>
+                            <tr>
+                              <td class="rowContainer kmFloatLeft" valign="top" style=
+                                "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                <table border="0" cellpadding="0" cellspacing="0"
+                                  class="kmTextBlock" width="100%" style=
+                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                  <tbody class="kmTextBlockOuter">
+                                    <tr>
+                                      <td class="kmTextBlockInner" valign="top" style=
+                                      "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
+                                        <table align="left" border="0" cellpadding="0"
+                                        cellspacing="0" class="kmTextContentContainer"
+                                        width="100%" style=
+                                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                          <tbody>
+                                              <tr>
+                                                <td class="kmTextContent" valign="top"
+                                                style=
+                                                "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;color:#444;font-family:Arial;font-size:14px;line-height:130%;text-align:left;padding:0;">
+                                                <p>
+                                                  Hello there,
+                                                </p>
+                                                <p>There are new projects that match your interests on <a href=
+                                                "https://www.hackster.io?ref=emailnotif"
+                                                style=
+                                                "word-wrap:break-word;color:#337AB7;font-weight:normal;text-decoration:underline">
+                                                Hackster.io</a>:
+                                                </p>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
 
-<% @context[:projects][0..9].each do |data| %>
-  <% project = data[1][:project]; followables = data[1][:followables] %>
-  <% users = project.users %>
-  <% user = project.users.first %>
+                                  <% @context[:projects][0..9].each do |data| %>
+                                    <% project = data[1][:project]; followables = data[1][:followables] %>
+                                    <% users = project.users %>
+                                    <% user = project.users.first %>
 
-  <p style="margin-bottom:10px;">
-    <strong><a href="<%= u.project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.one_liner !~ /[\.\?\!]\Z/ %>.<% end %><% if project.guest_name.present? and user %> (posted by <a href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
-    Because you follow
-    <%= followables.map do |f|
-      out = ''
-      out += "<img src='#{f.avatar.try(:imgix_url, :tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
-      out += "<strong><a href='#{u.url_for(f)}?ref=emailnotif'>#{f.name}</a></strong>"
-      out
-    end.to_sentence.html_safe %>.
-  </p>
+                                    <table border="0" cellpadding="0" cellspacing="0"
+                                    class="kmSplitBlock" width="100%" style=
+                                    "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                    <tbody class="kmSplitBlockOuter">
+                                      <tr>
+                                        <td class="kmSplitBlockInner" valign="top" style=
+                                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding-top:9px;padding-bottom:19px;padding-left:0;padding-right:0;">
+                                          <table align="left" border="0" cellpadding="0"
+                                            cellspacing="0" class="kmSplitContentOuter"
+                                            width="100%" style=
+                                            "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                            <tbody>
+                                                <tr>
+                                                  <td class="kmSplitContentInner" valign=
+                                                  "top" style=
+                                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
+                                                    <table align="left" border="0"
+                                                    cellpadding="0" cellspacing="0" class=
+                                                    "kmSplitContentRightContentContainer"
+                                                    style=
+                                                    "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                                    <tbody>
+                                                      <tr>
+                                                        <td class="kmTextContent" valign=
+                                                          "top" style=
+                                                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;color:#444;font-family:Arial;font-size:14px;line-height:130%;text-align:left">
+                                                          <h3 style=
+                                                          'color:#444;display:block;font-family:Arial;font-size:14px;font-style:normal;font-weight:normal;letter-spacing:normal;margin:0;margin-bottom:8px;text-align:left;line-height:110%;'>
+                                                            <a href=
+                                                            "<%= u.project_url(project)%>?ref=emailnotif"
+                                                            style=
+                                                            "word-wrap:break-word;color:#337AB7;text-decoration:underline;font-weight:bold;">
+                                                            <%= project.name %></a>
+                                                            <% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a style='word-wrap:break-word;color:#337AB7;text-decoration:underline;font-weight:bold;' href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>
+                                                            <% if project.guest_name.present? and user %> (posted by <a style='color:#337AB7;' href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
+                                                          </h3>
 
-<% end %>
+                                                            <p style=
+                                                            "margin:0;padding-bottom:10px;line-height:16px;">
+                                                            <%= project.one_liner %><% if project.one_liner !~ /[\.\?\!]\Z/ %>.<% end %></p>
 
-<% others = @context[:projects].count - 10 %>
-<% if others > 0 %>
-  <p>There <%= others == 1 ? 'is' : 'are' %> <%= pluralize others, 'other project' %> for you. To see <%= others == 1 ? 'it' : 'them' %>, <a href="<%= u.root_url %>?ref=newsletter">go to your dashboard</a>.</p>
-<% end %>
+                                                            <p style=
+                                                            "margin:0;padding-bottom:0;font-size:12px;">
+                                                            <% followables.each do |f| %>
+                                                              <% if f.class.name =~ /Part/ %>
+                                                                <% if f.image %>
+                                                                  <img src='<%= f.image.try(:imgix_url, :tiny) %>' style='max-width:15px;max-height:15px;vertical-align:text-bottom;'>
+                                                                <% end %>
+                                                              <% else %>
+                                                                <% if f.avatar %>
+                                                                  <img src='<%= f.avatar.try(:imgix_url, :tiny) %>' style='width:15px;height:15px;vertical-align:text-bottom;'>
+                                                                <% end %>
+                                                              <% end %>
+                                                              <a style='color:#337AB7;font-weight:bold;margin-right:5px;' href='<%= u.url_for(f) %>?ref=emailnotif'><%= f.name %></a>
+                                                            <% end %></p>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                  <td class="kmSplitContentInner kmMobileHide" valign=
+                                                  "top" style=
+                                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding-left:15px;padding-right:15px;width:25%;">
+                                                    <table align="right" border="0"
+                                                    cellpadding="0" cellspacing="0" class=
+                                                    "kmSplitContentLeftContentContainer"
+                                                    style=
+                                                    "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                                      <tbody>
+                                                        <tr>
+                                                          <td class="kmImageContent"
+                                                          valign="top" style=
+                                                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;padding:0;padding:0;">
+                                                          <a href=
+                                                            "<%= u.project_url(project)%>?ref=emailnotif"><img align="left" alt="" class=
+                                                          "kmImage" src=
+                                                          "<%= project.decorate.cover_image(:cover_thumb) %>"
+                                                          width="100%" style=
+                                                          "border:0;height:auto;line-height:100%;outline:none;text-decoration:none;padding-bottom:0;display:inline;vertical-align:bottom;margin-right:0;max-width:100%;" /></a></td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  <% end %>
 
-<p>Cheers,<br> The Hackster.io team</p>
-<p>
-  <a href="https://www.facebook.com/hacksterio">Like us on Facebook</a>
-  |
-  <a href="https://twitter.com/hacksterio">Follow us on Twitter</a>
-</p>
+                                  <% others = @context[:projects].count - 10 %>
+                                  <% if others > 0 %>
+                                    <table border="0" cellpadding="0" cellspacing="0"
+                                    class="kmTextBlock" width="100%" style=
+                                    "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                    <tbody class="kmTextBlockOuter">
+                                        <tr>
+                                          <td class="kmTextBlockInner" valign="top" style=
+                                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
+                                          <table align="left" border="0" cellpadding="0"
+                                          cellspacing="0" class="kmTextContentContainer"
+                                          width="100%" style=
+                                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                            <tbody>
+                                                <tr>
+                                                  <td class="kmTextContent" valign="top"
+                                                  style=
+                                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;color:#444;font-family:Arial;font-size:14px;line-height:130%;text-align:left;padding-top:9px;padding-bottom:9px;padding-left:0;padding-right:0;">
+                                                  There <%= others == 1 ? 'is' : 'are' %> <%= pluralize others, 'other project' %> for you. To see <%= others == 1 ? 'it' : 'them' %>, <a style="color:#337AB7;" href="<%= u.root_url %>?ref=newsletter">go to your dashboard</a>.</td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  <% end %>
 
-<p class="unsubscribe">
-  <% if @context[:time_frame] == 1.month %>
-    Don't want to receive this type of email? <a href="|unsubscribe_link:new_projects|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
-  <% else %>
-    Too many emails? Choose to receive these notifications <a href="|change_frequency_link:weekly|">weekly</a> or <a href="|change_frequency_link:monthly|">monthly</a>. You can also <a href="|unsubscribe_link:new_projects|">unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
-  <% end %>
-</p>
+                                <table border="0" cellpadding="0" cellspacing="0"
+                                  class="kmTextBlock" width="100%" style=
+                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                  <tbody class="kmTextBlockOuter">
+                                    <tr>
+                                      <td class="kmTextBlockInner" valign="top" style=
+                                      "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
+                                        <table align="left" border="0" cellpadding="0"
+                                        cellspacing="0" class="kmTextContentContainer"
+                                        width="100%" style=
+                                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                          <tbody>
+                                            <tr>
+                                              <td class="kmTextContent" valign="top"
+                                                style=
+                                                "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;color:#444;font-family:Arial;font-size:14px;line-height:130%;text-align:left;padding-top:0;padding-bottom:12px;padding-left:0;padding-right:0;">
+                                                <p>Cheers,<br> The Hackster.io team</p>
+                                                <p>
+                                                  <a style="color:#337AB7;" href="https://www.facebook.com/hacksterio">Like us on Facebook</a>
+                                                  |
+                                                  <a style="color:#337AB7;" href="https://twitter.com/hacksterio">Follow us on Twitter</a>
+                                                </p>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+
+                      <tr>
+                        <td align="center" valign="top" style=
+                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                          <table border="0" cellpadding="0" cellspacing="0" class=
+                          "templateRow" width="100%" style=
+                          "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                          <tbody>
+                              <tr>
+                                <td class="rowContainer kmFloatLeft" valign="top" style=
+                                "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+
+                                  <table border="0" cellpadding="0" cellspacing="0"
+                                  class="kmTextBlock" width="100%" style=
+                                  "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                  <tbody class="kmTextBlockOuter">
+                                      <tr>
+                                        <td class="kmTextBlockInner" valign="top" style=
+                                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;background-color:#FFFFFF;">
+                                        <table align="left" border="0" cellpadding="0"
+                                        cellspacing="0" class="kmTextContentContainer"
+                                        width="100%" style=
+                                        "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0">
+                                          <tbody>
+                                              <tr>
+                                                <td class="kmTextContent" valign="top"
+                                                style=
+                                                "border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;color:#777777;font-family:Arial;font-size:14px;line-height:130%;text-align:left;font-size:11px;padding-bottom:9px;text-align:left;padding-right:0;padding-left:0;padding-top:9px;background-color:#FFFFFF;">
+                                                  <% if @context[:time_frame] == 1.month %>
+                                                    Don't want to receive this type of email? <a style="color:#337AB7;" href="|unsubscribe_link:new_projects|">Unsubscribe</a> or <a style="color:#337AB7;" href="|update_preferences_link|">update your notification preferences</a>.
+                                                  <% else %>
+                                                    Too many emails? Choose to receive these notifications <a style="color:#337AB7;" href="|change_frequency_link:weekly|">weekly</a> or <a style="color:#337AB7;" href="|change_frequency_link:monthly|">monthly</a>. You can also <a style="color:#337AB7;" href="|unsubscribe_link:new_projects|">unsubscribe</a> or <a style="color:#337AB7;" href="|update_preferences_link|">update your notification preferences</a>.
+                                                  <% end %></td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </center>

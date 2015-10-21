@@ -1,5 +1,5 @@
 p
-  = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
+  = link_to "&larr; Return to challenge page".html_safe, @challenge
 
 h1
   | #{@challenge.name}: FAQ
@@ -16,7 +16,7 @@ table.table.table-striped
     - if @faq_entries.any?
       - @faq_entries.each do |entry|
         tr
-          td= entry.title
+          td= link_to entry.title, challenge_faq_path(@challenge.slug, anchor: dom_id(entry))
           td= entry.private ? 'Private' : 'Published'
           td
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_faq_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }

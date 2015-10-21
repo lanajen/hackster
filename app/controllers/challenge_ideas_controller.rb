@@ -1,7 +1,7 @@
 class ChallengeIdeasController < ApplicationController
-  before_filter :authenticate_user!, only: [:new, :create, :index, :update_workflow, :destroy]
-  before_filter :load_challenge, only: [:create, :new]
-  before_filter :load_and_authorize_idea, only: [:update_workflow]
+  before_filter :authenticate_user!, only: [:new, :create, :index, :update_workflow, :edit, :update, :destroy]
+  before_filter :load_challenge, only: [:create, :new, :edit, :update]
+  before_filter :load_and_authorize_idea, only: [:update_workflow, :edit, :update]
   layout :set_layout
 
   def index
@@ -42,8 +42,7 @@ class ChallengeIdeasController < ApplicationController
 
     if @idea.save
       @idea.approve! if @challenge.auto_approve?
-      flash[:notice] = "Your idea has been entered!"
-      redirect_to @challenge
+      redirect_to @challenge, notice: "Your idea has been entered!"
     else
       render :new
     end
@@ -56,6 +55,23 @@ class ChallengeIdeasController < ApplicationController
       flash[:alert] = "Couldn't #{event_to_human(params[:event])} idea."
     end
     redirect_to challenge_admin_ideas_path(@challenge)
+  end
+
+  def edit
+  end
+
+  def update
+    @idea.assign_attributes params[:challenge_idea]
+    @idea.workflow_state = :new if @idea.changed? and current_user.id == @idea.user_id and @idea.can_mark_needs_approval?
+    if @idea.save
+      if current_user.id == @idea.user_id
+        redirect_to @challenge, notice: "Your idea was successfully edited."
+      else
+        redirect_to challenge_admin_ideas_path(@challenge), notice: "Idea successfully edited."
+      end
+    else
+      render :edit
+    end
   end
 
   def destroy
@@ -87,7 +103,11 @@ class ChallengeIdeasController < ApplicationController
 
     def load_and_authorize_idea
       @idea = ChallengeIdea.find params[:id]
-      raise ActiveRecord::RecordNotFound unless @idea.challenge_id.to_s == params[:challenge_id]
+      if params[:slug].present?
+        raise ActiveRecord::RecordNotFound unless @idea.challenge.slug == params[:slug]
+      else
+        raise ActiveRecord::RecordNotFound unless @idea.challenge_id.to_s == params[:challenge_id]
+      end
       authorize! self.action_name.to_sym, @idea
       @challenge = @idea.challenge
     end

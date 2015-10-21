@@ -12,7 +12,7 @@ section.section-container
         ==> time_ago_in_words build_log.created_at
         ' ago -
         - if build_log.draft?
-          = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, build_log.id)
+          = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug_hid, build_log.id)
         - else
           = link_to pluralize(build_log.comments.size, 'comment'), log_path(@project, build_log, anchor: 'comments')
 

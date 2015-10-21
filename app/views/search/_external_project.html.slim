@@ -1,7 +1,7 @@
 .media
-  a.media-left  href=external_project_path(external_project)
+  a.media-left  href=project_path(external_project)
     = image_tag external_project.cover_image(:cover_mini_thumb), class: 'media-object'
   .media-body
-    b>= link_to external_project.name, external_project_path(external_project)
-    small.text-muted> external_project on
+    b>= link_to external_project.name, project_path(external_project)
+    small.text-muted> external project on
     small.fake-link= external_project.website_host

@@ -1,0 +1,8 @@
+- content = content_tag(:i, '', class: 'fa fa-thumbs-o-up') + content_tag(:span, "Respect")
+- if user_signed_in?
+  - if current_user.respected? respectable
+    = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, "Respected"), base_article_respects_path(respectable), data: { method: :delete, remote: true, container: 'body' }, class: "action-respected respect-button btn btn-sm btn-primary disable-link base_article-#{respectable.id}-respect"
+  - else
+    = link_to content, base_article_respects_path(respectable), data: { method: :post, remote: true, container: 'body' }, class: "respect-button btn btn-sm btn-primary disable-link base_article-#{respectable.id}-respect"
+- else
+  = link_to content, new_user_registration_path(redirect_to: create_base_article_respects_path(respectable), reason: 'respect', m: 'article', id: respectable.id), class: "respect-button btn btn-sm btn-primary show-simplified-signup base_article-#{respectable.id}-respect", data: { container: 'body', redirect_to: create_base_article_respects_path(respectable), source: 'respect_project' }

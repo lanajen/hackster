@@ -24,12 +24,12 @@ class Groups::ProjectsController < ApplicationController
   end
 
   def new
-    @project = @group.projects.new params[:project]
+    @project = @group.projects.new params[:base_article]
     @projects = current_user.projects
   end
 
   def create
-    @project = @group.projects.new params[:project]
+    @project = @group.projects.new params[:base_article]
     @project.private = true
     @project.build_team
     @project.team.members.new(user_id: current_user.id)
@@ -62,7 +62,7 @@ class Groups::ProjectsController < ApplicationController
   end
 
   def link
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     case @group
     when Platform
       @project.platform_tags << PlatformTag.new(name: @group.platform_tags.first.name)
@@ -78,7 +78,7 @@ class Groups::ProjectsController < ApplicationController
   end
 
   def unlink
-    @project = Project.find params[:project_id]
+    @project = BaseArticle.find params[:project_id]
     case @group
     when Platform
       # @project.platform_tags << PlatformTag.new(name: @group.platform_tags.first.name)

@@ -15,8 +15,8 @@ class Notification < ActiveRecord::Base
   end
 
   def recipients
-    return [] unless @context
+    return [] unless context
 
-    @context[:users] || [@context[:user]]
+    context[:users] || [context[:user]]
   end
 end

@@ -1,0 +1,19 @@
+- url = project_url(@project)
+- message = @project.to_share_message
+
+.sharing-actions
+  ul
+    li
+      a.social-share-link.clearfix data-url=facebook_share(url, @project.name, message, @project.cover_image(:cover_thumb)) href=''
+        i.fa.fa-facebook
+        span Share on Facebook
+    li
+      a.social-share-link.clearfix data-url=twitter_share(url, message) href=''
+        i.fa.fa-twitter
+        span Share on Twitter
+    / li
+      a.clearfix.modal-open data-target='#embed-popup' href=''
+        i.fa.fa-code
+        span Embed the code
+
+/ # = render 'products/product_embed_popup'

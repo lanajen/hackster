@@ -1,7 +1,8 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
+  before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
+  before_filter :load_project, only: [:redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
+  before_filter :load_and_authorize_resource, only: [:edit, :submit, :update_workflow]
   respond_to :html
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:show, :embed]
@@ -10,20 +11,24 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
 
-    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
-    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = Project.indexable.for_thumb_display
+    @projects = BaseArticle.indexable.for_thumb_display
     if params[:sort]
-      @projects = @projects.send(Project::SORTING[params[:sort]])
+      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
     end
 
-    if @by and @by.in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[@by])
+    if @by and @by.in? BaseArticle::FILTERS.keys
+      @projects = @projects.send(BaseArticle::FILTERS[@by])
     end
 
-    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+    if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
       @projects = @projects.where(difficulty: params[:difficulty])
+    end
+
+    if params[:type].try(:to_sym).in? BaseArticle.content_types(%w(Project Article)).values
+      @projects = @projects.with_type(params[:type])
     end
 
     @projects = @projects.paginate(page: safe_page_params)
@@ -52,9 +57,9 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
-    @hardware_parts = @project.part_joins.hardware
-    @software_parts = @project.part_joins.software
-    @tool_parts = @project.part_joins.tool
+    @hardware_parts = @project.part_joins.hardware.includes(part: :image)
+    @software_parts = @project.part_joins.software.includes(part: :image)
+    @tool_parts = @project.part_joins.tool.includes(part: :image)
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
@@ -75,14 +80,13 @@ class ProjectsController < ApplicationController
       end
     end
 
+    @comments = @project.comments.includes(:parent, user: :avatar)
     if is_whitelabel?
-      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-    else
-      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @comments = @comments.joins(:user).where(users: { enable_sharing: true })
     end
 
     if @project.has_assignment?
-      @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
+      @issue = Feedback.where(threadable_type: 'BaseArticle', threadable_id: @project.id).first
       @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end
 
@@ -96,7 +100,7 @@ class ProjectsController < ApplicationController
   end
 
   def claim
-    @project = Project.find_by_id!(params[:id]).decorate
+    @project = BaseArticle.find_by_id!(params[:id]).decorate
     authorize! :claim, @project
 
     @project.build_team unless @project.team
@@ -129,12 +133,12 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    model_class = if params[:type] and params[:type].in? Project::MACHINE_TYPES.keys
-      Project::MACHINE_TYPES[params[:type]].constantize
+    model_class = if params[:type] and params[:type].in? BaseArticle::MACHINE_TYPES.keys
+      BaseArticle::MACHINE_TYPES[params[:type]].constantize
     else
       Project
     end
-    @project = model_class.new params[:project]
+    @project = model_class.new params[:base_article]
     authorize! :create, @project
 
     initialize_project
@@ -148,12 +152,12 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    model_class = if params[:project] and params[:project][:type] and params[:project][:type].in? Project::MACHINE_TYPES.values
-      params[:project][:type].constantize
+    model_class = if params[:base_article] and params[:base_article][:type] and params[:base_article][:type].in? BaseArticle::MACHINE_TYPES.values
+      params[:base_article][:type].constantize
     else
       Project
     end
-    @project = model_class.new params[:project]
+    @project = model_class.new params[:base_article]
     authorize! :create, @project
 
     if @project.external? or @project.product?
@@ -162,6 +166,10 @@ class ProjectsController < ApplicationController
       # @project.approve!
       @project.private = true
       event = 'Created project'
+    end
+
+    if @project.external?
+      @project.content_type = :external
     end
 
     if current_platform
@@ -194,49 +202,85 @@ class ProjectsController < ApplicationController
     title 'Edit project'
     initialize_project
     @team = @project.team
-    @project = @project.decorate
     @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
   end
 
   def update
     authorize! :update, @project
-    private_was = @project.private
 
-    if @project.update_attributes(params[:project])
-      notice = "#{@project.name} was successfully updated."
-      if private_was != @project.private
-        if @project.private == false
-          notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
-          session[:share_modal] = 'published_share_prompt'
-          session[:share_modal_model] = 'project'
-          session[:share_modal_model_id] = @project.id
-          session[:share_modal_time] = 'after_redirect'
+    respond_with @project do |format|
+      format.html do
+        private_was = @project.private
+        if @project.update_attributes(params[:base_article])
+          notice = "#{@project.name} was successfully updated."
+          if private_was != @project.private
+            if @project.private == false
+              notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
+              session[:share_modal] = 'published_share_prompt'
+              session[:share_modal_model] = 'project'
+              session[:share_modal_model_id] = @project.id
+              session[:share_modal_time] = 'after_redirect'
 
-          track_event 'Made project public', @project.to_tracker
-        elsif @project.private == false
-          notice = "#{@project.name} is now private again."
-        end
-      end
-      @project = @project.decorate
-      respond_with @project do |format|
-        format.html do
+              track_event 'Made project public', @project.to_tracker
+            elsif @project.private == false
+              notice = "#{@project.name} is now private again."
+            end
+          end
           flash[:notice] = notice
-          redirect_to @project
+        else
+          if params[:base_article].try(:[], 'private') == '0'
+            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+          end
         end
+        redirect_to @project
       end
 
-      track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
-    else
-      if params[:project].try(:[], 'private') == '0'
-        flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+      format.js do
+        @panel = params[:panel]
+
+        # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
+        if params[:base_article].try(:[], :widgets_attributes)
+          widgets = {}
+          params[:base_article][:widgets_attributes].each do |i, widget|
+            widgets[i] = widget if widget['id'].present?
+          end
+          all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
+          widgets.each do |i, widget|
+            unless all.include? widget['id']
+              params[:base_article][:widgets_attributes].delete(i)
+            end
+          end
+        end
+
+        begin
+          if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
+            if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
+              render 'projects/forms/update'
+            else
+              render 'projects/forms/checklist', status: :ok
+            end
+          else
+            message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
+            log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
+            # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+            render json: { base_article: @project.errors }, status: :unprocessable_entity
+          end
+        rescue => e
+          message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
+          log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
+          NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+          render status: :internal_server_error, nothing: true
+          raise e if Rails.env.development?
+        end
       end
-      redirect_to @project
     end
+
+    # track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
   end
 
   def update_workflow
     if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
-      flash[:notice] = "Project state changed to: #{params[:event]}."
+      flash[:notice] = "Article state changed to: #{params[:event]}."
       redirect_to admin_projects_path(workflow_state: 'pending_review')
     else
       # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
@@ -263,12 +307,12 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    project = Project.last
+    project = BaseArticle.last
     url = case project
     when Product
       product_path(project)
     when ExternalProject
-      external_project_path(project)
+      project_path(project)
     else
       url_for(project)
     end
@@ -299,7 +343,11 @@ class ProjectsController < ApplicationController
     end
 
     def initialize_project
-      @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
+    end
+
+    def load_and_authorize_resource
+      @project = BaseArticle.find params[:id]
+      authorize! self.action_name, @project
     end
 end

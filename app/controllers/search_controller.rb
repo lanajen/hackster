@@ -8,7 +8,7 @@ class SearchController < ApplicationController
       end
       format.rss { redirect_to search_path(params.merge(format: :atom)), status: :moved_permanently }
       format.atom do
-        do_search 'project'
+        do_search 'base_article'
         @projects = @results
         render layout: false, template: 'projects/index'
       end
@@ -20,7 +20,7 @@ class SearchController < ApplicationController
 
     begin
       @tag = CGI::unescape params[:tag]
-      @projects = Project.indexable.joins("INNER JOIN tags ON tags.taggable_id = projects.id AND tags.taggable_type = 'Project'").where(tags: { type: %w(ProductTag PlatformTag) }).where("LOWER(tags.name) = ?", @tag.downcase).uniq
+      @projects = BaseArticle.indexable.joins("INNER JOIN tags ON tags.taggable_id = projects.id AND tags.taggable_type = 'BaseArticle'").where(tags: { type: %w(ProductTag PlatformTag) }).where("LOWER(tags.name) = ?", @tag.downcase).uniq
       @projects = @projects.joins(:project_collections).where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }) if is_whitelabel?
       @projects = @projects.magic_sort.for_thumb_display.paginate(page: safe_page_params)
       @total = @projects.total_entries
@@ -67,7 +67,7 @@ class SearchController < ApplicationController
           end
           @hacker_space_label += " <span class='badge pull-right'>#{terms['hacker_space']}</span>" if terms['hacker_space']
           @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
-          @projects_label += " <span class='badge pull-right'>#{terms['project']}</span>" if terms['project']
+          @projects_label += " <span class='badge pull-right'>#{terms['base_article']}</span>" if terms['base_article']
           @platforms_label += " <span class='badge pull-right'>#{terms['platform']}</span>" if terms['platform']
           if restrict_model
             params[:type] = nil

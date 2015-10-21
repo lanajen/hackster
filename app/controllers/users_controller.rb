@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.live.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @guest_projects = @user.projects.live.guest.for_thumb_display
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     end
 
     @comments = if current_platform
-      @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'Project'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' })
+      @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'BaseArticle'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' })
     else
       @user.live_comments.includes(:commentable)
     end
@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       format.js do
         @projects = if params[:project_ids] and params[:auth_token] and params[:auth_token] == @user.security_token
           ids = params[:project_ids]
-          @projects = Project.where(id: ids.split(','))
+          @projects = BaseArticle.where(id: ids.split(','))
         else
           @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
         end

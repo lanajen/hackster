@@ -8,6 +8,14 @@ module UrlHelper
     course_promotion_assignment_url params_for_assignment(assignment).merge(opts)
   end
 
+  def base_article_path article, opts={}
+    project_path article, opts
+  end
+
+  def base_article_url article, opts={}
+    project_url article, opts
+  end
+
   def challenge_path challenge, opts={}
     super challenge.slug, opts
   end
@@ -80,14 +88,6 @@ module UrlHelper
     when 'Hackathon'
       hackathon_page_path(group.user_name, page.slug)
     end
-  end
-
-  def external_project_path project, opts={}
-    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
-  end
-
-  def external_project_url project, opts={}
-    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
   end
 
   def feedback_comments_path issue, opts={}
@@ -165,16 +165,16 @@ module UrlHelper
   end
 
   def issue_path project, issue, opts={}
-    project_issue_path(project.user_name_for_url, project.slug, issue.sub_id, opts)
+    project_issue_path(project.user_name_for_url, project.slug_hid, issue.sub_id, opts)
   end
 
   def issue_url project, issue, opts={}
-    project_issue_url(project.user_name_for_url, project.slug, issue.sub_id, opts)
+    project_issue_url(project.user_name_for_url, project.slug_hid, issue.sub_id, opts)
   end
 
   def issue_form_path_for project, issue, opts={}
     if issue.persisted?
-      project_issue_path(project, issue.sub_id, opts)
+      issue_path(project, issue, opts)
     else
       project_issues_path(project, opts)
     end
@@ -194,18 +194,18 @@ module UrlHelper
   end
 
   def log_path project, log, opts={}
-    project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+    project_log_path(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
   end
 
   def log_url project, log, opts={}
-    project_log_url(project.user_name_for_url, project.slug, log.sub_id, opts)
+    project_log_url(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
   end
 
   def log_form_path_for project, log, opts={}
     if log.persisted?
-      project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+      project_log_path(project.user_name_for_url, project.slug_hid, log.sub_id, opts)
     else
-      project_logs_path(project.user_name_for_url, project.slug, opts)
+      project_logs_path(project.user_name_for_url, project.slug_hid, opts)
     end
   end
 
@@ -328,12 +328,16 @@ module UrlHelper
     super params
   end
 
+  def project_private_sharing_url project, opts={}
+    project_url(project, opts.merge(auth_token: project.security_token))
+  end
+
   def project_issues_path project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super params_for_project(project).merge(opts).merge(use_route: nil)
   end
 
   def project_logs_path project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super params_for_project(project).merge(opts).merge(use_route: nil)
   end
 
   def project_embed_url project, opts={}
@@ -384,13 +388,11 @@ module UrlHelper
     when Platform
       options = params_for_group options
       options[:use_route] = 'platform_short'
-    when Project, ProjectDecorator
+    when BaseArticle
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'ExternalProject'
-        options = params_for_external_project options
-      when 'Project'
+      when 'Project', 'ExternalProject', 'Article'
         options = params_for_project options
       end
     end
@@ -501,14 +503,6 @@ module UrlHelper
       }
     end
 
-    def params_for_external_project project, force_params={}
-      {
-        id: "#{project.id}-#{project.slug}",
-        user_name: project.user_name_for_url,
-        use_route: 'external_project',
-      }.merge(force_params)
-    end
-
     def params_for_product project, force_params={}
       {
         user_name: project.user_name_for_url,
@@ -519,7 +513,7 @@ module UrlHelper
 
     def params_for_project project, force_params={}
       {
-        project_slug: project.slug,
+        project_slug: project.slug_hid,
         user_name: project.user_name_for_url,
         use_route: 'project',
       }

@@ -66,8 +66,8 @@ module ApplicationHelper
       challenge_entry = ChallengeEntry.find_by_id(params[:id])
     when 'group'
       group = Group.find_by_id(params[:id])
-    when 'project'
-      project = Project.find_by_id(params[:id])
+    when 'project', 'article'
+      project = BaseArticle.find_by_id(params[:id])
     when 'user'
       user = User.find_by_id(params[:id])
     when 'part'

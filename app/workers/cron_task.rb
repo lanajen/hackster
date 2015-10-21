@@ -2,21 +2,35 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
+  def add_missing_parts_to_users_toolbox
+    User.not_hackster.user_name_set.each do |user|
+      CronTask.perform_async 'add_missing_parts_to_user_toolbox', user.id
+    end
+  end
+
+  def add_missing_parts_to_user_toolbox id
+    return unless user = User.find_by_id(id)
+
+    user.parts_missing_from_toolbox.each do |part|
+      user.owned_parts << part
+    end
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
       Group.find(c[1]).update_counters only: [:projects]
     end
 
-    CoverImage.select("id, count(id) as quantity").where("attachable_type = 'Project'").group(:attachable_id, :attachable_type).having("count(id) > 1").size.each do |c, count|
+    CoverImage.select("id, count(id) as quantity").where("attachable_type = 'BaseArticle'").group(:attachable_id, :attachable_type).having("count(id) > 1").size.each do |c, count|
       pid = c[0]
-      CoverImage.where(attachable_id: pid, attachable_type: 'Project').order(created_at: :asc).limit(count - 1).each{|cp| cp.delete }
+      CoverImage.where(attachable_id: pid, attachable_type: 'BaseArticle').order(created_at: :asc).limit(count - 1).each{|cp| cp.delete }
     end
   end
 
   def cleanup_buggy_unpublished
-    Project.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
-    Project.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
+    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
       project.update_attribute :workflow_state, :approved
     end
   end
@@ -67,6 +81,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
   end
 
@@ -157,14 +172,22 @@ class CronTask < BaseWorker
     end
 
     def send_project_notifications time_frame, email_frequency
-      project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
+      project_ids = BaseArticle.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
+
+      # platform followers
       users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # user followers
       users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
+      # list followers
       lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
       users += lists.map{|l| l.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # part owners
+      users += Part.joins(:projects).distinct('parts.id').where.not(parts: { platform_id: nil }).where(projects: { id: project_ids }).map{|p| p.owners.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
       users.uniq!
 

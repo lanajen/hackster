@@ -2,21 +2,26 @@
   .top-banner-image-inner {
     h1 {
       margin-bottom: 15px;
+      text-shadow: 1px 1px 1px #333;
     }
     .media {
       padding: 150px 0;
       text-align: center;
+      text-shadow: 1px 1px 1px #666;
     }
     .sponsored {
       margin: 20px 0 0;
       img {
-        width: 40px;
-        height: 40px;
-        margin: 0 5px;
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
       }
       a {
         color: #fff;
         font-weight: bold;
+      }
+      li {
+        margin-left: 5px;
       }
     }
   }
@@ -31,6 +36,15 @@
 
   .embed-figcaption {
     display: none;
+  }
+}
+
+.challenge-sponsors {
+  ul {
+    display: inline;
+  }
+  li {
+    display: inline;
   }
 }
 
@@ -151,7 +165,7 @@
 .challenge-idea-thumbs {
   .challenge-idea {
     .description {
-      height: 10em;
+      height: 15em;
       overflow: hidden;
       position: relative;
       margin-bottom: 15px;

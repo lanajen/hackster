@@ -1,6 +1,6 @@
 class TagObserver < ActiveRecord::Observer
   def after_create record
-    if record.type == 'PlatformTag' and record.taggable_type == 'Project'
+    if record.type == 'PlatformTag' and record.taggable_type == 'BaseArticle'
       project = record.taggable
       project.platform_tags_string_from_tags
       project.save

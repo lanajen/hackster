@@ -1,0 +1,38 @@
+- if @project.public?
+  - if (@project.pending_review? or @project.unpublished?)
+    .alert.alert-warning.text-center
+      p
+        i.fa.fa-clock-o>
+        ' We're reviewing your #{@project.identifier} before it can appear on the home page.
+        = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+- else
+  - who = %w(you)
+  - who += ['team members'] if @project.team_members_count > 1
+  - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.model.respond_to?(:has_assignment?) and @project.has_assignment?
+
+  .alert.alert-warning.text-center
+    p
+      i.fa.fa-lock>
+      | This project is private so only #{who.to_sentence} can see it.
+
+- alert_color = @project.checklist_completed? ? 'success' : 'warning'
+.alert.text-center class="alert-#{alert_color}"
+  span
+    p
+      i.fa.fa-list>
+      = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'checklist-tab'), class: 'alert-link'
+  .progress style="margin-bottom: 0"
+    .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
+
+= simple_form_for @project, url: api_v1_project_path(@project), html: { class: 'form-save-on-input remote', id: 'project-form-prepublish', data: { remote: true } } do |f|
+  = f.input :content_type, collection: @project.model.class::PUBLIC_CONTENT_TYPES, label: "#{@project.identifier.capitalize} type", required: true
+  = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
+
+- if @project.public?
+  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
+- else
+  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
+    = simple_form_for @project, html: { id: 'project-form-publish' } do |f|
+      = f.input :private, as: :hidden, input_html: { value: 0 }
+      = f.submit 'Publish publicly', class: 'btn btn-success btn-block'
+    .small Please select a type before publishing.

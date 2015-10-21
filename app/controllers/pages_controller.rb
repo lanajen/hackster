@@ -5,15 +5,6 @@ class PagesController < ApplicationController
   def about
     meta_desc 'What is Hackster.io?'
     title 'What is Hackster.io?'
-    # limit = 4
-    # @most_popular_projects = Project.indexable.magic_sort.limit 6
-
-    # @most_popular_projects = Project.indexable.most_popular.limit limit
-    # @last_projects = Project.indexable.last_public.limit limit
-    # @active_projects = Project.last_updated.limit 4
-    # @featured_projects = Project.featured.limit 4
-    # @wip_projects = Project.wip.limit 4
-    # @tools = Platform.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
   end
 
   def achievements
@@ -84,13 +75,13 @@ class PagesController < ApplicationController
 
     if user_signed_in?
       if params[:count]
-        count = Project.custom_for(current_user).count
+        count = BaseArticle.custom_for(current_user).count
         render json: { count: count } and return
       end
 
       @challenges = Challenge.public.active.ends_first
 
-      @projects = Project.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 12)
+      @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
         @followed = current_user.follow_relations.where(follow_relations: { followable_type: %w(Group) }).includes(followable: [:avatar, :cover_image]) + current_user.follow_relations.where(follow_relations: { followable_type: %w(User) }).includes(followable: :avatar) + current_user.follow_relations.where(follow_relations: { followable_type: %w(Part) }).joins("INNER JOIN parts ON parts.id = follow_relations.followable_id").where.not(parts: { platform_id: nil }).includes(followable: [:image, :platform])
         @current_page = safe_page_params || 1
@@ -98,11 +89,10 @@ class PagesController < ApplicationController
         @next_page = nil if @projects.total_pages < @next_page
 
         unless request.xhr?
-          @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
+          @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit(12)
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
-          # @targeted_suggested_platforms = current_user.suggested_platforms
         end
 
       else
@@ -111,18 +101,18 @@ class PagesController < ApplicationController
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
-        @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
+        @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit(12)
       end
 
       render 'home_member'
     else
       set_cache_control_headers 3600
       set_surrogate_key_header 'home-visitor'
-      @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
-      @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
+      @trending_projects = BaseArticle.indexable.magic_sort.for_thumb_display.limit 12
+      @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.public.active.ends_first.limit(1)  # this should be 2 when MS challenge removed!
+      @challenges = Challenge.public.active.ends_first.limit(2)
 
       @typeahead_tags = Collection.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }

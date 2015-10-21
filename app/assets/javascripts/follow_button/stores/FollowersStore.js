@@ -18,8 +18,9 @@ const followersStore = {
 
       promise.then(function(res) {
         let store = res.body.following;
+        let currentUserId = res.body.currentUserId;
         this.followersStore = store;
-        channel.publish('initial.store', store);
+        channel.publish('initial.store', { store: store, currentUserId: currentUserId });
       }.bind(this)).catch(function(err) {
         console.log('Fetch Error: ' + err)
       });

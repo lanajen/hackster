@@ -33,7 +33,7 @@ class ScraperQueue < BaseWorker
       @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import <a href='#{page_url}'>the page you asked us to</a> because it's part of our website. We invite you to try importing a page from an external website instead.</p><p>If you need any help please do not hesitate to reply to that email and ask us directly.</p><p>Cheers<br/>The Hackster.io team</p>"
     else
       page_url += '?ALLSTEPS' if page_url =~ /instructables\.com/ and !(page_url =~ /\?ALLSTEPS\Z/)  # get all the steps from instructables.com
-      if Project.where(website: page_url).empty?
+      if BaseArticle.where(website: page_url).empty?
         @project = ProjectScraper.scrape page_url
         @project.build_team
         @project.team.members.new(user_id: user_id)

@@ -1,9 +1,9 @@
 class ExternalProjectsController < ApplicationController
-  load_and_authorize_resource :project, parent: false, only: [:edit, :update]
+  before_filter :load_project_with_hid, only: [:show]
+  before_filter :load_and_authorize_resource, only: [:edit, :update]
   respond_to :html
 
   def show
-    @project = Project.external.find_by_id!(params[:id]).decorate
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
@@ -16,12 +16,14 @@ class ExternalProjectsController < ApplicationController
       @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
     end
 
+    @project = @project.decorate
+
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
   def redirect_to_show
-    @project = Project.external.find_by_slug!(params[:slug])
-    redirect_to external_project_path(@project), status: 301
+    @project = ExternalProject.find params[:id]
+    redirect_to @project, status: 301
   end
 
   def edit
@@ -29,7 +31,7 @@ class ExternalProjectsController < ApplicationController
   end
 
   def update
-    if @project.update_attributes(params[:project])
+    if @project.update_attributes(params[:base_article])
       notice = "#{@project.name} was successfully updated."
       respond_with @project do |format|
         format.html do
@@ -38,8 +40,13 @@ class ExternalProjectsController < ApplicationController
         end
       end
     else
-      @project = @project.decorate
       render action: :edit
     end
   end
+
+  private
+    def load_and_authorize_resource
+      @project = ExternalProject.find params[:id]
+      authorize! self.action_name, @project
+    end
 end

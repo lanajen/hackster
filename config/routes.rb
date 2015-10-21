@@ -349,7 +349,7 @@ HackerIo::Application.routes.draw do
         get 'participants' => 'challenges#participants'
         get 'projects' => 'challenges#projects'
         patch '' => 'challenges#update'
-        resources :ideas, controller: :challenge_ideas, only: [:new, :create]
+        resources :ideas, controller: :challenge_ideas, only: [:new, :create, :edit, :update]
         get 'ideas' => 'challenges#ideas'
         get 'faq' => 'challenges#faq'
       end
@@ -455,6 +455,7 @@ HackerIo::Application.routes.draw do
       get 'home', to: redirect('/')
       get 'infringement_policy' => 'pages#infringement_policy'
       get 'privacy' => 'pages#privacy'
+      get 'conduct' => 'pages#conduct'
       get 'terms' => 'pages#terms'
       get 'press' => 'pages#press'
       get 'jobs' => 'pages#jobs'
@@ -544,7 +545,8 @@ HackerIo::Application.routes.draw do
       get 'signed_url', on: :collection
     end
 
-    resources :projects, except: [:index, :show, :update, :destroy] do
+    resources :projects, only: [:new, :create] do
+      patch '' => 'projects#update', on: :member
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member
@@ -561,6 +563,9 @@ HackerIo::Application.routes.draw do
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
       end
+    end
+
+    resources :base_articles, only: [], path: 'articles' do
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
         get 'create' => 'respects#create', on: :collection, as: :create
@@ -568,9 +573,15 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    get 'projects/e/:user_name/:id' => 'external_projects#show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
-    delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
-    get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
+    constraints(ProjectPage) do
+      get 'projects/:id/edit' => 'projects#edit', as: :edit_project
+    end
+
+    constraints(ArticlePage) do
+      get 'projects/:id/edit' => 'articles#edit', as: :edit_article
+    end
+
+    get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
 
     get ':user_name/powers/:slug' => 'products#show', as: :product
 
@@ -626,16 +637,34 @@ HackerIo::Application.routes.draw do
       get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
-    scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-      get '' => 'projects#show', as: ''
-      delete '' => 'projects#destroy'
-      patch '' => 'projects#update'
-      get 'embed' => 'projects#embed', as: :embed
-      get 'print' => 'projects#print', as: :print
-      resources :issues do
-        patch 'update_workflow', on: :member
+    constraints(ProjectPage) do
+      scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/, constraints: { format: /(html|json|js)/ } do
+        get '' => 'projects#show', as: ''
+        get 'embed' => 'projects#embed', as: :embed
+        get 'print' => 'projects#print', as: :print
+        resources :issues do
+          patch 'update_workflow', on: :member
+        end
+        resources :logs, controller: :build_logs
       end
-      resources :logs, controller: :build_logs
+    end
+    constraints(ExternalProjectPage) do
+      get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    constraints(ArticlePage) do
+      get ':user_name/:project_slug' => 'articles#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
+    end
+    scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
+      patch '' => 'projects#update'
+      delete '' => 'projects#destroy'
+    end
+
+    # old routes, kept for not break existing links
+    scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+      get '' => 'projects#show', as: ''
+      get 'embed' => 'projects#embed', as: :embed
+      get 'issues' => 'issues#index'
+      get 'logs' => 'build_logs#index'
     end
 
     constraints(ClientSite) do

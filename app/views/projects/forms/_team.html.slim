@@ -2,7 +2,7 @@
   make it possible to add team members who don't have an account
   make it possible to create an account for yourself at that step + edit profile info
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='team'
 
@@ -86,7 +86,7 @@
                   span.input-group-addon hackster.io/
                   = f_team.input_field :new_user_name
                   span.input-group-addon
-                    | /#{@project.slug.truncate(20)}
+                    | /#{@project.slug_hid.truncate(20)}
 
       .box
         .box-title.small-title

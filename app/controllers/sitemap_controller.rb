@@ -71,7 +71,7 @@ class SitemapController < ApplicationController
     end
 
     def projects_query
-      Project.indexable
+      BaseArticle.indexable
     end
 
     def projects_pages offset=0
@@ -85,13 +85,13 @@ class SitemapController < ApplicationController
     end
 
     def external_projects_query
-      Project.external.approved
+      ExternalProject.approved
     end
 
     def external_projects_pages offset=0
       sitemap_scope(external_projects_query, offset).map do |project|
         {
-          loc: "#{external_project_url(project)}",
+          loc: "#{project_url(project)}",
           changefreq: 'monthly',
           lastmod: project.updated_at.strftime("%F"),
         }

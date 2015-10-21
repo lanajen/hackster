@@ -36,9 +36,9 @@ class UserGenerator
     rand(1..5).times do
       FollowRelation.add u, Group.find(groups.sample), true
     end
-    project_ids = Project.indexable.last_30days.pluck(:id) + Project.magic_sort.limit(50).pluck(:id)
+    project_ids = BaseArticle.indexable.last_30days.pluck(:id) + BaseArticle.magic_sort.limit(50).pluck(:id)
     rand(1..10).times do
-      project = Project.find project_ids.sample
+      project = BaseArticle.find project_ids.sample
       project.impressions.create user_id: u.id, controller_name: 'projects', action_name: 'show', message: 'tmp', request_hash: SecureRandom.hex(16)
       if [true, false, false, false, false, false, false, false, false, false].sample  # prob = 0.1
         Respect.create_for u, project

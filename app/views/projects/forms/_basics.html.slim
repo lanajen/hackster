@@ -2,14 +2,14 @@
 
   javascript:
     $(function(){
-      $("#project_product_tags_array").select2({
+      $("#base_article_product_tags_array").select2({
         tags: true,
         tokenSeparators: [','],
         width: '100%'
       });
     });
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='basics'
 
@@ -23,14 +23,12 @@
 
       .box
         .box-content
-          = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', required: true
           = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
           = f.input :one_liner, as: :text, input_html: { rows: 3 },
             hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
           div data-anchor='cover_image'
-            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
-          = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
-          = f.input :difficulty, collection: Project::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
-          = f.input :product_tags_array, label: 'Tags', collection: (['Home automation', 'Wearable', 'Internet of Things', 'Lights', 'Animals', 'Wifi', 'Bluetooth', 'Accelerometer', 'Robot', 'Drone', 'Embedded', 'IR', 'LED', 'Display', 'Servo', 'Relay'] + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
+          = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+          = f.input :product_tags_array, label: 'Tags', collection: (Project::DEFAULT_TAGS + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags to categorize your project. You can specify the components you used in the hardware section, and we will automatically link your project to platforms based on those, so you do not need to add them here. Eg: avoid using tags such as 'Arduino' or 'Raspberry Pi', prefer 'Home automation' or 'Wearables'."
 
     = render 'projects/forms/pe_save'

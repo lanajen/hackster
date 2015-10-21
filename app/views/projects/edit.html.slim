@@ -52,7 +52,10 @@
               strong= pluralize @project.checklist_todo.size, 'item'
               i.fa.fa-caret-down
             | to complete
-          = render 'projects/forms/checklist'
+          .admin-checklist
+            .box
+              .box-content
+                = render 'projects/forms/checklist'
 
 .container.project-editor
   .clearfix.text-center
@@ -71,8 +74,7 @@
       li= link_to 'Software', '#software', id: 'software-nav', class: 'tab'
 
     ol.pe-nav
-      / li= link_to 'Preview', '#preview', id: 'preview-nav', class: 'tab'
-      li= link_to 'Publish', '#publish', id: 'publish-nav', class: 'tab'
+      li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
   .pe-container
@@ -89,9 +91,10 @@
     #hardware.pe-panel= render 'projects/forms/hardware'
     #software.pe-panel= render 'projects/forms/software'
 
-    #publish.pe-panel= render 'projects/forms/publish'
+    #checklist-tab.pe-panel= render 'projects/forms/checklist_tab'
 
 = content_for :js do
+
   .pe-save
     .container
       .row

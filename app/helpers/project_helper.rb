@@ -22,8 +22,8 @@ module ProjectHelper
       option_val = options[:prompt]
     end
 
-    name = "project[#{options[:part_type]}_part_joins_attributes][#{options[:i]}][part_id]"
-    option_id = "project_#{options[:part_type]}_#{options[:i]}_name"
+    name = "base_article[#{[options[:part_type], 'part_joins_attributes'].compact.join('_')}][#{options[:i]}][part_id]"
+    option_id = ["base_article", options[:part_type], options[:i], "name"].compact.join('_')
     content_tag(:div,
       content_tag(:label,
         content_tag(:abbr, '*', title: 'required') +
@@ -36,5 +36,17 @@ module ProjectHelper
       ),
       class: 'form-group'
     )
+  end
+
+  def modal_name_for_widget widget, embed_id
+    id = case widget.identifier
+    when 'embed_widget'
+      embed_id
+    when 'code_widget'
+      'code-editor'
+    else
+      'upload'
+    end
+    "##{id}-popup"
   end
 end

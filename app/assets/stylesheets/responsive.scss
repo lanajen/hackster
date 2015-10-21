@@ -1,8 +1,8 @@
 
 //  GLOBAL
 
-.show-on-desktop{
-  display: none!important;
+.show-on-desktop {
+  display: none !important;
 }
 
 @media only screen and (max-width: 992px) {
@@ -75,19 +75,6 @@
   .navbar-form {
     margin-left: 10px;
     width: 90%;
-  //   margin: 0;
-  //   border-top: 1px solid #dddddd;
-  //   padding-top: 0;
-  //   padding-bottom: 0;
-  //   margin-right: 0;
-
-  //   .form-group {
-  //     margin-bottom: 0;
-  //   }
-
-  //   input[type="text"].form-control {
-  //     background: transparent;
-  //   }
   }
   .text-center-mobile, .text-center-xs {
     text-align: center !important;
@@ -150,24 +137,9 @@
 @media only screen and (min-width: 900px) {
   #sidebar-container{
     display: block;
-    // &:hover ~ #content-with-sidebar.project{
-    //   @include transform(translate3d(189px,0,0));
-    // }
   }
   #content-with-sidebar{
     padding-left: 250px;
-    // &.project{
-    //   left: 60px;
-    //   padding-left: 0;
-    //   width: 100%;
-    //   width: calc(100% - 60px);
-    //   width: -webkit-calc(100% - 60px);
-    //   width: -moz-calc(100% - 60px);
-    //   @include transition(all .5s ease);
-    //   border-left: 1px solid #d9d3d3;
-    //   -webkit-backface-visibility: hidden;
-    //   -webkit-perspective: 1000;
-    // }
   }
   .medium-status-bar.affixed {
     left: 249px;
@@ -178,6 +150,9 @@
 }
 
 @media only screen and (min-width: 768px) {
+  .pull-left-desktop {
+    float: left !important;
+  }
   .pull-right-desktop {
     float: right !important;
   }
@@ -188,7 +163,7 @@
 @media only screen and (min-width: 1000px) {
   // GLOBAL
 
-  .show-on-desktop{
+  .show-on-desktop {
     display: block !important;
   }
   .hide-on-desktop{

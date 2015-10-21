@@ -14,6 +14,6 @@ class PartDecorator < ApplicationDecorator
   end
 
   def one_liner_or_description
-    model.one_liner.presence || h.strip_tags(model.description).try(:truncate, 140).try(:html_safe)
+    model.one_liner.presence || h.strip_tags(model.description).try(:truncate, 140)
   end
 end

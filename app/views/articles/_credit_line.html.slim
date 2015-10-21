@@ -1,0 +1,6 @@
+- if credit_line.name.present?
+  span class=(credit_line.work.present? ? 'istooltip' : '') title=credit_line.work.try(:capitalize)
+    - if credit_line.link.present?
+      span= link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow', class: 'user-name'
+    - else
+      span.user-name= credit_line.name

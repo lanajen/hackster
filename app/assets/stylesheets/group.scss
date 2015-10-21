@@ -670,6 +670,17 @@
 .submenu-mobile {
   background: #fff;
   border-bottom: 1px solid #ddd;
+  li {
+    small {
+      margin-left: 5px;
+      color: #777;
+    }
+    &.active {
+      small {
+        color: #eee;
+      }
+    }
+  }
 }
 .submenu-mobile-open {
   padding: 20px;

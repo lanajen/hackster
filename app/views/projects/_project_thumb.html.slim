@@ -7,10 +7,7 @@
 - subdomain = defined?(force_subdomain) ? force_subdomain : false
 - locale = defined?(locale) ? locale : params[:locale]
 - if subdomain
-  - if project.external?
-    - project_link = external_project_url(project, subdomain: subdomain, locale: locale)
-  - else
-    - project_link = project_url(project, subdomain: subdomain, locale: locale)
+  - project_link = project_url(project, subdomain: subdomain, locale: locale)
 - else
   - project_link = url_for(project)
 
@@ -29,12 +26,11 @@
             h4
               - if project.private?
                 i.fa.fa-lock>
-              - elsif project.is_idea?
-                i.fa.fa-lightbulb-o>
               ==> link_to project.name, project_link, class: 'project-link-with-ref'
-              - if project.external?
+              / - if project.external?
                 i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
             p
+              => project.content_type_to_human
               - if project.external?
                 - if project.guest_name.present?
                   ' by

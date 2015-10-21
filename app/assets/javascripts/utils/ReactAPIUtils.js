@@ -2,6 +2,17 @@ import request from 'superagent';
 
 module.exports = {
 
+  addList(name) {
+    return new Promise((resolve, reject) => {
+      request
+        .post('/api/v1/lists')
+        .send({ group: { full_name: name } })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   addToFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
@@ -12,17 +23,6 @@ module.exports = {
         .query({followable_id: id})
         .query({followable_type: type})
         .query({source: source})
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  addList(name) {
-    return new Promise((resolve, reject) => {
-      request
-        .post('/api/v1/lists')
-        .send({ group: { full_name: name } })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

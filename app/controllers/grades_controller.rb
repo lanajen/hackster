@@ -104,7 +104,7 @@ class GradesController < ApplicationController
     end
 
     def load_project
-      @project = Project.find params[:project_id] if params[:project_id]
+      @project = BaseArticle.find params[:project_id] if params[:project_id]
     end
 
     def load_user

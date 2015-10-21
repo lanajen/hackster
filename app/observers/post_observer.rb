@@ -15,7 +15,7 @@ class PostObserver < ActiveRecord::Observer
 
   private
     def expire_project record
-      Cashier.expire "project-#{record.threadable_id}-#{model_type}" if record.threadable_type == 'Project'
+      Cashier.expire "project-#{record.threadable_id}-#{model_type}" if record.threadable_type == 'BaseArticle'
     end
 
     def update_counters record

@@ -17,7 +17,7 @@
             = f.input :external, as: :hidden
             = f.input :website, label: 'Link to the project', required: true
             = f.input :name, label: 'What is the project called?', required: true
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', required: true
             - if user_signed_in?
               = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
             - else
@@ -92,7 +92,7 @@
             = f.error_notification
 
             = f.input :name, label: 'What is it called?'
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch'
 
             .cover_image.file-drop.form-group
               - if @project.cover_image
@@ -110,6 +110,6 @@
 
             = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-            = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', required: true
+            = f.input :content_type, collection: Project::PUBLIC_CONTENT_TYPES, label: 'Project type', required: true
 
             = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

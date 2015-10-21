@@ -35,7 +35,7 @@ class PartsController < ApplicationController
   end
 
   def embed
-    per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
+    per_page = begin; [Integer(params[:per_page]), BaseArticle.per_page].min; rescue; BaseArticle.per_page end;  # catches both no and invalid params
     @projects = @part.projects.public.paginate(per_page: per_page, page: safe_page_params)
     render layout: 'embed'
   end

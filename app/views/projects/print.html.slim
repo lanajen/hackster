@@ -1,7 +1,5 @@
 .wrapper700.project
   h1.project-title
-    - if @project.is_idea?
-      i.fa.fa-lightbulb-o.private-project-icon>
     ==> @project.name
     - if @project.license
       a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
@@ -23,7 +21,7 @@
       .section-content
         .medium-editor= @project.printable_description
 
-    - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+    - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'BaseArticle').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
       section#components.section-container.section-collapsible
         h2.section-title
           a.title.title-toggle href=''

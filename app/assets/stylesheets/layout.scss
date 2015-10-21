@@ -1078,7 +1078,7 @@ a.hidden-link {
 }
 
 
-.page {
+.page.section-container {
   p {
     text-align: justify;
   }
@@ -1130,40 +1130,7 @@ a.hidden-link {
   display: none;
   text-align: center;
   font-size: 16px;
-  .popup-overlay-outer {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    overflow-y: scroll;
-  }
-  .popup-overlay-bg {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 100000000001;
-  }
-  .popup-overlay-inner {
-    width: 600px;
-    margin-bottom: 20px;
-    max-width: 90%;
-    top: 50%;
-    left: 50%;
-    background: #fff;
-    position: absolute;
-    padding: 30px;
-    z-index: 100000000002;
-    -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
-    transition: all 200ms;
-    &.transparent {
-      background: transparent;
-      color: #fff;
-      h2, h3, h4, .close {
-        color: #fff;
-      }
-    }
-  }
+  overflow-y: scroll;
   h2, h3, h4 {
     line-height: 1;
     margin: 0 0 20px;
@@ -1171,25 +1138,61 @@ a.hidden-link {
   h2 {
     color: #555;
     font-size: 2em;
-    font-weight: bold;
   }
   h3 {
     font-size: 1.5em;
   }
   .close {
-    font-size: 28px;
+    font-size: 45px;
     position: absolute;
-    top: 5px;
-    right: 10px;
+    top: 0;
+    right: 8px;
     outline: 0;
-  }
-  p {
-    // font-size: 0.85em;
+    font-weight: normal;
   }
   &.normal-size {
     p {
       font-size: initial;
     }
+  }
+}
+.popup-overlay-outer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.popup-overlay-bg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100000000001;
+}
+.popup-overlay-inner {
+  width: 600px;
+  max-width: 90%;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  position: absolute;
+  padding: 50px;
+  margin-bottom: 20px;
+  z-index: 100000000002;
+  -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
+  transition: all 200ms;
+  &.transparent {
+    background: transparent;
+    color: #fff;
+    h2, h3, h4, .close {
+      color: #fff;
+    }
+  }
+  p {
+    margin-bottom: 20px;
+  }
+  :last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -1455,6 +1458,32 @@ i + span, span + i {
   .start-option {
     p {
       margin-bottom: 20px;
+    }
+  }
+}
+
+.popover-new-article.popover-content {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+  li {
+    a {
+      padding: 10px 14px;
+      display: block;
+      font-weight: bold;
+      color: #666;
+      &:hover {
+        text-decoration: none;
+        color: #888;
+      }
+    }
+    &:not(:last-child) {
+      a {
+        border-bottom: 1px solid #ddd;
+      }
     }
   }
 }
