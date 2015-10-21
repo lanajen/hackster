@@ -9,7 +9,7 @@ export default {
   parseDOM(html) {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
-        if(err) console.log(err);
+        if(err) console.log('DomHandler Error: ', err);
 
         let parsedHTML = this.parseTree(dom);
         resolve(parsedHTML);
@@ -60,12 +60,16 @@ export default {
             item.data = item.data.replace(/&nbsp;/g, ' ');
           }
 
-          return {
-            tag: 'span',
-            content: item.data,
-            attribs: {},
-            children: []
-          };
+          if(item.data.length === 1 && (item.data === '\n' || item.data === '\r')) {
+            return null;
+          } else {
+            return {
+              tag: 'span',
+              content: item.data,
+              attribs: {},
+              children: []
+            };
+          }
         } else if(item.children && item.children.length === 1 && item.children[0].type === 'text') {
           if(item.children[0].data.match(/&nbsp;/g)) {
             item.children[0].data = item.children[0].data.replace(/&nbsp;/g, ' ');
@@ -148,5 +152,98 @@ export default {
         }
       });
     }(json));
+  },
+
+  concatPreBlocks(json) {
+    let clone = _.clone(json);
+    let indexesToConcat = this._getIndexesToConcat(clone);
+    let map = indexesToConcat.map(indexes => {
+      let merged = this._mergeBlocksByIndex(clone, indexes);
+      return { ...indexes, pre: merged };
+    });
+
+    map.forEach(item => {
+      let indexesToRemove = item.stop - item.start;
+      json.splice(item.start, indexesToRemove+1, item.pre);
+    });
+
+    return json;
+  },
+
+  _getIndexesToConcat(json) {
+    let indexesToConcat = [];
+    let start = null, stop = null;
+
+    json.forEach((item, index) => {
+      if(item.tag === 'pre' && json[index+1] && json[index+1].tag === 'pre' && start === null) {
+        start = index;
+      } else if(item.tag === 'pre' && json[index+1] && json[index+1].tag !== 'pre' && start !== null) {
+        stop = index;
+        indexesToConcat.push({ start: start, stop: stop });
+        start = null;
+        stop = null;
+      }
+    });
+
+    return indexesToConcat;
+  },
+
+  _mergeBlocksByIndex(json, indexes) {
+    let merger = {},
+        cont = false,
+        children, 
+        code = { tag: 'code', attribs: {}, content: '', children: [] };
+
+    json.forEach((item, index) => {
+      if(index === indexes.start) {
+        cont = true;
+        if(item.children.length) {
+          code.children.push(this._flattenChildren(item.children));
+          merger = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
+        } else {
+          code.children.push(this._createSpan(item.content));
+          merger = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
+        }
+      } else if(index === indexes.stop) {
+        cont = false;
+        if(item.children.length) {
+          merger.children[0].children.push(this._flattenChildren(item.children));
+        } else {
+          merger.children[0].children.push(this._createSpan(item.content));
+        }
+      } else if(cont === true) {
+        if(item.children.length) {
+          merger.children[0].children.push(this._flattenChildren(item.children));
+        } else {
+          merger.children[0].children.push(this._createSpan(item.content));
+        }
+      }
+    });
+
+    return merger;
+  },
+
+  _createSpan(content) {
+    return { tag: 'span', attribs: {}, content: content+'\n', children: [] };
+  },
+
+  _flattenChildren(children) {
+    let content = [];
+
+    (function recurse(array) {
+      if(!array.length) {
+        return;
+      } else {
+        array.forEach(item => {
+          if(item.children.length) {
+            recurse(item.children);
+          } else {
+            content.push(item.content);
+          }
+        });
+      }
+    }(children));
+
+    return this._createSpan(content.join(''));
   }
 }

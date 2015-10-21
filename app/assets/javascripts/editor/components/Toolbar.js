@@ -64,12 +64,15 @@ const Toolbar = React.createClass({
     if(document) {
       document.execCommand(tagType, false, valueArg);
       this.focusCE();
-      
+
       let { sel, anchorNode, parentNode } = Utils.getSelectionData();
 
       if(sel !== null) {
         let list = Utils.createListOfActiveElements(anchorNode, parentNode);
         this.props.actions.toggleActiveButtons(list);
+
+        /** Cleans up the dom tree. */
+        parentNode.normalize();
       }
     }
   },
@@ -84,16 +87,17 @@ const Toolbar = React.createClass({
       return;
     }
 
-    if(isNodeInUL && blockEls[tagType.toUpperCase()]) {
+    if(isNodeInUL && blockEls[tagType.toUpperCase()]) { // Cleans UL's lis if transforming.
       this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
       this.props.actions.forceUpdate(true);
+      // this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
       let endContainer = Utils.getRootParentElement(range.endContainer);
       let arrayOfNodes = Utils.createArrayOfDOMNodes(startContainer, endContainer, commonAncestorContainer);
 
-      /** Restricts transformations if theres a div (Media block) in the selection */
+      /** Restricts transformations if theres a div (Media block) in the selection. */
       if(_.some(arrayOfNodes, { nodeName: 'DIV' })) {
         return;
       } else {
@@ -115,12 +119,14 @@ const Toolbar = React.createClass({
       'H3': true,
       'BLOCKQUOTE': true
     };
+
     /** If theres selected text (NOT in a block element or if selection spans multiple nodes), break the paragraph apart into three segments.
       * Else turn the selection/s to a normal Blockquote.
      */
     if(range.startOffset !== range.endOffset && range.toString() !== parentNode.textContent
        && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
-       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1) {
+       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1 
+       && range.toString().trim().length > 0) {
       /** Builds the selected text from scratch honoring all wrapped node types.  We delete the selection in the Promise handler. */
       let selectedHtml = range.toHtml();
       let selectedBuild = Utils.getParentNodeByElement(anchorNode, 'P');
@@ -136,8 +142,7 @@ const Toolbar = React.createClass({
       let promises = [ intro, blockquote, outro ].map(html => {
         return Parser.parseDOM(html);
       });
-      console.log('TEXT', range.toHtml(), selectedHtml, range.commonAncestorContainer);
-      console.log('INTRO: ' + intro, ' BQ: ' + blockquote, ' OUTRO: ' + outro);
+
       Promise.all(promises)
         .then(results => {
           this.props.actions.splitBlockElement(tagType, results, depth, this.props.editor.currentStoreIndex);
@@ -163,7 +168,7 @@ const Toolbar = React.createClass({
     let { sel, range, depth, anchorNode, parentNode } = data;
     let blockEls = {
       'PRE': true,
-      'H3': true
+      'H3': true,
     };
 
     /** Quicky to undo a code block if nothing is selected and user want to just undo a code at that position. */
@@ -174,10 +179,8 @@ const Toolbar = React.createClass({
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
-    if(range.startOffset !== range.endOffset 
-       && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
-
       let ranges = { start: range.startOffset, end: range.endOffset };
       let selectedText = range.commonAncestorContainer.textContent.slice(ranges.start, ranges.end);
 
@@ -210,7 +213,7 @@ const Toolbar = React.createClass({
           range.deleteContents();
           /** If start doesn't have a length, then the selection starts @ index 0. 
             * Else if the selection is in the middle of the text, create two new nodes.
-            * Else selection is at the end of the node, append a child node if last or insert before the next node.
+            * Else selection is at the end of the node, simply append a child node.
             */
           if(!start.length) {
             textNode.textContent = parent.textContent;
@@ -231,10 +234,11 @@ const Toolbar = React.createClass({
         }
         /** Cleans up the dom tree. */
         parentNode.normalize();
+        this.mergeAdjacentElements(parentNode);
         /** Reselect the text. */
         range.selectNodeContents(textNode);
         sel.setSingleRange(range);
-        /** Let the store know about the mutation. */
+
         this.props.actions.getLatestHTML(true);
       } else {
         let code = document.createElement('code');
@@ -247,10 +251,9 @@ const Toolbar = React.createClass({
         /** Reselect the text. */
         range.selectNodeContents(code.childNodes[0]);
         sel.setSingleRange(range);
-        /** Let the store know about the mutation. */
+
         this.props.actions.getLatestHTML(true);
       }
-      /** Focus current Content Editable. */
       this.focusCE();
     } else {
       this.handleBlockElementTransform(tagType);
@@ -268,7 +271,6 @@ const Toolbar = React.createClass({
       }
     });
   },
-
 
   handleUnorderedList() {
     let { sel, range, parentNode } = Utils.getSelectionData();
@@ -317,8 +319,6 @@ const Toolbar = React.createClass({
       } else {
         return;
       }
-      /** Focus current Content Editable. */
-      this.focusCE();
     } else {  // Build UL.
       if(startContainerParent === endContainerParent) { // One block element is selected.
         elements = [{ depth: Utils.findChildsDepthLevel(startContainerParent, startContainerParent.parentNode) }];
@@ -342,7 +342,6 @@ const Toolbar = React.createClass({
 
     }
     this.props.actions.forceUpdate(true);
-    /** Focus current Content Editable. */
     this.focusCE();
   },
 
@@ -380,17 +379,17 @@ const Toolbar = React.createClass({
         let sel = rangy.getSelection();
         sel.setSingleRange(range);
         if(!Validator.isURL(href, { require_protocol: true })) {
+          //TODO: MESSAGE THAT WE ADDED HTTP.
           href = 'http://' + href;
         }
         this.handleExecCommand('createLink', href);
-        /** Focus current Content Editable. */
         this.focusCE();
         /** Grabs the selection again after the DOM was mutated by execCommand. */
         sel = rangy.getSelection();
         sel.setSingleRange(range);
         sel.collapseToEnd();
       } else {
-        this.props.actions.toggleErrorMessenger(true, 'Not a valid url');
+        this.props.actions.toggleErrorMessenger(true, 'That\'s not a valid url.');
       }
     }
   },
@@ -449,7 +448,7 @@ const Toolbar = React.createClass({
     files = Array.prototype.slice.call(files);
     filteredFiles = _.filter(files, file => {
       if(Helpers.isImageValid(file.type)) {
-        return true;
+        return file;
       } else {
         let msg = file.name ? file.name + ' is not a valid image!' : 'Sorry, not a valid image';
         this.props.actions.toggleErrorMessenger(true, msg);
@@ -461,24 +460,11 @@ const Toolbar = React.createClass({
       return;
     }
 
-    ImageUtils.handleImagesAsync(filteredFiles, map => {
-      let storeIndex = this.props.editor.currentStoreIndex;
+    ImageUtils.handleImagesAsync(filteredFiles, function(map) {
       this.props.actions.isDataLoading(true);
-      this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
+      this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
-
-      /** Upload files to AWS. */
-      this.props.actions.uploadImagesToServer(
-        map,
-        storeIndex, 
-        this.props.editor.lastMediaHash,
-        this.props.editor.S3BucketURL, 
-        this.props.editor.AWSAccessKeyId, 
-        this.props.editor.csrfToken, 
-        this.props.editor.projectId
-      );
-
-    });
+    }.bind(this));
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
   },
@@ -489,13 +475,7 @@ const Toolbar = React.createClass({
     this.props.actions.forceUpdate(true);
   },
 
-  handleToolbarButtonError(tagType) {
-    this.props.actions.toggleErrorMessenger(true, `Sorry, cannot transform that into a ${tagType}`);
-  },
-
   render: function() {
-    // console.log('TOOLBAR', this.state.showPopOver);
-  
     let linkPopOver = this.props.toolbar.showPopOver ? (
       <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} actions={this.props.actions} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
     ) : null;
@@ -513,7 +493,7 @@ const Toolbar = React.createClass({
     ];
 
     let Buttons = buttonList.map(button => {
-      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} onError={this.handleToolbarButtonError} />;
+      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
     });
     
 

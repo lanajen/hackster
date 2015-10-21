@@ -409,6 +409,7 @@ function handleInitialDOM(json) {
   } else {
     json = json.map(item => {
       if(item.type === 'CE') {
+        /** Puts a br in the first element. */
         if(item.json.length === 1 && item.json[0].children.length < 1) {
           item.json[0].children.push({
             tag: 'br',
@@ -417,8 +418,13 @@ function handleInitialDOM(json) {
             children: []
           });
         }
-
+        /** Create new Pre Blocks on newlines. 
+          * Basically unmerge the Pres that we merged and sent to the server.
+          * TODO: This function mutates item.json, we really should clone and return a new array.
+         */
+        _unmergePreBlocks(item.json);
         item.json = createArrayOfComponents(item.json);
+
         if(item.json.length < 1) {
           let P = mapToComponent['p'];
           item.json.push(P({ 
@@ -440,6 +446,28 @@ function handleInitialDOM(json) {
   }
 
   return json;
+}
+
+function _unmergePreBlocks(json) {
+  let clone = _.clone(json);
+
+  clone.forEach((item, preIndex) => {
+    if(item.tag === 'pre') {
+      let children = item.children[0].tag === 'code' ? item.children[0].children : item.children;
+      children.forEach((child, childIndex) => {
+        if(child.content !== null && child.content.substr(child.content.length-1) === '\n') {
+          child.content = child.content.slice(0, child.content.length-1);
+        }
+        if(child.content.length < 1) {
+          child.children.push({ tag: 'br', attribs: {}, content: '', children: [] });
+        }
+        let code = { tag: 'code', attribs: {}, content: '', children: [ child ]};
+        let pre = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
+        let shouldReplace = childIndex === 0 ? 1 : 0;
+        json.splice(preIndex+childIndex, shouldReplace, pre);
+      });
+    }
+  });
 }
 
 function handleBlockElementCreation(dom, tag, position, storeIndex) {

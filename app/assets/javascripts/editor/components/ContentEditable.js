@@ -535,6 +535,13 @@ const ContentEditable = React.createClass({
       this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     }
 
+    /** Edge will put the cursor inside of a br, we need to replace it with a span. */
+    if(anchorNode.parentNode && anchorNode.parentNode.nodeName === 'BR') {
+      let span = document.createElement('span');
+      span.textContent = anchorNode.parentNode.textContent;
+      anchorNode.parentNode.parentNode.replaceChild(span, anchorNode.parentNode);
+    }
+
     switch(e.keyCode || e.charCode) {
       case 13: // ENTER
         this.handleEnterKey(e);

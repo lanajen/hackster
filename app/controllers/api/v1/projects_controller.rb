@@ -86,12 +86,11 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def description
-    project = Project.find params[:id]
+    project = BaseArticle.find params[:id]
 
     if project.story_json.nil? && !project.description.nil?
       render json: { description: project.decorate.description, story: nil }
     elsif !project.story_json.nil?
-      # do the same for file.
       story = project.story_json.map do |c|
         if c['type'] == 'Carousel'
           c['images'] = c['images'].map do |i|

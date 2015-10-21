@@ -127,10 +127,10 @@ const Editable = React.createClass({
 
       if(item.type === 'CE') {
         stringifiedJSON = item.json.map(React.renderToStaticMarkup).join('');
-
         return Parser.parseDOM(stringifiedJSON)
           .then(json => {
             cleaned = Parser.removeAttributes(json);
+            cleaned = Parser.concatPreBlocks(cleaned);
             item.json = cleaned;
             return Promise.resolve(item);
           });
