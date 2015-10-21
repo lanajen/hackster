@@ -280,18 +280,18 @@ Rewardino::Event.create!({
   points: 50,
   date_method: -> (project) { project.review_time || project.made_public_at },
   # model_table: 'projects',
-  models_method: -> (user) { user.projects.own.self_hosted.approved },
+  models_method: -> (user) { user.projects.own.where(type: %w(Article Project)).approved },
   users_count_method: -> (project) { project.team_members_count }
 })
 
-Rewardino::Event.create!({
-  code: :approved_article,
-  name: 'Article approved',
-  description: "One of your articles got approved to show on Hackster",
-  points: 15,
-  date_method: -> (project) { project.review_time || project.made_public_at },
-  models_method: -> (user) { user.projects.articles.approved }
-})
+# Rewardino::Event.create!({
+#   code: :approved_article,
+#   name: 'Article approved',
+#   description: "One of your articles got approved to show on Hackster",
+#   points: 15,
+#   date_method: -> (project) { project.review_time || project.made_public_at },
+#   models_method: -> (user) { user.projects.articles.approved }
+# })
 
 # Rewardino::Event.create!({
 #   code: :accepted_invitation_inviter,
