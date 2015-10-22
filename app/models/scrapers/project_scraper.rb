@@ -17,7 +17,6 @@ class ProjectScraper
     project.private = (options[:private].nil? ? true : options[:private])
     project.workflow_state = options[:workflow_state]
     project.name = project.name[0..59]
-    project.content_type = Project::DEFAULT_CONTENT_TYPE
     project
   end
 
