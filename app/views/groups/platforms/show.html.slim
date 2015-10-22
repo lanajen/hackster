@@ -121,7 +121,7 @@
                 .col-md-2
               - @projects.each_with_index do |col, i|
                 - css = i == 2 ? '4 hidden-sm' : nil
-                = render partial: 'projects/project_thumb', locals: { project: col.project, col: css }
+                = render partial: 'projects/project_thumb', locals: { project: col.project, col: css, ref: 'platform', ref_id: [@platform.id, 'trending', nil, nil, nil].join('_'), offset: i }
             = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       - if @platform.enable_products and @platform.products_count > 0

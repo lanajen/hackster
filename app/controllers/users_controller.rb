@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @guest_projects = @user.projects.live.guest.for_thumb_display
-    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC')
     @replicated_projects = @user.replicated_projects
     if is_whitelabel?
       @private_projects = if current_user == @user

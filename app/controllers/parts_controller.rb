@@ -29,7 +29,7 @@ class PartsController < ApplicationController
       "Share your hardware projects made with #{@part.name} from #{@platform.name}."
     end
     meta_desc @meta_desc
-    @projects = @part.projects.public.paginate(page: safe_page_params)
+    @projects = @part.projects.public.magic_sort.paginate(page: safe_page_params)
     @part = @part.decorate
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
   end

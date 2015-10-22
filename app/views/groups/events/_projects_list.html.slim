@@ -12,8 +12,8 @@
 
   - if @projects.any?
     .row.project-list
-      - @projects.each do |collection|
-        = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+      - @projects.each_with_index do |collection, i|
+        = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate, ref: 'event', ref_id: @event.id, offset: i }
         - if @event.voting_active?
           = content_for :js do
             javascript:

@@ -58,7 +58,7 @@
           .thumb-list
             .row.project-list
               - @private_projects.each_with_index do |project, i|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
       - if @guest_projects.any?
         hr
@@ -68,7 +68,7 @@
         .thumb-list
           .row.project-list
             - @guest_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userguest', ref_id: @user.id, offset: i }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
       - if !is_whitelabel? and (@parts.any? or user_is_current?)
         hr
@@ -100,7 +100,7 @@
         .thumb-list
           .row.project-list
             - @replicated_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userreplicated', ref_id: @user.id, offset: i }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
       - elsif user_is_current?
         p
@@ -137,7 +137,7 @@
           - @comments.each do |comment|
             li.comment
               h5.comment-project
-                ==> link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment', anchor: 'widget-comments')
+                ==> link_to comment.commentable.name, project_path(comment.commentable, anchor: 'widget-comments')
                 small
                   ==> time_ago_in_words(comment.created_at)
                   | ago

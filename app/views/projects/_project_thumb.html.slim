@@ -17,7 +17,7 @@
     div class="project-#{project.id}"
       .thumb.project-thumb
         .thumb-image.has-link-overlay style="background-image:url('#{project.cover_image(:cover_thumb)}')"
-          = link_to '', project_link, class: 'link-overlay', target: (subdomain.present? ? '_blank' : nil)
+          = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (subdomain.present? ? '_blank' : nil)
           .thumb-image-inner-top
             .award-container
             p.description.show-on-hover

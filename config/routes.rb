@@ -554,6 +554,7 @@ HackerIo::Application.routes.draw do
       get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] =~ /[0-9]+/ }
       get 'embed', as: :old_embed
+      get 'next' => 'projects#next', on: :member
       get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
       patch 'permissions' => 'permissions#update'
       get 'team/edit' => 'members#edit', as: :edit_team

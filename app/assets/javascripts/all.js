@@ -459,16 +459,16 @@ $(function () {
   }
 
   // update thumbnail links for projects
-  // $(".project-thumb-container.has-data").each(function(i, project){
-  //   project = $(project);
-  //   ref = project.data('ref');
-  //   refId = project.data('ref-id');
-  //   offset = project.data('offset');
-  //   $('a.project-link-with-ref', this).each(function(j, link) {
-  //     href = link.href;
-  //     link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
-  //   });
-  // });
+  $(".project-thumb-container.has-data").each(function(i, project){
+    project = $(project);
+    ref = project.data('ref');
+    refId = project.data('ref-id');
+    offset = project.data('offset');
+    $('a.project-link-with-ref', this).each(function(j, link) {
+      href = link.href;
+      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
+    });
+  });
 
   $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);

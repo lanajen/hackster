@@ -115,7 +115,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActionView::MissingTemplate, with: :render_404_with_log
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from CanCan::AccessDenied, Workflow::NoTransitionAllowed do |exception|
     if current_user
       if request.xhr?
         render status: :unauthorized, json: { message: "You are not authorized to perform this action." }
