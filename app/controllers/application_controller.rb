@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery except: [:not_found]
   before_filter :authenticate_user_from_token!
   before_filter :mark_last_seen!
-  before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
   before_filter :check_new_badge
@@ -554,10 +553,6 @@ class ApplicationController < ActionController::Base
       pathes.unshift default_locale
       path = pathes.select{|v| v.present? }.join('/')
       "/#{path}"
-    end
-
-    def set_new_user_session
-      @new_user_session = User.new unless user_signed_in?
     end
 
     def site_platform
