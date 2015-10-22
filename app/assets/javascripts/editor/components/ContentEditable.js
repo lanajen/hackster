@@ -147,6 +147,7 @@ const ContentEditable = React.createClass({
     }
 
     range.setStart(textNode, offset);
+    range.collapse(true);
     rangy.getSelection().setSingleRange(range);
     this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     this.props.actions.setCursorToNextLine(false);
@@ -189,9 +190,12 @@ const ContentEditable = React.createClass({
         /** Chrome sets the cursor to 0, we need to reset it here at the correct position. */
         sel = rangy.getSelection();
         range = sel.getRangeAt(0);
-        range.setStart(Utils.getFirstTextNode(range.startContainer), clone.startOffset);
-        range.collapse(true);
-        sel.setSingleRange(range);
+        let el = Utils.getFirstTextNode(range.startContainer);
+        if(clone.startOffset <= el.length) {
+          range.setStart(el, clone.startOffset);
+          range.collapse(true);
+          sel.setSingleRange(range);
+        }
       }
 
       /** On Enter; Cleans up browser adds on specific line. */
@@ -577,6 +581,11 @@ const ContentEditable = React.createClass({
 
     } else {
       this.trackCursor(e);
+
+      /** For IE Only!  onInput is NOT supported in content-editable divs, so we listen for changes here. */
+      if(this.props.editor.isIE) {
+        this.debouncedEmitChange();
+      }
     }
   },
 
@@ -626,6 +635,7 @@ const ContentEditable = React.createClass({
 
     if(window.clipboardData && window.clipboardData.getData) {  // IE
       pastedText = window.clipboardData.getData('Text');
+      dataType = 'html';
     } else if(e.clipboardData && e.clipboardData.getData) {
       let clipboardDataTypes = [].slice.apply(e.clipboardData.types);
       if(clipboardDataTypes.indexOf('text/html') === 1) {

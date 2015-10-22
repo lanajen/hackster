@@ -361,3 +361,10 @@ export function handlePastedHTML(html, depth, storeIndex) {
     storeIndex: storeIndex
   };
 }
+
+export function toggleIE(bool) {
+  return {
+    type: Editor.toggleIE,
+    bool: bool
+  };
+}

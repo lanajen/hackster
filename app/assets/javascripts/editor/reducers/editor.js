@@ -30,11 +30,6 @@ const mapToComponent = {
   'b': React.createFactory('b')
 };
 
-const blockElements = {
-  'blockquote': true,
-  'pre': true
-};
-
 const initialState = {
   html: '',
   dom: [],
@@ -55,7 +50,8 @@ const initialState = {
   imageToolbarData: {},
   isDataLoading: false,
   errorMessenger: { show: false, msg: '' },
-  lastMediaHash: null
+  lastMediaHash: null,
+  isIE: false
 };
 
 export default function(state = initialState, action) {
@@ -376,6 +372,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom
+      };
+
+    case Editor.toggleIE:
+      return {
+        ...state,
+        isIE: action.bool
       };
 
     default:
@@ -1395,7 +1397,7 @@ function createArrayOfComponents(dom) {
         return el(props);
       } else {
         let children = recurse(item.children, lastHash); 
-        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: children });
+        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: [ item.content, children ] });
         return el(props);
       }
     }).filter(item => { return item !== null || item !== undefined; });

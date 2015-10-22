@@ -1,4 +1,4 @@
-import keyMirror from 'react/lib/keyMirror';
+import keyMirror from 'keymirror';
 
 export default {
 
@@ -48,6 +48,7 @@ export default {
     splitBlockElement: null,
     toggleErrorMessenger: null,
     handlePastedHTML: null,
+    toggleIE: null
   }),
 
   ImageBucket: keyMirror({
