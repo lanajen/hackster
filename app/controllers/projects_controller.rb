@@ -335,7 +335,7 @@ class ProjectsController < ApplicationController
 
   # next/previous project in search
   def next
-    cache_key = [params[:ref], params[:ref_id], params[:offset]]
+    cache_key = [params[:ref], params[:ref_id], params[:dir], params[:offset]]
 
     if params[:ref] == 'custom'
       if user_signed_in?
