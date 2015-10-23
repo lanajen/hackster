@@ -14,6 +14,10 @@ class Conversation < ActiveRecord::Base
   attr_accessor :recipient_id, :sender_id, :body, :is_spam
   attr_accessible :subject, :recipient_id, :sender_id, :body
 
+  def self.for user
+    where(id: joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).distinct('conversations.id').pluck(:id)).order("conversations.updated_at DESC")
+  end
+
   def self.inbox_for user
     joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).where.not(comments: { user_id: user.id }).order("receipts.created_at DESC")
   end
