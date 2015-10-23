@@ -341,7 +341,7 @@ class ProjectsController < ApplicationController
     end
 
     case params[:ref]
-    when 'assignment', 'explore', 'event', 'user', 'platform', 'part', 'tag', 'userrespected'
+    when 'assignment', 'explore', 'event', 'user', 'platform', 'part', 'tag', 'userrespected', 'custom'
       offset = params[:offset].to_i
       offset += params[:dir] == 'prev' ? -1 : 1
 
@@ -349,6 +349,17 @@ class ProjectsController < ApplicationController
       when 'assignment'
         if assignment = Assignment.find_by_id(params[:ref_id])
           assignment.projects.public.order(:created_at)
+        end
+
+      when 'custom'
+        if user_signed_in?
+          if current_user.id.to_s != params[:ref_id]
+            offset = 0
+            params[:ref_id] = current_user.id
+          end
+          BaseArticle.custom_for(current_user)
+        else
+          params[:ref_id] = params[:ref] = params[:offset] = nil
         end
 
       when 'explore'

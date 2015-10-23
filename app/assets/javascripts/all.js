@@ -458,18 +458,6 @@ $(function () {
     });
   }
 
-  // update thumbnail links for projects
-  $(".project-thumb-container.has-data").each(function(i, project){
-    project = $(project);
-    ref = project.data('ref');
-    refId = project.data('ref-id');
-    offset = project.data('offset');
-    $('a.project-link-with-ref', this).each(function(j, link) {
-      href = link.href;
-      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
-    });
-  });
-
   $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);
     offset = $(this).data('offset') || 0;
@@ -497,6 +485,8 @@ $(function () {
   $('.hljs-active :not(.highlight) > pre').each(function(i, block) {
     hljs.highlightBlock(block);
   });
+
+  updateProjectThumbLinks();
 });
 
 function closeNav(nav) {
@@ -561,6 +551,21 @@ function smoothScrollTo(target, offsetTop, speed) {
     'scrollTop': target.offset().top + offsetTop
   }, speed, 'swing', function () {});
   return target;
+}
+
+function updateProjectThumbLinks() {
+  // update thumbnail links for projects
+  $(".project-thumb-container.has-data:not(.link-added)").each(function(i, project){
+    project = $(project);
+    ref = project.data('ref');
+    refId = project.data('ref-id');
+    offset = project.data('offset');
+    $('a.project-link-with-ref', this).each(function(j, link) {
+      href = link.href;
+      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
+    });
+    project.addClass('link-added');
+  });
 }
 
 function closePopup(id) {
