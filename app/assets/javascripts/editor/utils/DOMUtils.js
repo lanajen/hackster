@@ -1005,8 +1005,9 @@ const Utils = {
           return newEl;
         } else if(el.attribs['data-type'] === 'widget') {
           if(el.children && el.children[0].attribs.class.indexOf('old_code_widget') !== -1) {
-            /** Handle Code Widget */
-            newEl = this.createCodeBlock(el);
+            /** Handle Old Code Widget */
+            mediaData = this.getWidgetPlaceholderData(el);
+            newEl = this.createWidgetPlaceholder(mediaData);
           } else if(el.children && el.children[0].attribs.class.indexOf('parts_widget') !== -1) {
             mediaData = this.getWidgetPlaceholderData(el);
             newEl = this.createWidgetPlaceholder(mediaData);
@@ -1490,6 +1491,7 @@ const Utils = {
       'b': 'strong',
       'bold': 'strong',
       'italic': 'em',
+      'i': 'em',
       'ol': 'ul',
       'h1': 'h3',
       'h2': 'h3',
@@ -1567,6 +1569,15 @@ const Utils = {
         }
       } else if(item.tag === 'br') {
         return null;
+      } else if(!BlockElements[item.tag.toUpperCase()]) {
+        /** Catches other inlines and wraps the item in a parapraph. */
+        let p = {
+          tag: 'p',
+          content: '',
+          attribs: {},
+          children: [ item ]
+        };
+        return p;
       } else {
         return item;
       }

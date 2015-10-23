@@ -12,7 +12,8 @@ const WidgetPlaceholder = React.createClass({
     let widgetTypes = {
       'parts_widget': 'Parts List',
       'bitbucket-widget': 'Bitbucket Repo',
-      'github-widget': 'Github Repo'
+      'github-widget': 'Github Repo',
+      'old_code_widget': 'Old Code Widget'
     };
 
     let type = <span className="text-danger">{widgetTypes[data.widgetType]}</span>

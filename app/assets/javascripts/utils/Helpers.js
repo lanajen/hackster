@@ -112,13 +112,13 @@ module.exports = {
         index: 1
       },
       'vimeo': {
-        regexp: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
+        regexp: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,
         requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
         embed: id => `https://player.vimeo.com/video/${id}`,
         index: 5
       },
       'vine': {
-        regexp: /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13})$/,
+        regexp: /vine\.co\/v\/([a-zA-Z0-9]+)/,
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
         embed: id => `https://vine.co/v/${id}/embed/simple`,
         index: 1
