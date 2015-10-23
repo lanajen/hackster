@@ -410,7 +410,7 @@ $desktop-width: 1024px;
         flex: 1;
         align-items: center;
         justify-content: center;
-        color: #29B6F6;
+        color: #337ab7;
         border: none;
         background-color: transparent;
         font-size: 1.6rem;
@@ -428,13 +428,13 @@ $desktop-width: 1024px;
 
         &.toolbar-btn-active {
           color: #E0E0E0;
-          background-color: #29B6F6;
+          background-color: #337ab7;
           border-right: 1px solid #E0E0E0;
         }
 
         &:hover {
           color: #E0E0E0;
-          background-color: #29B6F6;
+          background-color: #337ab7;
         }
       }
     }

@@ -70,6 +70,10 @@ const Editor = React.createClass({
   },
 
   render() {
+    if(this.props.hashLocation !== '#story') {
+      return null;
+    }
+
     let dialogActions = [{ text: 'Cool beans?', ref: "closeDialog" }];
     let dialogBody = (
       <div style={{ textAlign: 'center' }}>
@@ -83,11 +87,11 @@ const Editor = React.createClass({
     return (
       <div className="react-editor-wrapper">
         <div className="react-editor-toolbar-container">
-          <Toolbar />
+          <Toolbar hashLocation={this.props.hashLocation} />
         </div>
-        <Editable className="box" refLink={createRandomNumber()} />
+        <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} {...this.props} />
         <Dialog ref="browserSupport" actions={dialogActions} actionFocus="closeDialog" modal={false}>{dialogBody}</Dialog>
-        <Snackbar ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action="Error" autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
+        <Snackbar style={{zIndex: 10001}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon} autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
       </div>
     );
   }

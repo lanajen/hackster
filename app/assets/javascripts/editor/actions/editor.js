@@ -304,6 +304,7 @@ export function removeImageFromList(imageData, storeIndex, mediaHash) {
 }
 
 export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, AWSAccessKeyId, csrfToken, projectId) {
+  console.log('ACTION', S3BucketURL, AWSAccessKeyId);
   return function(dispatch) {
     files.forEach(file => {
       return ImageHelpers.getS3AuthData(file.name)

@@ -50,6 +50,16 @@ const FigCaption = React.createClass({
     }
   },
 
+  handleKeyUp() {
+    /** Input handler for IE. */
+    if(this.props.isIE) {
+      let html = React.findDOMNode(e.target).textContent;
+      this.setState({
+        html: html
+      });
+    }
+  },
+
   render() {
     /** 
       * We keep the main source of truth (this.props.html) coming from the reducer. 
@@ -62,6 +72,7 @@ const FigCaption = React.createClass({
                   onInput={this.handleInput}
                   onBlur={this.handleBlur}
                   onKeyDown={this.handleKeyDown}
+                  onKeyUp={this.handleKeyUp}
                   contentEditable={true} 
                   dangerouslySetInnerHTML={{__html: this.props.html}}>
       </figcaption>

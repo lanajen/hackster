@@ -132,7 +132,8 @@ const Carousel = React.createClass({
                         handleFigCaptionKeys={this.handleFigCaptionKeys}
                         setFigCaptionText={this.handleFigCaptionText.bind(this, index)}
                         html={image.figcaption || 'caption (optional)'}
-                        actions={this.props.actions}/>
+                        actions={this.props.actions}
+                        isIE={this.props.editor.isIE} />
           </div>
         </figure>
       );

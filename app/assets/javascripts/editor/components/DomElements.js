@@ -16,6 +16,14 @@ export const P = React.createClass({
   }
 });
 
+export const BR = React.createClass({
+  render() {
+    return (
+      <br/>
+    );
+  }
+});
+
 export const A = React.createClass({
   render() {
     return (
@@ -48,6 +56,14 @@ export const H3 = React.createClass({
   }
 });
 
+export const CODE = React.createClass({
+  render() {
+    return (
+      <code className={this.props.className} data-hash={this.props.tagProps.hash}>{this.props.children}</code>
+    );
+  }
+});
+
 export const DIV = React.createClass({
   render() {
     let style = this.props.style || {},
@@ -65,12 +81,8 @@ export const DIV = React.createClass({
 
 export const UL = React.createClass({
   render() {
-    let children = this.props.children !== null && Array.isArray(this.props.children) ? this.props.children.map(function(child, index) {
-      let newChildren = child.props.children;
-      return <li key={createRandomNumber()}>{newChildren}</li>
-    }) : this.props.children;
     return (
-      <ul className={this.props.className} data-hash={this.props.tagProps.hash}>{children}</ul>
+      <ul className={this.props.className} data-hash={this.props.tagProps.hash}>{this.props.children}</ul>
     )
   }
 });

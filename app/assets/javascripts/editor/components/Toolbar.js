@@ -475,6 +475,10 @@ const Toolbar = React.createClass({
     this.props.actions.forceUpdate(true);
   },
 
+  handleToolbarButtonError(tagType) {
+    this.props.actions.toggleErrorMessenger(true, `Sorry, cannot transform that into a ${tagType}`);
+  },
+
   render: function() {
     let linkPopOver = this.props.toolbar.showPopOver ? (
       <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} actions={this.props.actions} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
@@ -493,7 +497,7 @@ const Toolbar = React.createClass({
     ];
 
     let Buttons = buttonList.map(button => {
-      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
+      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} onError={this.handleToolbarButtonError}/>;
     });
     
 
