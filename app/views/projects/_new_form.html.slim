@@ -2,13 +2,21 @@
   .box
     .box-title
       h2 Start a new project
+      .subheading
+        p
+          | Projects describe devices that you created, whether you're writing a full tutorial, showcasing the end result, or documenting your work in progress.
+          br
+          ' Not what you want?
+          => link_to 'Write an article', new_project_path(type: 'article')
+          ' instead.
+          = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
 
     .box-content
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
 
         = f.input :name, label: 'What is it called?'
-        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', hint: 'Max 140 characters'
+        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
         = f.input :product_tags_string, as: :hidden
         = f.input :platform_tags_string, as: :hidden
 
@@ -31,8 +39,6 @@
 
         = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
 
-        = f.input :content_type, collection: Project::PUBLIC_CONTENT_TYPES, label: 'Project type', required: true
-
         .form-group
           .col-md-8.col-md-offset-4
             = f.button :submit, 'Continue', class: 'btn-block btn-primary'
@@ -47,7 +53,7 @@
         strong> Is there an existing web page for this project?
         | Enter the URL below and we'll import it.
         br
-        small= link_to 'Need to import multiple pages at once?', new_project_import_path
+        small= link_to 'Click here to import multiple pages at once.', new_project_import_path
 
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group

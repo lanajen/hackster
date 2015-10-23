@@ -105,8 +105,8 @@
             = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel
-            - @last_projects.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project }
+            - @last_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project, ref: 'explore', ref_id: ['recent', nil, nil, nil].join('_'), offset: i }
 
       section#projects.showcase-section.last
         .container
@@ -116,8 +116,8 @@
 
           #infinite-scrolling
             #page_1.row.page.visible
-              - @projects.each do |project|
-                = render partial: 'projects/project_thumb', locals: { project: project }
+              - @projects.each_with_index do |project, i|
+                = render partial: 'projects/project_thumb', locals: { project: project, ref: 'custom', ref_id: current_user.id, offset: i }
                 - if common = build_common_for_follow(project, @followed) and common.any?
                   - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
                   - dom_ids.each do |dom_id|

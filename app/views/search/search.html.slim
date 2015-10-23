@@ -9,7 +9,7 @@
       li  class="#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)
       li  class="#{'active' if params[:type] == 'hacker_space'} #{'disabled' unless @facets['hacker_space']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hacker_space')
       li  class="#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
-      li  class="#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
+      li  class="#{'active' if params[:type] == 'base_article'} #{'disabled' unless @facets['base_article']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'base_article')
       li  class="#{'active' if params[:type] == 'platform'} #{'disabled' unless @facets['platform']}"  = link_to @platforms_label.html_safe, search_path(q: params[:q], type: 'platform')
 
   .col-xs-9

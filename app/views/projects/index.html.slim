@@ -56,6 +56,7 @@
               li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', projects_path(type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', projects_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
               li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', projects_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+              li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', projects_path(type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
       hr
         .clearfix
 
@@ -63,7 +64,7 @@
       .col-xs-12
         .row.thumb-list
           - @projects.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'explore', ref_id: "#{params[:sort]}_#{params[:by]}", offset: i }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'explore', ref_id: [params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: i }
         .row
           .col-xs-12.text-center= will_paginate @projects
     - else

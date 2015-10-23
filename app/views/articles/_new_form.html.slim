@@ -2,6 +2,14 @@
   .box
     .box-title
       h2 Write a new article
+      .subheading
+        p
+          | Articles have a simpler template used for everything that is not a full project: protips ("how to do x?"), teardowns, and getting started guides.
+          br
+          ' Not what you want?
+          => link_to 'Create a project', new_project_path
+          ' instead.
+          = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
 
     .box-content
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
@@ -9,7 +17,7 @@
 
         = f.input :type, as: :hidden
         = f.input :name, label: 'Give it a short title'
-        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', hint: 'Max 140 characters'
+        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
 
         / .form-group
           .col-md-4
@@ -29,8 +37,6 @@
             p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
 
         / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
-
-        = f.input :content_type, collection: Article::PUBLIC_CONTENT_TYPES, label: 'Article type', required: true
 
         .form-group
           .col-md-8.col-md-offset-4

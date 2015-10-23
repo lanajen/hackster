@@ -25,12 +25,11 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.public.own.where.not(type: 'Article').for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
-    @articles = @user.projects.public.own.articles.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @guest_projects = @user.projects.live.guest.for_thumb_display
-    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC')
     @replicated_projects = @user.replicated_projects
     if is_whitelabel?
       @private_projects = if current_user == @user

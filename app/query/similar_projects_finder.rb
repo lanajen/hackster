@@ -1,6 +1,8 @@
 class SimilarProjectsFinder
-  def initialize project
+  def initialize project, opts={}
     @project = project
+    @offset = opts[:offset] || 0
+    @limit = opts[:limit] || 6
   end
 
   def results
@@ -26,6 +28,6 @@ class SimilarProjectsFinder
     @results = @results.where(difficulty: @project.difficulty)
 
     # sort
-    @results = @results.uniq.magic_sort.limit(6)
+    @results = @results.uniq.magic_sort.offset(@offset).limit(@limit)
   end
 end

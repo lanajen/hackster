@@ -29,7 +29,7 @@ class BaseArticle < ActiveRecord::Base
   TYPES = {
     'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
-    'Normal' => 'Project',
+    'Project' => 'Project',
     'Product' => 'Product',
   }
   MACHINE_TYPES = {
@@ -49,14 +49,19 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
+  # this needs to be in every child model too; somehow they don't inherit the unique prop
+  is_impressionable counter_cache: true, unique: :session_hash
+
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
+  has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
   has_many :commenters, -> { uniq true }, through: :comments_copy, source: :user
   has_many :communities, -> { where("groups.type = 'Community'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
+  has_many :grades, foreign_key: :project_id
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
@@ -116,7 +121,7 @@ class BaseArticle < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true
+  validates :content_type, presence: true, unless: proc { |p| p.content_type.nil? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -132,8 +137,8 @@ class BaseArticle < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_create :generate_hid
   before_save :ensure_name
-  before_save :generate_slug, if: proc {|p| !p.persisted? }
-  before_update :update_slug, if: proc{|p| p.name_changed? }
+  before_create :generate_slug
+  before_update :update_slug, if: proc {|p| p.name_changed? }
   after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
@@ -225,7 +230,7 @@ class BaseArticle < ActiveRecord::Base
     {
       _id: id,
       name: name,
-      model: self.class.name.underscore,
+      model: self.class.model_name.to_s.underscore,
       one_liner: one_liner,
       description: description,
       product_tags: product_tags_string,
@@ -387,6 +392,18 @@ class BaseArticle < ActiveRecord::Base
     next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot
     approve! *args
+  end
+
+  def content_type_to_human
+    @content_type_to_human ||= self.class::CONTENT_TYPES_TO_HUMAN[content_type.try(:to_sym)]
+  end
+
+  def credit_lines
+    @credit_lines ||= credits_widget.try(:credit_lines) || []
+  end
+
+  def credits_widget
+    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'BaseArticle').first_or_create
   end
 
   def get_next_time_slot last_scheduled_slot
@@ -553,7 +570,6 @@ class BaseArticle < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      is_featured: featured,
       is_public: public?,
       project_id: id,
       project_name: name,
@@ -628,6 +644,24 @@ class BaseArticle < ActiveRecord::Base
     URI.parse(website).host.gsub(/^www\./, '')
   rescue
     website
+  end
+
+  %w(assignment).each do |type|
+    define_method type do
+      get_collection type
+    end
+
+    define_method "#{type}=" do |val|
+      set_collection val, type
+    end
+
+    define_method "#{type}_id" do
+      get_collection_id type
+    end
+
+    define_method "#{type}_id=" do |val|
+      set_collection_id val, type
+    end
   end
 
   private
@@ -723,5 +757,24 @@ class BaseArticle < ActiveRecord::Base
 
     def tags_length_is_valid
       errors.add :product_tags_array, 'too many tags (3 max, choose wisely!)' if product_tags_array.length > 3
+    end
+
+    # the following methods make has_many relations work has_one style
+    def get_collection collection_type
+      send("#{collection_type}s").first
+    end
+
+    def get_collection_id collection_type
+      get_collection(collection_type).try(:id)
+    end
+
+    def set_collection_id id, collection_type
+      self.send("#{collection_type}s").destroy_all
+      self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
+    end
+
+    def set_collection collection, collection_type
+      self.send("#{collection_type}s").destroy_all
+      self.send("#{collection_type}s") << collection if collection
     end
 end

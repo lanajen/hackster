@@ -43,44 +43,15 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def update
-    @panel = params[:panel]
-
-    # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
-    if params[:base_article].try(:[], :widgets_attributes)
-      widgets = {}
-      params[:base_article][:widgets_attributes].each do |i, widget|
-        widgets[i] = widget if widget['id'].present?
-      end
-      all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
-      widgets.each do |i, widget|
-        unless all.include? widget['id']
-          params[:base_article][:widgets_attributes].delete(i)
-        end
-      end
-    end
-
-    if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
-      if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
-        render 'projects/forms/update'
-      else
-        render 'projects/forms/checklist', status: :ok
-      end
+    if @project.update_attributes(params[:base_article])
+      render status: :ok, nothing: true
     else
-      message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
-      log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
-      # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
       render json: { base_article: @project.errors }, status: :unprocessable_entity
     end
-  rescue => e
-    message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
-    log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
-    NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
-    render status: :internal_server_error, nothing: true
-    raise e if Rails.env.development?
   end
 
   def destroy
-    project.destroy
+    @project.destroy
 
     render status: :ok, nothing: true
   end

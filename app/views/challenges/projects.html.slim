@@ -23,15 +23,15 @@
           .row.project-list
             - if @winning_entries_count % 2 == 1
               .col-sm-3
-            - @winning_entries.each do |entry|
-              = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
+            - @winning_entries.each_with_index do |entry, i|
+              = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6, ref: 'challenge', ref_id: @challenge.id, offset: i }
 
       - if @other_projects.any?
         h2.text-center Other entries
         .thumb-list
           .row.project-list
-            - @other_projects.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
+            - @other_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4, ref: 'challenge', ref_id: @challenge.id, offset: i + @winning_entries_count }
 
           .row.text-center= will_paginate @other_projects
 
@@ -43,8 +43,8 @@
               = render partial: 'register_thumb', locals: { challenge: @challenge }
             - elsif @challenge.open_for_submissions? and !@is_challenge_entrant
               = render partial: 'enter_thumb', locals: { challenge: @challenge }
-            - @projects.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
+            - @projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4, ref: 'challenge', ref_id: @challenge.id, offset: i }
 
         .row.text-center= will_paginate @projects
       - else

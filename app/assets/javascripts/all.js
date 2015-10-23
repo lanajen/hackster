@@ -129,8 +129,7 @@ function showHelloWorld() {
 
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
-  setAffixableBottom();
-  affixDivs();
+  updatedScrollEventHandlers();
 });
 
 $(function () {
@@ -149,6 +148,42 @@ $(function () {
       updatedScrollEventHandlers();
     });
   });
+
+  $('body').on('input', '.form-save-on-input', function(e){
+    $(this).find('select').each(function(i, el) {
+      el = $(el);
+      var val = $(el).val();
+      el.find('option').removeAttr('selected');
+      el.find('option[value="' + val + '"]').attr('selected', 'selected');
+    });
+    $(this).submit();
+  });
+
+  $('body')
+    .on('ajax:beforeSend', '.form-save-on-input', function(){
+      $('body').addClass('app-loading');
+    })
+    .on('ajax:success', '.form-save-on-input', function(){
+      var popover = $(this).closest('.popover');
+      var id = popover.attr('id');
+      var a = $('[aria-describedby="' + id + '"]');
+      var html = popover.find('.popover-content').html();
+      a.attr('data-content', html);
+    })
+    .on('ajax:complete', '.form-save-on-input', function(){
+      $('body').removeClass('app-loading');
+    });
+
+  $('body')
+    .on('ajax:complete', '#project-form-prepublish', function(){
+      if ($(this).find('[name="base_article[content_type]"]').val().length) {
+        $('.content-type-indicator').addClass('content-type-present');
+        $('.content-type-indicator').removeClass('content-type-missing');
+      } else {
+        $('.content-type-indicator').addClass('content-type-missing');
+        $('.content-type-indicator').removeClass('content-type-present');
+      }
+    });
 
   // <% if Rails.env == 'dev' %>
   //   // fix image URLS so they work on dev
@@ -423,18 +458,6 @@ $(function () {
     });
   }
 
-  // update thumbnail links for projects
-  // $(".project-thumb-container.has-data").each(function(i, project){
-  //   project = $(project);
-  //   ref = project.data('ref');
-  //   refId = project.data('ref-id');
-  //   offset = project.data('offset');
-  //   $('a.project-link-with-ref', this).each(function(j, link) {
-  //     href = link.href;
-  //     link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
-  //   });
-  // });
-
   $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);
     offset = $(this).data('offset') || 0;
@@ -462,6 +485,8 @@ $(function () {
   $('.hljs-active :not(.highlight) > pre').each(function(i, block) {
     hljs.highlightBlock(block);
   });
+
+  updateProjectThumbLinks();
 });
 
 function closeNav(nav) {
@@ -526,6 +551,21 @@ function smoothScrollTo(target, offsetTop, speed) {
     'scrollTop': target.offset().top + offsetTop
   }, speed, 'swing', function () {});
   return target;
+}
+
+function updateProjectThumbLinks() {
+  // update thumbnail links for projects
+  $(".project-thumb-container.has-data:not(.link-added)").each(function(i, project){
+    project = $(project);
+    ref = project.data('ref');
+    refId = project.data('ref-id');
+    offset = project.data('offset');
+    $('a.project-link-with-ref', this).each(function(j, link) {
+      href = link.href;
+      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
+    });
+    project.addClass('link-added');
+  });
 }
 
 function closePopup(id) {

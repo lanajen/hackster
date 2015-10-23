@@ -454,6 +454,7 @@ HackerIo::Application.routes.draw do
       get 'home', to: redirect('/')
       get 'infringement_policy' => 'pages#infringement_policy'
       get 'privacy' => 'pages#privacy'
+      get 'conduct' => 'pages#conduct'
       get 'terms' => 'pages#terms'
       get 'press' => 'pages#press'
       get 'jobs' => 'pages#jobs'
@@ -540,6 +541,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :projects, only: [:new, :create] do
+      patch '' => 'projects#update', on: :member
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member
@@ -547,6 +549,7 @@ HackerIo::Application.routes.draw do
       get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] =~ /[0-9]+/ }
       get 'embed', as: :old_embed
+      get 'next' => 'projects#next', on: :member
       get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
       patch 'permissions' => 'permissions#update'
       get 'team/edit' => 'members#edit', as: :edit_team

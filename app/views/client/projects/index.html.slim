@@ -113,8 +113,8 @@
 
   - if @projects.any?
     .row.thumb-list
-      - @projects.each do |project_collection|
-        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate }
+      - @projects.each_with_index do |project_collection, i|
+        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: i }
         = content_for :js do
           - if project_collection.featured?(I18n.short_locale)
             javascript:

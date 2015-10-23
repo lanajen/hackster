@@ -3,6 +3,9 @@
     = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = content_for :no_container do
+
+  = render 'projects/switcher'
+
   #content.project-page
     .container-desktop.container
       .row

@@ -5,9 +5,9 @@
     font-weight: bold;
   }
   .tags {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     li {
-      margin-bottom: 0;
+      margin-bottom: 10px;
     }
   }
   .tag {
@@ -30,6 +30,7 @@
 .protip-parts {
   font-size: 0.85em;
   margin-bottom: 0;
+  color: #777;
   img {
     margin-right: 5px;
   }
@@ -46,14 +47,6 @@
   .media-body {
     position: relative;
   }
-}
-
-.protip-mark {
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.9em;
-  margin-bottom: 5px;
-  color: #999;
 }
 
 .protip-section-heading {
@@ -87,5 +80,16 @@
 @media (max-width: 768px) {
   .section-no-container {
     padding: 0 20px;
+  }
+}
+
+.content-type-present {
+  & > .small {
+    display: none;
+  }
+}
+.content-type-missing {
+  & > form {
+    display: none;
   }
 }

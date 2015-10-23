@@ -12,7 +12,7 @@
       $("#base_article_hacker_space_id").select2({ width: '100%' });
     });
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='communities'
 

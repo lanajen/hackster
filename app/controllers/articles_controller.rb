@@ -26,8 +26,8 @@ class ArticlesController < ApplicationController
 
     @parts = @project.parts.alphabetical.includes(:image)
 
-    # @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
-    # @other_projects = @other_projects.with_group current_platform if is_whitelabel?
+    @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
+    @other_projects = @other_projects.with_group current_platform if is_whitelabel?
 
     @author = @project.users.includes(:avatar).first.try(:decorate)
 

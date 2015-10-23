@@ -22,7 +22,7 @@
         = f.input_field :user_name
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+        hint: 'A short sentence, max 140 characters'
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @community.avatar.try(:imgix_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 

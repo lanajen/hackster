@@ -3,7 +3,7 @@
   add assembly instructions (steps?)
 
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='hardware'
   input type='hidden' name='save' value='1'

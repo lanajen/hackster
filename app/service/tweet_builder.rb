@@ -28,7 +28,7 @@ class TweetBuilder
       end
     end
 
-    size = message.size + (@project.is_idea? ? 28 : 23)
+    size = message.size + 23
 
     tags = @project.platforms.map do |platform|
       out = platform.hashtag
@@ -39,7 +39,8 @@ class TweetBuilder
     end
     if tags.any?
       tag_phrase = " with #{tags.to_sentence}"
-      message << tag_phrase if (size + tag_phrase.size) <= 118
+      message << tag_phrase if (size + tag_phrase.size) <= 140
+      size = message.size + 23
     end
 
     message << " hackster.io/#{@project.uri}"  # links are shortened to 22 characters

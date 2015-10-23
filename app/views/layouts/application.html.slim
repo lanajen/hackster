@@ -146,6 +146,7 @@ html(lang="en")
                       span.caret
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
+                      li= link_to 'My projects', current_user
                       li.divider
                       li= link_to 'Messages', conversations_path
 
@@ -224,6 +225,7 @@ html(lang="en")
             li= link_to 'Feedback & support', 'javascript:showClassicWidget();'
             li= link_to 'Changelog', 'https://assembly.com/hacksterio'
             li= link_to 'Jobs', jobs_path
+            li= link_to 'Code of Conduct', '/conduct'
             li= link_to 'Terms', '/terms'
             / # li= link_to 'Privacy', '/privacy'
             / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
@@ -258,6 +260,8 @@ html(lang="en")
 
     - if @modal
        = raw @modal
+
+    .loading-bar
 
     = javascript_include_tag "//use.typekit.net/okr0yzp.js"
     javascript:

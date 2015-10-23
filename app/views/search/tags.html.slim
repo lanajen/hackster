@@ -21,8 +21,8 @@
   - if @tag.present?
     - if @projects.any?
       .row
-        - @projects.each do |project|
-          = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tags' }
+        - @projects.each_with_index do |project, i|
+          = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tag', ref_id: @tag, offset: i }
       .text-center= will_paginate @projects
     - else
       .text-center
