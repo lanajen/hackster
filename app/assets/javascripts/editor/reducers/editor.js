@@ -452,12 +452,12 @@ function _unmergePreBlocks(json) {
 
   clone.forEach((item, preIndex) => {
     if(item.tag === 'pre') {
-      let children = item.children && item.children[0] && item.children[0].tag === 'code' ? item.children[0].children : item.children;
+      let children = item.children[0].tag === 'code' ? item.children[0].children : item.children;
       children.forEach((child, childIndex) => {
         if(child.content !== null && child.content.substr(child.content.length-1) === '\n') {
           child.content = child.content.slice(0, child.content.length-1);
         }
-        if(!child.content || child.content.length < 1) {
+        if(child.content.length < 1) {
           child.children.push({ tag: 'br', attribs: {}, content: '', children: [] });
         }
         let code = { tag: 'code', attribs: {}, content: '', children: [ child ]};
@@ -615,16 +615,22 @@ function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let parentEl = json[parentPos];
-  
-  parentEl.props.children = parentEl.props.children.filter(function(child, index) {
+  let children = parentEl.props.children.slice();
+
+  if(children.length > 1) {
+    children = children.filter(item => item !== null );
+  }
+
+  let newChildren = children[0].filter(function(child, index) {
     if(index === childPos) {
       return false;
     } else {
       return true;
     }
   });
+  let newParentEl = React.cloneElement(parentEl, {}, newChildren);
 
-  json.splice(parentPos, 1, parentEl);
+  json.splice(parentPos, 1, newParentEl);
   component.json = json;
   dom.splice(storeIndex, 1, component);
   return dom;
