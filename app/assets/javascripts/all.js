@@ -39,47 +39,44 @@ function updateAffix(top, bottomB, bottomT, w, el){
   }
 }
 
-var $fixedEl = [];
 // affixes .affixable
-var affixDivs = function affixDivs(){
-  $fixedEl = $('.affixable');
+var affixDivs = function affixDivs(fixedEl){
   var $window = $(window);
-  if ($fixedEl.length) {
-    $.each($fixedEl, function(){
-      var $this = $(this);
-      if ($this.hasClass('affix-bottom')) {
-        $this.removeClass('affix-bottom');
-        $this.trigger('affix-bottom-off');
-      }
-      if ($this.hasClass('affix')) {
-        $this.removeClass('affix');
-        $this.trigger('affix-off');
-      }
-      var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0));
-      var bottomB, bottomT;
-      if ($this.data('affix-bottom')) {
-        bottomB = $this.data('affix-bottom');
-        bottomT = bottomB - $this.outerHeight() - parseInt($this.css('top'));
-      }
-      // console.log('TOP', top);
-      // console.log('bottomB', bottomB);
-      // console.log('bottomT', bottomT);
+  $.each(fixedEl, function(){
+    var $this = $(this);
+    if ($this.hasClass('affix-bottom')) {
+      $this.removeClass('affix-bottom');
+      $this.trigger('affix-bottom-off');
+    }
+    if ($this.hasClass('affix')) {
+      $this.removeClass('affix');
+      $this.trigger('affix-off');
+    }
+    var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0));
+    var bottomB, bottomT;
+    if ($this.data('affix-bottom')) {
+      bottomB = $this.data('affix-bottom');
+      bottomT = bottomB - $this.outerHeight() - parseInt($this.css('top'));
+    }
+    // console.log('TOP', top);
+    // console.log('bottomB', bottomB);
+    // console.log('bottomT', bottomT);
+    updateAffix(top, bottomB, bottomT, $window, $this);
+    $window.on('scroll.affix',function(){
       updateAffix(top, bottomB, bottomT, $window, $this);
-      $window.on('scroll.affix',function(){
-        updateAffix(top, bottomB, bottomT, $window, $this);
-      });
     });
-  }
+  });
 };
 
 var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
   if ($('#scroll-nav').length){
     $('body').scrollspy('refresh');
   }
-  if ($fixedEl.length){
+  var fixedEl = $('.affixable');
+  if (fixedEl.length){
     $(window).off('scroll.affix');
     setAffixableBottom();
-    affixDivs();
+    affixDivs(fixedEl);
   }
 };
 
@@ -131,6 +128,7 @@ function showHelloWorld() {
 
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
+  console.log('load');
   updatedScrollEventHandlers();
 });
 
