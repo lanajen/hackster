@@ -88,8 +88,9 @@ function fetchHelloWorld() {
 
   var parser = document.createElement('a');
   parser.href = document.referrer;
+  var shown = Cookies.get('showedHelloWorld');
 
-  if (!document.referrer.length || parser.hostname != window.location.hostname) {
+  if (!shown && (!document.referrer.length || parser.hostname != window.location.hostname)) {
     var ref = 'default';
 
     if (parser.hostname && parser.hostname != window.location.hostname) {
@@ -117,6 +118,7 @@ function fetchHelloWorld() {
 }
 
 function showHelloWorld() {
+  Cookies.set('showedHelloWorld', true, { expires: 30 });
   $('#hello-world').fadeIn(100, function(){
     updatedScrollEventHandlers();
     var content = $('#hello-world .content');
