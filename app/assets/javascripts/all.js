@@ -149,14 +149,17 @@ $(function () {
     });
   });
 
-  $('body').on('input', '.form-save-on-input', function(e){
-    $(this).find('select').each(function(i, el) {
+  $('body').on('change', '.form-save-on-input', function(e){
+    e.preventDefault();
+    var that = $(this);
+    that.find('select').each(function(i, el) {
       el = $(el);
       var val = $(el).val();
       el.find('option').removeAttr('selected');
+      el.val(val);
       el.find('option[value="' + val + '"]').attr('selected', 'selected');
     });
-    $(this).submit();
+    that.submit();
   });
 
   $('body')
