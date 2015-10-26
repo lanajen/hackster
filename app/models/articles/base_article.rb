@@ -592,10 +592,15 @@ class BaseArticle < ActiveRecord::Base
   def prepare_tweet
     prepend = "New project: "  # 13 characters
     TweetBuilder.new(self).tweet(prepend)
+    self.tweeted_at = Time.now
   end
 
   def product_tags_string_changed?
     (product_tags_string_was || '').split(',').map{|t| t.strip } != (product_tags_string || '').split(',').map{|t| t.strip }
+  end
+
+  def should_tweet?
+    !hidden? and tweeted_at.nil?
   end
 
   def to_js opts={}

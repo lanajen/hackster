@@ -11,7 +11,7 @@ class PopularityWorker < BaseWorker
       median_impressions: BaseArticle.median_impressions,
       median_respects: BaseArticle.median_respects,
     }
-    BaseArticle.indexable_and_external.pluck(:id).each do |project_id|
+    BaseArticle.indexable_and_external.pluck(:id).find_each do |project_id|
       self.class.perform_async 'compute_popularity_for_project', project_id, defaults
     end
   end
@@ -25,7 +25,7 @@ class PopularityWorker < BaseWorker
   end
 
   def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.pluck(:id).each do |user_id|
+    User.invitation_accepted_or_not_invited.pluck(:id).find_each do |user_id|
       self.class.perform_async 'compute_popularity_for_user', user_id
     end
   end
