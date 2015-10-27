@@ -36,9 +36,6 @@ HackerIo::Application.routes.draw do
       resources :parts, except: [:new, :edit], defaults: { format: :json }
       scope 'platforms' do
         get ':user_name' => 'platforms#show', defaults: { format: :json }
-        scope ':user_name' do
-          get 'analytics' => 'platforms#analytics', defaults: { format: :json }
-        end
       end
       resources :lists, only: [:index, :create], defaults: { format: :json } do
         post 'projects' => 'lists#link_project', on: :member
@@ -82,11 +79,12 @@ HackerIo::Application.routes.draw do
         end
         resources :projects
         resources :parts, except: [:new, :edit]
-        scope 'platforms' do
-          get ':user_name' => 'platforms#show'
-          scope ':user_name' do
-            get 'analytics' => 'platforms#analytics'
+        scope :platforms do
+          scope :analytics do
+            get '' => 'platform_analytics#show'
+            get 'projects' => 'platform_analytics#projects'
           end
+          get ':user_name' => 'platforms#show'
         end
         resources :lists, only: [:index, :create] do
           post 'projects' => 'lists#link_project', on: :member
