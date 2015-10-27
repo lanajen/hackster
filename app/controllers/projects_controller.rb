@@ -359,7 +359,7 @@ class ProjectsController < ApplicationController
 
     next_url = Rails.cache.fetch(cache_key.join('/'), expires_in: 3.hours) do
       case params[:ref]
-      when 'assignment', 'explore', 'event', 'user', 'platform', 'part', 'tag', 'userrespected', 'custom'
+      when 'assignment', 'explore', 'event', 'user', 'platform', 'part', 'tag', 'userrespected', 'custom', 'list'
         offset = params[:offset].to_i
         offset += params[:dir] == 'prev' ? -1 : 1
 
@@ -402,6 +402,11 @@ class ProjectsController < ApplicationController
         when 'event'
           if event = Event.find_by_id(params[:ref_id])
             event.projects.public.order('projects.respects_count DESC')
+          end
+
+        when 'list'
+          if list = List.find_by_id(params[:ref_id])
+            list.projects.visible.order('project_collections.workflow_state DESC').magic_sort
           end
 
         when 'platform'
