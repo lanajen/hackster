@@ -43,7 +43,7 @@ module ScraperStrategies
           raise part.errors.inspect unless part.persisted?
 
           part_join = PartJoin.new part_id: part.id, partable_id: 0,
-            partable_type: 'Project'
+            partable_type: 'BaseArticle'
           part_join.quantity = quantity
           part_join.comment = comment
           part_join.position = i + 1

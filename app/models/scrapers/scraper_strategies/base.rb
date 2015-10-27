@@ -66,9 +66,53 @@ module ScraperStrategies
         @article.css(crap_list.join(',')).each{|n| n.remove }
       end
 
+      def clean_inline_text string
+        return unless string
+
+        strings = []
+        cur = ''
+        in_tag = nil
+        tag_opening = nil
+
+        string.gsub! /\s*(<br\/?>\s*)+<br\/?>\s*/i, '<br><br>'
+
+        string.split('').each do |char|
+          cur << char
+          if in_tag.present?
+            if cur.match Regexp.new("</#{in_tag}>")
+              strings << "#{tag_opening}#{cur}"
+              cur = ''
+              in_tag = nil
+            end
+          else
+            regex = /(<(h3|h4|h5|h6|ul|div|ol|pre|p|blockquote|table|tbody|th|tr|thead|tfoot|td|li)(\s+[^>]+)?>)/i
+            if cur.match regex
+              in_tag = $2
+              tag_opening = $1
+              cur.gsub! regex, ''
+              if cur.present?
+                s = cur.gsub /<br\/?>\s*<br\/?>/i, '</p><p>'
+                strings << ('<p>' + s + '</p>')
+              end
+              cur = ''
+            end
+          end
+        end
+        if cur.present?
+          s = cur.gsub /<br\/?>\s*<br\/?>/i, '</p><p>'
+          strings << ('<p>' + s + '</p>')
+        end
+
+        final = strings.join('')
+        final.gsub!(/([^p])>(<br>)+/i){|m| $1 + '>' }
+        final.gsub!(/(<br>)+<\/[^p]/i){|m| '<' + $1 }
+        final.gsub! /<p><\/p>/i, ''
+        final
+      end
+
       def clean_divs parent
         traverse parent do |node|
-          if node.name == 'div' and node['class'] != 'embed-frame'
+          if node.name == 'div' and node['class'] !~ /embed-frame/
             node.after '<br>'
             node.replace node.children
           end
@@ -83,7 +127,8 @@ module ScraperStrategies
         sanitized_text = Sanitize.clean(base.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
         instance_variable_set base_name, Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
 
-        clean_divs instance_variable_get(base_name)
+        text = clean_divs instance_variable_get(base_name)
+        clean_inline_text text
       end
 
       def crap_list
