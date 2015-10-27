@@ -15,27 +15,27 @@ node(:new_project_views_count) { |n| @new_project_views_count }
 
 node :heroes do |n|
   @heroes.map do |u|
-    { name: u.name, url: url_for([u, only_path: false]), projects_count: u.count }
+    { name: u.name, url: user_url(u, subdomain: 'www'), projects_count: u.count }
   end
 end
 node :fans do |n|
   @fans.map do |u|
-    { name: u.name, url: url_for([u, only_path: false]), respects_count: u.count }
+    { name: u.name, url: user_url(u, subdomain: 'www'), respects_count: u.count }
   end
 end
 node :most_respected_projects do |n|
   @most_respected_projects.map do |p|
-    { name: p.name, url: url_for([p, only_path: false]), respects_count: p.count }
+    { name: p.name, url: project_url(p, subdomain: 'www'), respects_count: p.count }
   end
 end
 node :most_viewed_projects do |n|
   @most_viewed_projects.map do |p|
-    { name: p.name, url: url_for([p, only_path: false]), views_count: p.count }
+    { name: p.name, url: project_url(p, subdomain: 'www'), views_count: p.count }
   end
 end
 node :most_recent_projects do |n|
   @most_recent_projects.map do |p|
-    { name: p.name, url: url_for([p, only_path: false]), date: p.created_at }
+    { name: p.name, url: project_url(p, subdomain: 'www'), date: p.created_at }
   end
 end
 node :most_recent_comments do |n|
@@ -45,8 +45,8 @@ node :most_recent_comments do |n|
     {
       date: c.created_at,
       body: c.body,
-      project: { name: p.name, url: url_for([p, only_path: false]) },
-      user: { name: u.name, url: url_for([u, only_path: false]) },
+      project: { name: p.name, url: project_url(p, subdomain: 'www') },
+      user: { name: u.name, url: user_url(u, subdomain: 'www') },
     }
   end
 end
@@ -55,13 +55,13 @@ node :most_recent_followers do |n|
     u = f.user
     {
       date: f.created_at,
-      user: { name: u.name, url: url_for([u, only_path: false]) },
+      user: { name: u.name, url: user_url(u, subdomain: 'www') },
     }
   end
 end
 node :project_respects do |n|
   @project_respects.map do |p|
-    { name: p.name, url: url_for([p, only_path: false]), respects_count: p.count }
+    { name: p.name, url: project_url(p, subdomain: 'www'), respects_count: p.count }
   end
 end
 
