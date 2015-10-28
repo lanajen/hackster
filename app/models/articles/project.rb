@@ -5,6 +5,7 @@ class Project < BaseProject
     'Work in progress' => :wip,
   }
   PRIVATE_CONTENT_TYPES = {
+    'Video' => :video,
     'Workshop' => :workshop,
   }
   CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES)
@@ -12,6 +13,8 @@ class Project < BaseProject
     showcase: 'Project showcase',
     tutorial: 'Project tutorial',
     wip: 'Project in progress',
+    workshop: 'Workshop',
+    video: 'Video tutorial',
   }
   DEFAULT_CONTENT_TYPE = :tutorial
 
