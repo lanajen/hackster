@@ -8,9 +8,11 @@ export default class CommentForm extends Component {
 
   render() {
     return (
-      <div>
+      <div className="comments-form">
         <TextArea />
-        <button className="btn btn-primary">Post</button>
+        <div className="comments-form-button-container">
+          <button className="btn btn-primary">Post</button>
+        </div>
       </div>
     );
   }

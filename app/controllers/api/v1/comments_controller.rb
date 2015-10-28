@@ -1,6 +1,13 @@
 class Api::V1::CommentsController < Api::V1::BaseController
   before_filter :authenticate_user!
 
+  def index
+    commentable = Project.find(params[:id]).comments.includes(:parent, user: :avatar)
+    puts 'TYPTOYTOY'
+    puts commentable
+    render json: commentable, status: :ok
+  end
+
   def create
     commentable = find_commentable
     comment = commentable.comments.build(params[:comment])

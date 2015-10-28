@@ -6,8 +6,10 @@ export default class TextArea extends Component {
   }
 
   render() {
+    let placeholder = 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.';
+    
     return (
-      <textarea placeholder="Hello"></textarea>
+      <textarea className="comments-textarea" placeholder={placeholder}></textarea>
     );
   }
 }

@@ -7,18 +7,14 @@ export default class Comments extends Component {
   }
 
   render() {
-    let initialForm = this.props.userSignedIn 
-                    ? (<CommentForm />) 
-                    : (null);
     return (
       <div>
-        {initialForm}
         <div>Comments...</div>
       </div>
     );
   }
 }
 
-Comments.PropTypes = {
-  userSignedIn: PropTypes.number
-};
+// Comments.PropTypes = {
+  
+// };

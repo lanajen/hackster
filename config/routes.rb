@@ -18,7 +18,7 @@ HackerIo::Application.routes.draw do
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
-      resources :comments, only: [:create, :destroy]
+      resources :comments, only: [:create, :destroy, :index], defaults: { format: :json }
       resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
