@@ -3,13 +3,24 @@ module ScraperStrategies
 
     private
       def after_parse
-        tags = @parsed.css('.ible-tags a')
-        @project.product_tags_string = tags.map{|a| a.text }.join(',')
+        tags = @parsed.css('#ible-tags a')
+        @project.product_tags_string = tags.map{|a| a.text }[0..2].join(',')
 
-        if attachments = @parsed.css('#attachments') and attachments.any?
+        super
+      end
+
+      def before_parse
+        @article.css('.lazy-img').each do |img|
+          img['src'] = img.parent['data-fancybox-href']
+          img.parent.parent.add_child img
+        end
+        @article.css('.photoset-link').each{|el| el.remove }
+        @article.css('br').each{|el| el.remove }
+
+        if attachments = @article.css('#attachments, #rich-embed-files') and attachments.any?
           files = []
           attachments.each do |attachment|
-            attachments.css('a').each do |node|
+            attachments.css('.file-info a').each do |node|
               next unless link = node['href']
               next if link.in? files
               files << link
@@ -24,40 +35,17 @@ module ScraperStrategies
                 document.attachable_type = 'Orphan'
                 document.save
                 document.attachable = @project
-                @article.add_child "<div class='embed-frame' data-file-id='#{document.id}' data-type='file'></div>"
+                node.parent.parent.add_previous_sibling "<div class='embed-frame' data-file-id='#{document.id}' data-type='file'></div>"
               end
             end
           end
         end
 
-        # parse_comments
         super
-      end
-
-      def before_parse
-        @article.css('.lazyphoto').each{|n| n.remove }
-        @article.css('.photoset-photo').each do |img|
-          while img.parent.name != 'a'
-            img.parent.parent.add_child img
-          end
-        end
-        @article.css('br').each{|el| el.remove }
-
-        super
-      end
-
-      def extract_images base=@article, super_base=nil
-        base.css('.photoset-link').reverse.each do |img|
-          until img.parent['class'] == 'photoset'
-            img.parent.parent.add_child img
-          end
-        end
-
-        super base, super_base
       end
 
       def crap_list
-        super + %w(.inline-ads .photoset-seemore #attachments .photoset-showmore)
+        super + %w(.inline-ads .photoset-seemore #attachments .photoset-showmore #rich-embed-files)
       end
 
       def extract_title
