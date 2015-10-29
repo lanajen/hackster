@@ -564,6 +564,7 @@ class ApplicationController < ActionController::Base
       if is_whitelabel?
         ssl_configured = (ssl_configured and !current_site.disable_https?)
       end
+      raise ssl_configured.inspect
       ssl_configured
     end
 
