@@ -31,8 +31,8 @@ const mapToComponent = {
 };
 
 const initialState = {
-  html: '',
   dom: [],
+  hasUnsavedChanges: false,
   isFetching: false,
   currentStoreIndex: 0,
   csrfToken: null,
@@ -63,6 +63,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom
+      };
+
+    case Editor.hasUnsavedChanges:
+      return {
+        ...state,
+        hasUnsavedChanges: action.bool
       };
 
     case Editor.setInitialDOM:

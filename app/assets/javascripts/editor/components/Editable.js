@@ -49,7 +49,13 @@ const Editable = React.createClass({
       input.id = 'story_json';
       input.name = 'base_article[story_json]';
       form.insertBefore(input, form.firstChild);
-      if (window.pe) window.pe.serializeForm();
+
+      /** $.serialize() turns the form into a string.  Since we're adding a new input, unsavedChanges will force a prompt if user
+        * tries to tab navigate away without changes made.  This will update the $form so that doesn't trigger.
+        */
+      if(window.pe) {
+        window.pe.serializeForm();
+      }
     }
 
     if(this.props.toolbar.CEWidth === null) {
@@ -63,12 +69,26 @@ const Editable = React.createClass({
 
     form.removeEventListener('pe:submit', this.handleSubmit);
     window.removeEventListener('resize', this.debouncedResize);
+    this.props.actions.hasUnsavedChanges(false);
   },
 
   componentWillUpdate() {
     /** Sets initial CEWidth for the Toolbars. */
     if(this.props.toolbar.CEWidth === 0) {
       this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
+        will see that theres a difference in the serialized vs altered form and call its prompt.
+      */
+    if(nextProps.editor.hasUnsavedChanges && !this.props.editor.hasUnsavedChanges) {
+      if(window.pe) {
+        let input = document.getElementById('story_json');
+        input.value = 'true';
+        window.pe.showSavePanel();
+      }
     }
   },
 
@@ -179,6 +199,7 @@ const Editable = React.createClass({
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
           input.value = '';
+          this.props.actions.hasUnsavedChanges(false);
         }
       })
       .catch(err => {

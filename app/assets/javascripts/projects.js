@@ -272,12 +272,17 @@ $select2target = null;
         }
       },
 
+      showSavePanel: function() {
+        $('.pe-save2').hide();
+        $('.pe-save').slideDown(200);
+      },
+
       saveChanges: function(e) {
         var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {
           // Custom Event passes the form to React, where call submit.
           var event = new CustomEvent(
-            'pe:submit', 
+            'pe:submit',
             {
               detail: { form: $form },
               bubbles: true,

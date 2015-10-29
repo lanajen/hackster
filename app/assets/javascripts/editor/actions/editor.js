@@ -11,6 +11,13 @@ export function setDOM(html, depth, storeIndex) {
   };
 }
 
+export function hasUnsavedChanges(bool) {
+  return {
+    type: Editor.hasUnsavedChanges,
+    bool: bool
+  };
+}
+
 export function setInitialDOM(json) {
   return {
     type: Editor.setInitialDOM,
@@ -20,12 +27,6 @@ export function setInitialDOM(json) {
 
 export function fetchInitialDOM(projectId, csrfToken) {
   return function (dispatch) {
-    // let storyInput = document.getElementById('story_json');
-    // // console.log('storyInput', storyInput);
-    // let storyVal = storyInput.value;
-    // console.log('story', storyVal);
-    // console.log(JSON.parse(storyVal));
-    // return dispatch(setInitialDOM({}));
     return Request.getStory(projectId, csrfToken)
       .then(result => {
         dispatch(setInitialDOM(result));

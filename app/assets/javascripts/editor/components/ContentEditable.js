@@ -21,18 +21,13 @@ const ContentEditable = React.createClass({
   },
 
   componentDidMount() {
-    /** Updates the dom store; usually happens on initial load to get the html flowing through our parsers. */
-    if(this.props.editor.dom.length < 1 && this.props.editor.html.length > 1) {
-      this.emitChange();
-    }
-
     /** Sets the initial cursor tracker on the first element. */
     if(this.props.editor.cursorPosition.node === null) {
       let firstChild = React.findDOMNode(this).firstChild;
       if(firstChild) {
         Utils.setCursorByNode(firstChild);
         this.props.actions.setCursorPosition(0, firstChild, 0, firstChild, React.findDOMNode(this).getAttribute('data-hash'));
-      } 
+      }
     } else {
       this.setCursorOnUpdate();
     }
@@ -83,7 +78,7 @@ const ContentEditable = React.createClass({
     mutations.forEach(mutation => {
       nodes = [].slice.apply(mutation.addedNodes);
       nodes.forEach(node => {
-        
+
         let parentNode = Utils.getRootParentElement(node);
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
           // console.log('TSK TSK TSK', node);
@@ -172,16 +167,16 @@ const ContentEditable = React.createClass({
         this.createBlockElement('p', 0, false, this.props.storeIndex);
       }
 
-      /** 
-        * Makes sure immediate children are block elements with a hash. 
+      /**
+        * Makes sure immediate children are block elements with a hash.
         * Removes br tags in immediate children.
         */
       Utils.maintainImmediateChildren(CE);
 
       /** On Backspace; Cleans up browser adds on specific line. */
-      if(e.keyCode === 8 
+      if(e.keyCode === 8
          && Utils.isImmediateChildOfContentEditable(parentNode, CE)
-         && !parentNode.classList.contains('react-editor-carousel') 
+         && !parentNode.classList.contains('react-editor-carousel')
          && !parentNode.classList.contains('react-editor-video')
          && parentNode.nodeName !== 'UL') {
         let clone = range.cloneRange();
@@ -260,7 +255,7 @@ const ContentEditable = React.createClass({
   emitChange(){
     let html = React.findDOMNode(this).innerHTML;
     let { depth } = Utils.getSelectionData();
-    
+
     this.props.onChange(html, depth, this.props.storeIndex);
   },
 
@@ -284,7 +279,7 @@ const ContentEditable = React.createClass({
     let lastHtml = !parentNode.textContent.length ? '<br/>' : parentNode.innerHTML;
     let htmlToAppend = Parser.parseDOM(contents);
     let htmlToKeep = Parser.parseDOM(lastHtml);
-    
+
     Promise.all([htmlToKeep, htmlToAppend])
       .then(results => {
         let children = {
@@ -298,7 +293,7 @@ const ContentEditable = React.createClass({
   },
 
   handleEnterKey(e) {
-    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData(); 
+    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData();
 
     if(sel.rangeCount) {
       let hasTextAfterCursor = false;
@@ -329,7 +324,7 @@ const ContentEditable = React.createClass({
           // console.log('TRYING', url.split(' ').length < 2,  Helpers.isUrlValid(url));
           if(url.split(' ').length < 2 && Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
             let videoData = Helpers.getVideoData(url);
-            if(!videoData) { 
+            if(!videoData) {
               // TODO: HANDLE VIDEO ERROR!
             } else {
               this.props.actions.isDataLoading(true);
@@ -417,7 +412,7 @@ const ContentEditable = React.createClass({
       }
 
       /** Maintains the first & last element as a P when user is deleting things. */
-      if((this.props.storeIndex === 0 || this.props.storeIndex === this.props.editor.dom.length-1) 
+      if((this.props.storeIndex === 0 || this.props.storeIndex === this.props.editor.dom.length-1)
                && depth === 0 && parentNode.textContent.length < 1 && CE.children.length < 2) {
         this.preventEvent(e);
       }
@@ -477,7 +472,7 @@ const ContentEditable = React.createClass({
       nodeToFocus.focus();
     }
 
-    /** 
+    /**
      * Primarily for Firefox.
      * This will look ahead going up or down the main children branch and seeing if there are empty parapraphs.
      * Firefox will stunt the getSelection API and return the contenteditable div always.  The fix is to add a br tag before we
@@ -564,7 +559,7 @@ const ContentEditable = React.createClass({
       case 40: // DOWN ARROW
         this.handleArrowKeys(e);
         break;
-    default: 
+    default:
       break;
     }
   },
@@ -586,12 +581,16 @@ const ContentEditable = React.createClass({
       if(this.props.editor.isIE) {
         this.debouncedEmitChange();
       }
+
+      if(this.props.editor.hasUnsavedChanges === false) {
+        this.props.actions.hasUnsavedChanges(true);
+      }
     }
   },
 
   onMouseOver(e) {
     let node = React.findDOMNode(e.target),
-        parent = Utils.getRootParentElement(node), 
+        parent = Utils.getRootParentElement(node),
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
     if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-video') && this.props.editor.showImageToolbar === false) {
@@ -621,7 +620,7 @@ const ContentEditable = React.createClass({
 
   handleDoubleClick(e) {
     let { range } = Utils.getSelectionData();
-    
+
     /** Trigger Anchor PopUp when it's selected. */
     if(Utils.isSelectionInAnchor(range.startContainer)) {
       this.handlePopOver(true);
@@ -699,7 +698,7 @@ const ContentEditable = React.createClass({
       <div
         ref="contentEditable"
         data-hash={this.props.hash}
-        className="no-outline-focus content-editable" 
+        className="no-outline-focus content-editable"
         style={this.props.style || null}
         onInput={this.onInput}
         onKeyDown={this.onKeyDown}
