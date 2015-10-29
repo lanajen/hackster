@@ -67,6 +67,7 @@ class ProjectScraper
       'github.com' => :github,
       'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,
+      'littlebits.cc' => :littlebit,
       'kickstarter.com' => :kickstarter,
       'makezine.com' => :makezine,
       'medium.com' => :medium,

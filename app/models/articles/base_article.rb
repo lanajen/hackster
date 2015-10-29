@@ -156,12 +156,14 @@ class BaseArticle < ActiveRecord::Base
   store :properties, accessors: []
   hstore_column :hproperties, :celery_id, :string
   hstore_column :hproperties, :content_type, :string
+  hstore_column :hproperties, :desc_backup, :string
   hstore_column :hproperties, :guest_twitter_handle, :string
   hstore_column :hproperties, :locked, :boolean
   hstore_column :hproperties, :review_comment, :string
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string
   hstore_column :properties, :story_json, :json_object
+  hstore_column :hproperties, :tweeted_at, :datetime
 
   self.per_page = 18
 
@@ -593,10 +595,15 @@ class BaseArticle < ActiveRecord::Base
   def prepare_tweet
     prepend = "New project: "  # 13 characters
     TweetBuilder.new(self).tweet(prepend)
+    self.tweeted_at = Time.now
   end
 
   def product_tags_string_changed?
     (product_tags_string_was || '').split(',').map{|t| t.strip } != (product_tags_string || '').split(',').map{|t| t.strip }
+  end
+
+  def should_tweet?
+    !hidden? and tweeted_at.nil?
   end
 
   def to_js opts={}

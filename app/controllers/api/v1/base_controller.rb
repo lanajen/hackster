@@ -17,7 +17,7 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def authenticate_api_user
-      # return true if Rails.env == 'development'
+      return load_platform('') if Rails.env == 'development'
 
       authenticate_or_request_with_http_basic do |username, password|
         load_platform(username)

@@ -29,6 +29,18 @@
             }
           }
         });
+        $('.project-switcher').on('click', function(e){
+          var url = $(this).attr("href");
+          var dir = url.match(/dir=([a-z]+)/)[1];
+          _gaq.push(['_trackEvent', 'ProjectSwitcher', dir, url]);
+          if (e.metaKey || e.ctrlKey) {
+            var newtab = true;
+          }
+          if (!newtab) {
+            e.preventDefault();
+            setTimeout('document.location = "' + url + '"', 100);
+          }
+        });
       });
     </script>
   <% end %>

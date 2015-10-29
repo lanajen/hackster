@@ -37,14 +37,18 @@ class BaseArticleObserver < ActiveRecord::Observer
     ProjectWorker.perform_async 'update_platforms', record.id
 
     if record.made_public_at.nil?
-      record.post_new_tweet! unless record.hidden?
+      record.post_new_tweet! if record.should_tweet?
       record.made_public_at = Time.now
+    elsif record.made_public_at > Time.now
+      record.post_new_tweet_at! record.made_public_at if record.should_tweet?
+    end
+
+    # actions common to both statements above
+    if record.made_public_at.nil? or record.made_public_at > Time.now
       record.save
       NotificationCenter.notify_all :approved, :base_article, record.id
-    elsif record.made_public_at > Time.now
-      record.post_new_tweet_at! record.made_public_at unless record.hidden?
-      NotificationCenter.notify_all :approved, :base_article, record.id
     end
+
     record.users.each{|u| u.update_counters only: [:approved_projects] }
   end
 

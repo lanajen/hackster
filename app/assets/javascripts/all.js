@@ -39,47 +39,44 @@ function updateAffix(top, bottomB, bottomT, w, el){
   }
 }
 
-var $fixedEl = [];
 // affixes .affixable
-var affixDivs = function affixDivs(){
-  $fixedEl = $('.affixable');
+var affixDivs = function affixDivs(fixedEl){
   var $window = $(window);
-  if ($fixedEl.length) {
-    $.each($fixedEl, function(){
-      var $this = $(this);
-      if ($this.hasClass('affix-bottom')) {
-        $this.removeClass('affix-bottom');
-        $this.trigger('affix-bottom-off');
-      }
-      if ($this.hasClass('affix')) {
-        $this.removeClass('affix');
-        $this.trigger('affix-off');
-      }
-      var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0));
-      var bottomB, bottomT;
-      if ($this.data('affix-bottom')) {
-        bottomB = $this.data('affix-bottom');
-        bottomT = bottomB - $this.outerHeight() - parseInt($this.css('top'));
-      }
-      // console.log('TOP', top);
-      // console.log('bottomB', bottomB);
-      // console.log('bottomT', bottomT);
+  $.each(fixedEl, function(){
+    var $this = $(this);
+    if ($this.hasClass('affix-bottom')) {
+      $this.removeClass('affix-bottom');
+      $this.trigger('affix-bottom-off');
+    }
+    if ($this.hasClass('affix')) {
+      $this.removeClass('affix');
+      $this.trigger('affix-off');
+    }
+    var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0));
+    var bottomB, bottomT;
+    if ($this.data('affix-bottom')) {
+      bottomB = $this.data('affix-bottom');
+      bottomT = bottomB - $this.outerHeight() - parseInt($this.css('top'));
+    }
+    // console.log('TOP', top);
+    // console.log('bottomB', bottomB);
+    // console.log('bottomT', bottomT);
+    updateAffix(top, bottomB, bottomT, $window, $this);
+    $window.on('scroll.affix',function(){
       updateAffix(top, bottomB, bottomT, $window, $this);
-      $window.on('scroll.affix',function(){
-        updateAffix(top, bottomB, bottomT, $window, $this);
-      });
     });
-  }
+  });
 };
 
 var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
   if ($('#scroll-nav').length){
     $('body').scrollspy('refresh');
   }
-  if ($fixedEl.length){
+  var fixedEl = $('.affixable');
+  if (fixedEl.length){
     $(window).off('scroll.affix');
     setAffixableBottom();
-    affixDivs();
+    affixDivs(fixedEl);
   }
 };
 
@@ -88,8 +85,9 @@ function fetchHelloWorld() {
 
   var parser = document.createElement('a');
   parser.href = document.referrer;
+  var shown = Cookies.get('showedHelloWorld');
 
-  if (!document.referrer.length || parser.hostname != window.location.hostname) {
+  if (!shown && (!document.referrer.length || parser.hostname != window.location.hostname)) {
     var ref = 'default';
 
     if (parser.hostname && parser.hostname != window.location.hostname) {
@@ -117,6 +115,7 @@ function fetchHelloWorld() {
 }
 
 function showHelloWorld() {
+  Cookies.set('showedHelloWorld', true, { expires: 30 });
   $('#hello-world').fadeIn(100, function(){
     updatedScrollEventHandlers();
     var content = $('#hello-world .content');
@@ -129,6 +128,7 @@ function showHelloWorld() {
 
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
+  console.log('load');
   updatedScrollEventHandlers();
 });
 
@@ -149,14 +149,17 @@ $(function () {
     });
   });
 
-  $('body').on('input', '.form-save-on-input', function(e){
-    $(this).find('select').each(function(i, el) {
+  $('body').on('change', '.form-save-on-input', function(e){
+    e.preventDefault();
+    var that = $(this);
+    that.find('select').each(function(i, el) {
       el = $(el);
       var val = $(el).val();
       el.find('option').removeAttr('selected');
+      el.val(val);
       el.find('option[value="' + val + '"]').attr('selected', 'selected');
     });
-    $(this).submit();
+    that.submit();
   });
 
   $('body')

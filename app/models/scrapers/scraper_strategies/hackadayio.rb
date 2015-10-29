@@ -94,7 +94,7 @@ module ScraperStrategies
           part.save
 
           part_join = PartJoin.new part_id: part.id, partable_id: 0,
-            partable_type: 'Project'
+            partable_type: 'BaseArticle'
           part_join.quantity = comp.at_css('.quantity, .component-number').text.strip
           part_join.comment = comment
           part_join.position = i + 1
