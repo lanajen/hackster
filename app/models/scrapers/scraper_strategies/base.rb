@@ -60,7 +60,7 @@ module ScraperStrategies
       def after_parse
         @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
-        @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',')
+        @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',') if @project.product_tags_string.present?
         @project.one_liner ||= extract_one_liner.try(:truncate, 140)
       end
 
