@@ -61,6 +61,7 @@ module ScraperStrategies
         @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
         @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',')
+        @project.one_liner ||= extract_one_liner.try(:truncate, 140)
       end
 
       def before_parse
@@ -191,6 +192,10 @@ module ScraperStrategies
           return img if test_link src
         end
         nil
+      end
+
+      def extract_one_liner
+        @parsed.at_css('meta[property="og:description"]').try(:[], 'content') || @parsed.at_css('meta[name="twitter:description"]').try(:[], 'content') || @parsed.at_css('meta[name="description"]').try(:[], 'content')
       end
 
       def extract_images base=@article, super_base=nil
