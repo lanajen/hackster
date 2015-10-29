@@ -10,7 +10,8 @@ class Admin::PartsController < Admin::BaseController
     params[:sort_by] ||= 'created_at'
     params[:per_page] ||= 100
 
-    parts = Part.not_invalid
+    parts = Part
+    parts = parts.not_invalid unless params[:filters].try(:[], :workflow_state) == 'retired'
     parts = parts.has_platform if params[:has_platform]
     parts = parts.with_slug if params[:with_slug]
 
