@@ -56,9 +56,9 @@ Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
 
 Rewardino::Badge.create!({
   code: :followed_user,
-  name_: 'First maker followed',
-  description_: "Followed a maker.",
-  explanation_: "following your first maker.",
+  name_: 'First fellow-member followed',
+  description_: "Followed a fellow member.",
+  explanation_: "following your first fellow member.",
   condition: -> (nominee, threshold) {
     nominee.followed_users_count >= 1
   },
@@ -223,8 +223,8 @@ Rewardino::Trigger.set ['respects#create', 'respects#destroy'], {
 Rewardino::Badge.create!({
   code: :profile_followed,
   name_: '|threshold|+ followers',
-  description_: "Had their profile followed by |threshold|+ makers.",
-  explanation_: "having your profile followed by |threshold|+ makers.",
+  description_: "Had their profile followed by |threshold|+ members.",
+  explanation_: "having your profile followed by |threshold|+ members.",
   image: '',
   condition: -> (nominee, threshold) {
     nominee.class == User and nominee.active_profile? and nominee.followers_count >= threshold

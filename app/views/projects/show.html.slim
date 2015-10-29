@@ -378,7 +378,7 @@
                 - if @project.public?
                   - if @respecting_users.count > 0
                     section.section-thumbs
-                      h4 Makers who respect this project
+                      h4 Members who respect this project
                       = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
                   - if @replicating_users.count > 0
                     section.section-thumbs

@@ -67,6 +67,7 @@ def cleanup_divs html
   d.to_s
 end
 
+dif = []
 BaseArticle.find_each do |project|
   next if project.description.blank?
 
