@@ -16,7 +16,7 @@ class TweetBuilder
       if @project.team.name.present?
         message << " by #{@project.team.name}"
       else
-        message << " by #{@project.team_members_count} makers"
+        message << " by #{@project.team_members_count} developers"
       end
     else
       user = @project.users.first

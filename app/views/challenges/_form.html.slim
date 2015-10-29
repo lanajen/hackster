@@ -36,7 +36,7 @@
           /
             = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
             #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
-              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
+              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when developers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
                 #datepicker.input-group
                   = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
                   span.input-group-addon
@@ -92,7 +92,7 @@
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
-          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Times are PT (-08)." do
+          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "The maximum date by which developers can submit entries to the challenge. Times are PT (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon

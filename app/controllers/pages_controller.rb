@@ -14,7 +14,7 @@ class PagesController < ApplicationController
 
   def business
     title "Hackster for Business"
-    meta_desc "Build a community of makers around your products, we'll show you the way."
+    meta_desc "Build a community of hardware developers around your products, we'll show you the way."
 
     @info_request = InfoRequest.new
   end
@@ -140,7 +140,7 @@ class PagesController < ApplicationController
 
   def jobs
     title 'Jobs at Hackster'
-    meta_desc "Join the Hackster team to help more makers make things."
+    meta_desc "Join the Hackster team to help more hardware developers make things."
   end
 
   def ping
@@ -158,7 +158,7 @@ class PagesController < ApplicationController
   end
 
   def resources
-    meta_desc 'Resources that can help hardware makers on their journey to making stuff.'
+    meta_desc 'Resources that can help hardware hardware developers on their journey to making stuff.'
     title 'Resources'
   end
 

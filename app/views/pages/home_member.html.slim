@@ -37,7 +37,7 @@
       section#intro.showcase-section
         .container
           p
-            | To see projects tailored for you, start following platforms, makers and lists you like.
+            | To see projects tailored for you, start following platforms, members and lists you like.
 
       = render 'challenges'
 
@@ -74,14 +74,14 @@
       section#suggested-hackers.showcase-section
         .container
           .view-all-header.clearfix
-            h4.pull-left Suggested makers to follow
-            = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            h4.pull-left Suggested members to follow
+            = link_to 'View more members', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
             - @hackers.each do |user|
               = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-          = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'View more members', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#recent-projects.showcase-section.last
         .container
