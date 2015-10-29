@@ -35,4 +35,4 @@
     = simple_form_for @project, html: { id: 'project-form-publish' } do |f|
       = f.input :private, as: :hidden, input_html: { value: 0 }
       = f.submit 'Publish publicly', class: 'btn btn-success btn-block'
-    div Please select a type before publishing.
+    .alert-msg Please select a type before publishing.
