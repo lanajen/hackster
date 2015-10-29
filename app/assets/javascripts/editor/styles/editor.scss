@@ -1,0 +1,560 @@
+/// Computes a top-shadow for a card effect.
+/// @param {Number} $depth - depth level
+/// @return {List}
+@function top-shadow($depth) {
+  $primary-offset: nth(1.5 3 10 14 19, $depth) * 1px;
+  $blur: nth(1.5 3 10 14 19, $depth) * 4px;
+  $color: rgba(black, nth(.12 .16 .19 .25 .30, $depth));
+
+  @return 0 $primary-offset $blur $color;
+}
+
+/// Computes a bottom-shadow for a card effect.
+/// @param {Number} $depth - depth level
+/// @return {List}
+@function bottom-shadow($depth) {
+  $primary-offset: nth(1.5 3 6 10 15, $depth) * 1px;
+  $blur: nth(1 3 3 5 6, $depth) * 4px;
+  $color: rgba(black, nth(.24 .23 .23 .22 .22, $depth));
+
+  @return 0 $primary-offset $blur $color;
+}
+
+/// Gives a card depth effect.
+/// @param {Number} $depth - depth level (between 1 and 5)
+/// @link http://www.google.com/design/spec/layout/layout-principles.html#layout-principles-dimensionality Google Design
+/// @requires {function} top-shadow
+/// @requires {function} bottom-shadow
+@mixin card($depth) {
+  @if $depth < 1 {
+    box-shadow: none;
+  } @else if $depth > 5 {
+    @warn "Invalid $depth `#{$depth}` for mixin `card`.";
+  } @else {
+    box-shadow: bottom-shadow($depth), top-shadow($depth);
+  }
+}
+
+/** Responsive Mixins */
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+/** Helpers */
+.material-green {
+  color: #26A69A;
+}
+
+.material-red {
+  color: #e53935;
+}
+
+
+/** Editor */
+.react-editor-wrapper {
+  // width: 726px;
+  font-family: "proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+  .box {
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+
+    .box-content {
+      padding: 20px 40px;
+
+      p, h3 {
+        display: block;
+      }
+
+      p {
+        margin-bottom: 10px;
+        margin-top: 0;
+      }
+
+      h3 {
+        color: #666;
+        display: block;
+      }
+
+      pre {
+        display: block;
+        border-radius: 0;
+        border: none;
+        padding-left: 15px;
+        padding-top: 10px;
+        color: white;
+        overflow: visible;
+        // This is set to short circuit a previously set global pre style.  Tsk tsk.
+        max-height: inherit;
+      }
+
+      blockquote {
+        display: block;
+        border-left: 5px solid #777;
+        margin: 10px 0;
+      }
+
+      ul {
+        display: block;
+      }
+
+      .react-editor-placeholder-text {
+        color: #E0E0E0;
+        font-size: 1.8rem;
+
+        @include tablet {
+          font-size: 2rem;
+        }
+
+        @include desktop {
+          font-size: 2.2rem;
+        }
+      }
+    }
+  }
+}
+
+.content-editable {
+  padding: 2% 0;
+  font-size: 1.5rem;
+  word-wrap: break-word;
+  font-family: "proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+  @include tablet {
+    font-size: 1.6rem;
+  }
+
+  @include desktop {
+    font-size: 1.8rem;
+  }
+}
+
+.no-outline-focus:focus {
+  outline: none;
+}
+
+/** Images */
+
+.react-editor-carousel {
+  width: 100%;
+  height: auto;
+  // max-height: 514px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  @include flexbox((
+    display: flex,
+    flex-direction: column
+  ));
+  position: relative;
+
+  &:focus {
+    outline: 2px solid lightblue;
+  }
+
+  .react-editor-carousel-inner {
+    @include flexbox((
+      display: flex,
+      flex-direction: row
+    ));
+    position: relative;
+
+    .react-editor-figure {
+      flex: 1 0 100%;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      margin: 0;
+      opacity: 0;
+      display: none;
+      transition: opacity 1.2s ease;
+
+      &.show {
+        opacity: 1;
+        @include flexbox((
+          display: flex
+        ));
+      }
+
+      .react-editor-image-wrapper {
+        @include flexbox((
+          display: flex,
+          flex-direction: column
+        ));
+        z-index: 0;
+        width: 100%;
+        height: auto;
+        // max-height: 487px;
+        max-height: 100%;
+        position: relative;
+
+        .react-editor-image {
+          max-height: 487px;
+          max-width: 100%;
+          height: auto;
+          // flex: 1;
+          z-index: 1;
+          align-self: center;
+          box-sizing: border-box;
+          overflow: hidden;
+        }
+
+        .react-editor-figcaption {
+          color: #989898;
+          position: relative;
+          bottom: 0;
+          height: 30px;
+          width: 100%;
+          overflow: hidden;
+          background-color: white;
+          padding: 5px;
+          font-size: 1.4rem;
+          font-style: italic;
+          font-weight: 200;
+          text-align: center;
+          z-index: 1;
+          align-self: center;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
+
+  .reit-controls {
+    z-index: 20;
+
+    .reit-controls-button {
+      color: #666;
+      background-color: transparent;
+      border: none;
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.react-editor-image-overlay {
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center,
+    justify-content: center
+  ));
+  z-index: 10;
+  position: absolute;
+  background: rgba(0,0,0,0.5);
+
+  .reit-toolbar {
+
+    .reit-button {
+
+    }
+  }
+}
+
+/** Video  */
+.react-editor-video {
+  @extend .react-editor-carousel;
+
+  &:focus {
+    outline: 2px solid lightblue;
+  }
+
+  .react-editor-video-inner {
+    @include flexbox((
+      display: flex,
+      flex-direction: row
+    ));
+    position: relative;
+
+    .video-mask {
+      position: absolute;
+      top: 40%;
+      left: 45%;
+      color: rgba(255, 255, 255, 0.6);
+      z-index: 60;
+      font-size: 4em;
+    }
+
+    .react-editor-figure {
+      flex: 1 0 100%;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      margin: 0;
+
+      .react-editor-image-wrapper {
+        @include flexbox((
+          display: flex,
+          flex-direction: column
+        ));
+        z-index: 0;
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+        position: relative;
+
+        .react-editor-iframe {
+          width: 100%;
+          max-width: 686px;
+          max-height: 487px;
+          height: auto;
+          flex: 1;
+          z-index: 1;
+          align-self: center;
+          box-sizing: border-box;
+          overflow: hidden;
+        }
+
+        .react-editor-figcaption {
+          color: #989898;
+          position: relative;
+          bottom: 0;
+          height: 30px;
+          width: 100%;
+          overflow: hidden;
+          background-color: white;
+          padding: 5px;
+          font-size: 1.4rem;
+          font-style: italic;
+          font-weight: 200;
+          text-align: center;
+          z-index: 1;
+          align-self: center;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+/** File */
+.react-editor-file {
+  @include flexbox((
+    display: flex,
+    justify-content: center,
+    align-items: center
+  ));
+  border: 1px solid #E8E7E7;
+  padding: 10px;
+
+  a {
+    padding-left: 10px;
+  }
+}
+
+/** Placeholder */
+.react-editor-placeholder {
+  text-align: center;
+  min-height: 48px;
+  width: 100%;
+}
+
+/** Widget Placeholder */
+.react-editor-widget-placeholder {
+  border: 2px solid #D8D8D8;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 20px;
+  @include flexbox((
+    display: flex
+  ));
+}
+
+/** Toolbar */
+
+.react-editor-toolbar-container {
+   height: 48px;
+
+  .react-editor-toolbar-wrapper {
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      justify-content: center,
+      align-items: center
+    ));
+    height: 48px;
+    background-color: #E0E0E0;
+    z-index: 999;
+
+    &.fixed-toolbar {
+      position: fixed;
+      top: 0;
+      background-color: rgba(224, 224, 224, 1);
+      -webkit-backface-visibility: hidden;
+    }
+
+    .react-editor-toolbar {
+      @include flexbox((
+        display: flex,
+        justify-content: center
+      ));
+      z-index: 1000;
+      width: 80%;
+      height: 100%;
+
+      .toolbar-btn {
+        @include flexbox((
+          display: flex,
+          flex: 1,
+          align-items: center,
+          justify-content: center
+        ));
+        // color: #337ab7;
+        border: none;
+        background-color: transparent;
+        font-size: 1.6rem;
+        padding: 10px 20px;
+
+        @include tablet {
+          font-size: 1.8rem;
+        }
+
+        @include desktop {
+          font-size: 2rem;
+        }
+
+        @extend .no-outline-focus;
+
+        &.toolbar-btn-active {
+          color: #fff;
+          background-color: #337ab7;
+          border-right: 1px solid #337ab7;
+        }
+
+        &:hover {
+          color: #fff;
+          background-color: #337ab7;
+        }
+      }
+    }
+  }
+}
+
+/** PopUp */
+
+.react-link-popover-wrapper {
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center
+  ));
+  position: fixed;
+  background-color: transparent;
+  z-index: 3000;
+  max-width: 500px;
+
+  .react-link-popover {
+    @include card(2);
+    border-radius: 2px;
+
+    .link-popover-init-container {
+      background-color: #208edb;
+      border-radius: 2px;
+
+      .link-popover-input {
+        @include flexbox((
+          display: flex
+        ));
+        color: white;
+        background-color: #208edb;
+        border-radius: 2px;
+        padding: 5px;
+        width: 250px;
+        border: none;
+        text-align: center;
+      }
+
+      .link-popover-input:focus {
+        outline: none;
+      }
+    }
+
+    .link-popover-change-container {
+      background-color: #208edb;
+      border-radius: 2px;
+      max-width: 500px;
+      padding: 5px 10px;
+
+      label {
+        @include flexbox((
+          display: flex
+        ));
+        max-width: 500px;
+        padding: 5px;
+        color: #dadada;
+        margin-bottom: 5px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      .link-popover-input {
+        margin-left: 10px;
+        color: white;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+      }
+
+      .link-popover-input:focus {
+        outline: none;
+      }
+    }
+
+    .link-popover-default-container {
+      @include flexbox((
+        display: flex,
+        align-items: center
+      ));
+      padding: 8px;
+      background-color: #208edb;
+      border-radius: 2px;
+
+      a {
+        padding: 5px;
+        border-right: 1px solid white;
+        color: white;
+        padding-left: 8px;
+        padding-right: 8px;
+
+        &:hover {
+          color: #e9e9e9;
+        }
+      }
+
+      a:last-child {
+        border-right: none;
+      }
+    }
+
+  }
+
+  .link-popover-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 0 10px;
+    border-color: #208edb transparent transparent transparent;
+  }
+}

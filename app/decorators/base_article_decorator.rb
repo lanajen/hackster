@@ -1,5 +1,6 @@
 class BaseArticleDecorator < ApplicationDecorator
   include MediumEditorDecorator
+  include StoryJsonDecorator
 
   def cover_image version=:cover
     options = {}
@@ -18,6 +19,16 @@ class BaseArticleDecorator < ApplicationDecorator
   def description mode=:normal
     # options = (mode == :edit ? { except: ['PartsWidget'] } : {})
     parse_medium model.description#, options
+  end
+
+  def story_json
+    return @story_json if @story_json
+
+    @story_json = if model.story_json.present?
+      parse_story_json model.story_json
+    else
+      ''
+    end
   end
 
   def name_not_default

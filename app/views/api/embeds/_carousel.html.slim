@@ -1,0 +1,26 @@
+- server_images = Image.where(id: images.keys).map{|i| i.caption = images[:caption]; i }
+- ids = images.keys
+.embed-frame data-type="widget"
+  .figure class="image_widget"
+    .figcaption.embed-figcaption  data-default-text="Type in a caption" data-disable-toolbar="true" data-contenteditable='true'
+      / = embed.default_caption
+    .embed class="original" contenteditable="false"
+
+      .image-gallery-container class='update-201509'
+        select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
+          - ids.each do |id|
+            option  value=id selected='selected'
+        .file-drop
+        .image-gallery
+          / sorting images by position
+          - images.sort_by{|id, img| img[:position] }.each do |id, img|
+            / fetching image from server_images array by id
+            - image = server_images.select{|o| o.id.to_s == id.to_s }.first
+            / rendering image partial
+            = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid }
+
+javascript:
+  if (typeof(lightBoxImages) == 'undefined') {
+    lightBoxImages = {};
+  }
+  lightBoxImages['#{uid}'] = [#{lightbox_elements(server_images).html_safe}];

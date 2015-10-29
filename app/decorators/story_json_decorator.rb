@@ -1,0 +1,72 @@
+module StoryJsonDecorator
+  private
+    def parse_story_json story
+      story.map { |item|
+        case item['type']
+        when 'CE'
+          build_html item['json']
+        when 'Carousel'
+          hash = {}
+          images = item['images'].each_with_index do |img, i|
+            hash[img['id']] = { caption: img['figcaption'], position: i }
+          end
+          data = { images: hash, hash: item['hash'] }
+          embed_html data, 'Carousel'
+        when 'Video'
+          video = item['video'][0]
+          data = { url: video['embed'], caption: video['figcaption'] }
+          embed_html data, 'Url'
+        when 'File'
+          if(item['data']['id'] != nil)
+            data = { id: item['data']['id'] }
+            embed_html data, 'File'
+          else
+            ''
+          end 
+        when 'WidgetPlaceholder'
+          # URL Widgets with a type of 'repo' get transformed into WidgetPlaceholders.  'embed' is the url.
+          if item['data']['type'] == 'repo'
+            data = { url: item['data']['embed']}
+            embed_html data, 'Url'
+          else
+            data = { id: item['data']['id']}
+            embed_html data, 'Widget'
+          end
+        else
+          ''
+        end
+      }.join('')
+    end
+
+    def build_html json
+      if json.empty?
+        json
+      else
+        json.map { |item|
+          href = item['tag'] === 'a' ? " href='#{item['attribs']['href']}'" : ''
+          tag = '<' + item['tag'] + href + '>'
+          innards = item['content']
+          children = item['children'].length < 1 ? '' : build_html(item['children'])
+          "#{tag}#{innards}#{children}</#{item['tag']}>"
+        }.join('')
+      end
+    end
+
+    def embed_html data, type
+      case type
+      when 'Carousel'
+        h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash] }
+      when 'Url'
+        embed = Embed.new url: data[:url], default_caption: data[:caption]
+        h.render partial: "api/embeds/embed", locals: { embed: embed, caption: data[:caption] }
+      when 'File'
+        embed = Embed.new file_id: data[:id]
+        h.render partial: "api/embeds/embed", locals: { embed: embed }
+      when 'Widget'
+        embed = Embed.new widget_id: data[:id]
+        h.render partial: "api/embeds/embed", locals: { embed: embed }
+      else
+        ''
+      end
+    end
+end
