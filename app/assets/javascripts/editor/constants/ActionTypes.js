@@ -10,6 +10,7 @@ export default {
 
   Editor: keyMirror({
     setDOM: null,
+    hasUnsavedChanges: null,
     setInitialDOM: null,
     fetchInitialDOM: null,
     setIsFetching: null,

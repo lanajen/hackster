@@ -272,6 +272,11 @@ $select2target = null;
         }
       },
 
+      showSavePanel: function() {
+        $('.pe-save2').hide();
+        $('.pe-save').slideDown(200);
+      },
+
       saveChanges: function(e) {
         var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {

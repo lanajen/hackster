@@ -21,11 +21,6 @@ const ContentEditable = React.createClass({
   },
 
   componentDidMount() {
-    /** Updates the dom store; usually happens on initial load to get the html flowing through our parsers. */
-    if(this.props.editor.dom.length < 1 && this.props.editor.html.length > 1) {
-      this.emitChange();
-    }
-
     /** Sets the initial cursor tracker on the first element. */
     if(this.props.editor.cursorPosition.node === null) {
       let firstChild = React.findDOMNode(this).firstChild;
@@ -585,6 +580,10 @@ const ContentEditable = React.createClass({
       /** For IE Only!  onInput is NOT supported in content-editable divs, so we listen for changes here. */
       if(this.props.editor.isIE) {
         this.debouncedEmitChange();
+      }
+
+      if(this.props.editor.hasUnsavedChanges === false) {
+        this.props.actions.hasUnsavedChanges(true);
       }
     }
   },

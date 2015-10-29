@@ -11,6 +11,13 @@ export function setDOM(html, depth, storeIndex) {
   };
 }
 
+export function hasUnsavedChanges(bool) {
+  return {
+    type: Editor.hasUnsavedChanges,
+    bool: bool
+  };
+}
+
 export function setInitialDOM(json) {
   return {
     type: Editor.setInitialDOM,

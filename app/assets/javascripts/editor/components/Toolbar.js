@@ -64,6 +64,7 @@ const Toolbar = React.createClass({
     if(document) {
       document.execCommand(tagType, false, valueArg);
       this.focusCE();
+      this.handleUnsavedChanges();
 
       let { sel, anchorNode, parentNode } = Utils.getSelectionData();
 
@@ -89,6 +90,7 @@ const Toolbar = React.createClass({
 
     if(isNodeInUL && blockEls[tagType.toUpperCase()]) { // Cleans UL's lis if transforming.
       this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
+      this.handleUnsavedChanges();
       this.props.actions.forceUpdate(true);
       // this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
@@ -102,10 +104,12 @@ const Toolbar = React.createClass({
         return;
       } else {
         this.props.actions.transformBlockElements(tagType, arrayOfNodes, this.props.editor.currentStoreIndex);
+        this.handleUnsavedChanges();
         this.props.actions.forceUpdate(true);
       }
     } else {
       this.props.actions.transformBlockElement(tagType, depth, false, this.props.editor.currentStoreIndex);
+      this.handleUnsavedChanges();
       this.props.actions.forceUpdate(true);
     }
   },
@@ -148,6 +152,7 @@ const Toolbar = React.createClass({
           this.props.actions.splitBlockElement(tagType, results, depth, this.props.editor.currentStoreIndex);
           this.props.actions.setCursorToNextLine(true);
           this.props.actions.forceUpdate(true);
+          this.handleUnsavedChanges();
           range.deleteContents();
         })
         .catch(err => {
@@ -254,6 +259,7 @@ const Toolbar = React.createClass({
 
         this.props.actions.getLatestHTML(true);
       }
+      this.handleUnsavedChanges();
       this.focusCE();
     } else {
       this.handleBlockElementTransform(tagType);
@@ -342,6 +348,7 @@ const Toolbar = React.createClass({
 
     }
     this.props.actions.forceUpdate(true);
+    this.handleUnsavedChanges();
     this.focusCE();
   },
 
@@ -464,6 +471,7 @@ const Toolbar = React.createClass({
       this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
+      this.handleUnsavedChanges();
     }.bind(this));
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
@@ -477,6 +485,12 @@ const Toolbar = React.createClass({
 
   handleToolbarButtonError(tagType) {
     this.props.actions.toggleErrorMessenger(true, `Sorry, cannot transform that into a ${tagType}`);
+  },
+
+  handleUnsavedChanges() {
+    if(this.props.editor.hasUnsavedChanges === false) {
+      this.props.actions.hasUnsavedChanges(true);
+    }
   },
 
   render: function() {
