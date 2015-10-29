@@ -2,7 +2,7 @@ module ScraperStrategies
   class Wordpress < GenericBlog
 
     def crap_list
-      super + %w(.share-post .wpcnt .post-info)
+      super + %w(.share-post .wpcnt .post-info .ssba)
     end
 
     def extract_cover_image

@@ -26,6 +26,7 @@
                 span.caret
               ul.dropdown-menu#nav-user-menu
                 li= link_to 'My profile', current_user
+                li= link_to 'My projects', current_user
                 li.divider
                 li= link_to 'Messages', conversations_path
                 li.divider
@@ -48,6 +49,15 @@
                   p.text-muted
                     small Or connect with your social account:
                   = render 'devise/shared/omniauth', css: 'icon'
+
+        .pull-right style='padding-top:11px'
+          - if user_signed_in?
+            .btn-group.btn-group-default
+              = link_to 'My projects', current_user, class: 'btn btn-default'
+              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body' }
+          - else
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
+
         #navbar-search.pull-right.show-on-desktop
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 

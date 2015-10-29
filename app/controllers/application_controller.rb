@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  force_ssl if: :ssl_configured?
+
   include SocialLinkHelper
   include UrlHelper
 
@@ -48,8 +50,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_site
   helper_method :current_platform
   before_action :current_site
+  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
   before_action :current_platform
-  before_action :force_ssl_redirect, if: :ssl_configured?
   helper_method :current_layout
   before_filter :set_view_paths
   layout :current_layout
@@ -561,9 +563,9 @@ class ApplicationController < ActionController::Base
 
     def ssl_configured?
       ssl_configured = APP_CONFIG['use_ssl']
-      if is_whitelabel?
-        ssl_configured = (ssl_configured and !current_site.disable_https?)
-      end
+      # if is_whitelabel?
+      #   ssl_configured = (ssl_configured and !current_site.disable_https?)
+      # end
       ssl_configured
     end
 
