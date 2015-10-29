@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_platform
   before_action :current_site
   before_action :current_platform
-  before_filter :force_ssl, if: :ssl_configured?
+  before_action :force_ssl_redirect, if: :ssl_configured?
   helper_method :current_layout
   before_filter :set_view_paths
   layout :current_layout
