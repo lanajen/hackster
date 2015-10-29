@@ -69,6 +69,7 @@ const Editable = React.createClass({
 
     form.removeEventListener('pe:submit', this.handleSubmit);
     window.removeEventListener('resize', this.debouncedResize);
+    this.props.actions.hasUnsavedChanges(false);
   },
 
   componentWillUpdate() {
@@ -84,8 +85,7 @@ const Editable = React.createClass({
       */
     if(nextProps.editor.hasUnsavedChanges && !this.props.editor.hasUnsavedChanges) {
       if(window.pe) {
-        let panel = document.getElementById('story');
-        let input = panel.querySelector('input#story_json');
+        let input = document.getElementById('story_json');
         input.value = 'true';
         window.pe.showSavePanel();
       }
