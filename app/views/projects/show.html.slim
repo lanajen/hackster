@@ -4,8 +4,13 @@
 = inserts_stats_for @project
 
 = content_for :no_container do
+
+  = render 'projects/switcher'
+
   - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
+
     = render 'projects/project_embed_popup'
+
     #content.project-page.hljs-active class="project-#{@project.id}"
       .container-desktop.container
         - if @project.content_type_to_human
@@ -373,7 +378,7 @@
                 - if @project.public?
                   - if @respecting_users.count > 0
                     section.section-thumbs
-                      h4 Makers who respect this project
+                      h4 Members who respect this project
                       = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
                   - if @replicating_users.count > 0
                     section.section-thumbs
@@ -401,9 +406,9 @@
                 - if @other_projects.count > 0
                   section.section-thumbs
                     h4 Similar projects you might like
-                    - @other_projects.each do |project|
+                    - @other_projects.each_with_index do |project, i|
                       .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
-                        = link_to '', project, class: 'link-overlay'
+                        = link_to '', project_path(project, ref: 'similar', ref_id: @project.id, offset: i), class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
                           / # p= render partial: 'projects/by_team', locals: { project: project }
@@ -486,5 +491,5 @@
               section.section-thumbs
                 h4 style='border:0' Similar projects you might like
               .row
-                - @other_projects.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }
+                - @other_projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar', ref_id: @project.id, offset: i }

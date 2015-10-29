@@ -4,7 +4,7 @@ class AppLogger
   end
 
   def initialize message, log_type, source, exception=nil
-    @message, @log_type, @source, @exception = message, log_type, source, exception
+    @message, @log_type, @source, @exception = clean_message(message), log_type, source, exception
     if exception.present?
       @clean_backtrace = Rails.backtrace_cleaner.clean(@exception.backtrace)
       @message = "#{@exception.inspect} // backtrace: #{@clean_backtrace.join(' - ')} // " + @message
@@ -32,4 +32,9 @@ class AppLogger
     @clean_backtrace.each { |line| Rails.logger.error "Backtrace: " + line }
     Rails.logger.error ""
   end
+
+  private
+    def clean_message msg
+      msg.gsub /"([^"]*)password"=>"([^"]+)"/, '"' + $1.to_s + 'password"=>"FILTERED"'
+    end
 end

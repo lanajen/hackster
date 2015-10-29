@@ -66,8 +66,8 @@
 
 - if @projects.any?
   .row.project-list
-    - @projects.each do |project|
-      = render partial: 'projects/project_thumb', locals: { project: project }
+    - @projects.each_with_index do |project, i|
+      = render partial: 'projects/project_thumb', locals: { project: project, ref: 'part', ref_id: @part.id, offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
   .row.text-center= will_paginate @projects
 - else
   p

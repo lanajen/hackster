@@ -49,7 +49,7 @@ class Blog::PostsController < ApplicationController
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "#{SLOGAN} Share your projects and learn from other makers. Come build awesome hardware!"
+        @meta_desc || "#{SLOGAN} Share your projects and learn from other developers. Come build awesome hardware!"
       end
     end
 

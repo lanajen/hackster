@@ -8,8 +8,8 @@
           - @projects.each do |collection|
             = render partial: 'project_collections/project_collection', locals: { collection: collection }
       - else
-        - @projects.each do |project|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+        - @projects.each_with_index do |project, i|
+          = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'list', ref_id: @group.id, offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
 
   .row.text-center= will_paginate @projects
 - else

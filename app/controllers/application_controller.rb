@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery except: [:not_found]
   before_filter :authenticate_user_from_token!
   before_filter :mark_last_seen!
-  before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
   before_filter :check_new_badge
@@ -116,7 +115,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActionView::MissingTemplate, with: :render_404_with_log
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from CanCan::AccessDenied, Workflow::NoTransitionAllowed do |exception|
     if current_user
       if request.xhr?
         render status: :unauthorized, json: { message: "You are not authorized to perform this action." }
@@ -556,10 +555,6 @@ class ApplicationController < ActionController::Base
       "/#{path}"
     end
 
-    def set_new_user_session
-      @new_user_session = User.new unless user_signed_in?
-    end
-
     def site_platform
       is_whitelabel? ? current_platform.user_name : 'hackster'
     end
@@ -597,7 +592,7 @@ class ApplicationController < ActionController::Base
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "#{SLOGAN} Share your projects and learn from other makers. Come build awesome hardware!"
+        @meta_desc || "#{SLOGAN} Share your projects and learn from other developers. Come build awesome hardware!"
       end
     end
 

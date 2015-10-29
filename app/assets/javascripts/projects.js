@@ -838,11 +838,13 @@ $select2target = null;
       $('.gist .gist-meta a').attr('target', '_blank');
     }, 1000);
 
-    loadSlickSlider();
-
     cleanUpSelectBlueprint();
   });
 })(jQuery, window, document);
+
+$(window).load(function(){
+  loadSlickSlider();
+});
 
 function ProjectCodeEditor(language, id) {
   this.ace = null;

@@ -4,6 +4,9 @@
 = inserts_stats_for @project
 
 = content_for :no_container do
+
+  = render 'projects/switcher'
+
   - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
 
     / = render 'projects/project_embed_popup'

@@ -448,3 +448,50 @@
   text-transform: uppercase;
   font-size: 0.9em;
 }
+
+.project-switcher {
+  color: #fff;
+  background: #ddd;
+  height: 200px;
+  max-height: 50%;
+  width: 40px;
+  top: 50%;
+  margin-top: -100px;
+  position: fixed;
+  display: block;
+  &:hover, &:active, &:focus {
+    background: #ccc;
+    color: #fff;
+  }
+  &.previous {
+    left: 0;
+    @include border-radius(0 4px 4px 0);
+    i {
+      left: 10px;
+    }
+  }
+  &.next {
+    right: 0;
+    @include border-radius(4px 0 0 4px);
+    i {
+      right: 10px;
+    }
+  }
+  .inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  i {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1249px) {
+  .project-switcher {
+    display: none;
+  }
+}

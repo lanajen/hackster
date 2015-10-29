@@ -1,16 +1,10 @@
 class ConversationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :load_conversation, only: [:show, :update, :destroy]
-  before_filter :get_box
 
   def index
-    if @box.eql? "inbox"
-      title "Messages > Inbox"
-      @conversations = Conversation.inbox_for(current_user).paginate(page: params[:page])
-    elsif @box.eql? "sent"
-      title "Messages > Sent"
-      @conversations = Conversation.sent_for(current_user).paginate(page: params[:page])
-    end
+    title "Messages"
+    @conversations = Conversation.for(current_user).paginate(page: params[:page], per_page: 10)
 
     respond_to do |format|
       format.html { render @conversations if request.xhr? }
@@ -37,7 +31,7 @@ class ConversationsController < ApplicationController
       title "New message to #{@recipient.name}"
       @conversation.recipient_id = @recipient.id
     else
-      redirect_to conversations_path, alert: "We couldn't find a maker to contact!" and return
+      redirect_to conversations_path, alert: "We couldn't find a member to contact!" and return
     end
   end
 
@@ -75,14 +69,6 @@ class ConversationsController < ApplicationController
   end
 
   private
-    def get_box
-      if params[:box].blank? or !%w(inbox sent trash).include? params[:box]
-        params[:box] = 'inbox'
-      end
-
-      @box = params[:box]
-    end
-
     def load_conversation
       @conversation = Conversation.find params[:id]
     end

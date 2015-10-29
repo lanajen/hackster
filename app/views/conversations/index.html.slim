@@ -3,7 +3,7 @@ section#conversations.section-container
     .title.clearfix
       h3.pull-left
         ' Messages
-      .btn-group.pull-left
+      / .btn-group.pull-left
         button.btn.btn-default.dropdown-toggle aria-expanded="false" data-toggle="dropdown" type="button"
           ==> @box.capitalize
           span.caret
@@ -23,16 +23,17 @@ section#conversations.section-container
           a.list-group-item href=conversation_path(conversation) class=(conversation.has_unread?(current_user) ? 'unread' : '')
             .media
               span.media-left
-                = image_tag conversation.last_message(current_user, @box).user.decorate.avatar(:thumb), class: 'img-rounded'
+                - user = conversation.participants.where.not(users: { id: current_user.id }).first.decorate
+                = image_tag user.avatar(:thumb), class: 'img-rounded'
               .media-body
                 h5.media-heading.clearfix
-                  strong= conversation.last_message(current_user, @box).user.name
+                  strong= user.name
                   .small.text-muted
-                    ==> time_diff_in_natural_language conversation.last_message(current_user, @box).updated_at, Time.now
+                    ==> time_diff_in_natural_language conversation.updated_at, Time.now
                     | ago
                 p
                   strong==> conversation.subject
-                  = strip_tags(conversation.last_message(current_user, @box).body).truncate 200
+                  / # = strip_tags(conversation.last_message(current_user, @box).body).truncate 200
       - else
         p You don't have any active conversations.
     = will_paginate @conversations
