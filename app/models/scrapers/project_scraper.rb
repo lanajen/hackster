@@ -76,6 +76,7 @@ class ProjectScraper
       'e2e.ti.com' => :tie2e,
       'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,
+      'youtube.com' => :youtube,
     }
 
     def initialize content, page_url, strategy=nil
