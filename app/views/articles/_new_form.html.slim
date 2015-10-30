@@ -19,7 +19,7 @@
         = f.input :name, label: 'Give it a short title'
         = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
 
-        / .form-group
+        .form-group
           .col-md-4
             label.control-label Cover image
           .col-md-8
@@ -34,21 +34,9 @@
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
-            p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
+            p.help-block Will be cropped to fit 4:3 format. 600x450px or higher recommended.
 
-        / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
-
-        .form-group
-          .col-md-4
-            label.control-label Template
-          .col-md-8
-            .template-chooser-container.clearfix
-              a href=new_project_path(type: 'project', base_article: params[:base_article])
-                span.option-title Project
-                span.option-description Describe a standalone device you made.
-              a href=new_project_path(type: 'article', base_article: params[:base_article])
-                span.option-title Article
-                span.option-description A more flexible, blog post-like format for everything else.
+        = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
         .form-group
           .col-md-8.col-md-offset-4
