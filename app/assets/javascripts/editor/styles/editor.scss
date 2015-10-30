@@ -67,22 +67,24 @@ $desktop-width: 1024px;
   font-family: "proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
   .box {
-      border: 2px solid #ddd;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
-      background: #fff;
 
     .box-content {
-      p {
+      padding: 20px 40px;
+
+      p, h3 {
         display: block;
+      }
+
+      p {
         margin-bottom: 10px;
-        margin-top: 10px;
-        padding: 0 4%;
-        color: #666;
+        margin-top: 0;
       }
 
       h3 {
-        @extend p;
+        color: #666;
+        display: block;
       }
 
       pre {
@@ -91,7 +93,6 @@ $desktop-width: 1024px;
         border: none;
         padding-left: 15px;
         padding-top: 10px;
-        margin: 0 4%;
         color: white;
         overflow: visible;
         // This is set to short circuit a previously set global pre style.  Tsk tsk.
@@ -101,16 +102,10 @@ $desktop-width: 1024px;
       blockquote {
         display: block;
         border-left: 5px solid #777;
-        margin: 10px 4%;
-        color: #666;
+        margin: 10px 0;
       }
 
       ul {
-        display: block;
-        color: #666;
-      }
-
-      h3 {
         display: block;
       }
 
@@ -131,7 +126,6 @@ $desktop-width: 1024px;
 }
 
 .content-editable {
-  @extend .box-content;
   padding: 2% 0;
   font-size: 1.5rem;
   word-wrap: break-word;
@@ -158,8 +152,10 @@ $desktop-width: 1024px;
   // max-height: 514px;
   margin-bottom: 10px;
   margin-top: 10px;
-  display: flex;
-  flex-direction: column;
+  @include flexbox((
+    display: flex,
+    flex-direction: column
+  ));
   position: relative;
 
   &:focus {
@@ -167,8 +163,10 @@ $desktop-width: 1024px;
   }
 
   .react-editor-carousel-inner {
-    display: flex;
-    flex-direction: row;
+    @include flexbox((
+      display: flex,
+      flex-direction: row
+    ));
     position: relative;
 
     .react-editor-figure {
@@ -183,12 +181,16 @@ $desktop-width: 1024px;
 
       &.show {
         opacity: 1;
-        display: flex;
+        @include flexbox((
+          display: flex
+        ));
       }
 
       .react-editor-image-wrapper {
-        display: flex;
-        flex-direction: column;
+        @include flexbox((
+          display: flex,
+          flex-direction: column
+        ));
         z-index: 0;
         width: 100%;
         height: auto;
@@ -232,17 +234,15 @@ $desktop-width: 1024px;
   }
 
   .reit-controls {
-    display: flex;
-    position: absolute;
-    bottom: 50%;
-    width: 100%;
     z-index: 20;
-    justify-content: space-between;
 
     .reit-controls-button {
       color: #666;
       background-color: transparent;
       border: none;
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
 
       &:focus {
         outline: none;
@@ -252,13 +252,16 @@ $desktop-width: 1024px;
 }
 
 .react-editor-image-overlay {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center,
+    justify-content: center
+  ));
   z-index: 10;
   position: absolute;
-  background: rgba(0,0,0,0.3);
-  
+  background: rgba(0,0,0,0.5);
+
   .reit-toolbar {
 
     .reit-button {
@@ -274,10 +277,12 @@ $desktop-width: 1024px;
   &:focus {
     outline: 2px solid lightblue;
   }
-  
+
   .react-editor-video-inner {
-    display: flex;
-    flex-direction: row;
+    @include flexbox((
+      display: flex,
+      flex-direction: row
+    ));
     position: relative;
 
     .video-mask {
@@ -297,8 +302,10 @@ $desktop-width: 1024px;
       margin: 0;
 
       .react-editor-image-wrapper {
-        display: flex;
-        flex-direction: column;
+        @include flexbox((
+          display: flex,
+          flex-direction: column
+        ));
         z-index: 0;
         width: 100%;
         height: auto;
@@ -344,12 +351,13 @@ $desktop-width: 1024px;
 
 /** File */
 .react-editor-file {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid#E8E7E7;
+  @include flexbox((
+    display: flex,
+    justify-content: center,
+    align-items: center
+  ));
+  border: 1px solid #E8E7E7;
   padding: 10px;
-  margin: 0 30px;
 
   a {
     padding-left: 10px;
@@ -359,7 +367,7 @@ $desktop-width: 1024px;
 /** Placeholder */
 .react-editor-placeholder {
   text-align: center;
-  min-height: 48px; 
+  min-height: 48px;
   width: 100%;
 }
 
@@ -369,7 +377,9 @@ $desktop-width: 1024px;
   border-radius: 3px;
   padding: 10px;
   margin: 20px;
-  display: flex;
+  @include flexbox((
+    display: flex
+  ));
 }
 
 /** Toolbar */
@@ -378,10 +388,12 @@ $desktop-width: 1024px;
    height: 48px;
 
   .react-editor-toolbar-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      justify-content: center,
+      align-items: center
+    ));
     height: 48px;
     background-color: #E0E0E0;
     z-index: 999;
@@ -389,28 +401,26 @@ $desktop-width: 1024px;
     &.fixed-toolbar {
       position: fixed;
       top: 0;
-      background-color: rgba(224, 224, 224, 0.6);
-      transition: background-color 0.5s ease;
+      background-color: rgba(224, 224, 224, 1);
       -webkit-backface-visibility: hidden;
-
-      &:hover {
-        background-color: rgba(224, 224, 224, 1);
-      }
     }
 
     .react-editor-toolbar {
-      display: flex;
-      justify-content: center;
+      @include flexbox((
+        display: flex,
+        justify-content: center
+      ));
       z-index: 1000;
       width: 80%;
       height: 100%;
 
       .toolbar-btn {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        color: #337ab7;
+        @include flexbox((
+          display: flex,
+          flex: 1,
+          align-items: center,
+          justify-content: center
+        ));
         border: none;
         background-color: transparent;
         font-size: 1.6rem;
@@ -427,13 +437,13 @@ $desktop-width: 1024px;
         @extend .no-outline-focus;
 
         &.toolbar-btn-active {
-          color: #E0E0E0;
+          color: #fff;
           background-color: #337ab7;
-          border-right: 1px solid #E0E0E0;
+          border-right: 1px solid #337ab7;
         }
 
         &:hover {
-          color: #E0E0E0;
+          color: #fff;
           background-color: #337ab7;
         }
       }
@@ -444,9 +454,11 @@ $desktop-width: 1024px;
 /** PopUp */
 
 .react-link-popover-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center
+  ));
   position: fixed;
   background-color: transparent;
   z-index: 3000;
@@ -457,13 +469,15 @@ $desktop-width: 1024px;
     border-radius: 2px;
 
     .link-popover-init-container {
-      background-color: #80DEEA;
+      background-color: #208edb;
       border-radius: 2px;
 
       .link-popover-input {
-        display: flex;
+        @include flexbox((
+          display: flex
+        ));
         color: white;
-        background-color: #80DEEA;
+        background-color: #208edb;
         border-radius: 2px;
         padding: 5px;
         width: 250px;
@@ -477,17 +491,27 @@ $desktop-width: 1024px;
     }
 
     .link-popover-change-container {
-      background-color: #80DEEA;
+      background-color: #208edb;
       border-radius: 2px;
       max-width: 500px;
+      padding: 5px 10px;
 
-      .link-popover-input {
-        display: flex;
-        color: white;
-        background-color: #80DEEA;
-        border-radius: 2px;
-        padding: 5px;
+      label {
+        @include flexbox((
+          display: flex
+        ));
         max-width: 500px;
+        padding: 5px;
+        color: #dadada;
+        margin-bottom: 5px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      .link-popover-input {
+        margin-left: 10px;
+        color: white;
+        background-color: transparent;
         border: none;
         text-align: center;
       }
@@ -498,10 +522,12 @@ $desktop-width: 1024px;
     }
 
     .link-popover-default-container {
-      display: flex;
-      align-items: center;
+      @include flexbox((
+        display: flex,
+        align-items: center
+      ));
       padding: 8px;
-      background-color: #80DEEA;
+      background-color: #208edb;
       border-radius: 2px;
 
       a {
@@ -512,7 +538,7 @@ $desktop-width: 1024px;
         padding-right: 8px;
 
         &:hover {
-          color: #999;
+          color: #e9e9e9;
         }
       }
 
@@ -520,14 +546,13 @@ $desktop-width: 1024px;
         border-right: none;
       }
     }
-
-  }  
+  }
 
   .link-popover-arrow {
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 10px 10px 0 10px;
-    border-color: #80DEEA transparent transparent transparent;
+    border-color: #208edb transparent transparent transparent;
   }
 }

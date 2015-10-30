@@ -21,7 +21,7 @@ const Toolbar = React.createClass({
 
   componentDidMount() {
     if(window) {
-      this.debouncedScroll = _.debounce(this.handleScroll, 10);
+      this.debouncedScroll = _.debounce(this.handleScroll, 10, true);
       window.addEventListener('scroll', this.debouncedScroll);
     }
   },
@@ -34,22 +34,14 @@ const Toolbar = React.createClass({
 
   handleScroll(e) {
     let el = React.findDOMNode(this.refs.toolbar);
-    let scrollTop = el.getBoundingClientRect().top;
-    let windowPos = window.pageYOffset;
+    let parentTop = el.parentNode.getBoundingClientRect().top;
 
-    if(scrollTop <= 0 && this.state.toolbarTopPos === null && this.state.toolbarTopPos < windowPos && !el.classList.contains('fixed-toolbar')) {
-      el.classList.add('fixed-toolbar');
-
-      this.setState({
-        toolbarTopPos: windowPos
-      }); 
-
-    } else if (this.state.toolbarTopPos >= windowPos && el.classList.contains('fixed-toolbar')) {
-      el.classList.remove('fixed-toolbar');
-
-      this.setState({
-        toolbarTopPos: null
-      });
+    if (parentTop < 0) {
+      if (!el.classList.contains('fixed-toolbar'))
+        el.classList.add('fixed-toolbar');
+    } else {
+      if (el.classList.contains('fixed-toolbar'))
+        el.classList.remove('fixed-toolbar');
     }
   },
 
@@ -129,7 +121,7 @@ const Toolbar = React.createClass({
      */
     if(range.startOffset !== range.endOffset && range.toString() !== parentNode.textContent
        && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
-       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1 
+       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1
        && range.toString().trim().length > 0) {
       /** Builds the selected text from scratch honoring all wrapped node types.  We delete the selection in the Promise handler. */
       let selectedHtml = range.toHtml();
@@ -181,7 +173,7 @@ const Toolbar = React.createClass({
       return;
     }
 
-    /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
+    /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag.
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
     if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
@@ -216,7 +208,7 @@ const Toolbar = React.createClass({
           let middle = parent.textContent.slice(range.startOffset, range.endOffset);
           let end = parent.textContent.slice(range.endOffset);
           range.deleteContents();
-          /** If start doesn't have a length, then the selection starts @ index 0. 
+          /** If start doesn't have a length, then the selection starts @ index 0.
             * Else if the selection is in the middle of the text, create two new nodes.
             * Else selection is at the end of the node, simply append a child node.
             */
@@ -291,12 +283,12 @@ const Toolbar = React.createClass({
 
     if(startContainerParent.nodeName === 'UL') {  // Undo UL.
       if(range.startContainer.nodeType === 3 || range.startContainer.localName === 'li') { // Is TextNode.  The cursor is placed after element or multiline select.
-        
+
         if(startContainerParent !== endContainerParent) { // Multiple block elements are selected.
           let obj = {};
           let allNodes = Utils.getAllNodesInSelection(startContainerParent, endContainerParent, parentNode);
           allNodes = allNodes.filter(function(node) { return node.localName === 'ul'; });
-  
+
           _.forEach(allNodes, function(ul, index) {
             if(index === 0) {
               obj[Utils.findChildsDepthLevel(ul, ul.parentNode)] = { node: ul, start: range.startContainer, end: ul.lastChild, hash: ul.getAttribute('data-hash')};
@@ -333,11 +325,11 @@ const Toolbar = React.createClass({
         let listGroups = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
         listGroups.forEach((group, index) => {
           let previousLength = null;
-          /** 
+          /**
             * We pass the previous arrays length so we can subtract that number from the current depth.
             * We need to do this to get proper depth placement when the DOM is being mutated into ULs.
            */
-          if(listGroups.length > 1 && index !== 0) { 
+          if(listGroups.length > 1 && index !== 0) {
             previousLength = listGroups[index-1].length;
           }
           elements = Utils.createArrayOfDOMNodes(group[0], group[group.length-1], parentNode.parentNode);
@@ -469,7 +461,7 @@ const Toolbar = React.createClass({
 
     ImageUtils.handleImagesAsync(filteredFiles, function(map) {
       this.props.actions.isDataLoading(true);
-      this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
+      this.props.actions.createMediaByType(map, depth + 1, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
       this.handleUnsavedChanges();
     }.bind(this));
@@ -479,7 +471,7 @@ const Toolbar = React.createClass({
 
   handleVideoButtonClick() {
     let { depth } = Utils.getSelectionData();
-    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth, this.props.editor.currentStoreIndex);
+    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth + 1, this.props.editor.currentStoreIndex);
     this.props.actions.forceUpdate(true);
   },
 
@@ -513,7 +505,6 @@ const Toolbar = React.createClass({
     let Buttons = buttonList.map(button => {
       return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} onError={this.handleToolbarButtonError}/>;
     });
-    
 
     let style = {
       width: parseInt(this.props.toolbar.CEWidth, 10) || '100%'

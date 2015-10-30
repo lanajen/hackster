@@ -42,11 +42,11 @@ const ImageToolbar = React.createClass({
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
         map,
-        storeIndex, 
+        storeIndex,
         this.props.editor.lastMediaHash,
-        this.props.editor.S3BucketURL, 
-        this.props.editor.AWSAccessKeyId, 
-        this.props.editor.csrfToken, 
+        this.props.editor.S3BucketURL,
+        this.props.editor.AWSAccessKeyId,
+        this.props.editor.csrfToken,
         this.props.editor.projectId
       );
 
@@ -87,18 +87,18 @@ const ImageToolbar = React.createClass({
 
   handleMouseOut(e) {
     let node = React.findDOMNode(e.target);
-    /** 
+    /**
      * Handles releasing the ImageToolbar overlay component.
-     * First we handle an edge case where the mouse was in a button then placed outside the CE. 
+     * First we handle an edge case where the mouse was in a button then placed outside the CE.
      * Secondly we handle ignoring any elements inside the Carousel.
     **/
     if((node.nodeName === 'SPAN' || node.nodeName === 'BUTTON' || Utils.isChildOfParentByClass(node, 'react-editor-image-overlay'))
-       && (e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.id && e.nativeEvent.relatedTarget.id === 'react-main-mount' 
-           || e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.classList.contains('row') 
+       && (e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.id && e.nativeEvent.relatedTarget.id === 'react-main-mount'
+           || e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.classList.contains('row')
            || e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.classList.contains('box-content'))
        && this.props.editor.showImageToolbar === true) {
       this.props.actions.toggleImageToolbar(false, {});
-    } else if(node.nodeName === 'DIV' && node.classList.contains('react-editor-image-overlay') 
+    } else if(node.nodeName === 'DIV' && node.classList.contains('react-editor-image-overlay')
        && (e.nativeEvent.relatedTarget && !e.nativeEvent.relatedTarget.classList.contains('reit-controls'))
        && (e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.nodeName !== 'BUTTON')
        && (e.nativeEvent.relatedTarget && !Utils.getRootOverlayElement(e.nativeEvent.relatedTarget).classList.contains('reit-toolbar'))
@@ -124,21 +124,29 @@ const ImageToolbar = React.createClass({
   },
 
   render: function() {
-    let style, toolbar;
+    let style, toolbar, buttonStyle, buttonIconStyle;
 
     if(this.props.editor && this.props.editor.showImageToolbar === true) {
       style = this.getStyles();
     }
+    buttonStyle = {
+      borderRadius: '4px',
+      background: null
+    };
+    buttonIconStyle = {
+      color: '#fff',
+      fontSize: '2rem'
+    }
 
     toolbar = this.props.editor.imageToolbarData.type === 'carousel'
                ? (<div className="reit-toolbar">
-                    <IconButton iconStyle={{color: '#80DEEA'}} iconClassName="reit-button fa fa-plus" tooltip="Add an Image" onClick={this.handleAddImageClick}/>
-                    <IconButton iconStyle={{color: '#80DEEA'}} iconClassName="reit-button fa fa-trash-o" tooltip="Delete this Image" onClick={this.handleDeleteImage}/>
-                    
+                    <IconButton style={Object.assign({}, buttonStyle, { marginRight: '10px' })} className="btn btn-primary" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-plus" tooltip="Add an Image" onClick={this.handleAddImageClick}/>
+                    <IconButton style={Object.assign({}, buttonStyle)} className="btn btn-danger" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-trash-o" tooltip="Delete this Image" onClick={this.handleDeleteImage}/>
+
                   </div>)
-               : this.props.editor.imageToolbarData.type === 'video' 
+               : this.props.editor.imageToolbarData.type === 'video'
                ? (<div className="reit-toolbar">
-                    <IconButton iconStyle={{color: '#80DEEA'}} iconClassName="reit-button fa fa-trash-o" tooltip="Delete Video" onClick={this.handleDeleteVideo}/>
+                    <IconButton style={Object.assign({}, buttonStyle)} className="btn btn-danger" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-trash-o" tooltip="Delete Video" onClick={this.handleDeleteVideo}/>
                   </div>)
                : (null);
 

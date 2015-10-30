@@ -282,7 +282,7 @@ $select2target = null;
         if ($('#story:visible').length) {
           // Custom Event passes the form to React, where call submit.
           var event = new CustomEvent(
-            'pe:submit', 
+            'pe:submit',
             {
               detail: { form: $form },
               bubbles: true,

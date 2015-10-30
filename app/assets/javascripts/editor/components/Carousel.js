@@ -98,7 +98,7 @@ const Carousel = React.createClass({
   handleMouseOver(e) {
     let target = React.findDOMNode(e.target),
         currentNode = React.findDOMNode(this),
-        parent = Utils.getRootParentElement(currentNode), 
+        parent = Utils.getRootParentElement(currentNode),
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
     if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
@@ -106,7 +106,7 @@ const Carousel = React.createClass({
     }
 
     if((target.nodeName === 'IMG' && target.classList.contains('react-editor-image'))
-       || (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) 
+       || (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper'))
         && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
@@ -115,8 +115,8 @@ const Carousel = React.createClass({
         height: currentNode.offsetHeight,
         width: currentNode.offsetWidth,
         left: currentNode.offsetLeft,
-        storeIndex: this.props.storeIndex, 
-        type: 'carousel' 
+        storeIndex: this.props.storeIndex,
+        type: 'carousel'
       });
     }
   },
@@ -139,10 +139,10 @@ const Carousel = React.createClass({
       );
     });
 
-    let controls = figures.length > 1 
+    let controls = figures.length > 1
                  ? (<div className="reit-controls">
-                      <button className="reit-controls-button left fa fa-chevron-left fa-2x" onClick={this.handleNavigation.bind(this, 'left')}></button>
-                      <button className="reit-controls-button right fa fa-chevron-right fa-2x" onClick={this.handleNavigation.bind(this, 'right')}></button>
+                      <button style={{left: '-35px'}} className="reit-controls-button left fa fa-chevron-left fa-2x" onClick={this.handleNavigation.bind(this, 'left')}></button>
+                      <button style={{right: '-35px'}} className="reit-controls-button right fa fa-chevron-right fa-2x" onClick={this.handleNavigation.bind(this, 'right')}></button>
                     </div>)
                  : (null);
 
@@ -151,7 +151,7 @@ const Carousel = React.createClass({
                      : (null);
 
     return (
-      <div className="react-editor-carousel" 
+      <div className="react-editor-carousel"
            data-hash={this.props.hash}
            onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}

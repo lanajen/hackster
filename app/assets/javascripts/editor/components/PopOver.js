@@ -99,21 +99,22 @@ const PopOver = React.createClass({
   render: function() {
     let popOverProps = this.props.popOverProps;
     let positions = this.getPositions();
-    let styles = popOverProps.version === 'init' || popOverProps.version === 'change' 
-           ? { top: ((positions.y-80) - popOverProps.parentNode.offsetTop), left: ((positions.x-120) - popOverProps.parentNode.offsetLeft) }
-           : { top: ((positions.y-80) - popOverProps.parentNode.offsetTop), left: ((positions.x-150) - popOverProps.parentNode.offsetLeft) };
+    let styles = popOverProps.version === 'init' || popOverProps.version === 'change'
+           ? { top: ((positions.y-100) - popOverProps.parentNode.offsetTop), left: ((positions.x-110) - popOverProps.parentNode.offsetLeft) }
+           : { top: ((positions.y-100) - popOverProps.parentNode.offsetTop), left: ((positions.x-150) - popOverProps.parentNode.offsetLeft) };
     let textValue = popOverProps.text || '';
     let version;
 
-    if(popOverProps.version === 'init') {
-      version = (<div className="link-popover-init-container">
-                   <input ref="input" className="link-popover-input" type="text" placeholder="Type a link" onKeyPress={this.handleKeyPress.bind(this, 'init')} onKeyDown={this.handleKeyDown}/>
-                   <input ref="input2" className="link-popover-input" type="text" placeholder="Change text" defaultValue={textValue} onKeyPress={this.handleKeyPress.bind(this, 'init')} onKeyDown={this.handleKeyDown}/>
-                 </div>);
-    } else if(popOverProps.version === 'change') {
+    if(popOverProps.version === 'init' || popOverProps.version === 'change') {
       version = (<div className="link-popover-change-container">
-                   <input ref="input" className="link-popover-input" type="text" placeholder="Type a link" defaultValue={popOverProps.href} onKeyPress={this.handleKeyPress.bind(this, 'change')} onKeyDown={this.handleKeyDown}/>
-                   <input ref="input2" className="link-popover-input" type="text" placeholder="Change text" defaultValue={textValue} onKeyPress={this.handleKeyPress.bind(this, 'change')} onKeyDown={this.handleKeyDown}/>
+                   <label>
+                     <span>Text:</span>
+                     <input ref="input2" className="link-popover-input" type="text" placeholder="Change text" defaultValue={textValue} onKeyPress={this.handleKeyPress.bind(this, popOverProps.version)} onKeyDown={this.handleKeyDown}/>
+                   </label>
+                   <label>
+                     <span>Link:</span>
+                     <input ref="input" className="link-popover-input" type="text" defaultValue={popOverProps.href} placeholder="Type a link" onKeyPress={this.handleKeyPress.bind(this, popOverProps.version)} onKeyDown={this.handleKeyDown}/>
+                   </label>
                  </div>);
     } else {
       version = (<div ref="input" className="link-popover-default-container">

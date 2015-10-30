@@ -43,7 +43,7 @@ const Editable = React.createClass({
     form.addEventListener('pe:submit', this.handleSubmit);
 
     /** Append a story_json input to the hidden form. When the .pe-submit button is pressed, the value will get sent to the server. */
-    if(document.getElementById('story_json') === null) {
+    if (document.getElementById('story_json') === null) {
       let input = document.createElement('input');
       input.type = 'hidden';
       input.id = 'story_json';

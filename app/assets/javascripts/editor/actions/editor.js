@@ -1,6 +1,6 @@
 import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
-import ImageHelpers from '../../utils/Images'; 
+import ImageHelpers from '../../utils/Images';
 
 export function setDOM(html, depth, storeIndex) {
   return {

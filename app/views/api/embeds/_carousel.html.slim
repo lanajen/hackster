@@ -15,7 +15,7 @@
           / sorting images by position
           - images.sort_by{|id, img| img[:position] }.each do |id, img|
             / fetching image from server_images array by id
-            - image = server_images.select{|o| o.id == id }.first
+            - image = server_images.select{|o| o.id.to_s == id.to_s }.first
             / rendering image partial
             = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid }
 

@@ -109,7 +109,7 @@ const Video = React.createClass({
   handleMouseOver(e) {
     let target = React.findDOMNode(e.target),
         currentNode = React.findDOMNode(this),
-        parent = Utils.getRootParentElement(currentNode), 
+        parent = Utils.getRootParentElement(currentNode),
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
     if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
@@ -120,7 +120,7 @@ const Video = React.createClass({
         (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) ||
         (target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe')) ||
         (target.nodeName === 'IMG' && target.classList.contains('react-editor-iframe')) &&
-        this.props.editor.showImageToolbar === false 
+        this.props.editor.showImageToolbar === false
       ) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
@@ -129,8 +129,8 @@ const Video = React.createClass({
         height: currentNode.offsetHeight,
         width: currentNode.offsetWidth,
         left: currentNode.offsetLeft,
-        storeIndex: this.props.storeIndex, 
-        type: 'video' 
+        storeIndex: this.props.storeIndex,
+        type: 'video'
       });
     }
   },
@@ -162,8 +162,8 @@ const Video = React.createClass({
       <div className="react-editor-video"
            data-hash={this.props.hash}
            data-video-id={data.id}
-           onFocus={this.handleFocus} 
-           onKeyDown={this.handleKeyDown} 
+           onFocus={this.handleFocus}
+           onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
            tabIndex={0}>
         <div className="react-editor-video-inner">
