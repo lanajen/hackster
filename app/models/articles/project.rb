@@ -1,5 +1,5 @@
 class Project < BaseProject
-  PUBLIC_CONTENT_TYPES = {
+  PUBLIC_CONTENT_TYPES =
     'Showcase (no or partial instructions)' => :showcase,
     'Tutorial (complete instructions)' => :tutorial,
     'Work in progress' => :wip,
