@@ -25,7 +25,7 @@ const Editable = React.createClass({
 
     this.props.actions.setProjectData(projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
-    
+
     if(!this.props.editor.dom.length) {
       this.props.actions.setIsFetching(true);
       this.props.actions.fetchInitialDOM(projectId, csrfToken);
@@ -35,7 +35,7 @@ const Editable = React.createClass({
   componentDidMount() {
     let panel = document.getElementById('story');
     let form = panel.querySelector('.simple_form');
-    
+
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
 
@@ -80,7 +80,7 @@ const Editable = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe 
+    /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
         will see that theres a difference in the serialized vs altered form and call its prompt.
       */
     if(nextProps.editor.hasUnsavedChanges && !this.props.editor.hasUnsavedChanges) {
@@ -114,7 +114,7 @@ const Editable = React.createClass({
 
     let node = Utils.getRootParentElement(this.props.editor.cursorPosition.node);
     let depth = Utils.findChildsDepthLevel(node, node.parentNode);
-    
+
     ImageUtils.handleImagesAsync(files, map => {
       let storeIndex = this.props.editor.currentStoreIndex;
       this.props.actions.isDataLoading(true);
@@ -124,11 +124,11 @@ const Editable = React.createClass({
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
         map,
-        storeIndex, 
+        storeIndex,
         this.props.editor.lastMediaHash,
-        this.props.editor.S3BucketURL, 
-        this.props.editor.AWSAccessKeyId, 
-        this.props.editor.csrfToken, 
+        this.props.editor.S3BucketURL,
+        this.props.editor.AWSAccessKeyId,
+        this.props.editor.csrfToken,
         this.props.editor.projectId
       );
 
@@ -199,7 +199,7 @@ const Editable = React.createClass({
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
           input.value = '';
-          this.props.actions.hasUnsavedChanges(false);  
+          this.props.actions.hasUnsavedChanges(false);
         }
       })
       .catch(err => {
@@ -208,7 +208,6 @@ const Editable = React.createClass({
   },
 
   handlePlaceholderClick(storeIndex) {
-    console.log('Clicked', storeIndex);
     this.props.actions.insertCE(storeIndex);
   },
 
@@ -221,13 +220,13 @@ const Editable = React.createClass({
     let content = dom.map((item, index) => {
       let html;
       if(item.type === 'CE') {
-        html = item.json.map(React.renderToStaticMarkup).join(''); 
+        html = item.json.map(React.renderToStaticMarkup).join('');
         return (<DropZone key={index} className="dropzone" onDrop={this.handleFilesDrop.bind(this, index)}>
-                  <ContentEditable html={html} 
-                                   storeIndex={index} 
-                                   editor={this.props.editor} 
-                                   actions={this.props.actions} 
-                                   hash={item.hash} 
+                  <ContentEditable html={html}
+                                   storeIndex={index}
+                                   editor={this.props.editor}
+                                   actions={this.props.actions}
+                                   hash={item.hash}
                                    onChange={this.handleContentEditableChange} />
                 </DropZone>);
       } else if(item.type === 'Carousel') {

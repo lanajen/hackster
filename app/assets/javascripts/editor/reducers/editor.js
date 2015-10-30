@@ -231,8 +231,8 @@ export default function(state = initialState, action) {
     case Editor.setCursorPosition:
       return {
         ...state,
-        cursorPosition: { 
-          pos: action.position, 
+        cursorPosition: {
+          pos: action.position,
           node: action.node,
           offset: action.offset,
           anchorNode: action.anchorNode,
@@ -328,7 +328,7 @@ export default function(state = initialState, action) {
       };
 
     case Editor.resetImageUrl:
-      mediaHash = action.mediaHash || state.lastMediaHash; 
+      mediaHash = action.mediaHash || state.lastMediaHash;
       dom = state.dom;
       newDom = resetImageUrl(dom, action.imageData, mediaHash, action.storeIndex);
       return {
@@ -423,7 +423,7 @@ function handleInitialDOM(json) {
             children: []
           });
         }
-        /** Create new Pre Blocks on newlines. 
+        /** Create new Pre Blocks on newlines.
           * Basically unmerge the Pres that we merged and sent to the server.
           * TODO: This function mutates item.json, we really should clone and return a new array.
          */
@@ -432,12 +432,12 @@ function handleInitialDOM(json) {
 
         if(item.json.length < 1) {
           let P = mapToComponent['p'];
-          item.json.push(P({ 
+          item.json.push(P({
             tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-            key: createRandomNumber(), 
+            key: createRandomNumber(),
             children: [
               _createBR()
-            ] 
+            ]
           }));
         }
         return item;
@@ -479,9 +479,9 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let reactEl = mapToComponent[tag];
-  let el = reactEl({ 
-    key: createRandomNumber(), 
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+  let el = reactEl({
+    key: createRandomNumber(),
+    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
     children: [ _createBR() ]
   });
 
@@ -604,7 +604,7 @@ function removeBlockElements(dom, map, storeIndex) {
   });
 
   _.pullAt(json, indexes); // Mutates json, removes indexes.
-  
+
   if(json[0] === undefined || json.length < 1) {
     json = [];
     let P = mapToComponent['p'];
@@ -649,7 +649,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   let children = elToReplace.props.children;
   let reactEl = mapToComponent[tag], el, tagProps, newChildren;
 
-  // If the UL is wrapped in another block el, this digs into the UL since all we care about is the lis to transform. 
+  // If the UL is wrapped in another block el, this digs into the UL since all we care about is the lis to transform.
   if(!Array.isArray(children) && children.type.displayName === 'UL') {
     children = children.props.children;
   }
@@ -664,7 +664,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
         json.splice(position+index, 1, el);
       } else {
         json.splice(position+index, 0, el);
-      } 
+      }
 
       // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
       if(el.type.displayName !== undefined && el.type.displayName === 'PRE' && position === json.length-1) {
@@ -680,11 +680,11 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
 
 function prependCE(dom, storeIndex) {
   let P = mapToComponent['p'];
-  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
-              style: {}, 
-              className: '', 
-              key: createRandomNumber(), 
-              children: [ _createBR() ] 
+  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+              style: {},
+              className: '',
+              key: createRandomNumber(),
+              children: [ _createBR() ]
             });
   let CE = {
     type: 'CE',
@@ -714,10 +714,10 @@ function insertCE(dom, storeIndex) {
 function _createCE() {
   let P = mapToComponent['p'];
   let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-              style: {}, 
-              className: '', 
-              key: createRandomNumber(), 
-              children: [ _createBR() ] 
+              style: {},
+              className: '',
+              key: createRandomNumber(),
+              children: [ _createBR() ]
             });
   let CE = {
     type: 'CE',
@@ -773,7 +773,7 @@ function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
   let json = component.json;
 
   if(toList) {
-    let li = mapToComponent['li'], 
+    let li = mapToComponent['li'],
         ul, el, depth;
 
     if(parentNode.previousLength !== null) {
@@ -867,13 +867,13 @@ function _transformChildren(dom, children, position, parentHash) {
 
   return newDom;
 }
-/** 
- * Runs after everyafter every handleUnorderedList. 
+/**
+ * Runs after everyafter every handleUnorderedList.
  * It checks if theres ULs above and below the list currently being created.
  */
 function _mergeLists(dom, storeIndex) {
   let component = dom[storeIndex],
-      json = component.json, 
+      json = component.json,
       children = [],
       reactEl = mapToComponent['ul'],
       positionsToMerge = _createPositionsToMerge(json, 'UL'),
@@ -939,7 +939,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
   if(media.images) {
     media.images[0].show = true;
   }
-  /** 
+  /**
     * If we're adding a Media block to the end of a CE.
     * Else if we're at the top of a CE, remove the current line and prepend the media block.
     * Else we need to splice the content of the CE by depth.
@@ -948,37 +948,32 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     let removedNode = json.pop();
     let itemsToRemove = 0;
 
-    let P = mapToComponent['p'];
-    let CE = {
-      type: 'CE',
-      json: [],
-      hash: rootHash
-    };
+    // let P = mapToComponent['p'];
+    // let CE = {
+    //   type: 'CE',
+    //   json: [],
+    //   hash: rootHash
+    // };
 
-    /** If theres nothing left in the element, remove it; Unless its the first CE. */
-    if(json.length < 1 && storeIndex !== 0) {
-      itemsToRemove = 1;
-    }
     /** If there's nothing left in the first CE, we repopulate it here. */
     if(storeIndex === 0 && !json.length) {
-      json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
-                  style: {}, 
-                  className: '', 
-                  key: createRandomNumber(), 
+      json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+                  style: {},
+                  className: '',
+                  key: createRandomNumber(),
                   children: [ _createBR() ]
                 }));
       component.json = json;
       dom.splice(storeIndex, 1, component);
     }
     /** Populate new CE. */
-    CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
-                  style: {}, 
-                  className: '', 
-                  key: createRandomNumber(), 
-                  children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
-                }));
-    dom.splice(storeIndex+1, itemsToRemove, media);
-    dom.splice(storeIndex+2, 0, CE);
+    // CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+    //               style: {},
+    //               className: '',
+    //               key: createRandomNumber(),
+    //               children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
+    //             }));
+    dom.splice(storeIndex, itemsToRemove, media);
   } else if(depth === 0 && json[depth+1] && json[depth+1].props.children) {
     /** Remove the line if it was a video url. */
     if(mediaType === 'Video') {
@@ -990,7 +985,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     dom.splice(storeIndex, 0, media);
   } else {
     /** Remove the line if it was video url. */
-    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth; 
+    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth;
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart, json.length);
     let topCE = { type: 'CE', hash: component.hash, json: top };
@@ -1057,7 +1052,7 @@ function deleteImagesFromCarousel(dom, map, position, storeIndex) {
   let newImages, indexOfShown;
 
   if(map.length < 1) {
-    /** If we're deleting one image, its the one shown. 
+    /** If we're deleting one image, its the one shown.
       * Else we look for it.
     */
     newImages = _.filter(images, (image, index) => {
@@ -1091,11 +1086,11 @@ function deleteImagesFromCarousel(dom, map, position, storeIndex) {
       json: [],
       hash: component.hash
     };
-    let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
-                style: {}, 
-                className: '', 
-                key: createRandomNumber(), 
-                children: [''] 
+    let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+                style: {},
+                className: '',
+                key: createRandomNumber(),
+                children: ['']
               });
     CE.json.push(p);
     dom.splice(storeIndex, 1, CE);
@@ -1154,7 +1149,7 @@ function _insertPlaceholder(dom) {
 function _createPlaceholderComponent() {
   return {
     type: 'Placeholder',
-    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) 
+    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
   };
 }
 
@@ -1405,7 +1400,7 @@ function createArrayOfComponents(dom) {
         props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: item.content });
         return el(props);
       } else {
-        let children = recurse(item.children, lastHash); 
+        let children = recurse(item.children, lastHash);
         props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: [ item.content, children ] });
         return el(props);
       }
