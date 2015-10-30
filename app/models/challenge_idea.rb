@@ -13,6 +13,7 @@ class ChallengeIdea < ActiveRecord::Base
   attr_accessible :name, :image_id
 
   validates :name, :description, :image_id, presence: true
+  validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 
   workflow do
@@ -50,6 +51,11 @@ class ChallengeIdea < ActiveRecord::Base
     self.image = Image.find_by_id(val)
   end
 
+  # WARNING!
+  # this function adds the fields to ChallengeIdea every time an instance is loaded.
+  # since classes are cached on prod, it can cause duplicate attributes to be added.
+  # moreover, there is cross-polenization between challenges, which causes bugs.
+  # we've left hstore_column because it's begnign, but validation has to be taken out
   def set_extra_fields
     return unless challenge
 
@@ -57,8 +63,16 @@ class ChallengeIdea < ActiveRecord::Base
       field_name = "cfield#{i}"
       unless respond_to? field_name
         self.class.send :hstore_column, :properties, field_name, :text
-        self.class.send :validates, field_name, presence: true if field.required
+        # self.class.send :validates, field_name, presence: true if field.required
       end
     end
   end
+
+  private
+    def validate_custom_fields_presence
+      challenge.challenge_idea_fields.each_with_index do |field, i|
+        field_name = "cfield#{i}"
+        errors.add field_name, 'is required' if field.required and send(field_name).blank?
+      end
+    end
 end

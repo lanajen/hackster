@@ -495,3 +495,35 @@
     display: none;
   }
 }
+
+.template-chooser-container {
+  a {
+    display: block;
+    float: left;
+    width: 50%;
+    border: 2px solid #ddd;
+    text-align: center;
+    padding: 40px;
+    background: #fff;
+    color: #444;
+    &:hover {
+      text-decoration: none;
+      background: #fcfcfc;
+    }
+    &:first-child {
+      @include border-radius(4px 0 0 4px);
+    }
+    &:last-child {
+      @include border-radius(0 4px 4px 0);
+      border-left: 0;
+    }
+  }
+  .option-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .option-description {
+    display: block;
+  }
+}

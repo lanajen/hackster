@@ -15,9 +15,24 @@
             = form_tag "/groups/#{platform.id}/projects/link", method: :patch, class: 'disable-on-submit' do
               .form-group
                 = select_tag :project_id, options_from_collection_for_select(platform_projects, :id, :name), include_blank: true, class: 'form-control'
-              = submit_tag 'Link project', class: 'btn btn-primary btn-block'
+              = submit_tag "Link #{@project.identifier}", class: 'btn btn-primary btn-block'
 
       .col-md-8.col-md-offset-2
         .hr or
 
-  = render "#{@project.type.underscore.pluralize}/new_form"
+  - if params[:type]
+    = render "#{@project.type.underscore.pluralize}/new_form"
+  - else
+    .col-md-8.col-md-offset-2
+      h2.text-center
+        | To start, choose a template:
+      p.text-center.mg-20
+        = link_to 'Learn more about templates', 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
+
+      .template-chooser-container.clearfix
+        a href=new_project_path(type: 'project', base_article: params[:base_article])
+          span.option-title Project
+          span.option-description Describe a standalone device you made.
+        a href=new_project_path(type: 'article', base_article: params[:base_article])
+          span.option-title Article
+          span.option-description A more flexible, blog post-like format for everything else.

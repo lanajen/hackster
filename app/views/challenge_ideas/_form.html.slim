@@ -27,7 +27,7 @@
 
   = f.input :description, as: :text, input_html: { class: "text-editor" }
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
-    = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }
+    = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }, required: field.required
 
   p
     small
