@@ -1,15 +1,12 @@
 class Api::V1::CommentsController < Api::V1::BaseController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:index]
 
   def index
-    commentable = Project.find(params[:id]).comments.includes(:parent, user: :avatar)
-    puts 'TYPTOYTOY'
-    puts commentable
-    render json: commentable, status: :ok
+    @comments = params[:type].classify.constantize.find(params[:id]).comments.includes(:parent, user: :avatar)
   end
 
   def create
-    commentable = find_commentable
+    commentable = params[:commentable][:type].classify.constantize.find(params[:commentable][:id])
     comment = commentable.comments.build(params[:comment])
     authorize! :create, comment
     comment.user = current_user

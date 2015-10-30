@@ -9,16 +9,25 @@ class CommentsContainer extends Component {
 
   constructor(props) {
     super(props);
+    this.handleCommentPost = this.handleCommentPost.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.actions.getInitialComments(this.props.commentable, this.props.csrfToken);
+  }
+
+  handleCommentPost(comment) {
+    this.props.actions.postComment(comment);
   }
 
   render() {
-    let initialForm = this.props.userSignedIn 
-                    ? (<CommentForm />) 
+    let initialForm = this.props.userSignedIn
+                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} />)
                     : (null);
     return (
       <div className="r-comments">
         {initialForm}
-        <Comments { ...this.props } />
+        <Comments actions={this.props.actions} commentStore={this.props.commentStore} />
       </div>
     );
   }
@@ -30,7 +39,7 @@ CommentsContainer.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    comments: state.comments
+    commentStore: state.comments
   };
 }
 

@@ -1,13 +1,16 @@
 import { Comments } from '../constants/ActionTypes';
 
-const initialState = {};
+const initialState = {
+  comments: []
+};
 
 export default function(state = initialState, action) {
   switch(action.type) {
 
-    case Comments.hello:
+    case Comments.setInitialComments:
       return {
-        ...state
+        ...state,
+        comments: action.comments
       };
 
     default:
