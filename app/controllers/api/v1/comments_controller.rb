@@ -1,6 +1,7 @@
 class Api::V1::CommentsController < Api::V1::BaseController
   before_filter :authenticate_user!, :except => [:index]
-
+# example whitelist
+# render nothing: true, status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon)
   def index
     @comments = params[:type].classify.constantize.find(params[:id]).comments.includes(:parent, user: :avatar)
   end
