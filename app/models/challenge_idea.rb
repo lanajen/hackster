@@ -55,8 +55,10 @@ class ChallengeIdea < ActiveRecord::Base
 
     challenge.challenge_idea_fields.each_with_index do |field, i|
       field_name = "cfield#{i}"
-      self.class.send :hstore_column, :properties, field_name, :text
-      self.class.send :validates, field_name, presence: true if field.required
+      unless respond_to? field_name
+        self.class.send :hstore_column, :properties, field_name, :text
+        self.class.send :validates, field_name, presence: true if field.required
+      end
     end
   end
 end

@@ -164,7 +164,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr .ssba)
       end
 
       def extract_code_blocks base=@article
