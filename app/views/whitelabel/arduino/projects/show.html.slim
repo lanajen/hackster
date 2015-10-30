@@ -94,7 +94,7 @@
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
                   .section-content
-                    .medium-editor= @project.story_json.empty? ? @project.description : raw(@project.story_json)
+                    .medium-editor= @project.description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
                 - if @hardware_parts.exists?
@@ -303,10 +303,6 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
-              - if @project.public?
-                section.section-thumbs
-                  = render 'actions'
-
               - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
                 - if @project.guest_name.present?
                   section.section-thumbs
@@ -366,13 +362,14 @@
                           - else
                             span.user-name= credit_line.name
 
-              - if !is_whitelabel? and @communities.exists? #@project.communities_count > 0
+              - if @project.made_public_at
                 section.section-thumbs
-                  h4
-                    | Communities this project is part of
-                    /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                  - @communities.each do |community|
-                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
+                  h4 Published on
+                  = l @project.made_public_at, format: :long_date
+
+              - if @project.public?
+                section.section-thumbs
+                  = render 'actions'
 
               - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
                 - if @project.public?
@@ -412,11 +409,6 @@
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
                           / # p= render partial: 'projects/by_team', locals: { project: project }
-
-              - if @project.made_public_at
-                section.section-thumbs
-                  h4 Published on
-                  = l @project.made_public_at, format: :long_date
 
               - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
                 section.section-thumbs.hidden-xs.hidden-sm

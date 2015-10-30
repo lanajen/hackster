@@ -1,4 +1,12 @@
 module ProjectHelper
+  def content_types_for_article article
+    content_types = article.model.class::PUBLIC_CONTENT_TYPES.dup
+    if article.content_type.present? and !article.content_type.to_sym.in? content_types.values
+      content_types.merge!({ article.content_type => article.content_type })
+    end
+    content_types
+  end
+
   def select_tag_for_part_join join, options={}
     if part = join.part
       option_attrs = {

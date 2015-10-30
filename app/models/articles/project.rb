@@ -3,16 +3,19 @@ class Project < BaseProject
     'Showcase (no or partial instructions)' => :showcase,
     'Tutorial (complete instructions)' => :tutorial,
     'Work in progress' => :wip,
-  }
+  }.freeze
   PRIVATE_CONTENT_TYPES = {
+    'Video' => :video,
     'Workshop' => :workshop,
-  }
-  CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES)
+  }.freeze
+  CONTENT_TYPES = PUBLIC_CONTENT_TYPES.merge(PRIVATE_CONTENT_TYPES).freeze
   CONTENT_TYPES_TO_HUMAN = {
     showcase: 'Project showcase',
     tutorial: 'Project tutorial',
     wip: 'Project in progress',
-  }
+    workshop: 'Workshop',
+    video: 'Video tutorial',
+  }.freeze
   DEFAULT_CONTENT_TYPE = :tutorial
 
   is_impressionable counter_cache: true, unique: :session_hash

@@ -3,9 +3,9 @@ class Article < BaseArticle
     'Getting started guide' => :getting_started,
     'Protip' => :protip,
     'Teardown/Unboxing' => :teardown,
-  }
+  }.freeze
   DEFAULT_CONTENT_TYPE = :protip
-  CONTENT_TYPES_TO_HUMAN = PUBLIC_CONTENT_TYPES.invert
+  CONTENT_TYPES_TO_HUMAN = PUBLIC_CONTENT_TYPES.invert.freeze
 
   is_impressionable counter_cache: true, unique: :session_hash
 

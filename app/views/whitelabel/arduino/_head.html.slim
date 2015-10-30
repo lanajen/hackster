@@ -1,16 +1,11 @@
 - content_for :html_class do
   = 'arduino-html'
 
-/ = stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
 - if Rails.env == 'development'
   = stylesheet_link_tag 'whitelabel/arduino/foundation2.css'
 - else
   = stylesheet_link_tag '//s3.amazonaws.com/halckemy/assets/production/whitelabel/arduino/foundation2.css'
 = stylesheet_link_tag 'whitelabel/arduino/all'
-/ # = stylesheet_link_tag 'whitelabel/arduino/typeplate'
-/ # = stylesheet_link_tag 'whitelabel/arduino/common'
-/ # = stylesheet_link_tag 'whitelabel/arduino/new_style'
-/ # = stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
 
 javascript:
    WebFontConfig = {
@@ -63,4 +58,20 @@ css:
   }
   body.whitelabel .powered-by {
     padding: 20px 0;
+  }
+  .thumb-inner {
+    padding: 10px 20px;
+    height: 150px;
+    position: relative;
+  }
+  .thumb-inner h4 {
+    margin-top: 0;
+  }
+  .thumb-inner .project-stats {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0 15px;
   }

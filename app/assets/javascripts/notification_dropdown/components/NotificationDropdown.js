@@ -20,7 +20,7 @@ var NotificationDropdown = React.createClass({
     }).filter(function(item) { return item !== undefined; });
 
     if(!notifications.length) {
-      notifications = (<p className="notification-item">Notifications about other makers' activity related to you will appear here.</p>);
+      notifications = (<p className="notification-item">Notifications about other members' activity related to you will appear here.</p>);
     }
 
     if(this.props.isLoading) {

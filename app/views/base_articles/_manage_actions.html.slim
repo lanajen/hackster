@@ -36,4 +36,4 @@
               input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
 
       li.divider
-    li= link_to 'Delete this article', @project, method: :delete, data: { confirm: "Are you sure you want to delete this article? There's no way to undo it!" }
+    li= link_to "Delete this #{@project.identifier}", @project, method: :delete, data: { confirm: "Are you sure you want to delete this #{@project.identifier}? There's no way to undo it!" }

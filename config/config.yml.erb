@@ -7,7 +7,7 @@ development:
   send_emails: false
   workers_running: false
   stats_url: www.localhost.local:5000
-  use_ssl: false
+  use_ssl: <%= ENV['USE_SSL'] == 'true' %>
 
 # development:
 #   full_host: www.lvh.me:5000
