@@ -26,7 +26,6 @@
 
   javascript:
     $('#challenge-idea-popup').on('modal:opening', function(e){
-      console.log(e);
       var btn = $(e.relatedTarget);
       var html = btn.closest('.challenge-idea').html();
       $(this).find('.challenge-idea').html(html);
