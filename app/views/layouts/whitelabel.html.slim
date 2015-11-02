@@ -47,50 +47,8 @@ html lang="en" class=content_for(:html_class)
             = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
       - unless user_signed_in?
         = render 'shared/modals/simplified_signup_popup'
-
-      / # - cache "platform-#{current_platform.id}-client-nav", tag: ["platform-#{current_platform.id}-client-nav", "platform-client-nav"] do
       - if content_for? :header
         = content_for :header
-
-        / .navbar.navbar-default.navbar-static-top#navigation
-          .navbar-in  style='position:relative;'
-            .container
-              .powered-by.pull-left
-                | projects powered by
-                = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
-
-              - if user_signed_in?
-                ul.navbar-nav.navbar-right
-                  li.btn-group.navbar-btn#user-navigation-links
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
-                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
-                      span.caret
-                    ul.dropdown-menu#nav-user-menu
-                      li= link_to 'My profile', current_user
-                      li.divider
-                      li= link_to 'Messages', conversations_path
-                      li.divider
-                      li= link_to 'Account settings', edit_user_registration_path
-                      li= link_to 'Invite friends', new_user_invitation_path
-                      li.divider
-                      li= link_to 'Log out', destroy_user_session_path, method: :delete
-
-              - else
-                ul#navbar-right.clearfix
-                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
-
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = render 'devise/shared/omniauth', css: 'icon'
-              #navbar-search.pull-right.show-on-desktop
-                = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
       - else
         .navbar.navbar-default.navbar-static-top#navigation
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
@@ -102,11 +60,6 @@ html lang="en" class=content_for(:html_class)
                   ' powered by
                   = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
             #nav-non-logo.show-on-desktop
-              / ul#nav-actions.top-menu-nav
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href=root_path(ref: 'topnav')
-                    | Projects
-
               - if user_signed_in?
                 ul.navbar-nav.navbar-right
                   li.btn-group.navbar-btn#user-navigation-links
@@ -115,6 +68,7 @@ html lang="en" class=content_for(:html_class)
                       span.caret
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
+                      li= link_to 'My projects', current_user
                       li.divider
                       li= link_to 'Messages', conversations_path
                       li.divider
@@ -139,9 +93,11 @@ html lang="en" class=content_for(:html_class)
                         = render 'devise/shared/omniauth', css: 'icon'
 
               ul#left-nav.navbar-right.top-menu-nav
-                / # - if current_user.is? :admin
-                  li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+                - if user_signed_in?
+                  li= link_to 'My projects', current_user, class: 'nav-link'
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
+                - else
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
 
               #navbar-search
                 = render 'shared/search_form'
@@ -178,10 +134,10 @@ html lang="en" class=content_for(:html_class)
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop
       = render 'shared/search_form'
-      / # = link_to 'Projects', root_path(ref: 'monav'), class: 'mo-nav-link'
       = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'My projects', current_user, class: 'mo-nav-link'
         = link_to 'Messages', conversations_path, class: 'mo-nav-link'
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'

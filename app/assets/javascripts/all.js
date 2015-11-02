@@ -128,7 +128,6 @@ function showHelloWorld() {
 
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
-  console.log('load');
   updatedScrollEventHandlers();
 });
 

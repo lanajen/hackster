@@ -33,30 +33,8 @@
       ==> link_to @challenge.name, "https://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
       | on Hackster.io
 
-  - unless @custom_header.present?
-    - cache [I18n.locale, "platform-#{current_platform.id}-client-subheading"], tag: ["platform-#{current_platform.id}-sidebar"] do
-
-      #subheading.row
-        p.col-md-8.text-center-sm.text-center-xs= current_platform.mini_resume
-
-        ul.list-inline.list-unstyled.col-md-4.submenu.text-right.text-center-sm.text-center-xs
-          - if current_platform.documentation_link.present?
-            li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
-          - if current_platform.forums_link.present?
-            li= link_to "Forums", current_platform.forums_link, target: '_blank'
-          - if current_platform.cta_link.present?
-            li= link_to current_platform.cta_text, current_platform.cta_link, target: '_blank'
-
   .mg-20.clearfix
-    .pull-left.btn-group-split
-      - unless user_signed_in?
-        = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
-      - if @custom_header.present?
-        - unless user_signed_in?
-          - if current_platform.cta_link.present?
-            = link_to current_platform.cta_text, current_platform.cta_link, target: '_blank', class: 'btn btn-sm btn-link', style: 'color: #777'
-
-    .btn-group.btn-group-default.pull-right
+    .btn-group.btn-group-default
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
           ' Sort by
@@ -67,17 +45,6 @@
           li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', root_path(sort: 'recent', by: params[:by])
           li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', root_path(sort: 'respected', by: params[:by])
           li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', root_path(sort: 'trending', by: params[:by])
-
-      .btn-group
-        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-          ' Filter by
-          span.caret
-        ul.dropdown-menu.pull-right
-          li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
-          / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -100,16 +67,6 @@
           li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', root_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           / li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', root_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', root_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
-
-  / - if params[:show_tags]
-    .row
-      css:
-        @media (min-width: 768px) { .suggestions { max-height:30px;overflow:hidden; } }
-      .col-sm-12.suggestions
-        h3 Popular tags:
-        ul.list-unstyled.list-inline
-          - @tags.each do |tag|
-            li= link_to tag, tag_path(tag)
 
   - if @projects.any?
     .row.thumb-list

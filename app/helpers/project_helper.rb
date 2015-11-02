@@ -1,7 +1,7 @@
 module ProjectHelper
   def content_types_for_article article
-    content_types = article.model.class::PUBLIC_CONTENT_TYPES
-    if article.content_type.present? and !article.content_type.in? content_types
+    content_types = article.model.class::PUBLIC_CONTENT_TYPES.dup
+    if article.content_type.present? and !article.content_type.to_sym.in? content_types.values
       content_types.merge!({ article.content_type => article.content_type })
     end
     content_types

@@ -19,7 +19,7 @@ class TwitterQueue < BaseWorker
     end
   end
 
-  # private
+  private
     def last_update
       return @last_update if @last_update
 

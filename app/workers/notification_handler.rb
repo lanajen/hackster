@@ -59,7 +59,7 @@ class NotificationHandler
         context[:users] = platform.followers.with_subscription(notification_type, 'follow_platform_activity')
       when :assignment
         user = context[:user] = User.find(context_id)
-        context[:model] = assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
+        context[:model] = assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date > ? AND assignments.submit_by_date < ?", Time.now, 24.hours.from_now).first
         context[:project] = user.project_for_assignment(assignment).first
       when :badge
         context[:model] = awarded_badge = context[:awarded_badge] = AwardedBadge.find context_id
