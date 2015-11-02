@@ -234,7 +234,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
 
-  config.omniauth :arduino, 'arduinoapi', nil, scope: 'email+uid', setup: true
+  config.omniauth :arduino, 'arduinoapi', 'eeph4luogoo3goqu2ieTiiY7hoogei1aiwahl6Ki', scope: 'email+uid', setup: true
   config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
   config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email', setup: true
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
