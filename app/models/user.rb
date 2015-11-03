@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   include HasAbility
   include HstoreColumn
   include HstoreCounter
+  include Privatable
   include Roles
   include Taggable
   include WebsitesColumn
@@ -228,7 +229,7 @@ class User < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index '!accepted_or_not_invited?'
+  has_tire_index 'private or !accepted_or_not_invited?'
 
   tire do
     mapping do

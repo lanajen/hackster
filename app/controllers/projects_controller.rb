@@ -72,8 +72,8 @@ class ProjectsController < ApplicationController
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
     if @project.public?
-      @respecting_users = @project.respecting_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
-      @replicating_users = @project.replicated_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @respecting_users = @project.respecting_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @replicating_users = @project.replicated_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
       if is_whitelabel?
         @respecting_users = @respecting_users.where(users: { enable_sharing: true })
         @replicating_users = @replicating_users.where(users: { enable_sharing: true })
