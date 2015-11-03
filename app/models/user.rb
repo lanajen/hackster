@@ -61,8 +61,6 @@ class User < ActiveRecord::Base
       'new_projects' => 'New projects related to a list, platform or user I follow',
     }
   }
-  USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
-  USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
   editable_slug :user_name
 
@@ -443,15 +441,7 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    random_user_name = self.class.generate_random_user_name
-
-    count = self.class.where("users.user_name ILIKE '#{random_user_name}-%'").count
-
-    self.user_name = "#{random_user_name}-#{count + 1}"
-  end
-
-  def self.generate_random_user_name
-    "#{USER_NAME_WORDS_LIST1.sample}-#{USER_NAME_WORDS_LIST2.sample}"
+    self.user_name = UserNameGenerator.new.user_name
   end
 
   def has_notifications?
