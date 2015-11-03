@@ -31,7 +31,7 @@ class Admin::PagesController < Admin::BaseController
     @pct_active_users7d = ((@active_users7d.to_f / @user_count) * 100).round(1)
     @active_users30d = UserActivity.where("user_activities.created_at > ? AND user_activities.created_at < ?", max_date - 30.days, max_date).group(:user_id).count.count - new_users30d
     @pct_active_users30d = ((@active_users30d.to_f / @user_count) * 100).round(1)
-    @project_impressions = Impression.where(impressionable_type: 'BaseArticle').count
+    @project_impressions = Rails.cache.fetch('pjimpr', expires_in: 1.day){ Impression.where(impressionable_type: 'BaseArticle').count }
     @replicated_projects_count = FollowRelation.where(followable_type: 'BaseArticle').count
     @owned_parts_count = FollowRelation.where(followable_type: 'Part').count
     @new_owned_parts_count = FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
