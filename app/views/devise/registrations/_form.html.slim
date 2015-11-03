@@ -1,5 +1,7 @@
 = simple_form_for resource, as: resource_name, url: registration_path(resource_name, experiment: params[:experiment]), class: 'disable-on-submit', html: { id: 'new-user-signup' } do |f|
   = f.error_notification
+  .hide
+    = debug resource.errors
 
   input name='source' value=params[:source] type='hidden'
   = f.input :email, label: false, placeholder: 'Email', autofocus: (defined?(autofocus) ? autofocus : true)
