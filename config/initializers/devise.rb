@@ -241,6 +241,14 @@ Devise.setup do |config|
   config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
   config.omniauth :windowslive, ENV['WINDOWS_LIVE_API_KEY'], ENV['WINDOWS_LIVE_API_SECRET'], scope: 'wl.basic,wl.emails', setup: true
 
+  config.omniauth :saml,
+    idp_cert: "-----BEGIN CERTIFICATE-----\nMIID/\nzCCAuegAwIBAgIJAMxzUU6MP0VIMA0GCSqGSIb3DQEBBQUAMIGUMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU2FuIEpvc2UxEDAOBgNVBAoMB0N5cHJlc3MxEDAOBgNVBAsMB0N5cHJlc3MxEDAOBgNVBAMMB0N5cHJlc3MxJzAlBgkqhkiG9w0BCQEWGGN1c3RvbWVyY2FyZUBjeXByZXNzLmNvbTAgFw0xNTAyMjAxMzM0MjFaGA8yMTE1MDIxNjEzMzQyMVowgZQxCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMREwDwYDVQQHDAhTYW4gSm9zZTEQMA4GA1UECgwHQ3lwcmVzczEQMA4GA1UECwwHQ3lwcmVzczEQMA4GA1UEAwwHQ3lwcmVzczEnMCUGCSqGSIb3DQEJARYYY3VzdG9tZXJjYXJlQGN5cHJlc3MuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuGEO5S2xK14vP8vcwS97Re74L8HH/P5+hbpm1gcSndf5KblLvnVySQuIdnUTZ6PyvoiINHtKtwwAeoiMgT/3N/GExf/uTekWG6/WN6s9fgxQqPArRxevD5VwExUgmYmfrMAgbu/xHI6h9SiifXOGJRq0Xs4Ok7782GnTPBO2YEcNiHo5sSnxZTP/K35vAJSuLvhTxaxcqEkAN1QYW4zqE4+ndUUjz/AX8/JoYYpfKpk5YijfvAeVDg3hJz6yI89ROtNA8TP06h0y+GhIwkjtit/TOcbUG5WPp1GnhN9C8vF+81oRKJYD8hVPORsPLTCr9O8zAsVOpPdqzO49vzah2wIDAQABo1AwTjAdBgNVHQ4EFgQUjLBpGJO0tR4XT4bhdNbAsEWpWpQwHwYDVR0jBBgwFoAUjLBpGJO0tR4XT4bhdNbAsEWpWpQwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAN595WxvW4NFeapQ+73PLk4yLU2RUJ16wsGjE+zejYOtA7vclpEIYtQByVoWeDopPhbCrnnepBkcde4gn+rvNPK/flKCufc9wzKFAK9LsZCtecrUkTsnMLbcV+OUF+jmDbdCN90pmGZg+lb8vIjPuB2ny7jV4miRLup50kXYJHk4FSd14TD2+dD0SXMIE47MDV8NVuQr65qG//SamV0zBZpckahd5VZUItXaCd0q7oTj1y/9dpd2ZkCLtyQ2WIcxYgWfpxT3KhPWqDG5NE7b/krlv5xcUCMJJmmjlzPSzB4sPuYaYdkw+RVXghfOVlu12MuTxGfxbkQH4mXZrl6hyVg==\n-----END CERTIFICATE-----",
+    idp_sso_target_url: 'https://www.cypress.com/simplesaml/saml2/idp/SSOService.php',
+    request_attributes: [
+        { name: 'email', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Email address' },
+        { name: 'full_name', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Full name' },
+      ]
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

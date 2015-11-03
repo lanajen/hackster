@@ -25,7 +25,7 @@
               label.control-label Social login
             .col-md-8
               ul.list-unstyled
-                - Devise.omniauth_providers.sort.each do |provider|
+                - (Devise.omniauth_providers - [:saml]).sort.each do |provider|
                   li.clearfix.mg-10
                     span.pull-left= proper_name_for_provider(provider)
                     - if resource.is_connected_with? provider

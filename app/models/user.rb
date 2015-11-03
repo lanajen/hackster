@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
-          :linkedin, :twitter, :windowslive]
+          :linkedin, :twitter, :windowslive, :saml]
 
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions

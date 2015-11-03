@@ -84,6 +84,7 @@ gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
+gem 'omniauth-saml', '1.4.1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https
