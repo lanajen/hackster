@@ -1,6 +1,6 @@
 .challenge-thumb-full
   .row
-    .col-md-3.details-container
+    .col-md-3.col-sm-4.details-container
       .details
         h4= link_to challenge.name, challenge
         .small.challenge-sponsors
@@ -19,16 +19,17 @@
             br
             strong= l challenge.end_date, format: :long_date
           = link_to 'Participate in this contest', challenge, class: 'btn btn-primary'
-    .col-md-9
+    .col-md-9.col-sm-8.hidden-xs
       .row
-        .col-md-9
+        .col-md-9.col-sm-8
           .cover style="background-image:url('#{challenge.cover_image(:medium)}')"
-        .col-md-3
+        .col-md-3.col-sm-4
           .prize
             - if prize = challenge.prizes.first
-              h5
-                i.fa.fa-star
-                span Top prize
+              div
+                h5
+                  i.fa.fa-star
+                  span Top prize
 
               - if prize.image
                 = image_tag prize.image.imgix_url(:medium)
