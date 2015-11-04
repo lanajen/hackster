@@ -17,6 +17,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     super
+
+    # logging errors that users can't see
+    if (resource.errors.messages.keys - [:email, :email_confirmation, :password]).any?
+      message = "User couldn't sign up: #{resource.errors.inspect}"
+      AppLogger.new(message, 'registrations', 'controller').log_and_notify
+    end
   end
 
   def update
