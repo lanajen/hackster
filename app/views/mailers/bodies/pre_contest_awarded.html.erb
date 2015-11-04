@@ -1,0 +1,17 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that pre-contest winners for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> have been selected and can be found at the following address: <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif', anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %>"><%= u.challenge_url(@context[:challenge], anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %></a>.</p>
+
+<p>Even though you haven't won this time, you are still welcome to participate in the second part for a chance to win even more prizes:</p>
+<ul>
+  <% @context[:challenge].prizes.each do |prize| %>
+    <li><%= prize.name %> will receive: <% if prize.description.present? %><%= prize.description %><% elsif prize.cash_value.present? %><%= number_to_currency prize.cash_value, precision: 0 %><% end %><% if prize.quantity > 1 %> (<%= prize.quantity %> are available)<% end %>.</li>
+  <% end %>
+</ul>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

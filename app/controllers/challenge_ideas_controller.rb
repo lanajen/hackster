@@ -92,6 +92,8 @@ class ChallengeIdeasController < ApplicationController
       case event
       when 'approve'
         'approved'
+      when 'mark_won'
+        'marked a winner'
       else
         "#{event}ed"
       end

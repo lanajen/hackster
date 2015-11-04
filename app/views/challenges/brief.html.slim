@@ -192,10 +192,27 @@
 
       .section-interlude
 
+      section.section-container.section-collapsible#pre_contest_winners class=(params[:show_pre_contest_winners] ? '' : 'section-toggled')
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Pre-contest winners
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
+        .section-content
+          ul.list-unstyled
+            - @challenge.ideas.won.joins(:user).order('users.full_name, users.user_name').each do |idea|
+              li
+                strong=> link_to idea.user.name, idea.user
+                ' for
+                = link_to idea.name, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }
+                .hide= render 'challenge_ideas/challenge_idea', idea: idea
+
+      .section-interlude
+
       section.section-container.section-collapsible#rules class=(params[:show_rules] ? '' : 'section-toggled')
         h2.section-title
           a.title.title-toggle href=''
-            ' Challenge rules
+            ' Contest rules
             i.fa.fa-chevron-down
             i.fa.fa-chevron-up
 
@@ -219,3 +236,22 @@
           - if @challenge.rules.present?
             h3 Full rules
             = raw @challenge.rules
+
+= content_for :js do
+
+  .popup-overlay.modal-popup id='challenge-idea-popup' data-width=600
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left style='padding:40px 40px 30px'
+        button.close data-target='#challenge-idea-popup' &times;
+
+        .challenge-idea
+
+        a.close-btn href='javascript:void(0)' data-target='#challenge-idea-popup' Close
+
+  javascript:
+    $('#challenge-idea-popup').on('modal:opening', function(e){
+      var btn = $(e.relatedTarget);
+      var html = btn.next('.hide').find('.challenge-idea').html();
+      $(this).find('.challenge-idea').html(html);
+    });
