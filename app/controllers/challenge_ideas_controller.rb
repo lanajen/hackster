@@ -83,7 +83,7 @@ class ChallengeIdeasController < ApplicationController
     if current_user.id == @idea.user_id
       redirect_to @idea.challenge, notice: "Your idea has been withdrawn."
     else
-      redirect_to challenge_ideas_path(@challenge), notice: "Idea deleted."
+      redirect_to challenge_admin_ideas_path(@idea.challenge), notice: "Idea deleted."
     end
   end
 
