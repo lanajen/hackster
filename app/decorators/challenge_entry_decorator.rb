@@ -8,9 +8,9 @@ class ChallengeEntryDecorator < ApplicationDecorator
     when :unqualified, :rejected
       'Rejected'
     when :awarded, :won
-      'Awarded a prize!'
+      model.challenge.judged? ? 'Awarded a prize!' : 'Approved'
     when :unawarded, :lost
-      'Did not win. Next time!'
+      model.challenge.judged? ? 'Did not win. Next time!' : 'Approved'
     when :fulfilled
       'Prize sent'
     end

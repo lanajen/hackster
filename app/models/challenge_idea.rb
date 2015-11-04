@@ -20,6 +20,7 @@ class ChallengeIdea < ActiveRecord::Base
     state :new do
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
+      event :mark_lost, transitions_to: :lost
     end
     state :approved do
       event :mark_needs_approval, transitions_to: :new
@@ -40,6 +41,10 @@ class ChallengeIdea < ActiveRecord::Base
 
   def self.approved
     where workflow_state: APPROVED_STATES
+  end
+
+  def self.won
+    where workflow_state: :won
   end
 
   def image_id

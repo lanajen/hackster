@@ -17,11 +17,19 @@ $select2target = null;
   $(function() {
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
-      $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
+      var redirLink = $(this).data('redirect-to');
+      $('#simplified-signup-popup input[name="redirect_to"]').val(redirLink);
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
+
       if ($(this).hasClass('with-name')) {
         $('#simplified-signup-popup .full-name-wrapper').show();
       }
+
+      var signInHref = $('#simplified-signup-popup .sign-in-link');
+      var signInLink = signInHref.attr('href');
+      signInLink += '?redirect_to=' + encodeURIComponent(redirLink);
+      signInHref.attr('href', signInLink);
+
       openModal('#simplified-signup-popup');
     });
     $('#simplified-signup-popup').on('modal:open', function(e){

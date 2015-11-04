@@ -50,7 +50,8 @@ Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
   action: :set_badge,
   badge_code: :followed_platform,
   condition: -> (context) {
-    context.instance_variable_get('@followable').type == 'Tech'
+    followable = context.instance_variable_get('@followable')
+    followable.respond_to?(:type) and followable.type == 'Platform'
   },
 }
 

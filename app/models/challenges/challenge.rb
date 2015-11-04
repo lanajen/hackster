@@ -22,6 +22,7 @@ class Challenge < ActiveRecord::Base
   has_many :entrants, -> { uniq }, through: :entries, source: :user
   has_many :faq_entries, as: :threadable
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
+  has_many :idea_entrants, -> { uniq }, through: :ideas, source: :user
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
@@ -84,6 +85,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
+  hstore_column :hproperties, :pre_contest_awarded, :boolean
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime

@@ -1,3 +1,7 @@
+- if @user.private?
+  - content_for :head do
+    meta name='robots' content='noindex'
+
 = inserts_stats_for @user
 
 - cache_unless user_is_current_or_admin?, "user-#{@user.id}-#{site_user_name}", tag: ["user-#{@user.id}"], expires_in: 3.hours do

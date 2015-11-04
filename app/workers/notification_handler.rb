@@ -71,8 +71,12 @@ class NotificationHandler
         context[:users] = base_article.users
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
-        if event.in? [:ending_soon]
+        if event.to_sym == :ending_soon
           context[:users] = challenge.registrants.includes(:challenge_entries).reject{|u| challenge.id.in? u.challenge_entries.map(&:challenge_id) }
+        elsif event.to_sym == :pre_contest_awarded
+          context[:users] = challenge.registrants - challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
+        elsif event.to_sym == :pre_contest_winners
+          context[:users] = challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
         else
           context[:users] = challenge.admins
           if event.in? [:launched_contest, :launched_pre_contest, :judged]

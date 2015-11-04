@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   include HasAbility
   include HstoreColumn
   include HstoreCounter
+  include Privatable
   include Roles
   include Taggable
   include WebsitesColumn
@@ -61,15 +62,13 @@ class User < ActiveRecord::Base
       'new_projects' => 'New projects related to a list, platform or user I follow',
     }
   }
-  USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
-  USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
   editable_slug :user_name
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :omniauthable, omniauth_providers: [:arduino, :facebook, :github, :gplus,
-           :twitter, :windowslive]
+           :twitter, :windowslive, :saml]
 
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
@@ -230,7 +229,7 @@ class User < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index '!accepted_or_not_invited?'
+  has_tire_index 'private or !accepted_or_not_invited?'
 
   tire do
     mapping do
@@ -443,15 +442,7 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    random_user_name = self.class.generate_random_user_name
-
-    count = self.class.where("users.user_name ILIKE '#{random_user_name}-%'").count
-
-    self.user_name = "#{random_user_name}-#{count + 1}"
-  end
-
-  def self.generate_random_user_name
-    "#{USER_NAME_WORDS_LIST1.sample}-#{USER_NAME_WORDS_LIST2.sample}"
+    self.user_name = UserNameGenerator.new.user_name
   end
 
   def has_notifications?
