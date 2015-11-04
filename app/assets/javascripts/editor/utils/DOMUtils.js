@@ -55,7 +55,7 @@ const Utils = {
       return anchorNode;
     }
 
-    while(childNode.parentNode && childNode.parentNode.className !== undefined 
+    while(childNode.parentNode && childNode.parentNode.className !== undefined
           && childNode.parentNode.className.split(' ').indexOf('content-editable') !== 1) {
       parentEl = childNode.parentNode;
       childNode = childNode.parentNode;
@@ -254,7 +254,7 @@ const Utils = {
       if(child === startContainer || cont === true) {
         cont = true;
         array.push(node);
-      } 
+      }
 
       if(child === endContainer) {
         cont = false;
@@ -275,7 +275,7 @@ const Utils = {
       } else {
         for(let i = 0; i < el.children.length; i++) {
           child = el.children[i];
-          
+
           if(child.getAttribute('data-hash') === hash) {
             node = child;
             return;
@@ -412,7 +412,7 @@ const Utils = {
   },
 
   getAllNodesInSelection(start, end, parent) {
-    let nodes = [], 
+    let nodes = [],
         cont = false,
         child;
 
@@ -551,7 +551,7 @@ const Utils = {
       lastChild = lastChild.lastChild;
     }
 
-    /** 
+    /**
       * If lastChild is textNode.
       * Else if the first childNode is a text node, we have our result.
       * Else somehting went awry and the node has no text node to focus, so we create one.
@@ -693,7 +693,7 @@ const Utils = {
     });
   },
 
-  /** 
+  /**
    * Maintains a specific line when the DOM is being mutated by the browser or execCommand.
    * We clean up adjacent tags and remove empty nested tags.
    */
@@ -714,13 +714,13 @@ const Utils = {
           }
 
           /** Remove BR & Empty tags. */
-          if((child.nodeName === 'BR' && node.textContent.length > 0) || 
+          if((child.nodeName === 'BR' && node.textContent.length > 0) ||
              (child.nodeName !== 'BR' && child.textContent.length < 1 && child.nodeName !== 'LI' && child.nodeName !== 'UL')) {
             node.removeChild(child);
           }
 
           /** Handles Chromes CE bug that adds span tags with inline styles.
-            * We look for length > 2 because the styles we care about are much longer than that.  
+            * We look for length > 2 because the styles we care about are much longer than that.
             * The length < 2 styles will be cleaned up by our Parser.
            */
           if(child.nodeName === 'SPAN' && child.style && child.style.length > 2 && child.previousSibling !== null) {
@@ -1167,7 +1167,7 @@ const Utils = {
         return el;
       } else {
         el.children.forEach(child => {
-          if(child.name === 'div' && child.attribs && child.attribs.class 
+          if(child.name === 'div' && child.attribs && child.attribs.class
              && child.attribs.class.indexOf('image') !== -1 && child.attribs['data-file-id']) {
             images.push(child);
           }
@@ -1333,7 +1333,7 @@ const Utils = {
       data: data,
       hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
     }
-  }, 
+  },
 
   createCodeBlock(data) {
     let pre = this.recurseAndReturnEl(data, 'pre');
@@ -1362,7 +1362,7 @@ const Utils = {
 
   recurseAndReturnEl(parentEl, elName) {
     var el;
-    
+
     (function recurse(parentEl) {
       if(!parentEl.children) {
         return parentEl;
@@ -1448,6 +1448,10 @@ const Utils = {
         /** Remove styles */
         if(item.attribs && item.attribs.style) {
           item.attribs.style = '';
+        }
+        /** Removes classes. */
+        if (item.attribs && item.attribs.class) {
+          item.attribs.class = '';
         }
 
         if(item.type === 'text' && !item.children) {

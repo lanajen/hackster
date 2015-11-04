@@ -154,11 +154,16 @@ export default function(state = initialState, action) {
 
     case Editor.insertCE:
       dom = state.dom;
-      newDom = insertCE(dom, action.storeIndex);
-      newDom = _mergeAdjacentCE(newDom);
+      obj = insertCE(dom, action.storeIndex);
+      newDom = _mergeAdjacentCE(obj.newDom);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
+        cursorPosition: {
+          ...state.cursorPosition,
+          rootHash: obj.rootHash
+        },
+        setCursorToNextLine: false
       };
 
     case Editor.setFigCaptionText:
@@ -708,7 +713,7 @@ function insertCE(dom, storeIndex) {
   let CE = _createCE();
 
   dom.splice(storeIndex, 1, CE);
-  return dom;
+  return { newDom: dom, rootHash: CE.hash };
 }
 
 function _createCE() {
@@ -948,15 +953,16 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     let removedNode = json.pop();
     let itemsToRemove = 0;
 
-    // let P = mapToComponent['p'];
-    // let CE = {
-    //   type: 'CE',
-    //   json: [],
-    //   hash: rootHash
-    // };
-
-    /** If there's nothing left in the first CE, we repopulate it here. */
-    if(storeIndex === 0 && !json.length) {
+    let P = mapToComponent['p'];
+    let CE = {
+      type: 'CE',
+      json: [],
+      hash: rootHash
+    };
+    /** Reset the rootHash that we pass back to the store as the current CE since we're not replacing it. */
+    rootHash = component.hash;
+    /** If there's nothing left in json, we repopulate it here. */
+    if(!json.length) {
       json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
                   style: {},
                   className: '',
@@ -967,12 +973,12 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
       dom.splice(storeIndex, 1, component);
     }
     /** Populate new CE. */
-    // CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-    //               style: {},
-    //               className: '',
-    //               key: createRandomNumber(),
-    //               children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
-    //             }));
+    CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+                  style: {},
+                  className: '',
+                  key: createRandomNumber(),
+                  children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
+                }));
     dom.splice(storeIndex, itemsToRemove, media);
   } else if(depth === 0 && json[depth+1] && json[depth+1].props.children) {
     /** Remove the line if it was a video url. */
@@ -981,8 +987,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     }
     component.json = json;
     /** This will place the media block above the component.  */
-    dom.splice(storeIndex, 1, component);
-    dom.splice(storeIndex, 0, media);
+    dom.splice(storeIndex, 1, media);
+    dom.splice(storeIndex+1, 0, component);
   } else {
     /** Remove the line if it was video url. */
     let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth;
@@ -1261,6 +1267,7 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
 
   if(json[position].props.children && json[position].props.children.length > 0) {
     replaceLine = 0;
+    position += 1;
   }
 
   json.splice(position, replaceLine, el);

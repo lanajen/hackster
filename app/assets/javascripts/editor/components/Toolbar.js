@@ -461,7 +461,7 @@ const Toolbar = React.createClass({
 
     ImageUtils.handleImagesAsync(filteredFiles, function(map) {
       this.props.actions.isDataLoading(true);
-      this.props.actions.createMediaByType(map, depth + 1, this.props.editor.currentStoreIndex, 'Carousel');
+      this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
       this.handleUnsavedChanges();
     }.bind(this));
@@ -471,7 +471,8 @@ const Toolbar = React.createClass({
 
   handleVideoButtonClick() {
     let { depth } = Utils.getSelectionData();
-    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth + 1, this.props.editor.currentStoreIndex);
+    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth, this.props.editor.currentStoreIndex);
+    this.props.actions.setCursorToNextLine(true);
     this.props.actions.forceUpdate(true);
   },
 

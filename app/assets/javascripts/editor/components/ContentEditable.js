@@ -21,14 +21,8 @@ const ContentEditable = React.createClass({
   },
 
   componentDidMount() {
-    /** Sets the initial cursor tracker on the first element. */
-    if(this.props.editor.cursorPosition.node === null) {
-      let firstChild = React.findDOMNode(this).firstChild;
-      if(firstChild) {
-        Utils.setCursorByNode(firstChild);
-        this.props.actions.setCursorPosition(0, firstChild, 0, firstChild, React.findDOMNode(this).getAttribute('data-hash'));
-      }
-    } else {
+    /** Sets the cursor to specific CE. */
+    if(this.props.editor.cursorPosition.rootHash === this.props.hash) {
       this.setCursorOnUpdate();
     }
 
@@ -47,18 +41,15 @@ const ContentEditable = React.createClass({
       this.props.actions.getLatestHTML(false);
     }
 
-    if(nextProps.editor.forceUpdate === true && this.props.editor.forceUpdate === false) {
+    if(nextProps.editor.forceUpdate === true) {
       this.forceUpdate(function() {
+        this.setCursorOnUpdate();
         this.props.actions.forceUpdate(false);
       }.bind(this));
-    } else if(nextProps.editor.forceUpdate === true && this.props.editor.forceUpdate === true) {
-      this.props.actions.forceUpdate(false);
     }
   },
 
   componentDidUpdate() {
-    this.setCursorOnUpdate();
-
     /** Cleans up the top tree of this CE. */
     Utils.maintainImmediateChildren(React.findDOMNode(this));
   },
@@ -172,6 +163,12 @@ const ContentEditable = React.createClass({
         * Removes br tags in immediate children.
         */
       Utils.maintainImmediateChildren(CE);
+      this.emitChange();
+
+      /** We tranformed BR's to spans for Edge, empty spans get cleaned up, Chrome needs a BR placement. #Edge Bug1 */
+      if(e.keyCode === 8 && BlockElements[parentNode.nodeName] && parentNode.textContent.length < 1 && parentNode.children.length < 1) {
+        parentNode.appendChild(document.createElement('br'));
+      }
 
       /** On Backspace; Cleans up browser adds on specific line. */
       if(e.keyCode === 8
@@ -314,7 +311,8 @@ const ContentEditable = React.createClass({
           if(parentNode.classList.contains('react-editor-placeholder-text')) {
             parentNode.classList.remove('react-editor-placeholder-text');
             parentNode.textContent = '';
-            this.props.actions.getLatestHTML(true);
+            parentNode.appendChild(document.createElement('br'));
+            this.emitChange();
           }
 
           /**
@@ -526,7 +524,8 @@ const ContentEditable = React.createClass({
     if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text') && e.keyCode !== 13) {
       parentNode.classList.remove('react-editor-placeholder-text');
       parentNode.textContent = '';
-      this.props.actions.getLatestHTML(true);
+      parentNode.appendChild(document.createElement('br'));
+      this.emitChange();
     }
 
     /** Set current storeIndex */
