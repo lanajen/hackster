@@ -67,8 +67,8 @@ export default class CarouselEditor extends Component {
   render() {
     let fonts = '"proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif';
     let buttonStyles = {
-      cancelButton: { color: '#337ab7', marginRight: 5, borderRadius: 4, textDecoration: 'none', border: '1px solid transparent', fontSize: '0.85em', fontWeight: 'bold' },
-      reorderButton: { backgroundColor: '#337ab7', color: 'white', marginRight: 24, borderRadius: 4, border: '1px solid transparent', fontSize: '0.85em', fontWeight: 'bold' }
+      cancelButton: { color: '#337ab7', marginRight: 5, borderRadius: 4, textDecoration: 'none', border: 'none', fontSize: '0.85em', fontWeight: 'bold' },
+      reorderButton: { backgroundColor: '#337ab7', color: 'white', marginRight: 24, borderRadius: 4, border: 'none', fontSize: '0.85em', fontWeight: 'bold' }
     };
     const actions = [
       <FlatButton
