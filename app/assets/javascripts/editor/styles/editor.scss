@@ -564,17 +564,25 @@ $desktop-width: 1024px;
     @include flexbox((
       display: flex
     ));
-    margin: 1%;
+    margin: 2%;
+    -webkit-transition: box-shadow 0.8s ease;
+    -moz-transition: box-shadow 0.8s ease;
+    -o-transition: box-shadow 0.8s ease;
+    transition: box-shadow 0.8s ease;
 
-    .rce-image {
+    .rce-image-wrapper {
+      background-color: #F5F5F5;
       min-width: 40%;
-      height: 124px;
       margin: 0 2%;
+      .rce-image {
+        height: 124px;
+      }
     }
 
     .rce-order {
       @include flexbox(( align-self: center ));
-      margin-left: 2%;
+      margin-left: 4%;
+      margin-right: 2%;
       font-size: 2rem;
     }
 
@@ -585,7 +593,7 @@ $desktop-width: 1024px;
         justify-content: center
       ));
       margin-right: 2%;
-      min-width: 35%;
+      width: 100%;
     }
 
     .rce-filler {
