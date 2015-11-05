@@ -211,7 +211,9 @@ class User < ActiveRecord::Base
   hstore_column :properties, :reputation_last_updated_at, :datetime
   hstore_column :properties, :toolbox_shown, :boolean
 
+  hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
+  hstore_column :hproperties, :skill_tags_string, :string
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest

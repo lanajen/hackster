@@ -28,11 +28,12 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_save record
-    return unless record.user_name.present?
-    record.build_slug unless record.slug
-    slug = record.slug
-    slug.value = record.user_name.downcase
-    slug.save
+    if record.user_name_changed? and record.user_name.present?
+      record.build_slug unless record.slug
+      slug = record.slug
+      slug.value = record.user_name.downcase
+      slug.save
+    end
   end
 
   def after_update record
