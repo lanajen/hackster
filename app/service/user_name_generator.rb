@@ -16,9 +16,9 @@ class UserNameGenerator
     def generate_user_name
       random_user_name = generate_random_user_name
 
-      last = User.select('users.user_name').where("users.user_name ILIKE '#{random_user_name}-%'").order(:created_at).last
+      last = SlugHistory.select('slug_histories.value').where("slug_histories.value ILIKE '#{random_user_name}-%'").order(:created_at).last
 
-      count = last ? last.user_name.split(/-/).last.to_i : 0
+      count = last ? last.value.split(/-/).last.to_i : 0
 
       "#{random_user_name}-#{count + 1}"
     end

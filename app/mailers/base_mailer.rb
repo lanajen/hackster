@@ -46,7 +46,7 @@ class BaseMailer < ActionMailer::Base
       group = @context[:group] if @context.include? :group
       comment = @context[:comment] if @context.include? :comment
 
-      token = token.gsub(/\|/, '')
+      token = token.gsub(/\|/, '').gsub(/\*/, '')
       case token.to_sym
       when :author_link
         url.user_url(author)
@@ -149,23 +149,35 @@ class BaseMailer < ActionMailer::Base
       }.merge(@headers)
 
       if @users.present?
-        merge_vars = {}
-        premailer.to_plain_text.scan(/\|[a-z_:]*\|/).each do |token|
-          @users.each do |user|
+        merge_vars = []
+        @users.each do |user|
+          this_users_vars ||= []
+          premailer.to_plain_text.scan(/\|[a-z_:]+\|/).each do |token|
             substitute = get_value_for_token(token, { user: user })
-            merge_vars[user.email] ||= []
-            merge_vars[user.email] << { name: token, content: substitute }
+            tag_name = token.gsub(/:/, '_').gsub(/\*/, '').gsub(/\|/, '')
+            this_users_vars << { name: tag_name, content: substitute }
           end
+          merge_vars << { rcpt: user.email, vars: this_users_vars } if this_users_vars.any?
         end
         # raise merge_vars.inspect
-        headers[:merge_vars] = merge_vars
+        if merge_vars.any?
+          # it's weird to pass an array to mandrill via the mail headers, so we
+          # pass a string and remake it an array on the mandrill side
+          headers[:merge_vars] = merge_vars.to_s
+          headers[:merge] = true
+          headers[:merge_language] = 'mailchimp'
+        end
       end
 
       # raise premailer.to_inline_css.to_s
 
+      # format merge tags for mandrill
+      plain_text = premailer.to_plain_text.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
+      inline_css = premailer.to_inline_css.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
+
       output_email = mail(headers.merge(default_headers)) do |format|
-        format.text { render text: premailer.to_plain_text }
-        format.html { render text: premailer.to_inline_css }
+        format.text { render text: plain_text }
+        format.html { render text: inline_css }
       end
 
       LogLine.create(source: :mailer, log_type: :mail_sent,
