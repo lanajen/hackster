@@ -92,20 +92,9 @@ class UsersController < ApplicationController
   def update
     @user = current_user
 
-    # copy @user, computes tags_strings first so they're added to the copy
-    @user.interest_tags_string
-    @user.skill_tags_string
-    old_user = @user.dup
-
     if @user.update_attributes(params[:user])
       respond_to do |format|
         format.html { redirect_to @user, notice: 'Profile updated.' }
-        format.js do
-          @user = @user.decorate
-          if old_user.interest_tags_string != @user.interest_tags_string or old_user.skill_tags_string != @user.skill_tags_string or old_user.user_name != @user.user_name
-            @refresh = true
-          end
-        end
 
         track_user @user.to_tracker_profile
         track_event 'Updated profile'

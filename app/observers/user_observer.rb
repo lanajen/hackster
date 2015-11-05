@@ -46,8 +46,8 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    record.interest_tags_count = record.interest_tags_string.split(',').count
-    record.skill_tags_count = record.skill_tags_string.split(',').count
+    record.interest_tags_count = record.interest_tags_cached.count
+    record.skill_tags_count = record.skill_tags_cached.count
 
     keys = []
 
