@@ -49,7 +49,9 @@ export default {
     splitBlockElement: null,
     toggleErrorMessenger: null,
     handlePastedHTML: null,
-    toggleIE: null
+    toggleIE: null,
+    transformInlineToText: null,
+    updateCarouselImages: null
   }),
 
   ImageBucket: keyMirror({

@@ -1,16 +1,15 @@
-import React from 'react/addons';
+import React from 'react';
 import { Editor } from '../constants/ActionTypes';
 import _ from 'lodash';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import { ErrorIcons } from '../utils/Constants';
-import async from 'async';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
 
-import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, H3, IMG, ELEMENT } from '../components/DomElements';
+import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, H3, IMG, BR, ELEMENT } from '../components/DomElements';
 const mapToComponent = {
   'p': React.createFactory(P),
   'a': React.createFactory(A),
@@ -24,7 +23,7 @@ const mapToComponent = {
   'code': React.createFactory('code'),
   'strong': React.createFactory('strong'),
   'span': React.createFactory('span'),
-  'br': React.createFactory('br'),
+  'br': React.createFactory(BR),
   'em': React.createFactory('em'),
   'li': React.createFactory('li'),
   'b': React.createFactory('b')
@@ -54,7 +53,7 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  let dom, newDom, cursorPosition, mediaHash;
+  let dom, newDom, cursorPosition, mediaHash, rootHash, obj;
   switch (action.type) {
 
     case Editor.setDOM:
@@ -193,7 +192,7 @@ export default function(state = initialState, action) {
     case Editor.handleUnorderedList:
       dom = state.dom;
       newDom = handleUnorderedList(dom, action.toList, action.elements, action.parent, action.storeIndex);
-      newDom = _mergeLists(dom, action.storeIndex);
+      newDom = _mergeLists(newDom, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -388,6 +387,22 @@ export default function(state = initialState, action) {
         isIE: action.bool
       };
 
+    case Editor.transformInlineToText:
+      dom = state.dom;
+      newDom = transformInlineToText(dom, action.text, action.depth, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
+      };
+
+    case Editor.updateCarouselImages:
+      dom = state.dom;
+      newDom = updateCarouselImages(dom, action.images, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
+      };
+
     default:
       return state;
   };
@@ -490,7 +505,6 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
     children: [ _createBR() ]
   });
 
-
   if(json.length < 1) {
     json.push(el);
   } else {
@@ -499,7 +513,6 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
 
   component.json = json;
   dom.splice(storeIndex, 1, component);
-
   return dom;
 }
 
@@ -626,13 +639,9 @@ function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let parentEl = json[parentPos];
-  let children = parentEl.props.children.slice();
+  let children = [].slice.apply(parentEl.props.children).filter(item => item !== null);
 
-  if(children.length > 1) {
-    children = children.filter(item => item !== null );
-  }
-
-  let newChildren = children[0].filter(function(child, index) {
+  let newChildren = children.filter(function(child, index) {
     if(index === childPos) {
       return false;
     } else {
@@ -660,7 +669,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   }
 
   _.forEach(children, function(child, index) {
-    if(child !== null && child.type.displayName !== 'DIV') {
+    if(child !== null) {
       tagProps = index === 0 ? {hash: elToReplace.props.tagProps.hash} : {hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))};
       newChildren = child.props.children;
       el = reactEl({ tagProps, children: newChildren });
@@ -772,6 +781,20 @@ function _getNodePositionByHash(dom, hash) {
   return nodePosition;
 }
 
+function handleUnorderedListxxx(dom, toList, ul, depthData, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+
+  if(toList) {
+    let reactified = createArrayOfComponents([ul]);
+    json.splice(depthData.startDepth, depthData.itemsToRemove, reactified[0]);
+    component.json = json;
+    dom.splice(storeIndex, 1, component);
+  }
+  console.log('DOM', dom);
+  return dom;
+}
+
 function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
   let children, newChildren, reactEl, tagProps;
   let component = dom[storeIndex];
@@ -793,7 +816,7 @@ function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
       } else {
         el = json[element.depth];
       }
-      newChildren = el.props.children;
+      newChildren = [].slice.apply(el.props.children).filter(item => item !== null);
       return li({ key: createRandomNumber(), children: newChildren });
     });
 
@@ -815,7 +838,7 @@ function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
 
 function _transformListItems(dom, elements, parentNode, parentPosition) {
   let parentHashToPassOn = parentNode.props.tagProps,
-      children = parentNode.props.children,
+      children = [].slice.apply(parentNode.props.children).filter(item => item !== null),
       reactUL = mapToComponent['ul'],
       newDom = dom,
       childrenToTransform, UL, tagProps ;
@@ -828,8 +851,7 @@ function _transformListItems(dom, elements, parentNode, parentPosition) {
       newDom.splice(parentPosition, 1); // Removes old UL.
       newDom = _transformChildren(newDom, childrenToTransform, parentPosition, parentHashToPassOn);
 
-      parentNode.props.children = children;
-      parentNode.props.tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
+      parentNode = React.cloneElement(parentNode, { tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) } }, children);
       newDom.splice((parentPosition + elements[elements.length-1] + 1), 0, parentNode);
     } else if(elements[0] !== 0) { // Selected one or more in the middle.
       let firstChildren = _.take(children, elements[0]);
@@ -837,7 +859,7 @@ function _transformListItems(dom, elements, parentNode, parentPosition) {
       childrenToTransform = _.pullAt(children, elements);
 
       // Start
-      parentNode.props.children = firstChildren;
+      parentNode = React.cloneElement(parentNode, {}, firstChildren);
       newDom.splice(parentPosition, 1, parentNode);
 
       // Middle
@@ -951,7 +973,6 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
    */
   if(depth === json.length-1) {
     let removedNode = json.pop();
-    let itemsToRemove = 0;
 
     let P = mapToComponent['p'];
     let CE = {
@@ -961,8 +982,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     };
     /** Reset the rootHash that we pass back to the store as the current CE since we're not replacing it. */
     rootHash = component.hash;
-    /** If there's nothing left in json, we repopulate it here. */
-    if(!json.length) {
+    /** If there's nothing left in the first CE, we repopulate it here. */
+    if(storeIndex === 0 && !json.length) {
       json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
                   style: {},
                   className: '',
@@ -979,7 +1000,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
                   key: createRandomNumber(),
                   children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
                 }));
-    dom.splice(storeIndex, itemsToRemove, media);
+    dom.splice(storeIndex+1, 0, media);
+    dom.splice(storeIndex+2, 0, CE);
   } else if(depth === 0 && json[depth+1] && json[depth+1].props.children) {
     /** Remove the line if it was a video url. */
     if(mediaType === 'Video') {
@@ -1216,6 +1238,13 @@ function removeImageFromList(dom, data, mediaHash, storeIndex) {
   return dom;
 }
 
+function updateCarouselImages(dom, images, storeIndex) {
+  let component = dom[storeIndex];
+  component.images = images;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
 function handleSplitBlockElement(dom, tagType, nodes, depth, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
@@ -1271,6 +1300,16 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   }
 
   json.splice(position, replaceLine, el);
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
+function transformInlineToText(dom, newJson, depth, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let reactified = createArrayOfComponents(newJson);
+  json.splice(depth, 1, reactified[0]);
   component.json = json;
   dom.splice(storeIndex, 1, component);
   return dom;
@@ -1408,9 +1447,9 @@ function createArrayOfComponents(dom) {
         return el(props);
       } else {
         let children = recurse(item.children, lastHash);
-        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: [ item.content, children ] });
+        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: [ item.content, ...children ] });
         return el(props);
       }
-    }).filter(item => { return item !== null || item !== undefined; });
+    }).filter(item => { return item !== null; });
   }(dom));
 }

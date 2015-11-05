@@ -375,3 +375,20 @@ export function toggleIE(bool) {
     bool: bool
   };
 }
+
+export function transformInlineToText(text, depth, storeIndex) {
+  return {
+    type: Editor.transformInlineToText,
+    text: text,
+    depth: depth,
+    storeIndex: storeIndex
+  };
+}
+
+export function updateCarouselImages(images, storeIndex) {
+  return {
+    type: Editor.updateCarouselImages,
+    images: images,
+    storeIndex: storeIndex
+  };
+}

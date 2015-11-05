@@ -244,6 +244,32 @@ const Utils = {
     return groups;
   },
 
+  createULGroupsxxx(startContainer, endContainer, parentNode) {
+    let groups = [], group = [], cont = false, child;
+
+    for(let i = 0; i < parentNode.children.length; i++) {
+      child = parentNode.children[i];
+
+      if(child === startContainer || cont === true) {
+        cont = true;
+
+        if(child.nodeName !== 'DIV') {
+          group.push({ node: child, depth: i, hash: child.getAttribute('data-hash')});
+        } else {
+          groups.push(group);
+          group = [];
+        }
+      }
+
+      if(child === endContainer) {
+        cont = false;
+        groups.push(group);
+        break;
+      }
+    }
+    return groups[0];
+  },
+
   createArrayOfDOMNodes(startContainer, endContainer, parentNode) {
     let array = [], cont = false, child, node;
 
@@ -673,6 +699,7 @@ const Utils = {
 
         return; // Node is legit, boot out early.
       } else if(child.nodeName === 'BR') {
+        console.log('DOING THIS');
         CE.removeChild(child);
       } else if(!blockEls[child.nodeName] && child.nodeType === 1) {
         P = document.createElement('p');
@@ -1445,7 +1472,7 @@ const Utils = {
           return null;
         }
 
-        /** Remove styles */
+        /** Removes styles. */
         if(item.attribs && item.attribs.style) {
           item.attribs.style = '';
         }

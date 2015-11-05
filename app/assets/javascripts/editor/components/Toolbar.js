@@ -8,6 +8,8 @@ import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
 import Parser from '../utils/Parser';
+import InlineBlock from '../models/InlineBlock';
+import List from '../models/List';
 import { BlockElements } from '../utils/Constants';
 import { LinearProgress } from 'material-ui';
 
@@ -52,20 +54,24 @@ const Toolbar = React.createClass({
   },
 
   handleExecCommand(tagType, valueArg) {
+    let { sel, anchorNode, parentNode } = Utils.getSelectionData();
     valueArg = valueArg || null;
+
+    /** Don't allow H3's to be styled. */
+    if(parentNode.nodeName === 'H3') {
+      this.props.actions.toggleErrorMessenger(true, 'Sorry, titles can\'t be styled.');
+      return;
+    }
+
     if(document) {
       document.execCommand(tagType, false, valueArg);
       this.focusCE();
       this.handleUnsavedChanges();
 
-      let { sel, anchorNode, parentNode } = Utils.getSelectionData();
 
       if(sel !== null) {
         let list = Utils.createListOfActiveElements(anchorNode, parentNode);
         this.props.actions.toggleActiveButtons(list);
-
-        /** Cleans up the dom tree. */
-        parentNode.normalize();
       }
     }
   },
@@ -81,10 +87,10 @@ const Toolbar = React.createClass({
     }
 
     if(isNodeInUL && blockEls[tagType.toUpperCase()]) { // Cleans UL's lis if transforming.
-      this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
-      this.handleUnsavedChanges();
-      this.props.actions.forceUpdate(true);
-      // this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
+      // this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
+      // this.handleUnsavedChanges();
+      // this.props.actions.forceUpdate(true);
+      this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
@@ -168,106 +174,45 @@ const Toolbar = React.createClass({
       'H3': true,
     };
 
-    /** Quicky to undo a code block if nothing is selected and user want to just undo a code at that position. */
-    if(range.startOffset === range.endOffset && Utils.isChildOfCode(anchorNode)) {
-      return;
-    }
-
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag.
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
-    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+    if(range.startOffset !== range.endOffset
+       && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
-      let ranges = { start: range.startOffset, end: range.endOffset };
-      let selectedText = range.commonAncestorContainer.textContent.slice(ranges.start, ranges.end);
+      let clone = parentNode.cloneNode(true);
+      let newHtml;
 
-      /** Mutating the DOM here. We first check for CODE removal, if not, we add a CODE node. */
+      /** Don't allow H3's to be styled. */
+      if(parentNode.nodeName === 'H3') {
+        this.props.actions.toggleErrorMessenger(true, 'Sorry, titles can\'t be styled.');
+        return;
+      }
+
       if(Utils.isNodeChildOfElement(range.startContainer, 'CODE') || Utils.isNodeChildOfElement(range.endContainer, 'CODE')) {
-        let textNode = document.createTextNode(selectedText);
-        let codeContainer = Utils.isNodeChildOfElement(range.startContainer, 'CODE') ? range.startContainer : range.endContainer;
-        let { parent, childNodes } = Utils.getParentNodeByElement(codeContainer, 'CODE');
-        /** If all the text is selected, replace CODE block with a textNode.
-          * Else we need to split the element apart and create those nodes.
-         */
-        if(selectedText === parent.textContent) {
-          parent.parentNode.replaceChild(textNode, parent);
-        } else if(range.getNodes([3]).length > 1) {
-          /** Concat all the text together, remove the current selection and replace it with a new TextNode. */
-          selectedText = range.getNodes([3])
-            .map(node => {
-              return node.textContent;
-            })
-            .reduce((a, b) => {
-              return a + b;
-            }, '');
-          range.deleteContents();
-          textNode = document.createTextNode(selectedText);
-          parent.parentNode.replaceChild(textNode, parent);
-        } else {
-          let start = parent.textContent.slice(0, range.startOffset);
-          let middle = parent.textContent.slice(range.startOffset, range.endOffset);
-          let end = parent.textContent.slice(range.endOffset);
-          range.deleteContents();
-          /** If start doesn't have a length, then the selection starts @ index 0.
-            * Else if the selection is in the middle of the text, create two new nodes.
-            * Else selection is at the end of the node, simply append a child node.
-            */
-          if(!start.length) {
-            textNode.textContent = parent.textContent;
-            parent.parentNode.insertBefore(textNode, parent);
-          } else if(start.length && end.length) {
-            let code = document.createElement('code');
-            code.textContent = end;
-            parent.textContent = start;
-            parent.parentNode.insertBefore(code, parent.nextSibling);
-            parent.parentNode.insertBefore(textNode, parent.nextSibling);
-          } else {
-            if(parent.parentNode.lastChild === parent) {
-              parent.parentNode.appendChild(textNode);
-            } else {
-              parent.parentNode.insertBefore(textNode, parent.nextSibling);
-            }
-          }
-        }
-        /** Cleans up the dom tree. */
-        parentNode.normalize();
-        this.mergeAdjacentElements(parentNode);
-        /** Reselect the text. */
-        range.selectNodeContents(textNode);
-        sel.setSingleRange(range);
-
-        this.props.actions.getLatestHTML(true);
+        newHtml = InlineBlock.removeInline(clone, range.cloneRange(), 'code');
+        return Parser.parseDOM(newHtml.outerHTML)
+          .then(json => {
+            this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
+            this.props.actions.forceUpdate(true);
+          }).catch(err => {
+            console.log(err);
+          });
       } else {
-        let code = document.createElement('code');
-        code.innerHTML = range.toHtml();
-        range.deleteContents();
-        range.insertNode(code);
-        /** Cleans up the dom tree. */
-        parentNode.normalize();
-        this.mergeAdjacentElements(parentNode);
-        /** Reselect the text. */
-        range.selectNodeContents(code.childNodes[0]);
-        sel.setSingleRange(range);
-
-        this.props.actions.getLatestHTML(true);
+        newHtml = InlineBlock.transformInline(clone, range.cloneRange(), 'code');
+        return Parser.parseDOM(newHtml.outerHTML)
+          .then(json => {
+            this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
+            this.props.actions.forceUpdate(true);
+          }).catch(err => {
+            console.log(err);
+          });
       }
       this.handleUnsavedChanges();
       this.focusCE();
     } else {
       this.handleBlockElementTransform(tagType);
     }
-  },
-
-  mergeAdjacentElements(parentNode) {
-    let children = [].slice.apply(parentNode.childNodes);
-
-    children.forEach(child => {
-      if(child.nextSibling && child.nextSibling.nodeName === child.nodeName) {
-        let nextData = child.nextSibling.innerHTML;
-        child.innerHTML += nextData;
-        parentNode.removeChild(child.nextSibling);
-      }
-    });
   },
 
   handleUnorderedList() {
@@ -344,8 +289,40 @@ const Toolbar = React.createClass({
     this.focusCE();
   },
 
+  handleUnorderedListxxx() {
+    let { sel, range, parentNode, depth } = Utils.getSelectionData();
+    let startContainerParent = Utils.getRootParentElement(range.startContainer);
+    let endContainerParent = Utils.getRootParentElement(range.endContainer);
+
+    if(parentNode.nodeName === 'UL') {  // Undo UL.
+
+    } else {  // Build UL.
+      let nodes = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
+      let promises = nodes.map(node => {
+        return Parser.parseDOM(node.node.outerHTML);
+      });
+
+      Promise.all(promises)
+        .then(results => {
+          results = results.map((item, index) => { return { json: item, hash: nodes[index].hash, depth: nodes[index].depth }});
+
+          let ul = List.toList(results);
+          this.props.actions.handleUnorderedList(true, ul, { startDepth: results[0].depth, itemsToRemove: results.length }, this.props.editor.currentStoreIndex);
+          this.props.actions.forceUpdate(true);
+        });
+    }
+    this.handleUnsavedChanges();
+    this.focusCE();
+  },
+
   handleLinkClick() {
     let { sel, range, anchorNode, parentNode } = Utils.getSelectionData();
+
+    /** Don't allow H3's to be styled. */
+    if(parentNode.nodeName === 'H3') {
+      this.props.actions.toggleErrorMessenger(true, 'Sorry, titles can\'t be styled.');
+      return;
+    }
 
     if(sel !== null) {
       let list = Utils.createListOfActiveElements(anchorNode, parentNode);

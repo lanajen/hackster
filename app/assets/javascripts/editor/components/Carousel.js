@@ -3,6 +3,7 @@ import Utils from '../utils/DOMUtils';
 import _ from 'lodash';
 import FigCaption from './FigCaption';
 import ImageToolbar from './ImageToolbar';
+import CarouselEditor from './CarouselEditor';
 
 import Hashids from 'hashids';
 
@@ -121,6 +122,14 @@ const Carousel = React.createClass({
     }
   },
 
+  handleCarouselEditorShow() {
+    this.refs.CarouselEditor.show();
+  },
+
+  handleReorderCarousel(images) {
+    this.props.actions.updateCarouselImages(images, this.props.storeIndex);
+  },
+
   render() {
     let figures = this.props.images.map((image, index) => {
       let className = image.show ? 'react-editor-figure show' : 'react-editor-figure';
@@ -147,7 +156,7 @@ const Carousel = React.createClass({
                  : (null);
 
     let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
-                     ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
+                     ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} showEditor={this.handleCarouselEditorShow} />)
                      : (null);
 
     return (
@@ -161,6 +170,7 @@ const Carousel = React.createClass({
         </div>
         {controls}
         {imageToolbar}
+        <CarouselEditor ref="CarouselEditor" initialImages={this.props.images} reorderCarousel={this.handleReorderCarousel} />
       </div>
     );
   }

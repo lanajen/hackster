@@ -129,7 +129,7 @@ export const CAROUSEL = React.createClass({
   render() {
     let tagProps = this.props.tagProps;
     let children = this.props.children;
-    let controls = children[0].props.children.length > 1 
+    let controls = children[0].props.children.length > 1
                  ? (<div key={createRandomNumber()} className="reit-controls" contentEditable={false}>
                       <button className="reit-controls-button left fa fa-chevron-left fa-2x"></button>
                       <button className="reit-controls-button right fa fa-chevron-right fa-2x"></button>

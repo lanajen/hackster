@@ -234,7 +234,6 @@ $desktop-width: 1024px;
   }
 
   .reit-controls {
-    z-index: 20;
 
     .reit-controls-button {
       color: #666;
@@ -554,5 +553,44 @@ $desktop-width: 1024px;
     border-style: solid;
     border-width: 10px 10px 0 10px;
     border-color: #208edb transparent transparent transparent;
+  }
+}
+
+/** Carousel Editor */
+.carousel-editor {
+
+  .rce-image-container {
+    @include card(2);
+    @include flexbox((
+      display: flex
+    ));
+    margin: 1%;
+
+    .rce-image {
+      min-width: 40%;
+      height: 124px;
+      margin: 0 2%;
+    }
+
+    .rce-order {
+      @include flexbox(( align-self: center ));
+      margin-left: 2%;
+      font-size: 2rem;
+    }
+
+    .rce-controls {
+      @include flexbox((
+        display: flex,
+        align-items: center,
+        justify-content: center
+      ));
+      margin-right: 2%;
+      min-width: 35%;
+    }
+
+    .rce-filler {
+      @include flexbox(( display: flex ));
+      width: 100%;
+    }
   }
 }
