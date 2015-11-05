@@ -506,6 +506,8 @@ const ContentEditable = React.createClass({
     let { sel, range, parentNode, anchorNode } = Utils.getSelectionData();
     let CE = React.findDOMNode(this);
 
+    if(!range) { return; }
+
     /** Primarily for Firefox.  Sets the range from CE to the first P. */
     if(CE.children.length === 1 && CE.firstChild.textContent < 1 && !CE.firstChild.childNodes[0]) {
       range.selectNodeContents(CE.firstChild);
