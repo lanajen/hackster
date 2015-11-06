@@ -490,6 +490,13 @@ $select2target = null;
       openModal(popup, this);
     });
 
+    $('body').on('modal:open', '.modal-focus-input', function(e){
+      var input = $(this).find('select:visible, input:visible, textarea:visible').first();
+      if (input.length) {
+        input.focus();
+      }
+    });
+
     var select2Options = function(partType){
       return {
         minimumInputLength: 3,
