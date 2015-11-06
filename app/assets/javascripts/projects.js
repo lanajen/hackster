@@ -367,12 +367,18 @@ $select2target = null;
       $('.pe-save2').hide();
     });
 
+    // handles save on ctrl+s
     if ($('.pe-save').length) {
       $(window).bind('keydown', function(e) {
         if (e.ctrlKey || e.metaKey) {
           if (String.fromCharCode(e.which).toLowerCase() == 's') {
             e.preventDefault();
-            pe.saveChanges();
+            // check if we're on a modal form and if so save it, otherwise save pe
+            if ($('form.form-within-modal:visible').length) {
+              $('form.form-within-modal:visible').submit();
+            } else {
+              pe.saveChanges();
+            }
           }
         }
       });
