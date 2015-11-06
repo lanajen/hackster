@@ -57,7 +57,7 @@ html(lang="en")
 
   body class=yield(:body_class) data-user-signed-in=user_signed_in?
     - unless params[:blank_frame]
-      - if user_signed_in? and current_user.simplified_signup?
+      - if user_signed_in? and !current_user.confirmed?
         .alert.alert-flat.alert-warning.alert-smaller
           .container
             ' Hi! Please confirm your email address by clicking the link in the email we've sent you.

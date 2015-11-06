@@ -878,4 +878,8 @@ class User < ActiveRecord::Base
     def password_required?
       (!skip_password? && !persisted? && !being_invited?) || !password.nil? || !password_confirmation.nil?
     end
+
+    def postpone_email_change?
+      super && confirmed?
+    end
 end

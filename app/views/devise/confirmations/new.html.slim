@@ -2,9 +2,12 @@
   .col-xs-12.col-md-4.col-md-offset-4
     .box
       .box-title
-        h2 Resend confirmation instructions
+        h2 Resend confirmation email
       .box-content
         = simple_form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f|
           = f.error_notification
-          = f.input :email, :required => true, placeholder: 'Email', label: false
-          = f.submit "Resend confirmation instructions", class: 'btn btn-primary btn-block'
+          - if resource.email.present?
+            = f.input :email, disabled: true, hint: "Not the right email? <a href='#{edit_user_registration_path}'>Update your email address</a>".html_safe
+          - else
+            = f.input :email, :required => true, placeholder: 'Email', label: false
+          = f.submit "Resend confirmation email", class: 'btn btn-primary btn-block'

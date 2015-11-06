@@ -1,6 +1,7 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
   def new
     self.resource = resource_class.new permitted_params_for_new[:user]
+    resource.email = current_user.email if user_signed_in?
   end
 
   # GET /resource/confirmation?confirmation_token=abcdef
