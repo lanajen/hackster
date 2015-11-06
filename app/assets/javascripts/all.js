@@ -181,7 +181,7 @@ $(function () {
   };
 
   processScroll();
-  $(window).on('scroll', processScroll);
+  $(window).on('scroll resize', processScroll);
   // end - lazy image load functions
 
   $('#project-side-nav')

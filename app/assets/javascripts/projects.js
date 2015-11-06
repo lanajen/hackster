@@ -255,7 +255,7 @@ $select2target = null;
               });
             }
             if (tab == '#story') {
-              // loadSlickSlider();
+              loadSlickSlider();
             }
             target.resize(function(){ _.resizePeContainer() });
           });

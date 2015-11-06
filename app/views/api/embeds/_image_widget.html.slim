@@ -1,4 +1,4 @@
-.image-gallery-container.lazyload
+.image-gallery-container class=(options[:mode] == :normal ? 'lazyload' : '')
   - ids = embed.widget.images.pluck(:id)
   select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
     - ids.each do |id|
@@ -13,7 +13,7 @@
         / # = link_to 'enter the URL of an image on the web', '', class: 'url'
   .image-gallery
     - embed.widget.images.each_with_index do |image, i|
-      = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget }
+      = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget, lazyload: options[:mode] == :normal }
 
 javascript:
   if (typeof(lightBoxImages) == 'undefined') {
