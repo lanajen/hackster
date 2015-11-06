@@ -58,6 +58,11 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       resource.profile_needs_care? ? user_after_registration_path : super(resource_name, resource)
     end
 
+    # The path used after resending confirmation instructions.
+    def after_resending_confirmation_instructions_path_for(resource_name)
+      is_navigational_format? and !user_signed_in? ? new_session_path(resource_name) : root_path
+    end
+
     def permitted_params_for_confirm
       params.require(resource_name).permit(:password)
     end

@@ -8,6 +8,7 @@
           = f.error_notification
           - if resource.email.present?
             = f.input :email, disabled: true, hint: "Not the right email? <a href='#{edit_user_registration_path}'>Update your email address</a>".html_safe
+            = f.input :email, as: :hidden
           - else
             = f.input :email, :required => true, placeholder: 'Email', label: false
           = f.submit "Resend confirmation email", class: 'btn btn-primary btn-block'
