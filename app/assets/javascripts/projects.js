@@ -367,6 +367,17 @@ $select2target = null;
       $('.pe-save2').hide();
     });
 
+    if ($('.pe-save').length) {
+      $(window).bind('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+          if (String.fromCharCode(e.which).toLowerCase() == 's') {
+            e.preventDefault();
+            pe.saveChanges();
+          }
+        }
+      });
+    }
+
     // event methods for software/hardware
     $('.modal-with-form')
       .on('click', '.select-file', function(e){
