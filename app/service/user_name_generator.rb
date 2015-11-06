@@ -16,10 +16,16 @@ class UserNameGenerator
     def generate_user_name
       random_user_name = generate_random_user_name
 
-      last = SlugHistory.select('slug_histories.value').where("slug_histories.value ILIKE '#{random_user_name}-%'").order(:created_at).last
+      user_name_with_hex = get_hex_version(random_user_name)
+      while SlugHistory.where(value: user_name_with_hex).exists?
+        user_name_with_hex = get_hex_version(random_user_name)
+      end
 
-      count = last ? last.value.split(/-/).last.to_i : 0
+      user_name_with_hex
+    end
 
-      "#{random_user_name}-#{count + 1}"
+    def get_hex_version random_user_name
+      hex = SecureRandom.hex(3)
+      "#{random_user_name}-#{hex}"
     end
 end
