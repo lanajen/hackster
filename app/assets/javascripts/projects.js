@@ -255,7 +255,7 @@ $select2target = null;
               });
             }
             if (tab == '#story') {
-              loadSlickSlider();
+              // loadSlickSlider();
             }
             target.resize(function(){ _.resizePeContainer() });
           });
@@ -869,7 +869,7 @@ $select2target = null;
 })(jQuery, window, document);
 
 $(window).load(function(){
-  loadSlickSlider();
+  // loadSlickSlider();
 });
 
 function ProjectCodeEditor(language, id) {
@@ -990,14 +990,16 @@ function formatPart(result) {
   return $(output);
 };
 
-function loadSlickSlider(){
-  $('.image-gallery:visible:not(.slick-initialized)').slick({
+function loadSlickSlider(target){
+  target = target || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
+  target.slick({
     accessibility: false,
     speed: 500,
     fade: true,
     dots: true,
     adaptiveHeight: true
   });
+  updatedScrollEventHandlers();
 }
 
 function openLightBox(id, start) {
