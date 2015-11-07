@@ -35,7 +35,7 @@ class SocialProfileBuilder
       )
     end
     # logger.info 'auth: ' + @user.authorizations.inspect
-    @user.generate_user_name if @user.class.where(user_name: @user.user_name).any?
+    @user.generate_user_name if SlugHistory.where(value: @user.user_name).any?
     @user.password = Devise.friendly_token[0,20]
     @user.logging_in_socially = true
     @user
