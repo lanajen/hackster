@@ -1,0 +1,28 @@
+#new_entry_challenge_share_prompt.popup-overlay.modal-popup.modal-show.modal-remove
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close.unselectable data-target='#new_entry_challenge_share_prompt' &times;
+      h2 Your entry is submitted!
+      - unless challenge.auto_approve?
+        p
+          ' We will review it as soon as we can.
+
+      p In the meantime, share the love:
+      .tweet-preview= challenge.after_submit_entry_tweet
+      ul.list-inline.small
+        li
+          a.zocial.facebook.social-share-link data-url=facebook_share(challenge_url(challenge), challenge.name, challenge.after_submit_entry_tweet, challenge.cover_image.try(:imgix_url, :cover_thumb))
+            | Facebook
+        li
+          a.zocial.twitter.social-share-link data-url=twitter_share(challenge_url(challenge), challenge.after_submit_entry_tweet)
+            | Twitter
+        li
+          a.zocial.reddit.social-share-link data-url=reddit_share(challenge_url(challenge), challenge.after_submit_entry_tweet)
+            | Reddit
+        / li
+          a.zocial.googleplus.social-share-link data-url=googleplus_share(project_url(project))
+            | Google+
+        / li
+          a.zocial.linkedin.social-share-link data-url=linkedin_share(project_url(project), project.name, project.to_personnal_message)
+            | LinkedIn
