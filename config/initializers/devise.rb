@@ -247,13 +247,10 @@ Devise.setup do |config|
   issuer_url = base_url + '/users/auth/saml/metadata'
   saml_callback_url = base_url + '/users/auth/saml/callback'
   config.omniauth :saml,
-    idp_cert: %q(-----BEGIN CERTIFICATE-----
-      MIID/
-      zCCAuegAwIBAgIJAMxzUU6MP0VIMA0GCSqGSIb3DQEBBQUAMIGUMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU2FuIEpvc2UxEDAOBgNVBAoMB0N5cHJlc3MxEDAOBgNVBAsMB0N5cHJlc3MxEDAOBgNVBAMMB0N5cHJlc3MxJzAlBgkqhkiG9w0BCQEWGGN1c3RvbWVyY2FyZUBjeXByZXNzLmNvbTAgFw0xNTAyMjAxMzM0MjFaGA8yMTE1MDIxNjEzMzQyMVowgZQxCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMREwDwYDVQQHDAhTYW4gSm9zZTEQMA4GA1UECgwHQ3lwcmVzczEQMA4GA1UECwwHQ3lwcmVzczEQMA4GA1UEAwwHQ3lwcmVzczEnMCUGCSqGSIb3DQEJARYYY3VzdG9tZXJjYXJlQGN5cHJlc3MuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuGEO5S2xK14vP8vcwS97Re74L8HH/P5+hbpm1gcSndf5KblLvnVySQuIdnUTZ6PyvoiINHtKtwwAeoiMgT/3N/GExf/uTekWG6/WN6s9fgxQqPArRxevD5VwExUgmYmfrMAgbu/xHI6h9SiifXOGJRq0Xs4Ok7782GnTPBO2YEcNiHo5sSnxZTP/K35vAJSuLvhTxaxcqEkAN1QYW4zqE4+ndUUjz/AX8/JoYYpfKpk5YijfvAeVDg3hJz6yI89ROtNA8TP06h0y+GhIwkjtit/TOcbUG5WPp1GnhN9C8vF+81oRKJYD8hVPORsPLTCr9O8zAsVOpPdqzO49vzah2wIDAQABo1AwTjAdBgNVHQ4EFgQUjLBpGJO0tR4XT4bhdNbAsEWpWpQwHwYDVR0jBBgwFoAUjLBpGJO0tR4XT4bhdNbAsEWpWpQwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAN595WxvW4NFeapQ+73PLk4yLU2RUJ16wsGjE+zejYOtA7vclpEIYtQByVoWeDopPhbCrnnepBkcde4gn+rvNPK/flKCufc9wzKFAK9LsZCtecrUkTsnMLbcV+OUF+jmDbdCN90pmGZg+lb8vIjPuB2ny7jV4miRLup50kXYJHk4FSd14TD2+dD0SXMIE47MDV8NVuQr65qG//SamV0zBZpckahd5VZUItXaCd0q7oTj1y/9dpd2ZkCLtyQ2WIcxYgWfpxT3KhPWqDG5NE7b/krlv5xcUCMJJmmjlzPSzB4sPuYaYdkw+RVXghfOVlu12MuTxGfxbkQH4mXZrl6hyVg==
-      -----END CERTIFICATE-----),
-    idp_entity_id: 'https://www.cypress.com/simplesaml/saml2/idp/metadata.php',
-    idp_sso_target_url: 'https://www.cypress.com/simplesaml/saml2/idp/SSOService.php',
-    idp_slo_target_url: 'https://www.cypress.com/simplesaml/saml2/idp/SingleLogoutService.php',
+    idp_cert: ENV['CYPRESS_CERT'],
+    idp_entity_id: ENV['CYPRESS_ENTITY_ID'],
+    idp_sso_target_url: ENV['CYPRESS_SSO_TARGET_URL'],
+    idp_slo_target_url: ENV['CYPRESS_SLO_TARGET_URL'],
     assertion_consumer_service_url: saml_callback_url,
     issuer: issuer_url,
     request_attributes: [
@@ -312,15 +309,7 @@ Devise.setup do |config|
       P9fDRwKBgCoKPamMxgqKOEP97GdsVttCq+URXGYHhYr9hM3NmxXUKx4XxZSGfk49
       pId0gbSeQD4EAInOeRUCnwvP6BOcy6FlWgH2OJdD8d14DIpvdw70V13yQt6uWbgD
       SZDH9yjWU/uaGK/R6drekNhp4wfw4vYkDzv3q8mtWoyjiFj8OwL1
-      -----END RSA PRIVATE KEY-----),
-    double_quote_xml_attribute_values: %q(
-      <ContactPerson contactType="technical">
-        <GivenName>Your</GivenName>
-        <SurName>Contact</SurName>
-        <EmailAddress>admin@example.org</EmailAddress>
-      </ContactPerson>
-    )
-
+      -----END RSA PRIVATE KEY-----)
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
