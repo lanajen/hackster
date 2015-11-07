@@ -67,6 +67,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :after_submit_idea_tweet, :string, default: 'I just submitted an idea to %{name}. You should too!'
   hstore_column :hproperties, :after_submit_entry_tweet, :string, default: 'I just submitted a project to %{name}. You should too!'
+  hstore_column :hproperties, :after_registration_tweet, :string, default: 'I just registered to %{name}. You should too!'
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
