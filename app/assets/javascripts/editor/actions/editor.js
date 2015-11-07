@@ -346,6 +346,7 @@ export function isDataLoading(bool) {
 export function splitBlockElement(tagType, nodes, depth, storeIndex) {
   return {
     type: Editor.splitBlockElement,
+    tagType: tagType,
     nodes: nodes,
     depth: depth,
     storeIndex: storeIndex
