@@ -28,11 +28,12 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_save record
-    return unless record.user_name.present?
-    record.build_slug unless record.slug
-    slug = record.slug
-    slug.value = record.user_name.downcase
-    slug.save
+    if record.user_name_changed? and record.user_name.present?
+      record.build_slug unless record.slug
+      slug = record.slug
+      slug.value = record.user_name.downcase
+      slug.save
+    end
   end
 
   def after_update record
@@ -45,8 +46,8 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    record.interest_tags_count = record.interest_tags_string.split(',').count
-    record.skill_tags_count = record.skill_tags_string.split(',').count
+    record.interest_tags_count = record.interest_tags_cached.count
+    record.skill_tags_count = record.skill_tags_cached.count
 
     keys = []
 

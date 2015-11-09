@@ -13,6 +13,57 @@ class User < ActiveRecord::Base
   include Rewardino::Nominee
 
   DEFAULT_EMAIL_FREQUENCY = :daily
+  DEFAULT_SKILLS = [
+    '3D printing',
+    'Analog output',
+    'Basic electronics',
+    'Batteries',
+    'Bluetooth',
+    'Breadboarding',
+    'C/C++',
+    'Circuit diagrams',
+    'Cloud',
+    'CNC',
+    'Communications',
+    'Console',
+    'Debugging',
+    'Digital fabrication',
+    'Digital input',
+    'Digital output',
+    'Displays',
+    'Hardware engineering',
+    'High current',
+    'I2C',
+    'Integrated Circuits',
+    'IR',
+    'Javascript',
+    'Laser cutting',
+    'Level shifting',
+    'Linux',
+    'Logic gates',
+    'Logic levels',
+    'MacOS',
+    'Mechanical engineering',
+    'Microcontrollers',
+    'Motors',
+    'PCB design',
+    'Perl',
+    'Power sources',
+    'Python',
+    'Relays',
+    'RF',
+    'Ruby',
+    'Sensors',
+    'Serial',
+    'Servos',
+    'Shift register',
+    'Software engineering',
+    'Soldering',
+    'Transistors',
+    'Wifi',
+    'Windows',
+    'Zigbee',
+  ]
   PROJECT_EMAIL_FREQUENCIES = {
     'Never' => :never,
     'Once per day' => :daily,
@@ -76,6 +127,7 @@ class User < ActiveRecord::Base
   has_many :assigned_issues, through: :assignee_issues, source: :issue
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :challenge_ideas, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy
   has_many :challenges, through: :challenge_entries
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
@@ -211,7 +263,9 @@ class User < ActiveRecord::Base
   hstore_column :properties, :reputation_last_updated_at, :datetime
   hstore_column :properties, :toolbox_shown, :boolean
 
+  hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
+  hstore_column :hproperties, :skill_tags_string, :string
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
@@ -824,5 +878,9 @@ class User < ActiveRecord::Base
 
     def password_required?
       (!skip_password? && !persisted? && !being_invited?) || !password.nil? || !password_confirmation.nil?
+    end
+
+    def postpone_email_change?
+      super && confirmed?
     end
 end

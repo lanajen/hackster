@@ -42,7 +42,13 @@ class ChallengeIdeasController < ApplicationController
 
     if @idea.save
       @idea.approve! if @challenge.auto_approve?
-      redirect_to @challenge, notice: "Your idea has been entered!"
+
+      session[:share_modal] = 'new_idea_challenge_share_prompt'
+      session[:share_modal_model] = 'challenge'
+      session[:share_modal_model_id] = @challenge.id
+      session[:share_modal_time] = 'after_redirect'
+
+      redirect_to @challenge #, notice: "Your idea has been entered!"
     else
       render :new
     end

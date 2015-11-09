@@ -40,7 +40,7 @@ class Challenge < ActiveRecord::Base
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
-  validates :teaser, :custom_tweet, length: { maximum: 140 }
+  validates :teaser, :custom_tweet, :after_submit_idea_tweet, length: { maximum: 140 }
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
@@ -65,6 +65,9 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :activate_pre_contest, :boolean
   hstore_column :hproperties, :activate_pre_registration, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :after_submit_idea_tweet, :string, default: 'I just submitted an idea to %{name}. You should too!'
+  hstore_column :hproperties, :after_submit_entry_tweet, :string, default: 'I just submitted a project to %{name}. You should too!'
+  hstore_column :hproperties, :after_registration_tweet, :string, default: 'I just registered to %{name}. You should too!'
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string

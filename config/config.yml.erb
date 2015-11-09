@@ -4,7 +4,7 @@ development:
   default_domain: localhost.local
   default_port: 5000
   port_required: true
-  send_emails: false
+  send_emails: <%= ENV['USE_MANDRILL'] == 'true' %>
   workers_running: false
   stats_url: www.localhost.local:5000
   use_ssl: <%= ENV['USE_SSL'] == 'true' %>

@@ -27,7 +27,7 @@ class NotificationHandler
     @template = template
     if context = get_context_for('email')
       # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
-      BaseMailer.deliver_email(context, find_template, opts).deliver_now
+      BaseMailer.deliver_email(context, find_template, opts).deliver_now!
     end
   end
 
@@ -72,7 +72,9 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         if event.to_sym == :ending_soon
-          context[:users] = challenge.registrants.includes(:challenge_entries).reject{|u| challenge.id.in? u.challenge_entries.map(&:challenge_id) }
+          context[:users] = challenge.registrants - challenge.entrants
+        elsif event.to_sym == :pre_contest_ending_soon
+          context[:users] = challenge.registrants - challenge.idea_entrants
         elsif event.to_sym == :pre_contest_awarded
           context[:users] = challenge.registrants - challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
         elsif event.to_sym == :pre_contest_winners
