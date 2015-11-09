@@ -41,7 +41,7 @@ const ContentEditable = React.createClass({
       this.props.actions.getLatestHTML(false);
     }
 
-    if(nextProps.editor.forceUpdate === true) {
+    if(nextProps.editor.forceUpdate === true && nextProps.editor.currentStoreIndex === this.props.storeIndex) {
       this.forceUpdate(function() {
         this.setCursorOnUpdate();
         this.props.actions.forceUpdate(false);
@@ -421,18 +421,6 @@ const ContentEditable = React.createClass({
         this.props.actions.transformBlockElement('p', depth, false, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       }
-
-      /** Firefox will empty the entire CE if user selects all and deletes.
-        * This prevents that.
-       */
-      if(range.toHtml() === CE.innerHTML) {
-        this.preventEvent(e);
-      }
-
-      /** If user deleted the paragraph under a PRE, create a new one. */
-      // if(CE.lastChild && CE.lastChild.nodeName === 'PRE' && depth === CE.children.length) {
-      //   this.createBlockElement('p', depth, false, this.props.storeIndex);
-      // }
     }
   },
 

@@ -244,32 +244,6 @@ const Utils = {
     return groups;
   },
 
-  createULGroupsxxx(startContainer, endContainer, parentNode) {
-    let groups = [], group = [], cont = false, child;
-
-    for(let i = 0; i < parentNode.children.length; i++) {
-      child = parentNode.children[i];
-
-      if(child === startContainer || cont === true) {
-        cont = true;
-
-        if(child.nodeName !== 'DIV') {
-          group.push({ node: child, depth: i, hash: child.getAttribute('data-hash')});
-        } else {
-          groups.push(group);
-          group = [];
-        }
-      }
-
-      if(child === endContainer) {
-        cont = false;
-        groups.push(group);
-        break;
-      }
-    }
-    return groups[0];
-  },
-
   createArrayOfDOMNodes(startContainer, endContainer, parentNode) {
     let array = [], cont = false, child, node;
 
@@ -457,6 +431,33 @@ const Utils = {
     }
 
     return nodes;
+  },
+
+  isElementTypeInSelection(start, end, type) {
+    let parentsChildren = [].slice.apply(start.parentNode.children);
+    let hasType = false;
+    let inBounds = false;
+
+    /** If start or end containers are of type, we found a match. */
+    if(start.nodeName === type || end.nodeName === type) {
+      return true;
+    }
+
+    parentsChildren.forEach(child => {
+      if(child === start) {
+        inBounds = true;
+      }
+
+      if(child === end) {
+        inBounds = false;
+      }
+
+      if(child.nodeName === type.toUpperCase() && inBounds) {
+        hasType = true;
+      }
+    });
+
+    return hasType;
   },
 
   isSelectionInAnchor(anchorNode) {
@@ -735,7 +736,7 @@ const Utils = {
 
           /** Merges two nodes with the same nodeName. */
           if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName
-             && child.nodeName !== 'LI' && child.nodeName !== 'UL') {
+             && child.nodeName !== 'LI' && child.nodeName !== 'UL' && child.children.length < 1) {
             child.previousSibling.textContent += child.textContent;
             node.removeChild(child);
           }

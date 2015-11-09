@@ -13,3 +13,18 @@ export const ErrorIcons = [
   '(´･∩ ･` )',
   '｡･ﾟﾟ･(>д<)･ﾟﾟ･｡'
 ];
+
+export const ElementWhiteList = {
+  'p': true,
+  'a': true,
+  'pre': true,
+  'blockquote': true,
+  'ul': true,
+  'h3': true,
+  'code': true,
+  'strong': true,
+  'span': true,
+  'br': true,
+  'em': true,
+  'li': true
+};

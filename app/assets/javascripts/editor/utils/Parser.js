@@ -2,19 +2,19 @@ import Validator from 'validator';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import _ from 'lodash';
-import { BlockElements } from './Constants';
+import { BlockElements, ElementWhiteList } from './Constants';
 
 export default {
 
-  parseDOM(html) {
+  parseDOM(html, options) {
+    options = Object.assign({}, { normalizeWhitespace: false }, options || {});
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
         if(err) console.log('DomHandler Error: ', err);
 
-        let parsedHTML = this.parseTree(dom);
-        resolve(parsedHTML);
-
-      }, { normalizeWhitespace: false });
+        let parsed = this.parseTree(dom);
+        resolve(parsed);
+      }, options);
 
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
       parser.write(html);
@@ -32,17 +32,17 @@ export default {
       }
 
       return _.map(html, (item) => {
-        let name;
-
         /** Remove these nodes immediately. */
         if(item.name === 'script' || item.name === 'comment') {
           return null;
         } else if(item.name === 'br' && depth > 1) {
           return null;
         }
+
         /** Transform tags to whitelist. */
-        if(item.name) {
-          name = this.transformTagNames(item);
+        item.name = this.transformTagNames(item);
+        if(!ElementWhiteList[item.name]) {
+          item.name = depth > 0 ? 'span' : 'p';
         }
 
         /** Remove invalid anchors. */
@@ -50,17 +50,12 @@ export default {
           return null;
         }
 
-        /** Recurse through block elements and make sure only inlines exist as children. */
-        if(item.name && blockEls[item.name.toUpperCase()]) {
-          item.children = this.cleanBlockElementChildren(item);
-        }
-
         if(item.type === 'text' && !item.children) {
           if(item.data.match(/&nbsp;/g)) {
             item.data = item.data.replace(/&nbsp;/g, ' ');
           }
 
-          if(item.data.length === 1 && (item.data === '\n' || item.data === '\r')) {
+          if(item.data && item.data.length === 1 && (item.data === '\n' || item.data === '\r')) {
             return null;
           } else {
             return {
@@ -75,7 +70,7 @@ export default {
             item.children[0].data = item.children[0].data.replace(/&nbsp;/g, ' ');
           }
           return {
-            tag: name || item.name,
+            tag: item.name,
             content: item.children[0].data,
             attribs: item.attribs,
             children: []
@@ -90,7 +85,7 @@ export default {
         }
       }).filter(item => { return item !== null; });
     }
-    return handler.call(this, html, 0);
+    return handler.call(this, html, 0, null);
   },
 
   transformTagNames(node) {
@@ -110,13 +105,21 @@ export default {
     return converter[nodeName] || nodeName;
   },
 
+  cleanTree(json) {
+    console.log('clean', json);
+    return json.map(item => {
+      item.children = this.cleanBlockElementChildren(item.children);
+      return item;
+    });
+  },
+
   cleanBlockElementChildren(node) {
     let children = node.children;
     const blockEls = BlockElements;
 
     children = (function recurse(children) {
       return children.map(child => {
-        if(!child.children || !child.children.length) {
+        if(!child.children.length) {
           return child;
         } else {
           if(child.name && blockEls[child.name.toUpperCase()]) {
@@ -191,7 +194,7 @@ export default {
   _mergeBlocksByIndex(json, indexes) {
     let merger = {},
         cont = false,
-        children, 
+        children,
         code = { tag: 'code', attribs: {}, content: '', children: [] };
 
     json.forEach((item, index) => {
@@ -245,5 +248,25 @@ export default {
     }(children));
 
     return this._createSpan(content.join(''));
+  },
+
+  toHtml(json) {
+    let attribs, tag, innards, children;
+    return json.map(item => {
+      attribs = this.getAttributesByTagType(item);
+      tag = `<${item.tag}${attribs}>`;
+      innards = item.content || '';
+      children = item.children.length < 1 ? '' : this.toHtml(item.children);
+      return item.tag === 'br' ? `<${item.tag}/>` : `${tag}${innards}${children}</${item.tag}>`;
+    }).join('');
+  },
+
+  getAttributesByTagType(item) {
+    let block = BlockElements[item.tag.toUpperCase()] ? item.tag : null;
+    let attribs = {
+      'a': ` href="${item.attribs.href}"`,
+      [block]: ` data-hash="${item.attribs['data-hash']}"`
+    };
+    return attribs[item.tag] ? attribs[item.tag] : '';
   }
 }

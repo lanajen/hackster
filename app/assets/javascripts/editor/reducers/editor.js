@@ -1,33 +1,13 @@
 import React from 'react';
-import { Editor } from '../constants/ActionTypes';
 import _ from 'lodash';
-import { createRandomNumber } from '../../utils/Helpers';
+import { Editor } from '../constants/ActionTypes';
 import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
-import { ErrorIcons } from '../utils/Constants';
+import { ErrorIcons, BlockElements } from '../utils/Constants';
+import BlockModel from '../models/Block';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
-
-import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, H3, IMG, BR, ELEMENT } from '../components/DomElements';
-const mapToComponent = {
-  'p': React.createFactory(P),
-  'a': React.createFactory(A),
-  'pre': React.createFactory(PRE),
-  'blockquote': React.createFactory(BLOCKQUOTE),
-  'ul': React.createFactory(UL),
-  'div': React.createFactory(DIV),
-  'figure': React.createFactory(FIGURE),
-  'figcaption': React.createFactory(FIGCAPTION),
-  'h3': React.createFactory(H3),
-  'code': React.createFactory('code'),
-  'strong': React.createFactory('strong'),
-  'span': React.createFactory('span'),
-  'br': React.createFactory(BR),
-  'em': React.createFactory('em'),
-  'li': React.createFactory('li'),
-  'b': React.createFactory('b')
-};
 
 const initialState = {
   dom: [],
@@ -103,7 +83,7 @@ export default function(state = initialState, action) {
 
     case Editor.createBlockElement:
       dom = state.dom;
-      newDom = handleBlockElementCreation(dom, action.tag, action.position, action.storeIndex);
+      newDom = createBlockElement(dom, action.tag, action.position, action.storeIndex);
       return {
         ...state,
         dom: newDom,
@@ -117,14 +97,6 @@ export default function(state = initialState, action) {
         ...state,
         dom: newDom,
         setCursorToNextLine: action.setCursorToNextLine
-      };
-
-    case Editor.cleanElement:
-      dom = state.dom;
-      newDom = cleanElement(dom, action.depth, action.childDepth);
-      return {
-        ...state,
-        dom: newDom
       };
 
     case Editor.transformBlockElement:
@@ -172,22 +144,6 @@ export default function(state = initialState, action) {
         ...state,
         dom: newDom
       }
-
-    case Editor.removeBlockElements:
-      dom = state.dom;
-      newDom = removeBlockElements(dom, action.map, action.storeIndex);
-      return {
-        ...state,
-        dom: newDom
-      };
-
-    case Editor.wrapOrUnwrapBlockElement:
-      dom = state.dom;
-      newDom = wrapOrUnwrapBlockElement(dom, action.tag, action.depth, action.shouldWrap);
-      return {
-        ...state,
-        dom: newDom
-      };
 
     case Editor.handleUnorderedList:
       dom = state.dom;
@@ -357,7 +313,7 @@ export default function(state = initialState, action) {
 
     case Editor.splitBlockElement:
       dom = state.dom;
-      newDom = handleSplitBlockElement(dom, action.tagType, action.nodes, action.depth, action.storeIndex);
+      newDom = splitBlockElement(dom, action.tagType, action.nodes, action.depth, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -408,6 +364,13 @@ export default function(state = initialState, action) {
   };
 }
 
+function updateComponentAtIndex(dom, json, index, depth) {
+  let component = dom[index];
+  component.json = json;
+  dom.splice(index, 1, component);
+  return dom;
+}
+
 function handleInitialDOM(json) {
   json = json || [];
 
@@ -415,52 +378,33 @@ function handleInitialDOM(json) {
     let CE = {
       type: 'CE',
       hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)),
-      json: [{
-        tag: 'p',
-        content: 'Tell your story...',
-        attribs: {
-          class: "react-editor-placeholder-text"
-        },
-        children: [{
-          tag: 'br',
-          content: '',
-          attribs: {},
-          children: []
-        }]
-      }]
+      json: [_createElement('p', {
+        attribs: { 'data-hash': _createNewHash(), class: 'react-editor-placeholder-text' },
+        children: [ _createElement('br') ]
+      })]
     };
-    CE.json = createArrayOfComponents(CE.json);
+
     json.push(CE);
   } else {
     json = json.map(item => {
       if(item.type === 'CE') {
-        /** Puts a br in the first element. */
-        if(item.json.length === 1 && item.json[0].children.length < 1) {
-          item.json[0].children.push({
-            tag: 'br',
-            content: '',
-            attribs: {},
-            children: []
-          });
-        }
         /** Create new Pre Blocks on newlines.
           * Basically unmerge the Pres that we merged and sent to the server.
           * TODO: This function mutates item.json, we really should clone and return a new array.
          */
-        _unmergePreBlocks(item.json);
-        item.json = createArrayOfComponents(item.json);
+        if(item.json.length > 0) {
+          _unmergePreBlocks(item.json);
+        }
 
         if(item.json.length < 1) {
-          let P = mapToComponent['p'];
-          item.json.push(P({
-            tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-            key: createRandomNumber(),
-            children: [
-              _createBR()
-            ]
-          }));
+          item.json.push(_createElement('p'));
         }
-        return item;
+
+        return {
+          hash: item.hash,
+          type: item.type,
+          json: _sweepInitialJson(item.json)
+        };
       } else if(item.type === 'Carousel') {
         item.images[0].show = true;
         return item;
@@ -469,8 +413,31 @@ function handleInitialDOM(json) {
       }
     });
   }
-
   return json;
+}
+
+function _sweepInitialJson(json) {
+  return json.map(item => {
+
+    if(!item.attribs['data-hash']) {
+      item.attribs['data-hash'] = _createNewHash();
+    }
+
+    if((!item.content || item.content.length < 1) && item.children.length < 1) {
+      item.children.push(_createElement('br'));
+    }
+
+    return item;
+  });
+}
+
+function _hashifyBlockElements(json) {
+  return json.map(item => {
+    if(!item.attribs['data-hash']) {
+      item.attribs['data-hash'] = _createNewHash();
+    }
+    return item;
+  });
 }
 
 function _unmergePreBlocks(json) {
@@ -495,15 +462,31 @@ function _unmergePreBlocks(json) {
   });
 }
 
-function handleBlockElementCreation(dom, tag, position, storeIndex) {
+function _createElement(tag, options) {
+  options = options === Object(options) ? options : {};
+  let hash = BlockElements[tag.toUpperCase()]
+           ? options.attribs && options.attribs['data-hash'] ? options.attribs['data-hash'] : _createNewHash()
+           : '';
+  return {
+    attribs: options.attribs ? { ...options.attribs, 'data-hash': hash } : { 'data-hash': hash },
+    children: options.children || [],
+    content: options.content || '',
+    tag: tag,
+  };
+}
+
+function _createNewHash() {
+  return hashids.encode(Math.floor(Math.random() * 9999 + 1));
+};
+
+/**
+ * Block Elements
+ */
+
+function createBlockElement(dom, tag, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
-  let reactEl = mapToComponent[tag];
-  let el = reactEl({
-    key: createRandomNumber(),
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-    children: [ _createBR() ]
-  });
+  let el = _createElement(tag, { children: [_createElement('br')] });
 
   if(json.length < 1) {
     json.push(el);
@@ -519,16 +502,10 @@ function handleBlockElementCreation(dom, tag, position, storeIndex) {
 function createBlockElementWithChildren(dom, children, tag, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
-  let factory = mapToComponent[tag];
-  let htmlToKeep = createArrayOfComponents(children.htmlToKeep);
-  let htmlToAppend = createArrayOfComponents(children.htmlToAppend);
-  let newEl = factory({
-    key: createRandomNumber,
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-    children: htmlToAppend
+  let currentEl = _createElement(tag, { children: children.htmlToKeep, attribs: { 'data-hash': json[position].attribs['data-hash'] }});
+  let newEl = _createElement(tag, {
+    children:  BlockModel.doesChildrenHaveText(children.htmlToAppend) ? children.htmlToAppend : [ _createElement('br') ]
   });
-
-  let currentEl = React.cloneElement(json[position], {}, htmlToKeep);
 
   json.splice(position, 1, currentEl);
   json.splice(position+1, 0, newEl);
@@ -538,96 +515,113 @@ function createBlockElementWithChildren(dom, children, tag, position, storeIndex
   return dom;
 }
 
-function _deepSearchForNodeByHash(rootEl, offset, hash) {
-  let target, stack = [];
-
-  (function recurse(el) {
-    let child;
-
-
-    if(el.props.children.length < 1) {
-      return;
-    }
-
-    stack.push(el.props.children);
-
-    for(let i = 0; i < el.props.children.length; i++) {
-      child = el.props.children[i];
-
-      if(child.props.tagProps.hash === hash) {
-        target = { position: i, child: child };
-        break;
-      }
-
-      if(Array.isArray(child.props.children) && child.props.children.length) {
-        recurse(child);
-      }
-    }
-
-  }(rootEl));
-
-  return target;
-}
-
 function transformBlockElement(dom, tag, position, cleanChildren, storeIndex) {
   let component = dom[storeIndex];
   let elToReplace = component.json[position];
+  let children, el;
 
-  if(elToReplace !== undefined) {
-    let displayName = elToReplace.type.displayName ? elToReplace.type.displayName : elToReplace.type;
-    /** Reverts tag to P. */
-    if(tag === displayName.toLowerCase()) {
-      tag = 'p';
-    }
-    let reactEl = mapToComponent[tag];
-    let tagProps = { hash: elToReplace.props.tagProps.hash } || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    let children = cleanChildren === true ? [ _createBR() ] : elToReplace.props.children;
+  /** Basic 'UNDO', reverts tag to p. */
+  tag = tag === elToReplace.tag ? 'p' : tag;
+  children = cleanChildren || elToReplace.children.length < 1 ? [ _createElement('br') ] : elToReplace.children;
 
-    /** Makes sure theres always a br in an empty tag. */
-    if(children.length < 1) { children = _createBR() }
+  el = tag === 'h3'
+     ? _createElement(tag, { attribs: { ['data-hash']: elToReplace.attribs['data-hash' ] }, content: BlockModel.getTextContent([elToReplace]) })
+     : _createElement(tag, { attribs: { ['data-hash']: elToReplace.attribs['data-hash' ] }, content: elToReplace.content, children: children });
+  component.json.splice(position, 1, el);
 
-    let el = reactEl({key: createRandomNumber(), tagProps, children: children });
-
-    component.json.splice(position, 1, el);
-    // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
-    if(el.type.displayName !== undefined && el.type.displayName === 'PRE' && position === component.json.length-1) {
-      component.json = appendParagraph(component.json);
-    }
-
-    dom.splice(storeIndex, 1, component);
-    return dom;
-  } else {
-    return;
+  /** If the Element is a PRE and its the last El in the DOM, append a Paragraph below it. */
+  if(el.tag === 'pre' && position === component.json.length-1) {
+    component.json.push(_createElement('p'));
   }
+
+  dom.splice(storeIndex, 1, component);
+  return dom;
 }
 
 function transformBlockElements(dom, tag, elements, storeIndex) {
   let newDom;
+
   elements.forEach((element) => {
-    /** Prevents any DIV block to be transformed. */
-    if(element.nodeName !== 'DIV' && element.nodeName !== 'UL') {
+    if(element.nodeName !== 'UL') {
       newDom = transformBlockElement(newDom || dom, tag, element.depth, false, storeIndex);
-    } else if(element.nodeName === 'UL') {
+    } else {
       newDom = transformListItemsToBlockElements(newDom || dom, tag, element.depth, storeIndex);
     }
   });
   return newDom;
 }
 
-function removeBlockElements(dom, map, storeIndex) {
+function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
-  let indexes = _.map(map, function(item) {
-    return item.depth;
+  let elToReplace = json[position];
+  let el;
+
+  elToReplace.children.forEach((child, index) => {
+    el = _createElement(tag, {
+      attribs: { 'data-hash': index === 0 ? elToReplace.attribs['data-hash'] : _createNewHash() },
+      content: BlockModel.getTextContent([child])
+    });
+
+    if(index === 0) {
+      json.splice(position+index, 1, el);
+    } else {
+      json.splice(position+index, 0, el);
+    }
   });
 
-  _.pullAt(json, indexes); // Mutates json, removes indexes.
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
 
-  if(json[0] === undefined || json.length < 1) {
-    json = [];
-    let P = mapToComponent['p'];
-    let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    json.push( P({key: createRandomNumber(), tagProps, children: ['']}) );
+function splitBlockElement(dom, tagType, nodes, depth, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let prevTag = json[depth].tag;
+
+  let top = _createElement(prevTag, { attribs: { ['data-hash']: json[depth].attribs['data-hash'] }, children: nodes.shift() });
+  json.splice(depth, 1, top);
+
+  let middle = _createElement(tagType, { children: nodes.shift() });
+  json.splice(depth+1, 0, middle);
+
+  if(nodes[0].length) {
+    let bottom = _createElement(prevTag, { children: nodes.shift() });
+    json.splice(depth+2, 0, bottom);
+  }
+
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
+/**
+ * Inline Elements.
+ */
+function transformInlineToText(dom, newJson, depth, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  json.splice(depth, 1, newJson[0]);
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
+/**
+ * List Items
+ */
+function handleUnorderedList(dom, toList, elements, depthData, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+
+  if(toList) {
+    json.splice(depthData.startDepth, depthData.itemsToRemove, elements);
+  } else {
+    elements.forEach((element, index)=> {
+      element.node.attribs['data-hash'] = element.node.attribs['data-hash'] ? element.node.attribs['data-hash'] : _createNewHash();
+      json.splice(element.listDepth+index, index === 0 ? 1 : 0, element.node);
+    });
   }
 
   component.json = json;
@@ -639,52 +633,44 @@ function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let parentEl = json[parentPos];
-  let children = [].slice.apply(parentEl.props.children).filter(item => item !== null);
-
-  let newChildren = children.filter(function(child, index) {
+  let filteredChildren = parentEl.children.filter((child, index) => {
     if(index === childPos) {
       return false;
     } else {
       return true;
     }
   });
-  let newParentEl = React.cloneElement(parentEl, {}, newChildren);
 
-  json.splice(parentPos, 1, newParentEl);
+  parentEl.children = filteredChildren;
+  json.splice(parentPos, 1, parentEl);
+
   component.json = json;
   dom.splice(storeIndex, 1, component);
   return dom;
 }
 
-function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
-  let component = dom[storeIndex];
-  let json = component.json;
-  let elToReplace = json[position];
-  let children = elToReplace.props.children;
-  let reactEl = mapToComponent[tag], el, tagProps, newChildren;
+/**
+ * Runs after everyafter every handleUnorderedList.
+ * It checks if theres ULs above and below the list currently being created.
+ */
+function _mergeLists(dom, storeIndex) {
+  let component = dom[storeIndex],
+      json = component.json,
+      children = [],
+      positionsToMerge = _createPositionsToMerge(json, 'ul'),
+      UL;
 
-  // If the UL is wrapped in another block el, this digs into the UL since all we care about is the lis to transform.
-  if(!Array.isArray(children) && children.type.displayName === 'UL') {
-    children = children.props.children;
-  }
+  _.forEach(positionsToMerge, function(position) {
+    let parentNodePos = position.shift();
+    let parentNode = json[parentNodePos];
+    children = [];
 
-  _.forEach(children, function(child, index) {
-    if(child !== null) {
-      tagProps = index === 0 ? {hash: elToReplace.props.tagProps.hash} : {hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))};
-      newChildren = child.props.children;
-      el = reactEl({ tagProps, children: newChildren });
+    _.forEach(position, function(ulPos) {
+      children = children.concat(json[ulPos].children);
+    });
 
-      if(index === 0) {
-        json.splice(position+index, 1, el);
-      } else {
-        json.splice(position+index, 0, el);
-      }
-
-      // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
-      if(el.type.displayName !== undefined && el.type.displayName === 'PRE' && position === json.length-1) {
-        json = appendParagraph(json);
-      }
-    }
+    UL = _createElement('ul', { attribs: { 'data-hash': parentNode.attribs['data-hash'] }, children: parentNode.children.concat(children) });
+    json.splice(parentNodePos, position.length+1, UL);
   });
 
   component.json = json;
@@ -692,26 +678,36 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   return dom;
 }
 
+function _createPositionsToMerge(json, tagType) {
+  let positions = [],
+      positionsToMerge = [],
+      isEl;
+
+  _.forEach(json, function(child, index) {
+    isEl = child.tag === tagType;
+    if(isEl) {
+      positions.push(index);
+    } else {
+      positions = [];
+    }
+
+    if(positions.length > 1 && (json[index+1] === undefined || json[index+1].tag !== tagType)) {
+      positionsToMerge.push(positions);
+    }
+  });
+
+  return positionsToMerge;
+}
+
 function prependCE(dom, storeIndex) {
-  let P = mapToComponent['p'];
-  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-              style: {},
-              className: '',
-              key: createRandomNumber(),
-              children: [ _createBR() ]
-            });
-  let CE = {
-    type: 'CE',
-    json: [],
-    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
-  };
-  CE.json.push(p);
+  let CE = _createCE();
+
   /** We either add a CE or append a Paragraph to the previous CE. */
   if(storeIndex === 0 || dom[storeIndex-1].type !== 'CE') {
     dom.splice(storeIndex, 0, CE);
   } else {
     let component = dom[storeIndex-1];
-    component.json.push(p);
+    component.json.push(CE.json[0]);
     dom.splice(storeIndex-1, 1, component);
   }
 
@@ -725,26 +721,19 @@ function insertCE(dom, storeIndex) {
   return { newDom: dom, rootHash: CE.hash };
 }
 
-function _createCE() {
-  let P = mapToComponent['p'];
-  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-              style: {},
-              className: '',
-              key: createRandomNumber(),
-              children: [ _createBR() ]
-            });
-  let CE = {
+function _createCE(hash, pHash) {
+  return {
     type: 'CE',
-    json: [],
-    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    json: [ _createEmptyParagraph(pHash || null) ],
+    hash: hash || _createNewHash()
   };
-  CE.json.push(p);
-  return CE;
 }
 
-function _createBR() {
-  let BR = mapToComponent['br'];
-  return BR({ key: createRandomNumber(), tagProps: {}, children: [] });
+function _createEmptyParagraph(hash) {
+  return _createElement('p', {
+    attribs: { 'data-hash': hash || _createNewHash() },
+    children: [ _createElement('br') ]
+  });
 }
 
 function setFigCaptionText(dom, figureIndex, storeIndex, html) {
@@ -767,184 +756,6 @@ function setFigCaptionText(dom, figureIndex, storeIndex, html) {
   return dom;
 }
 
-function _getNodePositionByHash(dom, hash) {
-  let nodePosition;
-
-  for(var i = 0; i < dom.length; i++) {
-    let node = dom[i];
-    if(node.props.tagProps.hash === hash) {
-      nodePosition = i;
-      break;
-    }
-  }
-
-  return nodePosition;
-}
-
-function handleUnorderedListxxx(dom, toList, ul, depthData, storeIndex) {
-  let component = dom[storeIndex];
-  let json = component.json;
-
-  if(toList) {
-    let reactified = createArrayOfComponents([ul]);
-    json.splice(depthData.startDepth, depthData.itemsToRemove, reactified[0]);
-    component.json = json;
-    dom.splice(storeIndex, 1, component);
-  }
-  console.log('DOM', dom);
-  return dom;
-}
-
-function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
-  let children, newChildren, reactEl, tagProps;
-  let component = dom[storeIndex];
-  let json = component.json;
-
-  if(toList) {
-    let li = mapToComponent['li'],
-        ul, el, depth;
-
-    if(parentNode.previousLength !== null) {
-      depth = elements[0].depth - (parentNode.previousLength - 1);
-    } else {
-      depth = elements[0].depth;
-    }
-
-    children = _.map(elements, function(element) {
-      if(parentNode.previousLength !== null) {
-        el = json[element.depth - (parentNode.previousLength - 1)];
-      } else {
-        el = json[element.depth];
-      }
-      newChildren = [].slice.apply(el.props.children).filter(item => item !== null);
-      return li({ key: createRandomNumber(), children: newChildren });
-    });
-
-    reactEl = mapToComponent['ul'];
-    tagProps = json[depth].props.tagProps || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    ul = reactEl({ key: createRandomNumber(), tagProps, children: children });
-
-    json.splice(depth, elements.length, ul);
-  } else {
-    let depth = _getNodePositionByHash(json, parentNode.hash);
-    let ul = depth !== undefined ? json[depth] : json[parentNode.depth];
-    json = _transformListItems(json, elements, ul, depth || parentNode.depth);
-  }
-
-  component.json = json;
-  dom.splice(storeIndex, 1, component);
-  return dom;
-}
-
-function _transformListItems(dom, elements, parentNode, parentPosition) {
-  let parentHashToPassOn = parentNode.props.tagProps,
-      children = [].slice.apply(parentNode.props.children).filter(item => item !== null),
-      reactUL = mapToComponent['ul'],
-      newDom = dom,
-      childrenToTransform, UL, tagProps ;
-
-  if(children.length > elements.length) {
-
-    if(elements[0] === 0) { // Selected the first li and maybe more.
-      childrenToTransform = _.pullAt(children, elements);  // _.pullAt mutates children.
-
-      newDom.splice(parentPosition, 1); // Removes old UL.
-      newDom = _transformChildren(newDom, childrenToTransform, parentPosition, parentHashToPassOn);
-
-      parentNode = React.cloneElement(parentNode, { tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) } }, children);
-      newDom.splice((parentPosition + elements[elements.length-1] + 1), 0, parentNode);
-    } else if(elements[0] !== 0) { // Selected one or more in the middle.
-      let firstChildren = _.take(children, elements[0]);
-      let restOfChildren = _.slice(children, (elements[elements.length-1]+1));
-      childrenToTransform = _.pullAt(children, elements);
-
-      // Start
-      parentNode = React.cloneElement(parentNode, {}, firstChildren);
-      newDom.splice(parentPosition, 1, parentNode);
-
-      // Middle
-      newDom = _transformChildren(newDom, childrenToTransform, (parentPosition + 1));
-
-      // End
-      if(restOfChildren.length > 0) {
-        UL = reactUL({tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, children: restOfChildren});
-        newDom.splice((parentPosition + elements[elements.length-1] + 1), 0, UL);
-      }
-    }
-
-  } else if(children.length === elements.length) { // Every li is selected.
-    newDom.splice(parentPosition, 1);
-    newDom = _transformChildren(newDom, children, parentPosition, parentHashToPassOn);
-  }
-
-  return newDom;
-}
-
-function _transformChildren(dom, children, position, parentHash) {
-  let newDom = dom;
-  let reactP = mapToComponent['p'];
-  let P, tagProps, newChildren;
-
-  _.forEach(children, function(child, index) {
-    tagProps = (index === 0 && parentHash !== undefined) ? parentHash : { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    newChildren = child.props.children;
-    P = reactP({tagProps, children: newChildren});
-    newDom.splice((parseInt(position) + index), 0, P);
-  });
-
-  return newDom;
-}
-/**
- * Runs after everyafter every handleUnorderedList.
- * It checks if theres ULs above and below the list currently being created.
- */
-function _mergeLists(dom, storeIndex) {
-  let component = dom[storeIndex],
-      json = component.json,
-      children = [],
-      reactEl = mapToComponent['ul'],
-      positionsToMerge = _createPositionsToMerge(json, 'UL'),
-      UL;
-
-  _.forEach(positionsToMerge, function(position) {
-    let parentNodePos = position.shift();
-    let parentNode = json[parentNodePos];
-    children = [];
-
-    _.forEach(position, function(ulPos) {
-      children = children.concat(json[ulPos].props.children);
-    });
-
-    UL = reactEl({tagProps: parentNode.props.tagProps, children: parentNode.props.children.concat(children)});
-    json.splice(parentNodePos, position.length+1, UL);
-  });
-
-  component.json = json;
-  dom.splice(storeIndex, 1, component);
-  return dom;
-}
-
-function _createPositionsToMerge(newDom, el) {
-  let positions = [],
-      positionsToMerge = [],
-      isEl;
-
-  _.forEach(newDom, function(child, index) {
-    isEl = child.type.displayName && child.type.displayName === el;
-    if(isEl) {
-      positions.push(index);
-    } else {
-      positions = [];
-    }
-
-    if(positions.length > 1 && (newDom[index+1] === undefined || newDom[index+1].type.displayName !== el)) {
-      positionsToMerge.push(positions);
-    }
-  });
-
-  return positionsToMerge;
-}
-
 function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
   let component = dom[storeIndex];
   let json = component.json;
@@ -959,7 +770,6 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
                 video: map,
                 hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
               };
-  let rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
   let mediaHash = media.hash;
 
   /** Sets the first image to show. */
@@ -972,43 +782,31 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     * Else we need to splice the content of the CE by depth.
    */
   if(depth === json.length-1) {
-    let removedNode = json.pop();
-
-    let P = mapToComponent['p'];
+    let currNode = json.length === 1 && mediaType === 'Carousel' ? json[0] : json.pop();
     let CE = {
       type: 'CE',
-      json: [],
-      hash: rootHash
+      json: [ _createElement('p', {
+        attribs: { 'data-hash': currNode.attribs['data-hash'] },
+        children: mediaType === 'Carousel' ? [ currNode.children ] : [ _createElement('br') ]
+      })],
+      hash: _createNewHash()
     };
-    /** Reset the rootHash that we pass back to the store as the current CE since we're not replacing it. */
-    rootHash = component.hash;
-    /** If there's nothing left in the first CE, we repopulate it here. */
-    if(storeIndex === 0 && !json.length) {
-      json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-                  style: {},
-                  className: '',
-                  key: createRandomNumber(),
-                  children: [ _createBR() ]
-                }));
-      component.json = json;
-      dom.splice(storeIndex, 1, component);
+
+    if(json.length < 1) {
+      json.push( _createEmptyParagraph() );
     }
-    /** Populate new CE. */
-    CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-                  style: {},
-                  className: '',
-                  key: createRandomNumber(),
-                  children: mediaType === 'Carousel' ? [removedNode.props.children] : [ _createBR() ]
-                }));
+
+    component.json = json;
+    dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, CE);
-  } else if(depth === 0 && json[depth+1] && json[depth+1].props.children) {
+  } else if(depth === 0 && json[depth+1] && json[depth+1].children) {
     /** Remove the line if it was a video url. */
     if(mediaType === 'Video') {
       json.splice(depth, 1);
     }
     component.json = json;
-    /** This will place the media block above the component.  */
+    /** This will place the media block above the component. */
     dom.splice(storeIndex, 1, media);
     dom.splice(storeIndex+1, 0, component);
   } else {
@@ -1017,14 +815,14 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart, json.length);
     let topCE = { type: 'CE', hash: component.hash, json: top };
-    let bottomCE = { type: 'CE', hash: rootHash, json: bottom };
+    let bottomCE = { type: 'CE', hash: _createNewHash(), json: bottom };
 
     dom.splice(storeIndex, 1, topCE);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, bottomCE);
   }
 
-  return { newDom: dom, rootHash: rootHash, mediaHash: mediaHash };
+  return { newDom: dom, rootHash: component.hash, mediaHash: mediaHash };
 }
 
 function addImagesToCarousel(dom, map, storeIndex) {
@@ -1079,10 +877,10 @@ function deleteImagesFromCarousel(dom, map, position, storeIndex) {
   let replaceShownImage = false;
   let newImages, indexOfShown;
 
+  /** If we're deleting one image, its the one shown.
+    * Else we look for it.
+  */
   if(map.length < 1) {
-    /** If we're deleting one image, its the one shown.
-      * Else we look for it.
-    */
     newImages = _.filter(images, (image, index) => {
       if(image.show) {
         replaceShownImage = true;
@@ -1108,20 +906,7 @@ function deleteImagesFromCarousel(dom, map, position, storeIndex) {
 
   /** If user is deleting all the images, delete the carousel while we're at it and be done with it. */
   if(newImages.length < 1) {
-    let P = mapToComponent['p'];
-    let CE = {
-      type: 'CE',
-      json: [],
-      hash: component.hash
-    };
-    let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-                style: {},
-                className: '',
-                key: createRandomNumber(),
-                children: ['']
-              });
-    CE.json.push(p);
-    dom.splice(storeIndex, 1, CE);
+    dom.splice(storeIndex, 1, _createCE(component.hash));
     return dom;
   }
 
@@ -1177,7 +962,7 @@ function _insertPlaceholder(dom) {
 function _createPlaceholderComponent() {
   return {
     type: 'Placeholder',
-    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    hash: _createNewHash()
   };
 }
 
@@ -1245,56 +1030,16 @@ function updateCarouselImages(dom, images, storeIndex) {
   return dom;
 }
 
-function handleSplitBlockElement(dom, tagType, nodes, depth, storeIndex) {
-  let component = dom[storeIndex];
-  let json = component.json;
-
-  let node = React.cloneElement(json[depth], {}, createArrayOfComponents(nodes.shift()));
-  json.splice(depth, 1, node);
-
-  let Blockquote = mapToComponent['blockquote'];
-  let BLOCKQUOTE = Blockquote({
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-    key: createRandomNumber(),
-    children: createArrayOfComponents(nodes.shift())
-  });
-
-  json.splice(depth+1, 0, BLOCKQUOTE);
-
-  if(nodes[0].length) {
-    let p = mapToComponent['p'];
-    let P = p({
-      tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
-      key: createRandomNumber(),
-      children: createArrayOfComponents(nodes.shift())
-    });
-
-    json.splice(depth+2, 0, P);
-  }
-
-  component.json = json;
-  dom.splice(storeIndex, 1, component);
-  return dom;
-}
-
-function appendParagraph(dom) {
-  let P = mapToComponent['p'];
-  let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-  dom.push( P({ key: createRandomNumber(), tagProps, children: [ _createBR() ] }) );
-
-  return dom;
-}
-
 function createPlaceholderElement(dom, msg, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let replaceLine = 1;
+  let el = _createElement('p', {
+    attribs: { 'data-hash': _createNewHash(), class: 'react-editor-placeholder-text' },
+    children: [msg]
+  });
 
-  let P = mapToComponent['p'];
-  let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-  let el = P({ key: createRandomNumber(), tagProps, className: 'react-editor-placeholder-text', children: [msg] });
-
-  if(json[position].props.children && json[position].props.children.length > 0) {
+  if(json[position].children && json[position].children.length > 0) {
     replaceLine = 0;
     position += 1;
   }
@@ -1305,41 +1050,14 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   return dom;
 }
 
-function transformInlineToText(dom, newJson, depth, storeIndex) {
-  let component = dom[storeIndex];
-  let json = component.json;
-  let reactified = createArrayOfComponents(newJson);
-  json.splice(depth, 1, reactified[0]);
-  component.json = json;
-  dom.splice(storeIndex, 1, component);
-  return dom;
-}
-
 function handlePastedHTML(dom, html, depth, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
-  let reactified = html.map(item => {
-    if(item.type === 'CE') {
-      let json = createArrayOfComponents(item.json);
-      item.json = json;
-      return item;
-    } else {
-      return item;
-    }
-  });
 
-  if(reactified.length > 1) {
-    console.log('GREAT THAN ONE!', reactified);
-    // We need to splice the current depth of the current component.  Add all these things then create a new CE if there was anything after
-    // our current depth.  RETURN A ROOTHASH on CURSOR POSITION.
-    // storeIndex += 1;
-    // reactified.forEach((item, index) => {
-    //   dom.splice(storeIndex+index, 0, item)
-    // });
-    let merged = _mergeAdjacentCE(reactified);
-    console.log();
+  if(html.length > 1) {
+    let merged = _mergeAdjacentCE(html);
   } else {
-    reactified[0].json.forEach((item, index) => {
+    html[0].json.forEach((item, index) => {
       json.splice(depth+index, 0, item);
     });
     component.json = json;
@@ -1352,104 +1070,4 @@ function randomizeErrorActionIcon() {
   const icons = ErrorIcons;
   let random = Math.floor(Math.random() * icons.length);
   return icons[random];
-}
-
-function createStyleObjectFromString(string) {
-  let item,
-      styleProp,
-      styleObj = {},
-      styles = string.split(';');
-
-  _.forEach(styles, function(s, index) {
-    if(s !== '' && s !== undefined && s.split(':').indexOf('url(data') === 1) {  // Checks for base64 dataURIs.
-      let uri;
-      item = s.split(':');
-      uri =  item[1] + ':' + item[2] + ';' + styles[index+1];
-      styles[index+1] = '';
-      styleObj[item[0]] = uri;
-    } else if(s !== '' || s !== undefined) {
-      item = s.split(':');
-      styleProp = item[0].split('-').length > 0 ? camelCaseStyleProp(item[0]) : item[0];
-      styleObj[styleProp] = item[1];
-    }
-  });
-
-  return styleObj;
-}
-
-function camelCaseStyleProp(prop) {
-  let arr = prop.split('-');
-
-  arr = arr.map((item, index) => {
-    if(index !== 0) {
-      return item.substring(0, 1).toUpperCase() + item.substring(1, item.length);
-    } else {
-      return item;
-    }
-  });
-
-  return arr.join('');
-}
-
-function updateComponentAtIndex(dom, json, index, depth) {
-  let component = dom[index];
-  component.json = createArrayOfComponents(json);
-  dom.splice(index, 1, component);
-  return dom;
-}
-
-function createArrayOfComponents(dom) {
-  return (function recurse(source, lastHash) {
-    lastHash = lastHash || null;
-    return source.map(function(item, index) {
-      item.attribs = item.attribs || {};
-      let tagProps = { tag: item.tag }, style = {}, hash, props, el;
-      let tagPropsMap = {
-        'a': Object.assign({}, { href: item.attribs.href }),
-        'iframe': Object.assign({}, { src: item.attribs.src }),
-        'img': Object.assign({}, { dataSrc: item.attribs['data-src'], src: item.attribs.src, alt: item.attribs.alt }),
-        'div': Object.assign({}, { contentEditable: item.attribs.contenteditable || null,
-                                   'data-type': item.attribs['data-type'] || null,
-                                   'data-video-id': item.attribs['data-video-id'] || null }),
-        'figure': Object.assign({}, { type: item.attribs['data-type'] || null })
-      };
-
-      /** Creates React Factory component.  Forces unknown elements to Paragraphs */
-      el = mapToComponent[item.tag];
-      if(el === undefined) {
-        el = mapToComponent['p'];
-      }
-
-      /** Creates style object from string */
-      if(item.attribs.style && item.tag !== 'span') {
-        style = Object.assign({}, createStyleObjectFromString(item.attribs.style));
-      }
-      if(tagPropsMap.hasOwnProperty(item.tag) && item.attribs) {
-        tagProps = tagPropsMap[item.tag];
-      }
-
-      /** Adds a hash attribute for quicker lookup and replaces duplicates from content editable. */
-      if(item.attribs === undefined || item.attribs['data-hash'] === undefined) {
-        tagProps = Object.assign(tagProps, { hash: hashids.encode(index + Math.floor(Math.random() * 9999 + 1)) });
-      } else if(item.attribs['data-hash'] !== undefined) {
-        hash = item.attribs['data-hash'];
-
-        if(lastHash === hash) {
-          hash = hashids.encode(index + Math.floor(Math.random() * 9999 + 1));
-        }
-
-        tagProps = Object.assign({}, tagProps, { hash: hash });
-        lastHash = hash;
-      }
-
-      if(!item.children || !item.children.length) {
-        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: item.content });
-        return el(props);
-      } else {
-        let children = recurse(item.children, lastHash);
-        props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: [ item.content, ...children ] });
-        return el(props);
-      }
-    }).filter(item => { return item !== null; });
-  }(dom));
 }

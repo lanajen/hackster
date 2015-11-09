@@ -8,8 +8,9 @@ import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
 import Parser from '../utils/Parser';
-import InlineBlock from '../models/InlineBlock';
-import List from '../models/List';
+import InlineBlockModel from '../models/InlineBlock';
+import BlockModel from '../models/Block';
+import ListModel from '../models/List';
 import { BlockElements } from '../utils/Constants';
 import { LinearProgress } from 'material-ui';
 
@@ -81,11 +82,6 @@ const Toolbar = React.createClass({
     let isNodeInUL = Utils.isNodeInUL(commonAncestorContainer);
     let blockEls = BlockElements;
 
-    if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
-       || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {  // Don't transform Media.
-      return;
-    }
-
     if(isNodeInUL && blockEls[tagType.toUpperCase()]) { // Cleans UL's lis if transforming.
       // this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
       // this.handleUnsavedChanges();
@@ -129,19 +125,9 @@ const Toolbar = React.createClass({
        && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1
        && range.toString().trim().length > 0) {
-      /** Builds the selected text from scratch honoring all wrapped node types.  We delete the selection in the Promise handler. */
-      let selectedHtml = range.toHtml();
-      let selectedBuild = Utils.getParentNodeByElement(anchorNode, 'P');
-      let newNodeTree = Utils.createNewNodeTree(selectedBuild.childNodes, selectedHtml);
 
-      let parentHtml = parentNode.innerHTML;
-      let startIndex = parentHtml.indexOf(selectedHtml);
-
-      let intro = parentHtml.slice(0, startIndex);
-      let blockquote = newNodeTree.innerHTML;
-      let outro = parentHtml.slice(startIndex + selectedHtml.length);
-
-      let promises = [ intro, blockquote, outro ].map(html => {
+      let { top, middle, bottom } = BlockModel.splitTextAtSelection(range, anchorNode, parentNode);
+      let promises = [ top, middle, bottom ].map(html => {
         return Parser.parseDOM(html);
       });
 
@@ -154,7 +140,6 @@ const Toolbar = React.createClass({
           range.deleteContents();
         })
         .catch(err => {
-          //TODO: Handle Err;
           console.log('ERR:' + err);
         });
     } else {
@@ -190,7 +175,7 @@ const Toolbar = React.createClass({
       }
 
       if(Utils.isNodeChildOfElement(range.startContainer, 'CODE') || Utils.isNodeChildOfElement(range.endContainer, 'CODE')) {
-        newHtml = InlineBlock.removeInline(clone, range.cloneRange(), 'code');
+        newHtml = InlineBlockModel.removeInline(clone, range.cloneRange(), 'code');
         return Parser.parseDOM(newHtml.outerHTML)
           .then(json => {
             this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
@@ -199,7 +184,7 @@ const Toolbar = React.createClass({
             console.log(err);
           });
       } else {
-        newHtml = InlineBlock.transformInline(clone, range.cloneRange(), 'code');
+        newHtml = InlineBlockModel.transformInline(clone, range.cloneRange(), 'code');
         return Parser.parseDOM(newHtml.outerHTML)
           .then(json => {
             this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
@@ -216,103 +201,48 @@ const Toolbar = React.createClass({
   },
 
   handleUnorderedList() {
-    let { sel, range, parentNode } = Utils.getSelectionData();
+    let { sel, range, anchorNode, parentNode, depth } = Utils.getSelectionData();
     let startContainerParent = Utils.getRootParentElement(range.startContainer);
     let endContainerParent = Utils.getRootParentElement(range.endContainer);
-    let elements = [];
 
-    if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
-       || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {  // Don't transform Media.
-      return;
-    }
+    if(Utils.isElementTypeInSelection(startContainerParent, endContainerParent, 'UL')) {
+      /** A list exists in the current selection. */
+      if(startContainerParent === endContainerParent) {
+        /** Selection is in the same list; Undo list. */
+        return Parser.parseDOM(parentNode.cloneNode(true).outerHTML)
+          .then(json => {
+            let elements = ListModel.transformListItems(json, Utils.getListItemPositions(range.startContainer, range.endContainer, parentNode), depth);
+            this.props.actions.handleUnorderedList(false, elements, {}, this.props.editor.currentStoreIndex);
+            this.props.actions.forceUpdate(true);
+          }).catch(err => { console.log(err); });
 
-    if(startContainerParent.nodeName === 'UL') {  // Undo UL.
-      if(range.startContainer.nodeType === 3 || range.startContainer.localName === 'li') { // Is TextNode.  The cursor is placed after element or multiline select.
-
-        if(startContainerParent !== endContainerParent) { // Multiple block elements are selected.
-          let obj = {};
-          let allNodes = Utils.getAllNodesInSelection(startContainerParent, endContainerParent, parentNode);
-          allNodes = allNodes.filter(function(node) { return node.localName === 'ul'; });
-
-          _.forEach(allNodes, function(ul, index) {
-            if(index === 0) {
-              obj[Utils.findChildsDepthLevel(ul, ul.parentNode)] = { node: ul, start: range.startContainer, end: ul.lastChild, hash: ul.getAttribute('data-hash')};
-            } else if(index === allNodes[allNodes.length-1]) {
-              obj[Utils.findChildsDepthLevel(ul, ul.parentNode)] = { node: ul, start: ul.firstChild, end: range.endContainer, hash: ul.getAttribute('data-hash') };
-            } else {
-              obj[Utils.findChildsDepthLevel(ul, ul.parentNode)] = { node: ul, start: ul.firstChild, end: ul.lastChild, hash: ul.getAttribute('data-hash') };
-            }
-          });
-
-          for(let i in obj) {
-            if(obj.hasOwnProperty(i)) {
-              let ul = obj[i];
-              elements = Utils.getListItemPositions(ul.start, ul.end, ul.node);
-              this.props.actions.handleUnorderedList(false, elements, { depth: parseInt(i), hash: ul.hash }, this.props.editor.currentStoreIndex);
-            }
-          }
-        } else {
-          elements = Utils.getListItemPositions(range.startContainer, range.endContainer, parentNode);
-          this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null }, this.props.editor.currentStoreIndex);
-        }
-
-      } else if(range.startContainer.nodeType === 1 && range.startContainer === parentNode) { // Cursor is before single element.
-        elements = [Utils.findChildsDepthLevel(sel.anchorNode, parentNode)];
-        this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null }, this.props.editor.currentStoreIndex);
       } else {
-        return;
-      }
-    } else {  // Build UL.
-      if(startContainerParent === endContainerParent) { // One block element is selected.
-        elements = [{ depth: Utils.findChildsDepthLevel(startContainerParent, startContainerParent.parentNode) }];
-        this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: null }, this.props.editor.currentStoreIndex);
-      } else {  // Multiple blocks are selected.
-        let listGroups = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
-        listGroups.forEach((group, index) => {
-          let previousLength = null;
-          /**
-            * We pass the previous arrays length so we can subtract that number from the current depth.
-            * We need to do this to get proper depth placement when the DOM is being mutated into ULs.
-           */
-          if(listGroups.length > 1 && index !== 0) {
-            previousLength = listGroups[index-1].length;
-          }
-          elements = Utils.createArrayOfDOMNodes(group[0], group[group.length-1], parentNode.parentNode);
-          this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: previousLength}, this.props.editor.currentStoreIndex);
-        });
-
+        /** Selection ranges outside of the list, we're going to create a list of all selected nodes. */
+        this._buildList(startContainerParent, endContainerParent, parentNode);
       }
 
+    } else {
+      /** Build a fresh list. */
+      this._buildList(startContainerParent, endContainerParent, parentNode);
     }
-    this.props.actions.forceUpdate(true);
     this.handleUnsavedChanges();
     this.focusCE();
   },
 
-  handleUnorderedListxxx() {
-    let { sel, range, parentNode, depth } = Utils.getSelectionData();
-    let startContainerParent = Utils.getRootParentElement(range.startContainer);
-    let endContainerParent = Utils.getRootParentElement(range.endContainer);
+  _buildList(startContainerParent, endContainerParent, parentNode) {
+    let nodes = ListModel.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
+    let promises = nodes.map(node => {
+      return Parser.parseDOM(node.node.outerHTML);
+    });
 
-    if(parentNode.nodeName === 'UL') {  // Undo UL.
+    Promise.all(promises)
+      .then(results => {
+        results = results.map((item, index) => { return { json: item, hash: nodes[index].hash, depth: nodes[index].depth }});
 
-    } else {  // Build UL.
-      let nodes = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
-      let promises = nodes.map(node => {
-        return Parser.parseDOM(node.node.outerHTML);
+        let list = ListModel.toList(results);
+        this.props.actions.handleUnorderedList(true, list, { startDepth: results[0].depth, itemsToRemove: results.length }, this.props.editor.currentStoreIndex);
+        this.props.actions.forceUpdate(true);
       });
-
-      Promise.all(promises)
-        .then(results => {
-          results = results.map((item, index) => { return { json: item, hash: nodes[index].hash, depth: nodes[index].depth }});
-
-          let ul = List.toList(results);
-          this.props.actions.handleUnorderedList(true, ul, { startDepth: results[0].depth, itemsToRemove: results.length }, this.props.editor.currentStoreIndex);
-          this.props.actions.forceUpdate(true);
-        });
-    }
-    this.handleUnsavedChanges();
-    this.focusCE();
   },
 
   handleLinkClick() {

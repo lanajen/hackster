@@ -218,9 +218,8 @@ const Editable = React.createClass({
   render() {
     let dom = this.props.editor.dom;
     let content = dom.map((item, index) => {
-      let html;
       if(item.type === 'CE') {
-        html = item.json.map(React.renderToStaticMarkup).join('');
+        let html = Parser.toHtml(item.json);
         return (<DropZone key={index} className="dropzone" onDrop={this.handleFilesDrop.bind(this, index)}>
                   <ContentEditable html={html}
                                    storeIndex={index}
