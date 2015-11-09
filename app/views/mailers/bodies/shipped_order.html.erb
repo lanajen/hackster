@@ -7,7 +7,7 @@
 </ul>
 <p>
   <% if @context[:order].tracking_number.present? %>
-    Track it with number <%= @context[:order].tracking_number %>.
+    Track it with number <%= @context[:order].tracking_number %>. Please note that we do not have any more information than what the tracking page provides.
   <% else %>
     It doesn't have a tracking number, but it should arrive in a week for US addresses, and 2-4 weeks internationally.
   <% end %>

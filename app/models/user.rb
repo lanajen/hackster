@@ -127,6 +127,7 @@ class User < ActiveRecord::Base
   has_many :assigned_issues, through: :assignee_issues, source: :issue
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :challenge_ideas, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy
   has_many :challenges, through: :challenge_entries
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
