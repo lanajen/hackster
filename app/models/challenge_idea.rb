@@ -12,7 +12,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   attr_accessible :name, :image_id
 
-  # validates :name, :description, :image_id, presence: true
+  validates :name, :description, :image_id, presence: true
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 
