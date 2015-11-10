@@ -11,6 +11,18 @@ const hashids = new Hashids('hackster', 4);
 
 const Carousel = React.createClass({
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.images !== this.props.images ||
+           nextProps.editor.imageToolbarData.storeIndex === this.props.storeIndex ||
+           nextProps.editor.updateComponent === this.props.storeIndex;
+  },
+
+  componentDidUpdate(nextProps) {
+    if(nextProps.editor.updateComponent === this.props.storeIndex) {
+      this.props.actions.updateComponent(null);
+    }
+  },
+
   handleKeyDown(e) {
     let currentNode = React.findDOMNode(this);
     let Editable = Utils.getParentOfCE(currentNode);
@@ -68,6 +80,7 @@ const Carousel = React.createClass({
     });
 
     this.props.actions.updateShownImage(activeIndex, this.props.storeIndex, direction);
+    this.props.actions.updateComponent(this.props.storeIndex);
     this.props.actions.toggleImageToolbar(false, {});
   },
 
@@ -104,11 +117,11 @@ const Carousel = React.createClass({
 
     if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
       this.props.actions.toggleImageToolbar(false, {});
+      this.props.actions.updateComponent(this.props.editor.imageToolbarData.storeIndex);
     }
 
-    if((target.nodeName === 'IMG' && target.classList.contains('react-editor-image'))
-       || (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper'))
-        && this.props.editor.showImageToolbar === false) {
+    if(( target.nodeName === 'IMG' && target.classList.contains('react-editor-image') ) ||
+       ( target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper') )) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,
@@ -155,7 +168,7 @@ const Carousel = React.createClass({
                     </div>)
                  : (null);
 
-    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
+    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.storeIndex === this.props.storeIndex
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} showEditor={this.handleCarouselEditorShow} />)
                      : (null);
 

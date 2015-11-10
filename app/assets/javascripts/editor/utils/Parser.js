@@ -256,7 +256,7 @@ export default {
       attribs = this.getAttributesByTagType(item);
       tag = `<${item.tag}${attribs}>`;
       innards = item.content || '';
-      children = item.children.length < 1 ? '' : this.toHtml(item.children);
+      children = item.children && item.children.length < 1 ? '' : this.toHtml(item.children);
       return item.tag === 'br' ? `<${item.tag}/>` : `${tag}${innards}${children}</${item.tag}>`;
     }).join('');
   },

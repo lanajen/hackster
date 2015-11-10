@@ -48,7 +48,8 @@ export default {
     handlePastedHTML: null,
     toggleIE: null,
     transformInlineToText: null,
-    updateCarouselImages: null
+    updateCarouselImages: null,
+    updateComponent: null
   }),
 
   ImageBucket: keyMirror({

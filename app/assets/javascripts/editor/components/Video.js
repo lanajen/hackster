@@ -26,6 +26,13 @@ const Video = React.createClass({
     this.handleResize();
   },
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.videoData !== this.props.videoData ||
+           nextState.height !== this.state.height ||
+           nextProps.editor.imageToolbarData.storeIndex === this.props.storeIndex ||
+           nextProps.editor.updateComponent === this.props.storeIndex;
+  },
+
   handleResize() {
     let width = React.findDOMNode(this.refs.iframe).offsetWidth;
 
@@ -114,14 +121,13 @@ const Video = React.createClass({
 
     if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
       this.props.actions.toggleImageToolbar(false, {});
+      this.props.actions.updateComponent(this.props.editor.imageToolbarData.storeIndex);
     }
 
-    if( (target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe')) ||
-        (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) ||
-        (target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe')) ||
-        (target.nodeName === 'IMG' && target.classList.contains('react-editor-iframe')) &&
-        this.props.editor.showImageToolbar === false
-      ) {
+    if(( target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe') ) ||
+       ( target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper') ) ||
+       ( target.nodeName === 'VIDEO' && target.classList.contains('react-editor-iframe') ) ||
+       ( target.nodeName === 'IMG' && target.classList.contains('react-editor-iframe') )) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,
@@ -141,7 +147,7 @@ const Video = React.createClass({
 
   render: function() {
     let data = this.props.videoData[0];
-    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
+    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.storeIndex === this.props.storeIndex
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
                      : (null);
 

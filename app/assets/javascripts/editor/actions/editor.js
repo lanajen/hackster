@@ -393,3 +393,10 @@ export function updateCarouselImages(images, storeIndex) {
     storeIndex: storeIndex
   };
 }
+
+export function updateComponent(storeIndex) {
+  return {
+    type: Editor.updateComponent,
+    storeIndex: storeIndex
+  };
+}

@@ -359,6 +359,12 @@ export default function(state = initialState, action) {
         dom: newDom
       };
 
+    case Editor.updateComponent:
+      return {
+        ...state,
+        updateComponent: action.storeIndex
+      };
+
     default:
       return state;
   };

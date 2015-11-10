@@ -147,15 +147,10 @@ const Editable = React.createClass({
       item = _.clone(item);
 
       if(item.type === 'CE') {
-        stringifiedJSON = item.json.map(React.renderToStaticMarkup).join('');
-        return Parser.parseDOM(stringifiedJSON)
-          .then(json => {
-            cleaned = Parser.removeAttributes(json);
-            cleaned = Parser.concatPreBlocks(cleaned);
-            item.json = cleaned;
-            return Promise.resolve(item);
-          });
-
+        cleaned = Parser.removeAttributes(item.json);
+        cleaned = Parser.concatPreBlocks(cleaned);
+        item.json = cleaned;
+        return Promise.resolve(item);
       } else if(item.type === 'Carousel') {
         let images = _.clone(item.images);
         cleaned = images.map(image => {

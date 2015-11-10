@@ -102,12 +102,14 @@ const ImageToolbar = React.createClass({
            || e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.classList.contains('box-content'))
        && this.props.editor.showImageToolbar === true) {
       this.props.actions.toggleImageToolbar(false, {});
+    this.props.actions.updateComponent(this.props.editor.imageToolbarData.storeIndex);
     } else if(node.nodeName === 'DIV' && node.classList.contains('react-editor-image-overlay')
        && (e.nativeEvent.relatedTarget && !e.nativeEvent.relatedTarget.classList.contains('reit-controls'))
        && (e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.nodeName !== 'BUTTON')
        && (e.nativeEvent.relatedTarget && !Utils.getRootOverlayElement(e.nativeEvent.relatedTarget).classList.contains('reit-toolbar'))
        && this.props.editor.showImageToolbar === true) {
       this.props.actions.toggleImageToolbar(false, {});
+      this.props.actions.updateComponent(this.props.editor.imageToolbarData.storeIndex);
     }
   },
 
