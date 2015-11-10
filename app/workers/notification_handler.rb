@@ -27,7 +27,7 @@ class NotificationHandler
     @template = template
     if context = get_context_for('email')
       # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
-      BaseMailer.deliver_email(context, find_template, opts).deliver_now
+      BaseMailer.deliver_email(context, find_template, opts).deliver_now!
     end
   end
 
@@ -59,7 +59,7 @@ class NotificationHandler
         context[:users] = platform.followers.with_subscription(notification_type, 'follow_platform_activity')
       when :assignment
         user = context[:user] = User.find(context_id)
-        context[:model] = assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
+        context[:model] = assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date > ? AND assignments.submit_by_date < ?", Time.now, 24.hours.from_now).first
         context[:project] = user.project_for_assignment(assignment).first
       when :badge
         context[:model] = awarded_badge = context[:awarded_badge] = AwardedBadge.find context_id
@@ -71,8 +71,12 @@ class NotificationHandler
         context[:users] = base_article.users
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
-        if event.in? [:ending_soon]
+        if event.to_sym == :ending_soon
           context[:users] = challenge.registrants.includes(:challenge_entries).reject{|u| challenge.id.in? u.challenge_entries.map(&:challenge_id) }
+        elsif event.to_sym == :pre_contest_awarded
+          context[:users] = challenge.registrants - challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
+        elsif event.to_sym == :pre_contest_winners
+          context[:users] = challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
         else
           context[:users] = challenge.admins
           if event.in? [:launched_contest, :launched_pre_contest, :judged]

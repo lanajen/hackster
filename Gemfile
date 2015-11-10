@@ -72,7 +72,7 @@ gem 'impressionist', '1.5.1'
 gem 'imgix', '0.3.1'
 gem 'ipcat', '2.0.1'
 gem 'jbuilder', '2.3.0'
-gem 'mandrill_dm', '1.2.0'
+gem 'mandrill_dm', git: 'https://github.com/blarralde/mandrill_dm.git'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
 gem 'momentjs-rails', '2.8.1'
@@ -84,6 +84,7 @@ gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
+gem 'omniauth-saml', '1.4.1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https

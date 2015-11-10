@@ -60,6 +60,7 @@ module ScraperStrategies
       def after_parse
         @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
+        @project.product_tags_string = @parsed.css('a[rel=tag]').map{|a| a.text }.join(',') if @project.product_tags_string.blank?
         @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',') if @project.product_tags_string.present?
         @project.one_liner ||= extract_one_liner.try(:truncate, 140)
       end
@@ -164,7 +165,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr .ssba)
       end
 
       def extract_code_blocks base=@article

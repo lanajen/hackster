@@ -39,22 +39,21 @@ class ChallengeObserver < ActiveRecord::Observer
     if (record.changed & %w(mailchimp_api_key mailchimp_list_id activate_mailchimp_sync)).any? and record.mailchimp_setup?
       MailchimpWorker.perform_async 'sync_challenge', record.id
     end
+    if record.pre_contest_awarded_changed? and record.pre_contest_awarded?
+      ChallengeWorker.perform_async 'announce_pre_contest_winners', record.id
+    end
   end
 
   def after_pre_launch record
     NotificationCenter.notify_via_email :pre_launched, :challenge, record.id
-    if record.display_banners?
-      record.sponsors.each do |platform|
-        platform.active_challenge = true
-        platform.save
-      end
-    end
+    display_banners record
     expire_cache record
     expire_index
   end
 
   def after_launch_pre_contest record
     NotificationCenter.notify_all :launched_pre_contest, :challenge, record.id
+    display_banners record
     expire_cache record
     expire_index
   end
@@ -66,12 +65,7 @@ class ChallengeObserver < ActiveRecord::Observer
 
   def after_launch_contest record
     NotificationCenter.notify_all :launched_contest, :challenge, record.id
-    if record.display_banners?
-      record.sponsors.each do |platform|
-        platform.active_challenge = true
-        platform.save
-      end
-    end
+    display_banners record
     expire_cache record
     expire_index
   end
@@ -97,6 +91,17 @@ class ChallengeObserver < ActiveRecord::Observer
   alias_method :after_reinitialize, :after_take_offline
 
   private
+    def display_banners record
+      if record.display_banners?
+        record.sponsors.each do |platform|
+          unless platform.active_challenge
+            platform.active_challenge = true
+            platform.save
+          end
+        end
+      end
+    end
+
     def disable_challenge_on_platform record
       record.sponsors.each do |platform|
         platform.active_challenge = false

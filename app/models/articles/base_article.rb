@@ -583,18 +583,19 @@ class BaseArticle < ActiveRecord::Base
 
   def post_new_tweet!
     message = prepare_tweet
+    self.tweeted_at = Time.now
     TwitterQueue.perform_async 'throttle_update', message
   end
 
   def post_new_tweet_at! time
     message = prepare_tweet
+    self.tweeted_at = time
     TwitterQueue.perform_at time, 'update', message
   end
 
   def prepare_tweet
     prepend = "New project: "  # 13 characters
     TweetBuilder.new(self).tweet(prepend)
-    self.tweeted_at = Time.now
   end
 
   def product_tags_string_changed?

@@ -1,1 +1,0 @@
-# OmniAuth.config.full_host = "http://#{APP_CONFIG['full_host']}"

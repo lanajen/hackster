@@ -1,6 +1,7 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
   def new
     self.resource = resource_class.new permitted_params_for_new[:user]
+    resource.email = current_user.email if user_signed_in?
   end
 
   # GET /resource/confirmation?confirmation_token=abcdef
@@ -55,6 +56,11 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   private
     def after_confirmation_path_for(resource_name, resource)
       resource.profile_needs_care? ? user_after_registration_path : super(resource_name, resource)
+    end
+
+    # The path used after resending confirmation instructions.
+    def after_resending_confirmation_instructions_path_for(resource_name)
+      is_navigational_format? and !user_signed_in? ? new_session_path(resource_name) : root_path
     end
 
     def permitted_params_for_confirm

@@ -73,17 +73,19 @@
                   thead
                     th Field label
                     th Required
+                    th Hide
                     th
                   tbody
                     = f.simple_fields_for :challenge_idea_fields, wrapper: false do |f_field|
                       tr.fields
                         td style='min-width: 80%' = f_field.input :label, label: false
                         td= f_field.input :required, label: false, as: :boolean
+                        td= f_field.input :hide, label: false, as: :boolean
                         td
                           = f_field.input :position, as: :hidden, input_html: { class: 'position' }
                           = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
                     tr.sortable-disabled
-                      td colspan=3 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
+                      td colspan=4 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
 
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do

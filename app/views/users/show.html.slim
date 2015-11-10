@@ -1,3 +1,7 @@
+- if @user.private?
+  - content_for :head do
+    meta name='robots' content='noindex'
+
 = inserts_stats_for @user
 
 - cache_unless user_is_current_or_admin?, "user-#{@user.id}-#{site_user_name}", tag: ["user-#{@user.id}"], expires_in: 3.hours do
@@ -12,7 +16,6 @@
             a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
               i.fa.fa-ellipsis-v
             ul.dropdown-menu.pull-right
-              li= link_to "New article", new_project_path(type: 'article')
               li= link_to "Submit a link", new_project_path(type: 'external')
 
       h2

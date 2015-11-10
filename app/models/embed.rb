@@ -5,6 +5,7 @@ class Embed
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/ => :channel9,
     /codebender\.cc\/((?:sketch:|example\/)[0-9a-zA-Z\/:]+)/ => :codebender,
+    /digikey.com\/schemeit\/(?:embed\/)?(#[0-9a-zA-Z]+)/ => :schemeit,
     /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/ => :github,
     /fritzing\.org\/projects\/([0-9a-z-]+)/ => :fritzing,
@@ -59,7 +60,7 @@ class Embed
   end
 
   def schematic_repo?
-    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github)
+    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github schemeit)
   end
 
   def format

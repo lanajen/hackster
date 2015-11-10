@@ -6,7 +6,7 @@ class ChallengeEntriesController < ApplicationController
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at).paginate(page: safe_page_params, per_page: 100)
 
     respond_to do |format|
       format.html do

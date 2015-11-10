@@ -7,7 +7,7 @@ class ChallengeIdeasController < ApplicationController
   def index
     @challenge = Challenge.find params[:challenge_id]
     authorize! :admin, @challenge
-    @ideas = @challenge.ideas.order(:created_at).includes(user: :avatar)
+    @ideas = @challenge.ideas.order(:created_at).joins(:user).includes(user: :avatar).paginate(page: safe_page_params, per_page: 100)
 
     respond_to do |format|
       format.html do
@@ -83,7 +83,7 @@ class ChallengeIdeasController < ApplicationController
     if current_user.id == @idea.user_id
       redirect_to @idea.challenge, notice: "Your idea has been withdrawn."
     else
-      redirect_to challenge_ideas_path(@challenge), notice: "Idea deleted."
+      redirect_to challenge_admin_ideas_path(@idea.challenge), notice: "Idea deleted."
     end
   end
 
@@ -92,6 +92,8 @@ class ChallengeIdeasController < ApplicationController
       case event
       when 'approve'
         'approved'
+      when 'mark_won'
+        'marked a winner'
       else
         "#{event}ed"
       end

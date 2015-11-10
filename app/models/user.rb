@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   include HasAbility
   include HstoreColumn
   include HstoreCounter
+  include Privatable
   include Roles
   include Taggable
   include WebsitesColumn
@@ -12,6 +13,57 @@ class User < ActiveRecord::Base
   include Rewardino::Nominee
 
   DEFAULT_EMAIL_FREQUENCY = :daily
+  DEFAULT_SKILLS = [
+    '3D printing',
+    'Analog output',
+    'Basic electronics',
+    'Batteries',
+    'Bluetooth',
+    'Breadboarding',
+    'C/C++',
+    'Circuit diagrams',
+    'Cloud',
+    'CNC',
+    'Communications',
+    'Console',
+    'Debugging',
+    'Digital fabrication',
+    'Digital input',
+    'Digital output',
+    'Displays',
+    'Hardware engineering',
+    'High current',
+    'I2C',
+    'Integrated Circuits',
+    'IR',
+    'Javascript',
+    'Laser cutting',
+    'Level shifting',
+    'Linux',
+    'Logic gates',
+    'Logic levels',
+    'MacOS',
+    'Mechanical engineering',
+    'Microcontrollers',
+    'Motors',
+    'PCB design',
+    'Perl',
+    'Power sources',
+    'Python',
+    'Relays',
+    'RF',
+    'Ruby',
+    'Sensors',
+    'Serial',
+    'Servos',
+    'Shift register',
+    'Software engineering',
+    'Soldering',
+    'Transistors',
+    'Wifi',
+    'Windows',
+    'Zigbee',
+  ]
   PROJECT_EMAIL_FREQUENCIES = {
     'Never' => :never,
     'Once per day' => :daily,
@@ -61,15 +113,13 @@ class User < ActiveRecord::Base
       'new_projects' => 'New projects related to a list, platform or user I follow',
     }
   }
-  USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
-  USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
   editable_slug :user_name
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
-          :linkedin, :twitter, :windowslive]
+          :linkedin, :twitter, :windowslive, :saml]
 
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
@@ -212,7 +262,9 @@ class User < ActiveRecord::Base
   hstore_column :properties, :reputation_last_updated_at, :datetime
   hstore_column :properties, :toolbox_shown, :boolean
 
+  hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
+  hstore_column :hproperties, :skill_tags_string, :string
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
@@ -230,7 +282,7 @@ class User < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index '!accepted_or_not_invited?'
+  has_tire_index 'private or !accepted_or_not_invited?'
 
   tire do
     mapping do
@@ -443,15 +495,7 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    random_user_name = self.class.generate_random_user_name
-
-    count = self.class.where("users.user_name ILIKE '#{random_user_name}-%'").count
-
-    self.user_name = "#{random_user_name}-#{count + 1}"
-  end
-
-  def self.generate_random_user_name
-    "#{USER_NAME_WORDS_LIST1.sample}-#{USER_NAME_WORDS_LIST2.sample}"
+    self.user_name = UserNameGenerator.new.user_name
   end
 
   def has_notifications?
@@ -833,5 +877,9 @@ class User < ActiveRecord::Base
 
     def password_required?
       (!skip_password? && !persisted? && !being_invited?) || !password.nil? || !password_confirmation.nil?
+    end
+
+    def postpone_email_change?
+      super && confirmed?
     end
 end
