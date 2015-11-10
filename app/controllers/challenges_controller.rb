@@ -111,8 +111,14 @@ class ChallengesController < ApplicationController
 
   def update
     authorize! :update, @challenge
-    if @challenge.update_attributes(params[:challenge])
-      redirect_to @challenge, notice: 'Changes saved.'
+    @challenge.assign_attributes(params[:challenge])
+    message = if @challenge.pre_contest_awarded_changed? and @challenge.pre_contest_awarded?
+      'The announcement is being processed in the background. Results and emails will be visible momentarily.'
+    else
+      'Changes saved.'
+    end
+    if @challenge.save
+      redirect_to @challenge, notice: message
     else
       render 'edit'
     end

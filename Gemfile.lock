@@ -12,6 +12,13 @@ GIT
       rails
 
 GIT
+  remote: https://github.com/blarralde/mandrill_dm.git
+  revision: c71cd0ccde0c659d7d41e3727daa64f49b537db0
+  specs:
+    mandrill_dm (1.2.0)
+      mandrill-api (~> 1.0.53)
+
+GIT
   remote: https://github.com/joel/omniauth-windowslive.git
   revision: 9b77fd320ceac3ad390484501512d5e49572fcd7
   specs:
@@ -364,8 +371,6 @@ GEM
     mandrill-api (1.0.53)
       excon (>= 0.16.0, < 1.0)
       json (>= 1.7.7, < 2.0)
-    mandrill_dm (1.2.0)
-      mandrill-api (~> 1.0.53)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (0.9.4)
@@ -733,7 +738,7 @@ DEPENDENCIES
   jquery-ui-rails (= 5.0.5)
   mail (>= 2.6.3)
   mailcatcher!
-  mandrill_dm (= 1.2.0)
+  mandrill_dm!
   mini_magick (= 3.7.0)
   mixpanel (= 4.0.8)
   momentjs-rails (= 2.8.1)

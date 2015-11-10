@@ -18,6 +18,7 @@
             = f.input :current_password, hint: "we need your current password to confirm your changes", required: true
             = f.input :password, autocomplete: "off", required: false, label: 'New password'
             = f.input :password_confirmation, required: false, label: 'Confirm new password'
+          = f.input :private, as: :boolean, label: false, inline_label: "Minimize the visibility of my profile", hint: "Don't want to be found? If you activate this option, your name won't come up in search, your profile won't be indexed by Google and others, plus your name won't show in the list of members who respected a project. Your name will still appear normally if you post a project or a comment, and your profile will still be accessible via link."
           - unless is_whitelabel?
             = f.input :enable_sharing, as: :boolean, label: false, inline_label: "Allow my profile and projects to appear on community sites powered by Hackster", hint: "Hackster powers dedicated community sites for platforms like Particle, UDOO and Tessel. If you're following these platforms, or you've created a project that's tagged with one of these platforms, or respected one, or commented on one, your profile will appear on these sites. Uncheck the above box to disable this feature. <strong>Please note: your data isn't sold or shared with these platforms in any way. All of it remains on our servers.</strong>".html_safe
           .form-group

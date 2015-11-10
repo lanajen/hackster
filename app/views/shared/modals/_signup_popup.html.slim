@@ -8,7 +8,7 @@
           | New to Hackster.io? Join the community dedicated to learning hardware
 
       = simple_form_for User.new, url: user_registration_path, html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit user-form' }, method: :post, authenticity_token: !csrf_disabled? do |f|
-        input type='hidden' name='redirect_to'
+        input type='hidden' name='redirect_to' value=request.path
         input type='hidden' name='source' value='popup'
         = f.input :email, label: false, placeholder: 'Email', tabindex: 1
         = f.input :password, label: false, placeholder: 'Password'
@@ -17,4 +17,4 @@
       p.small= link_to 'Prefer connecting using your social account?', new_user_registration_path(highlight: 'connect', source: 'popup')
       p.small style='margin-bottom:0'
         ' Already have an account?
-        = link_to 'Sign in', new_user_session_path
+        = link_to 'Sign in', new_user_session_path(redirect_to: request.path)

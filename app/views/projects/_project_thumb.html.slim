@@ -16,7 +16,10 @@
     - project = project.decorate
     div class="project-#{project.id}"
       .thumb.project-thumb
-        .thumb-image.has-link-overlay style="background-image:url('#{project.cover_image(:cover_thumb)}')"
+        .thumb-image.has-link-overlay
+          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif')
+          noscript
+            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb)
           = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (subdomain.present? ? '_blank' : nil)
           .thumb-image-inner-top
             .award-container

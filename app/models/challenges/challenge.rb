@@ -22,6 +22,7 @@ class Challenge < ActiveRecord::Base
   has_many :entrants, -> { uniq }, through: :entries, source: :user
   has_many :faq_entries, as: :threadable
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
+  has_many :idea_entrants, -> { uniq }, through: :ideas, source: :user
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
@@ -39,7 +40,7 @@ class Challenge < ActiveRecord::Base
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
-  validates :teaser, :custom_tweet, length: { maximum: 140 }
+  validates :teaser, :custom_tweet, :after_submit_idea_tweet, length: { maximum: 140 }
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
@@ -64,9 +65,13 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :activate_pre_contest, :boolean
   hstore_column :hproperties, :activate_pre_registration, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :after_submit_idea_tweet, :string, default: 'I just submitted an idea to %{name}. You should too!'
+  hstore_column :hproperties, :after_submit_entry_tweet, :string, default: 'I just submitted a project to %{name}. You should too!'
+  hstore_column :hproperties, :after_registration_tweet, :string, default: 'I just registered to %{name}. You should too!'
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
+  hstore_column :hproperties, :custom_registration_email, :string
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
@@ -84,6 +89,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
+  hstore_column :hproperties, :pre_contest_awarded, :boolean
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime

@@ -17,11 +17,19 @@ $select2target = null;
   $(function() {
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
-      $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
+      var redirLink = $(this).data('redirect-to');
+      $('#simplified-signup-popup input[name="redirect_to"]').val(redirLink);
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
+
       if ($(this).hasClass('with-name')) {
         $('#simplified-signup-popup .full-name-wrapper').show();
       }
+
+      var signInHref = $('#simplified-signup-popup .sign-in-link');
+      var signInLink = signInHref.attr('href');
+      signInLink += '?redirect_to=' + encodeURIComponent(redirLink);
+      signInHref.attr('href', signInLink);
+
       openModal('#simplified-signup-popup');
     });
     $('#simplified-signup-popup').on('modal:open', function(e){
@@ -359,6 +367,23 @@ $select2target = null;
       $('.pe-save2').hide();
     });
 
+    // handles save on ctrl+s
+    if ($('.pe-save').length) {
+      $(window).bind('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+          if (String.fromCharCode(e.which).toLowerCase() == 's') {
+            e.preventDefault();
+            // check if we're on a modal form and if so save it, otherwise save pe
+            if ($('form.form-within-modal:visible').length) {
+              $('form.form-within-modal:visible').submit();
+            } else {
+              pe.saveChanges();
+            }
+          }
+        }
+      });
+    }
+
     // event methods for software/hardware
     $('.modal-with-form')
       .on('click', '.select-file', function(e){
@@ -480,6 +505,13 @@ $select2target = null;
           input.val($(el).val());
       });
       openModal(popup, this);
+    });
+
+    $('body').on('modal:open', '.modal-focus-input', function(e){
+      var input = $(this).find('select:visible, input:visible, textarea:visible').first();
+      if (input.length) {
+        input.focus();
+      }
     });
 
     var select2Options = function(partType){
@@ -843,7 +875,7 @@ $select2target = null;
 })(jQuery, window, document);
 
 $(window).load(function(){
-  loadSlickSlider();
+  // loadSlickSlider();
 });
 
 function ProjectCodeEditor(language, id) {
@@ -964,14 +996,16 @@ function formatPart(result) {
   return $(output);
 };
 
-function loadSlickSlider(){
-  $('.image-gallery:visible:not(.slick-initialized)').slick({
+function loadSlickSlider(target){
+  target = target || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
+  target.slick({
     accessibility: false,
     speed: 500,
     fade: true,
     dots: true,
     adaptiveHeight: true
   });
+  updatedScrollEventHandlers();
 }
 
 function openLightBox(id, start) {

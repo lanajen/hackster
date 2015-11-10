@@ -7,7 +7,7 @@ class ChallengeIdeasController < ApplicationController
   def index
     @challenge = Challenge.find params[:challenge_id]
     authorize! :admin, @challenge
-    @ideas = @challenge.ideas.order(:created_at).includes(user: :avatar).paginate(page: safe_page_params, per_page: 100)
+    @ideas = @challenge.ideas.order(:created_at).joins(:user).includes(user: :avatar).paginate(page: safe_page_params, per_page: 100)
 
     respond_to do |format|
       format.html do
@@ -42,7 +42,13 @@ class ChallengeIdeasController < ApplicationController
 
     if @idea.save
       @idea.approve! if @challenge.auto_approve?
-      redirect_to @challenge, notice: "Your idea has been entered!"
+
+      session[:share_modal] = 'new_idea_challenge_share_prompt'
+      session[:share_modal_model] = 'challenge'
+      session[:share_modal_model_id] = @challenge.id
+      session[:share_modal_time] = 'after_redirect'
+
+      redirect_to @challenge #, notice: "Your idea has been entered!"
     else
       render :new
     end
@@ -83,7 +89,7 @@ class ChallengeIdeasController < ApplicationController
     if current_user.id == @idea.user_id
       redirect_to @idea.challenge, notice: "Your idea has been withdrawn."
     else
-      redirect_to challenge_ideas_path(@challenge), notice: "Idea deleted."
+      redirect_to challenge_admin_ideas_path(@idea.challenge), notice: "Idea deleted."
     end
   end
 
@@ -92,6 +98,8 @@ class ChallengeIdeasController < ApplicationController
       case event
       when 'approve'
         'approved'
+      when 'mark_won'
+        'marked a winner'
       else
         "#{event}ed"
       end

@@ -16,8 +16,8 @@ class BaseArticleDecorator < ApplicationDecorator
   end
 
   def description mode=:normal
-    # options = (mode == :edit ? { except: ['PartsWidget'] } : {})
-    parse_medium model.description#, options
+    options = { mode: mode }
+    parse_medium model.description, options
   end
 
   def name_not_default
