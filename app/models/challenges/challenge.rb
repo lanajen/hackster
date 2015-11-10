@@ -71,6 +71,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
+  hstore_column :hproperties, :custom_registration_email, :string
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string

@@ -29,6 +29,7 @@
           = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
           = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "The default message under 'Invite others to compete', which is accessible by everyone whether they have registered or not. Leave room for the URL! Default: '#{@challenge.decorate.default_tweet}'", label: 'General tweet'
           = f.input :after_registration_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they register for the contest. Leave room for the URL! Default: '#{@challenge.default_after_registration_tweet}'", label: "Tweet after entry submitted"
+          = f.input :custom_registration_email, label: "Registration email customization", hint: "Useful for providing custom info like coupons. Should only be one sentence, straight to the point. Don't forget the dot at the end. Supports limited HTML."
 
       .panel.panel-default
         .panel-heading
