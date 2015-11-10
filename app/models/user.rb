@@ -268,7 +268,8 @@ class User < ActiveRecord::Base
   hstore_column :hproperties, :skill_tags_string, :string
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
-    :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
+    :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest,
+    :arduino
 
   is_impressionable counter_cache: true, unique: :session_hash
 

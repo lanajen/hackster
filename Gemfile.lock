@@ -1,6 +1,6 @@
 GIT
   remote: /Users/ben/Dropbox/Projects/omniauth-arduino
-  revision: 390f85d58d34962a28ec7a7c0b7a2cc75a563a39
+  revision: 54c74b7d666d7fc92369975b54042f8124460ba3
   specs:
     omniauth-arduino (0.0.1)
       omniauth (~> 1.0)
@@ -324,7 +324,7 @@ GEM
       activesupport (>= 4.1.0)
     gmaps4rails (2.1.2)
     google_visualr (2.4.0)
-    hashie (3.4.2)
+    hashie (3.4.3)
     hashr (0.0.22)
     heapy (0.1.0)
     heroku-api (0.3.22)

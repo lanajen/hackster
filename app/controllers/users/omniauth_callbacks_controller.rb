@@ -8,6 +8,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     super
   end
 
+  def arduino
+    oauthorize 'arduino'
+  end
+
   def facebook
     oauthorize 'facebook'
   end
