@@ -1125,7 +1125,7 @@ a.hidden-link {
   height: 100%;
   width: 100%;
   background: #000;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.5);
   z-index: 100000000000;
   display: none;
   text-align: center;
@@ -1181,6 +1181,7 @@ a.hidden-link {
   z-index: 100000000002;
   -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
   transition: all 200ms;
+  @include box-shadow(0 0 5px #666);
   &.transparent {
     background: transparent;
     color: #fff;
