@@ -116,7 +116,7 @@ class UsersController < ApplicationController
 
     @guest_projects = @user.projects.live.guest.for_thumb_display
     if is_whitelabel?
-      @public_projects = @public_projects.with_group(current_platform)
+      @guest_projects = @guest_projects.with_group(current_platform)
     end
   end
 
