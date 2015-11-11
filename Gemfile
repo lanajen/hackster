@@ -28,6 +28,7 @@ gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do
+  gem 'rails-assets-clipboard', '1.5.3'
   gem 'rails-assets-js-cookie', '2.0.3'
   gem 'rails-assets-medium-editor', '1.8.14'
   gem 'rails-assets-underscore', '1.7.0'

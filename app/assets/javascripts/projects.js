@@ -871,12 +871,45 @@ $select2target = null;
     }, 1000);
 
     cleanUpSelectBlueprint();
+
+    // handles copying code snippets with clipboard plugin
+    new Clipboard('.code-widget .copy-code', {
+      target: function(trigger) {
+        var widget = $(trigger).closest('.code-widget');
+        var code = widget.find('.code-container')[0];
+        return code;
+      }
+    })
+      .on('success', function(e) {
+        var trigger = $(e.trigger);
+        trigger.tooltip({
+          title: 'Copied!',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          trigger.tooltip('hide');
+        }, 2000);
+        trigger.blur();
+
+        e.clearSelection();
+      })
+      .on('error', function(e) {
+        var trigger = $(e.trigger);
+        trigger.tooltip({
+          title: 'Press CTRL+C to copy',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          trigger.tooltip('hide');
+        }, 2000);
+        trigger.blur();
+      });
   });
 })(jQuery, window, document);
-
-$(window).load(function(){
-  // loadSlickSlider();
-});
 
 function ProjectCodeEditor(language, id) {
   this.ace = null;
