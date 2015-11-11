@@ -873,43 +873,71 @@ $select2target = null;
     cleanUpSelectBlueprint();
 
     // handles copying code snippets with clipboard plugin
-    new Clipboard('.code-widget .copy-code', {
+    new Clipboard('.code-widgets .copy-code', {
       target: function(trigger) {
-        var widget = $(trigger).closest('.code-widget');
-        var code = widget.find('.code-container')[0];
+        var widget = $(trigger).closest('.preview-pane');
+        var code = widget.find('pre')[0];
         return code;
       }
     })
       .on('success', function(e) {
         var trigger = $(e.trigger);
-        trigger.tooltip({
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
           title: 'Copied!',
           trigger: 'manual',
           placement: 'top',
           container: 'body',
         }).tooltip('show');
         window.setTimeout(function(){
-          trigger.tooltip('hide');
-        }, 2000);
+          parent.tooltip('destroy');
+        }, 1500);
         trigger.blur();
 
         e.clearSelection();
       })
       .on('error', function(e) {
         var trigger = $(e.trigger);
-        trigger.tooltip({
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
           title: 'Press CTRL+C to copy',
           trigger: 'manual',
           placement: 'top',
           container: 'body',
         }).tooltip('show');
         window.setTimeout(function(){
-          trigger.tooltip('hide');
-        }, 2000);
+          parent.tooltip('destroy');
+        }, 1500);
         trigger.blur();
       });
+
+
+    $('.code-widgets .sidebar a').on('click', function(e){
+      var container = $(this).closest('.code-widgets');
+      container.find('.sidebar a, .preview-pane').removeClass('active');
+
+      $(this).addClass('active');
+      var target = $($(this).data('target'));
+      target.addClass('active');
+
+      setPreviewPaneHeight(target);
+    });
+
+    var codeWidget = $('.code-widgets .preview-pane');
+    if (codeWidget.length) {
+      setPreviewPaneHeight(codeWidget.first());
+    }
   });
 })(jQuery, window, document);
+
+function setPreviewPaneHeight(target){
+  var header = target.find('.preview-header');
+  var body = target.find('.preview-body');
+  var height = target.outerHeight() - header.outerHeight();
+  body.css('height', height + 'px');
+}
 
 function ProjectCodeEditor(language, id) {
   this.ace = null;

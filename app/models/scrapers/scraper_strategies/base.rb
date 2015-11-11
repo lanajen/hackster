@@ -353,12 +353,12 @@ module ScraperStrategies
       end
 
       def parse_code base=@article
-        extract_code_blocks(base).each do |node|
+        extract_code_blocks(base).each_with_index do |node, i|
           code, lang = extract_code_lines(node)
           next unless code
 
           if code.size >= 5
-            file = CodeWidget.new raw_code: code, name: 'Code', language: lang || 'text'
+            file = CodeWidget.new raw_code: code, name: "Code snippet ##{i+1}", language: lang || 'text'
             file.project = @project
             @widgets << file
           end
