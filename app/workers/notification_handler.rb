@@ -32,7 +32,7 @@ class NotificationHandler
   end
 
   def notify_via_web
-    if context = get_context_for('web', user_roles)
+    if context = get_context_for('web')
       Notification.generate event, context
     end
   end
@@ -48,7 +48,7 @@ class NotificationHandler
       @template = elements.join('_')
     end
 
-    def get_context_for notification_type, user_roles=[]
+    def get_context_for notification_type
       context = {}
       # context[context_type.to_sym] = context[:model] = model if model
 

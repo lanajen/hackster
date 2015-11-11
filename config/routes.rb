@@ -626,7 +626,18 @@ HackerIo::Application.routes.draw do
     end
 
     constraints(UserPage) do
-      get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ } do
+        get '' => 'users#show'
+        scope 'projects', as: :user_projects do
+          get '' => 'users#projects_public'
+          get 'drafts' => 'users#projects_drafts', as: :drafts
+          get 'guest' => 'users#projects_guest', as: :guest
+          get 'respected' => 'users#projects_respected', as: :respected
+          get 'replicated' => 'users#projects_replicated', as: :replicated
+        end
+        get 'toolbox' => 'users#toolbox_show', as: :user_toolbox_show
+        get 'comments' => 'users#comments', as: :user_comments
+      end
       get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     end
 

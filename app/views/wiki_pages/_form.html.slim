@@ -7,9 +7,9 @@
       .input-group
         span.input-group-addon
           - if @group.is? :event
-            | hackster.io/hackathons/#{@group.hackathon.user_name}/#{@group.user_name}/pages/
+            | #{site_domain}/hackathons/#{@group.hackathon.user_name}/#{@group.user_name}/pages/
           - elsif @group.is? :hackathon
-            | hackster.io/hackathons/#{@group.user_name}/pages/
+            | #{site_domain}/hackathons/#{@group.user_name}/pages/
         = f.input_field :slug, hint: "Changing this value after the page was created will break links."
   = f.input :body, as: :text, input_html: { class: "text-editor" }, label: 'Page content'
   = f.input :public, label: 'Show this page in the navigation bar', as: :boolean

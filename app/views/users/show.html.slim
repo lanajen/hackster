@@ -18,9 +18,13 @@
             ul.dropdown-menu.pull-right
               li= link_to "Submit a link", new_project_path(type: 'external')
 
-      h2
-        ' Public projects and articles
-        = content_tag(:span, @public_count, class: 'badge')
+      .clearfix
+        h2.pull-left
+          ' Public projects and articles
+          = content_tag(:span, @public_count, class: 'badge')
+        - if @public_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s public projects", user_projects_path(@user)
       - if @other_projects and @other_projects.any?
         strong.text-muted
           ' Built with #{current_platform.name}
@@ -55,9 +59,13 @@
 
       - if user_is_current_or_admin? and @private_projects.any?
           hr
-          h2
-            ' Private projects and articles
-            = content_tag(:span, @private_projects.count, class: 'badge')
+          .clearfix
+            h2.pull-left
+              ' Private projects and articles
+              = content_tag(:span, @private_count, class: 'badge')
+            - if @private_count > 3
+              .pull-right
+                = link_to "See all your private projects", user_projects_drafts_path(@user)
           .thumb-list
             .row.project-list
               - @private_projects.each_with_index do |project, i|
@@ -65,9 +73,13 @@
 
       - if @guest_projects.any?
         hr
-        h2
-          ' Guest projects and articles (posted on their behalf)
-          = content_tag(:span, @guest_projects.count, class: 'badge')
+        .clearfix
+          h2.pull-left
+            ' Guest projects and articles (posted on their behalf)
+            = content_tag(:span, @guest_count, class: 'badge')
+          - if @guest_count > 3
+            .pull-right
+              = link_to "See all of #{@user.name}'s guest projects", user_projects_guest_path(@user)
         .thumb-list
           .row.project-list
             - @guest_projects.each_with_index do |project, i|
@@ -78,10 +90,13 @@
         .clearfix
           h2.pull-left
             ' Toolbox
-            = content_tag(:span, @parts.count, class: 'badge')
+            = content_tag(:span, @parts_count, class: 'badge')
           - if user_is_current?
             .pull-right
               = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
+          - elsif @parts_count > 3
+            .pull-right
+              = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
         .row
           - @parts.each do |part|
             .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
@@ -96,9 +111,13 @@
             = render partial: 'groups/lists/list_thumb', locals: { list: list }
 
       hr
-      h2
-        ' Replicated projects
-        = content_tag(:span, @replicated_projects.count, class: 'badge')
+      .clearfix
+        h2.pull-left
+          ' Replicated projects
+          = content_tag(:span, @replicated_count, class: 'badge')
+        - if @replicated_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s replicated projects", user_projects_replicated_path(@user)
       - if @replicated_projects.any?
         .thumb-list
           .row.project-list
@@ -114,9 +133,13 @@
         | #{@user.name} hasn't replicated any projects yet.
 
       hr
-      h2
-        ' Respected projects and articles
-        = content_tag(:span, @respected_projects.count, class: 'badge')
+      .clearfix
+        h2.pull-left
+          ' Respected projects and articles
+          = content_tag(:span, @respected_count, class: 'badge')
+        - if @respected_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s respected projects", user_projects_respected_path(@user)
       - if @respected_projects.any?
         .thumb-list
           .row.project-list
@@ -132,9 +155,13 @@
         | #{@user.name} hasn't respected any projects yet.
 
       hr
-      h2
-        ' Comments
-        = content_tag(:span, @comments.count, class: 'badge')
+      .clearfix
+        h2.pull-left
+          ' Comments
+          = content_tag(:span, @comments_count, class: 'badge')
+        - if @comments_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s comments", user_comments_path(@user)
       - if @comments.any?
         ul.list-unstyled.user-comments-list
           - @comments.each do |comment|

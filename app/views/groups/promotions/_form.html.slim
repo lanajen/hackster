@@ -18,7 +18,7 @@
     .col-md-6
       = f.input :full_name, label: 'Name'
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
-        span.input-group-addon hackster.io/courses/#{@promotion.course.user_name.truncate(10)}/
+        span.input-group-addon #{site_domain}/courses/#{@promotion.course.user_name.truncate(10)}/
         = f.input_field :user_name
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
