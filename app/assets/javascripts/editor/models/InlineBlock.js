@@ -1,52 +1,98 @@
 import _ from 'lodash';
+import rangy from 'rangy';
 import { domWalk, treeWalk } from '../utils/Traversal';
 
 export default {
 
   removeInline(parent, range, element) {
-    let selectedNodes = range.getNodes([3]);
-    let tree;
+    if(parent.nodeName === 'UL') {
+      let selectedNodes = range.getNodes([3]);
+      let tree;
 
-    selectedNodes.forEach(item => {
-      tree = domWalk(parent, child => {
-        if(child.isEqualNode(item)) {
-          /** If the element is nested in other inlines, get that parent wrapper.  Else take the text. */
-          let replacement = child.parentNode.nodeName.toLowerCase() === element ? child : child.parentNode;
+      selectedNodes.forEach(item => {
+        tree = domWalk(parent, child => {
+          if(child.isEqualNode(item)) {
+            /** If the element is nested in other inlines, get that parent wrapper.  Else take the text. */
+            let replacement = child.parentNode.nodeName.toLowerCase() === element ? child : child.parentNode;
+            while(child.parentNode) {
+              if(child.nodeName.toLowerCase() === element) {
+                child.parentNode.replaceChild(replacement, child);
+                break;
+              }
+              child = child.parentNode;
+            }
+          }
+        });
+      });
+      return tree;
+    } else {
+      let start = range.startContainer;
+      return domWalk(parent, child => {
+        if(child.isEqualNode(start)) {
           while(child.parentNode) {
             if(child.nodeName.toLowerCase() === element) {
-              child.parentNode.replaceChild(replacement, child);
+              child.parentNode.replaceChild(document.createTextNode(child.textContent), child);
               break;
             }
             child = child.parentNode;
           }
         }
       });
-    });
-    return tree;
+    }
   },
 
-  transformInline(parent, range, element) {
-    let selectedNodes = range.getNodes([3]);
-    let fragment = range.cloneContents();
-    let frags = this.createFragmentArray([].slice.apply(fragment.childNodes));
-    let tree;
+  transformInline(parent, range, depth, element) {
+    if(parent.nodeName === 'UL') {
+      let selectedNodes = range.getNodes([3]);
+      let fragment = range.cloneContents();
+      let frags = this.createFragmentArray([].slice.apply(fragment.childNodes));
+      parent = parent.cloneNode(true);
+      let tree;
 
-    selectedNodes.forEach((node, index) => {
-      let frag = frags[index];
-      tree = domWalk(parent, child => {
-        if(node.isEqualNode(child)) {
-          let { start, middle, end } = this.createTextContent(child, frag, range);
-          let middleChild = document.createElement(element);
-          let endChild = child.cloneNode();
-          child.textContent = start;
-          middleChild.textContent = middle;
-          endChild.textContent = end;
-          child.parentNode.appendChild(middleChild);
-          child.parentNode.appendChild(endChild);
-        }
+      selectedNodes.forEach((node, index) => {
+        let frag = frags[index];
+        let position = index === 0 ? 'start' : index === selectedNodes.length-1 ? 'end' : 'middle';
+        tree = domWalk(parent, (child, root) => {
+          if(node.isEqualNode(child)) {
+            let { start, middle, end } = this.createTextContent(child, frag, range, position);
+            let startChild = child.cloneNode();
+            let middleChild = document.createElement(element);
+            let endChild = child.cloneNode();
+            startChild.textContent = start;
+            middleChild.textContent = middle;
+            endChild.textContent = end;
+            root.replaceChild(startChild, child);
+            root.appendChild(middleChild);
+            root.appendChild(endChild);
+          }
+        });
       });
-    });
-    return tree;
+      return tree;
+    } else {
+      let element = document.createElement('code');
+      element.appendChild(range.cloneContents());
+      range.deleteContents();
+      range.insertNode(element);
+
+      range.selectNode(element);
+      range.collapse(false);
+      let sel = rangy.getSelection();
+      sel.setSingleRange(range);
+      return parent;
+    }
+  },
+
+  createElementArray(node, parent) {
+    let elements = [];
+
+    while(node.parentNode && !node.isEqualNode(parent)) {
+      if(node.nodeType === 1) {
+        elements.push(node.nodeName.toLowerCase());
+      }
+      node = node.parentNode;
+    }
+
+    return elements;
   },
 
   createFragmentArray(array) {
@@ -67,8 +113,8 @@ export default {
     return _.flattenDeep(fragments);
   },
 
-  createTextContent(child, frag, range) {
-    let index = child.textContent.indexOf(frag.textContent);
+  createTextContent(child, frag, range, position) {
+    let index = position === 'start' ? range.startOffset: position === 'end' ? 0 : child.textContent.indexOf(frag.textContent);
     return {
       start: child.textContent.slice(0, index),
       middle: child.textContent.slice(index, index + frag.textContent.length),

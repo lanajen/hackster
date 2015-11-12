@@ -3,6 +3,8 @@ import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import _ from 'lodash';
 import { BlockElements, ElementWhiteList } from './Constants';
+import Hashids from 'hashids';
+const hashids = new Hashids('hackster', 4);
 
 export default {
 
@@ -13,6 +15,7 @@ export default {
         if(err) console.log('DomHandler Error: ', err);
 
         let parsed = this.parseTree(dom);
+        // let cleaned = this.cleanTree(parsed);
         resolve(parsed);
       }, options);
 
@@ -262,10 +265,11 @@ export default {
   },
 
   getAttributesByTagType(item) {
+    let hash = item.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1));
     let block = BlockElements[item.tag.toUpperCase()] ? item.tag : null;
     let attribs = {
       'a': ` href="${item.attribs.href}"`,
-      [block]: ` data-hash="${item.attribs['data-hash']}"`
+      [block]: ` data-hash="${hash}"`
     };
     return attribs[item.tag] ? attribs[item.tag] : '';
   }

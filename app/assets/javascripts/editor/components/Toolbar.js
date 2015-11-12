@@ -184,7 +184,7 @@ const Toolbar = React.createClass({
             console.log(err);
           });
       } else {
-        newHtml = InlineBlockModel.transformInline(clone, range.cloneRange(), 'code');
+        newHtml = InlineBlockModel.transformInline(parentNode, range, 'code');
         return Parser.parseDOM(newHtml.outerHTML)
           .then(json => {
             this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);

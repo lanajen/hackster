@@ -1060,15 +1060,12 @@ function handlePastedHTML(dom, html, depth, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
 
-  if(html.length > 1) {
-    let merged = _mergeAdjacentCE(html);
-  } else {
-    html[0].json.forEach((item, index) => {
-      json.splice(depth+index, 0, item);
-    });
-    component.json = json;
-    dom.splice(storeIndex, 1, component);
-  }
+  html[0].json.forEach((item, index) => {
+    json.splice(depth+index, 0, item);
+  });
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+
   return dom;
 }
 

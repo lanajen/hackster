@@ -319,7 +319,6 @@ const ContentEditable = React.createClass({
            * Handles video parser when enter is pressed.
            */
           let url = parentNode.textContent.trim();
-          // console.log('TRYING', url.split(' ').length < 2,  Helpers.isUrlValid(url));
           if(url.split(' ').length < 2 && Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
             let videoData = Helpers.getVideoData(url);
             if(!videoData) {
@@ -469,7 +468,7 @@ const ContentEditable = React.createClass({
         parentNode.nextSibling.appendChild(document.createElement('br'));
       } else if(parentNode.nodeName === 'UL') {
         let li = Utils.getListItemFromTextNode(anchorNode);
-        if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.childNodes.length < 1) {
+        if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1) {
           li.nextSibling.appendChild(document.createElement('br'));
         }
       }
@@ -478,9 +477,17 @@ const ContentEditable = React.createClass({
         parentNode.previousSibling.appendChild(document.createElement('br'));
       } else if(parentNode.nodeName === 'UL') {
         let li = Utils.getListItemFromTextNode(anchorNode);
-        if(li.previousSibling && li.previousSibling.nodeName === 'LI' && li.previousSibling.childNodes.length < 1) {
+        if(li.previousSibling && li.previousSibling.nodeName === 'LI' && li.previousSibling.textContent.length < 1) {
           li.previousSibling.appendChild(document.createElement('br'));
         }
+      }
+    }
+
+    /** A span gets placed in converted empty LI's.  This will replace the span for a br so that the node has dimensions in Chrome. */
+    if(e.keyCode === 40 && parentNode.nodeName === 'UL') {
+      let li = Utils.getListItemFromTextNode(anchorNode);
+      if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1 && li.nextSibling.childNodes[0].nodeName === 'SPAN') {
+        li.nextSibling.replaceChild(document.createElement('br'), li.nextSibling.childNodes[0]);
       }
     }
   },
@@ -504,9 +511,7 @@ const ContentEditable = React.createClass({
 
     /** If user deleted the paragraph under a PRE */
     if(CE.lastChild && CE.lastChild.nodeName === 'PRE') {
-      let { depth } = Utils.getSelectionData();
-      if(depth === null) { return; }
-      this.createBlockElement('p', depth, false, this.props.storeIndex);
+      this.createBlockElement('p', CE.children.length, false, this.props.storeIndex);
       this.props.actions.forceUpdate(true);
     }
 

@@ -53,11 +53,11 @@ export default {
    */
   transformListItems(json, childDepthsToTransform, listDepth) {
     let flattenedJson = json[0].children.map((child, index) => {
-      let newChild = { node: child, listDepth: index, toList: true };
+      let newChild = { node: child, listDepth: listDepth, toList: true };
       childDepthsToTransform.forEach(depth => {
         if(depth === index) {
           child.tag = 'p';
-          newChild = { node: child, listDepth: index, toList: false };
+          newChild = { node: child, listDepth: listDepth, toList: false };
         }
       });
       return newChild;
