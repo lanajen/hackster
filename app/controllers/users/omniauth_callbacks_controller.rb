@@ -24,6 +24,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     oauthorize 'linkedin'
   end
 
+  def saml
+    oauthorize 'saml'
+  end
+
   def twitter
     oauthorize 'twitter'
   end
@@ -55,7 +59,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
     def oauthorize(kind)
-      # logger.info request.env['omniauth.auth'].to_yaml
+      logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
 
       @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
       is_hackster = @redirect_host == APP_CONFIG['default_host']

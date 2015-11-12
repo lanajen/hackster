@@ -3,10 +3,11 @@ require 'country_iso_translater'
 class SocialProfileBuilder
   KNOWN_PROVIDERS = {
     'facebook' => :facebook,
-    'twitter' => :twitter,
+    'github' => :github,
     'gplus' => :google_plus,
     'linkedin' => :linked_in,
-    'github' => :github,
+    'saml' => :saml,
+    'twitter' => :twitter,
     'windowslive' => :windowslive,
   }
 
@@ -19,8 +20,8 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # logger.info data.to_yaml
-    # logger.info provider.to_s
+    logger.info 'data: ' + data.to_yaml
+    logger.info 'provider: ' + provider.to_s
     # logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
@@ -114,6 +115,9 @@ class SocialProfileBuilder
             info.location.try(:country).try(:code).try(:upcase))
       )
       build_avatar info.image
+    end
+
+    def saml info, data
     end
 
     def twitter info, data
