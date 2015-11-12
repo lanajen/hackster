@@ -41,7 +41,7 @@ export default {
     }
   },
 
-  transformInline(parent, range, depth, element) {
+  transformInline(parent, range, element) {
     if(parent.nodeName === 'UL') {
       let selectedNodes = range.getNodes([3]);
       let fragment = range.cloneContents();
@@ -73,11 +73,6 @@ export default {
       element.appendChild(range.cloneContents());
       range.deleteContents();
       range.insertNode(element);
-
-      range.selectNode(element);
-      range.collapse(false);
-      let sel = rangy.getSelection();
-      sel.setSingleRange(range);
       return parent;
     }
   },
