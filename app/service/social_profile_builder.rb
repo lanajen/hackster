@@ -2,6 +2,7 @@ require 'country_iso_translater'
 
 class SocialProfileBuilder
   KNOWN_PROVIDERS = {
+    'arduino' => :arduino,
     'facebook' => :facebook,
     'twitter' => :twitter,
     'gplus' => :google_plus,
@@ -19,9 +20,9 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # logger.info data.to_yaml
-    # logger.info provider.to_s
-    # logger.info 'user: ' + @user.to_yaml
+    # Rails.logger.info data.to_yaml
+    # Rails.logger.info provider.to_s
+    # Rails.logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
       @user.email_confirmation = @user.email
@@ -64,6 +65,13 @@ class SocialProfileBuilder
     def provider_link provider
       attr_name = "#{KNOWN_PROVIDERS[provider]}_link"
       @user.send attr_name if @user.respond_to? attr_name
+    end
+
+    def arduino info, data
+      assign_attributes(
+        user_name: clean_user_name(info.id),
+        email: info.email,
+      )
     end
 
     def facebook info, data

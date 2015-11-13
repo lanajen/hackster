@@ -1,4 +1,12 @@
 GIT
+  remote: /Users/ben/Dropbox/Projects/omniauth-arduino
+  revision: 54c74b7d666d7fc92369975b54042f8124460ba3
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
+
+GIT
   remote: git://github.com/mislav/will_paginate.git
   revision: 74a6cd0197072903cd8b83744133744ff4b4c046
   specs:
@@ -316,7 +324,7 @@ GEM
       activesupport (>= 4.1.0)
     gmaps4rails (2.1.2)
     google_visualr (2.4.0)
-    hashie (3.4.2)
+    hashie (3.4.3)
     hashr (0.0.22)
     heapy (0.1.0)
     heroku-api (0.3.22)
@@ -746,6 +754,7 @@ DEPENDENCIES
   nested_form (= 0.3.2)
   newrelic_rpm (= 3.12.0.288)
   nokogiri (= 1.6.0)
+  omniauth-arduino!
   omniauth-facebook (= 1.5.1)
   omniauth-github (= 1.1.2)
   omniauth-gplus (= 1.2.0)
