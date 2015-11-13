@@ -1,3 +1,2 @@
-= link_to 'Arduino', '/users/auth/arduino?redirect_host=' + request.host
-- (Devise.omniauth_providers - [:saml]).sort.each do |provider|
+- (Devise.omniauth_providers - [:arduino, :saml]).sort.each do |provider|
   = link_to proper_name_for_provider(provider), user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)), class: "zocial #{css} #{zocial_class_for_provider(provider)}"
