@@ -401,7 +401,6 @@ function handleInitialDOM(json) {
          */
         if(item.json.length > 0) {
           item.json = _unmergePreBlocks(item.json);
-          console.log('DONE DID', item.json);
         }
 
         if(item.json.length < 1) {

@@ -104,7 +104,7 @@ const ContentEditable = React.createClass({
   setCursorOnUpdate() {
     let cursorPosition = this.props.editor.cursorPosition;
     /** Means we added another Component and we should do nothing in this CE. */
-    if(cursorPosition.rootHash !== React.findDOMNode(this).getAttribute('data-hash')) { return; }
+    if(cursorPosition.rootHash !== this.props.hash) { return; }
 
     let CE = React.findDOMNode(this);
     CE.focus();
