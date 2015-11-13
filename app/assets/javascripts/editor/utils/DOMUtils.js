@@ -700,7 +700,6 @@ const Utils = {
 
         return; // Node is legit, boot out early.
       } else if(child.nodeName === 'BR') {
-        console.log('DOING THIS');
         CE.removeChild(child);
       } else if(!blockEls[child.nodeName] && child.nodeType === 1) {
         P = document.createElement('p');
@@ -931,6 +930,10 @@ const Utils = {
     return range;
   },
 
+  /**
+   * Description and OnPaste Parser.
+   */
+
   parseDescription(html) {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
@@ -956,7 +959,6 @@ const Utils = {
       if(item.type === 'Video' && item.video[0].type == 'iframe') {
         let videoData = Helpers.getVideoData(item.video[0].embed);
         if(!videoData) {
-          console.log('BUNK', item);
           return callback(null, null);
         }
         item.video[0] = Object.assign({}, videoData, item.video[0]);

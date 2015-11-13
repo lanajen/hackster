@@ -29,7 +29,8 @@ const initialState = {
   isDataLoading: false,
   errorMessenger: { show: false, msg: '' },
   lastMediaHash: null,
-  isIE: false
+  isIE: false,
+  updateComponent: null
 };
 
 export default function(state = initialState, action) {
@@ -396,11 +397,11 @@ function handleInitialDOM(json) {
     json = json.map(item => {
       if(item.type === 'CE') {
         /** Create new Pre Blocks on newlines.
-          * Basically unmerge the Pres that we merged and sent to the server.
-          * TODO: This function mutates item.json, we really should clone and return a new array.
+          * Unmerge the Pres that we merged and sent to the server.
          */
         if(item.json.length > 0) {
-          _unmergePreBlocks(item.json);
+          item.json = _unmergePreBlocks(item.json);
+          console.log('DONE DID', item.json);
         }
 
         if(item.json.length < 1) {
@@ -449,25 +450,29 @@ function _hashifyBlockElements(json) {
 }
 
 function _unmergePreBlocks(json) {
-  let clone = _.clone(json);
+  let newJson = [];
 
-  clone.forEach((item, preIndex) => {
+  json.forEach(item => {
     if(item.tag === 'pre') {
       let children = item.children[0].tag === 'code' ? item.children[0].children : item.children;
-      children.forEach((child, childIndex) => {
-        if(child.content !== null && child.content.substr(child.content.length-1) === '\n') {
+      children.forEach(child => {
+        /** Remove new lines at the end of each row. */
+        if(child.content && child.content.substr(child.content.length-1) === '\n') {
           child.content = child.content.slice(0, child.content.length-1);
         }
-        if(child.content.length < 1) {
-          child.children.push({ tag: 'br', attribs: {}, content: '', children: [] });
+        if(child.content && child.content.length < 1) {
+          child.children.push( _createElement('br') );
         }
-        let code = { tag: 'code', attribs: {}, content: '', children: [ child ]};
-        let pre = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
-        let shouldReplace = childIndex === 0 ? 1 : 0;
-        json.splice(preIndex+childIndex, shouldReplace, pre);
+
+        let code = _createElement('code', { children: [ child ] });
+        let pre = _createElement('pre', { children: [ code] });
+        newJson.push(pre);
       });
+    } else {
+      newJson.push(item);
     }
   });
+return newJson;
 }
 
 function _createElement(tag, options) {

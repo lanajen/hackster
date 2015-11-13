@@ -15,8 +15,8 @@ export default {
         if(err) console.log('DomHandler Error: ', err);
 
         let parsed = this.parseTree(dom);
-        // let cleaned = this.cleanTree(parsed);
-        resolve(parsed);
+        let cleaned = this.cleanTree(parsed);
+        resolve(cleaned);
       }, options);
 
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
@@ -109,32 +109,22 @@ export default {
   },
 
   cleanTree(json) {
-    console.log('clean', json);
     return json.map(item => {
       item.children = this.cleanBlockElementChildren(item.children);
       return item;
     });
   },
 
-  cleanBlockElementChildren(node) {
-    let children = node.children;
-    const blockEls = BlockElements;
+  cleanBlockElementChildren(children) {
+    let newChildren = children.map(child => {
+      if(children.length > 1 && child.tag === 'br') {
+        return null;
+      } else {
+        return child;
+      }
+    }).filter(item => item !== null);
 
-    children = (function recurse(children) {
-      return children.map(child => {
-        if(!child.children.length) {
-          return child;
-        } else {
-          if(child.name && blockEls[child.name.toUpperCase()]) {
-            child.name = 'span';
-          }
-          child.children = recurse(child.children);
-          return child;
-        }
-      });
-    }(children));
-
-    return children
+    return newChildren;
   },
 
   removeAttributes(json) {

@@ -41,6 +41,12 @@ const Video = React.createClass({
     });
   },
 
+  handleUnsavedChanges() {
+    if(this.props.editor.hasUnsavedChanges === false) {
+      this.props.actions.hasUnsavedChanges(true);
+    }
+  },
+
   handleKeyDown(e) {
     let currentNode = React.findDOMNode(this);
     let Editable = Utils.getParentOfCE(currentNode);
@@ -77,7 +83,7 @@ const Video = React.createClass({
     /** On Enter Key */
     if(e.keyCode === 13 && React.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
       e.preventDefault();
-      // this.props.actions.prependCE(this.props.storeIndex);
+      this.props.actions.prependCE(this.props.storeIndex);
     }
 
     /** On Backspace */
@@ -111,6 +117,7 @@ const Video = React.createClass({
 
   handleFigCaptionText(figureIndex, html) {
     this.props.actions.setFigCaptionText(figureIndex, this.props.storeIndex, html);
+    this.handleUnsavedChanges();
   },
 
   handleMouseOver(e) {
@@ -139,10 +146,6 @@ const Video = React.createClass({
         type: 'video'
       });
     }
-  },
-
-  handleDeleteWidget(storeIndex) {
-    this.props.actions.deleteComponent(storeIndex);
   },
 
   render: function() {

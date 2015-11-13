@@ -95,9 +95,12 @@ $desktop-width: 1024px;
         padding-top: 10px;
         color: white;
         overflow: visible;
-        margin: 0;
         // This is set to short circuit a previously set global pre style.  Tsk tsk.
         max-height: inherit;
+      }
+
+      pre + pre {
+        margin-top: -10px;
       }
 
       blockquote {

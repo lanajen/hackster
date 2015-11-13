@@ -12,6 +12,12 @@ const ImageToolbar = React.createClass({
     e.stopPropagation();
   },
 
+  handleUnsavedChanges() {
+    if(this.props.editor.hasUnsavedChanges === false) {
+      this.props.actions.hasUnsavedChanges(true);
+    }
+  },
+
   handleImages(e) {
     this.preventEvent(e);
     let files = e.target.files,
@@ -38,6 +44,7 @@ const ImageToolbar = React.createClass({
       this.props.actions.addImagesToCarousel(map, storeIndex);
       this.props.actions.forceUpdate(true);
       this.props.actions.toggleImageToolbar(false, {});
+      this.handleUnsavedChanges();
 
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
@@ -67,6 +74,7 @@ const ImageToolbar = React.createClass({
     this.props.actions.deleteImagesFromCarousel([], depth, storeIndex);
     this.props.actions.forceUpdate(true);
     this.props.actions.toggleImageToolbar(false, {});
+    this.handleUnsavedChanges();
   },
 
   handleCarouselEditorShow() {
@@ -79,6 +87,7 @@ const ImageToolbar = React.createClass({
     this.props.actions.deleteComponent(storeIndex);
     this.props.actions.forceUpdate(true);
     this.props.actions.toggleImageToolbar(false, {});
+    this.handleUnsavedChanges();
   },
 
   handleMouseMove(e) {
