@@ -1,16 +1,16 @@
 GIT
-  remote: /Users/ben/Dropbox/Projects/omniauth-arduino
-  revision: 54c74b7d666d7fc92369975b54042f8124460ba3
-  specs:
-    omniauth-arduino (0.0.1)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
-
-GIT
   remote: git://github.com/mislav/will_paginate.git
   revision: 74a6cd0197072903cd8b83744133744ff4b4c046
   specs:
     will_paginate (3.0.4)
+
+GIT
+  remote: git@bitbucket.org:hacksterio/omniauth-arduino.git
+  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
 
 GIT
   remote: https://github.com/blarralde/fastly-rails.git
