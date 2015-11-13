@@ -7,7 +7,7 @@ json.description part.description
 json.tags part.product_tags_string
 json.unit_price part.unit_price
 json.mpn part.mpn
-json.url part_url(part) if part.has_own_page?
+json.url part_url(part, subdomain: ENV['SUBDOMAIN']) if part.has_own_page?
 json.store_link part.store_link
 json.product_page_link part.product_page_link
 json.get_started_link part.get_started_link
