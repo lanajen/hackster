@@ -104,6 +104,14 @@
       left: 0;
       width: 100%;
     }
+    &.no-preview {
+      .preview-header {
+        border-bottom-width: 1px;
+      }
+      .preview-body {
+        display: none;
+      }
+    }
   }
   .sidebar {
     width: 150px;
@@ -153,7 +161,7 @@
     background: #fafafa;
     padding: 10px;
     border: 1px solid #ddd;
-    border-bottom: 0;
+    border-bottom-width: 0;
     h5 {
       font-size: 0.9em;
       font-weight: bold;

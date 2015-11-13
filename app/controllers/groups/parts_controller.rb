@@ -27,6 +27,12 @@ class Groups::PartsController < ApplicationController
     end
   end
 
+  def destroy
+    @part.destroy
+
+    redirect_to group_products_path(@platform), notice: "#{@part.name} deleted!"
+  end
+
   private
     def load_platform
       @group = @platform = Platform.find(params[:group_id] || params[:id])

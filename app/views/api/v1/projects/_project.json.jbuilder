@@ -4,7 +4,7 @@ json.type project.type
 json.one_liner project.one_liner
 #json.description project.decorate.description
 json.tags project.product_tags_string
-json.url project_url(project)
+json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
 #json.private project.private
 json.cover_image_url project.decorate.cover_image(:cover_thumb)
 json.authors project.users.includes(:avatar) do |user|

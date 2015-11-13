@@ -925,9 +925,15 @@ $select2target = null;
       setPreviewPaneHeight(target);
     });
 
-    var codeWidget = $('.code-widgets .preview-pane');
+    var codeWidget = $('.code-widgets');
     if (codeWidget.length) {
-      setPreviewPaneHeight(codeWidget.first());
+      if (codeWidget.hasClass('single-file') && codeWidget.hasClass('no-preview')) {
+        var header = codeWidget.find('.preview-header');
+        codeWidget.css('height', header.outerHeight() + 'px');
+        updatedScrollEventHandlers();
+      } else if (codeWidget.find('.preview-pane').length) {
+        setPreviewPaneHeight(codeWidget.first());
+      }
     }
   });
 })(jQuery, window, document);
