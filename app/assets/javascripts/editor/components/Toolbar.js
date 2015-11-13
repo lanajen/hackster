@@ -366,12 +366,23 @@ const Toolbar = React.createClass({
       return;
     }
 
-    ImageUtils.handleImagesAsync(filteredFiles, function(map) {
+    ImageUtils.handleImagesAsync(filteredFiles, map => {
       this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
       this.handleUnsavedChanges();
-    }.bind(this));
+
+      /** Upload files to AWS. */
+      this.props.actions.uploadImagesToServer(
+        map,
+        this.props.editor.currentStoreIndex,
+        this.props.editor.lastMediaHash,
+        this.props.editor.S3BucketURL,
+        this.props.editor.AWSAccessKeyId,
+        this.props.editor.csrfToken,
+        this.props.editor.projectId
+      );
+    });
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
   },
@@ -379,7 +390,6 @@ const Toolbar = React.createClass({
   handleVideoButtonClick() {
     let { depth } = Utils.getSelectionData();
     this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth, this.props.editor.currentStoreIndex);
-    this.props.actions.setCursorToNextLine(true);
     this.props.actions.forceUpdate(true);
   },
 

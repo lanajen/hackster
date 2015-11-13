@@ -200,7 +200,6 @@ export function forceUpdate(bool) {
 }
 
 export function setCursorPosition(position, node, offset, anchorNode, rootHash) {
-  // console.log('Cursor ACTION: ', position, node, offset, anchorNode);
   return {
     type: Editor.setCursorPosition,
     position: position,

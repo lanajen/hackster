@@ -33,7 +33,7 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  let dom, newDom, cursorPosition, mediaHash, rootHash, obj;
+  let dom, newDom, cursorPosition, mediaHash, rootHash, obj, data;
   switch (action.type) {
 
     case Editor.setDOM:
@@ -281,10 +281,11 @@ export default function(state = initialState, action) {
 
     case Editor.createPlaceholderElement:
       dom = state.dom;
-      newDom = createPlaceholderElement(dom, action.msg, action.depth, action.storeIndex);
+      data = createPlaceholderElement(dom, action.msg, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom,
+        dom: data.newDom,
+        setCursorToNextLine: data.setCursorToNextLine
       };
 
     case Editor.resetImageUrl:
@@ -412,12 +413,13 @@ function handleInitialDOM(json) {
           json: _sweepInitialJson(item.json)
         };
       } else if(item.type === 'Carousel') {
+        if(item.images.length < 1) { return null; }
         item.images[0].show = true;
         return item;
       } else {
         return item;
       }
-    });
+    }).filter(item => item !== null);
   }
   return json;
 }
@@ -661,48 +663,20 @@ function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
  */
 function _mergeLists(dom, storeIndex) {
   let component = dom[storeIndex],
-      json = component.json,
-      children = [],
-      positionsToMerge = _createPositionsToMerge(json, 'ul'),
-      UL;
+      json = component.json;
 
-  _.forEach(positionsToMerge, function(position) {
-    let parentNodePos = position.shift();
-    let parentNode = json[parentNodePos];
-    children = [];
-
-    _.forEach(position, function(ulPos) {
-      children = children.concat(json[ulPos].children);
-    });
-
-    UL = _createElement('ul', { attribs: { 'data-hash': parentNode.attribs['data-hash'] }, children: parentNode.children.concat(children) });
-    json.splice(parentNodePos, position.length+1, UL);
-  });
+  json = json.reduce((prev, curr) => {
+    if(prev.length > 0 && prev[prev.length-1].tag === 'ul' && curr.tag === 'ul') {
+      prev[prev.length-1].children.push(...curr.children);
+    } else {
+      prev.push(curr);
+    }
+    return prev;
+  }, []);
 
   component.json = json;
   dom.splice(storeIndex, 1, component);
   return dom;
-}
-
-function _createPositionsToMerge(json, tagType) {
-  let positions = [],
-      positionsToMerge = [],
-      isEl;
-
-  _.forEach(json, function(child, index) {
-    isEl = child.tag === tagType;
-    if(isEl) {
-      positions.push(index);
-    } else {
-      positions = [];
-    }
-
-    if(positions.length > 1 && (json[index+1] === undefined || json[index+1].tag !== tagType)) {
-      positionsToMerge.push(positions);
-    }
-  });
-
-  return positionsToMerge;
 }
 
 function prependCE(dom, storeIndex) {
@@ -792,8 +766,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     let CE = {
       type: 'CE',
       json: [ _createElement('p', {
-        attribs: { 'data-hash': currNode.attribs['data-hash'] },
-        children: mediaType === 'Carousel' ? [ currNode.children ] : [ _createElement('br') ]
+        attribs: { 'data-hash': _createNewHash() },
+        children: mediaType === 'Carousel' ? currNode.children : [ _createElement('br') ]
       })],
       hash: _createNewHash()
     };
@@ -801,7 +775,6 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     if(json.length < 1) {
       json.push( _createEmptyParagraph() );
     }
-
     component.json = json;
     dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);
@@ -811,6 +784,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     if(mediaType === 'Video') {
       json.splice(depth, 1);
     }
+
     component.json = json;
     /** This will place the media block above the component. */
     dom.splice(storeIndex, 1, media);
@@ -1040,20 +1014,24 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let replaceLine = 1;
+  let setCursorToNextLine = false;
   let el = _createElement('p', {
     attribs: { 'data-hash': _createNewHash(), class: 'react-editor-placeholder-text' },
-    children: [msg]
+    content: [msg],
+    children: []
   });
 
-  if(json[position].children && json[position].children.length > 0) {
+  if( (json[position].children && json[position].children.length > 0 && json[position].children[0].tag !== 'br') ||
+      (json[position].content && json[position].content.length > 0) ) {
     replaceLine = 0;
     position += 1;
+    setCursorToNextLine = true;
   }
 
   json.splice(position, replaceLine, el);
   component.json = json;
   dom.splice(storeIndex, 1, component);
-  return dom;
+  return { newDom: dom, setCursorToNextLine: setCursorToNextLine };
 }
 
 function handlePastedHTML(dom, html, depth, storeIndex) {

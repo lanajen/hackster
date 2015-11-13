@@ -2,8 +2,8 @@ import _ from 'lodash';
 
 export default {
   /**
-   * Creates a list block element; json format.
-   * @param nodes: [{ json: [], hash: '', depth: # }, {etc}]
+   * Creates a list block element, json format.
+   * @param  {[array]} nodes [{ json: [array], hash: [string], depth: [int] }, {etc}]
    */
   toList(nodes) {
     let children = nodes.map(node => {
@@ -41,6 +41,16 @@ export default {
     }
 
     return groups[0];
+  },
+
+  createList(options) {
+    options = options === Object(options) ? options : {};
+    return {
+      attribs: options.attribs || {},
+      children: options.children || [],
+      content: options.content || '',
+      tag: options.tag || 'ul'
+    };
   },
 
   /**

@@ -60,7 +60,7 @@ const Carousel = React.createClass({
     /** On Enter Key */
     if(e.keyCode === 13 && React.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
       e.preventDefault();
-      //this.props.actions.prependCE(this.props.storeIndex);
+      // this.props.actions.prependCE(this.props.storeIndex);
     }
 
     /** On Backspace */

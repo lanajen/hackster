@@ -46,6 +46,11 @@ const ContentEditable = React.createClass({
         this.setCursorOnUpdate();
         this.props.actions.forceUpdate(false);
       }.bind(this));
+    } else if(nextProps.editor.forceUpdate === true && this.props.html !== nextProps.html) {
+      this.forceUpdate(function() {
+        this.setCursorOnUpdate();
+        this.props.actions.forceUpdate(false);
+      }.bind(this));
     }
   },
 
@@ -72,7 +77,7 @@ const ContentEditable = React.createClass({
 
         let parentNode = Utils.getRootParentElement(node);
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
-          // console.log('TSK TSK TSK', node);
+
           if(node.parentNode !== null) {
             node.parentNode.removeChild(node);
           }

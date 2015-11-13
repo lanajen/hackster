@@ -265,11 +265,12 @@ export default {
   },
 
   getAttributesByTagType(item) {
-    let hash = item.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1));
+    let hash = item.attribs && item.attribs['data-hash'] ? item.attribs['data-hash'] : hashids.encode(Math.floor(Math.random() * 9999 + 1));
     let block = BlockElements[item.tag.toUpperCase()] ? item.tag : null;
+    let classes = item.attribs.class || '';
     let attribs = {
       'a': ` href="${item.attribs.href}"`,
-      [block]: ` data-hash="${hash}"`
+      [block]: ` data-hash="${hash}" class="${classes}"`
     };
     return attribs[item.tag] ? attribs[item.tag] : '';
   }

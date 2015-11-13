@@ -44,36 +44,27 @@ const ImageUtils = {
       // Resize the image.
       let canvas = document.createElement('canvas'),
           maxSize = 580,
-          isImageOverSize = false,
           width = image.width,
           height = image.height,
           dataUrl;
 
       if (width > height) {
           if (width > maxSize) {
-              isImageOverSize = true;
               height *= maxSize / width;
               width = maxSize;
           }
       } else {
           if (height > 487) {
-              isImageOverSize = true;
               width *= 487 / height;
               height = 487;
           }
       }
 
-      if(isImageOverSize) {
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-        dataUrl = canvas.toDataURL('image/jpeg');
-      } else {
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-        dataUrl = canvas.toDataURL('image/jpeg');
-      }
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+      dataUrl = canvas.toDataURL();
+
       callback({ url: dataUrl, width: width, show: false, figcaption: null, name: fileName, uuid: hash });
     }.bind(this);
     // Fires the onload event.
@@ -130,7 +121,7 @@ const ImageUtils = {
         .end(function(err, S3Response) {
           if(err) reject(err);
           xmlParser.parseString(S3Response.text, function(err, parsedXML) {
-            // This is our S3 URL for the image.  
+            // This is our S3 URL for the image.
             err ? reject(err) : resolve(parsedXML.PostResponse.Location[0]);
           });
         });
@@ -160,7 +151,7 @@ const ImageUtils = {
   },
 
   dataURIToBlob(dataURI) {
-    let byteString, 
+    let byteString,
         mimestring,
         content = [];
 
