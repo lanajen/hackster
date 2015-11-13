@@ -5,14 +5,6 @@ GIT
     will_paginate (3.0.4)
 
 GIT
-  remote: git@bitbucket.org:hacksterio/omniauth-arduino.git
-  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
-  specs:
-    omniauth-arduino (0.0.1)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
-
-GIT
   remote: https://github.com/blarralde/fastly-rails.git
   revision: 6a661b04f21ff4024d0a271ef526d0ae1590896e
   specs:
@@ -46,6 +38,14 @@ GIT
       skinny (~> 0.2.3)
       sqlite3 (~> 1.3)
       thin (~> 1.5.0)
+
+GIT
+  remote: https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git
+  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
 
 GEM
   remote: http://rubygems.org/
