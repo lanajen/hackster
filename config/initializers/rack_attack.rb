@@ -28,6 +28,9 @@ class Rack::Attack
       ua.in? req.user_agent
     end if req.user_agent
   end
+  whitelist('sparkfun') do |req|
+    req.path =~ /\/v1\/projects\.json\?.*platform_user_name=sparkfun/
+  end
 
   ### Throttle Spammy Clients ###
 
