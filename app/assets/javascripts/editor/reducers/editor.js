@@ -1017,7 +1017,7 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   let setCursorToNextLine = false;
   let el = _createElement('p', {
     attribs: { 'data-hash': _createNewHash(), class: 'react-editor-placeholder-text' },
-    content: [msg],
+    content: msg,
     children: []
   });
 
