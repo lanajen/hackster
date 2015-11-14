@@ -89,18 +89,34 @@ $desktop-width: 1024px;
 
       pre {
         display: block;
-        border-radius: 0;
+        @include border-radius(0);
         border: none;
-        padding-left: 15px;
         padding-top: 10px;
+        padding-bottom: 10px;
         color: white;
         overflow: visible;
         // This is set to short circuit a previously set global pre style.  Tsk tsk.
         max-height: inherit;
+        // &:first-child {
+        //   padding-bottom: 0;
+        // }
+        // &:last-child {
+        //   padding-bottom: 10px;
+        // }
       }
 
       pre + pre {
+        margin-bottom: -10px;
         margin-top: -10px;
+        padding-top: 0;
+      }
+
+      :not(pre) + pre {
+        padding-bottom: 0;
+      }
+
+      pre + :not(pre) {
+        margin-top: 20px;
       }
 
       blockquote {
