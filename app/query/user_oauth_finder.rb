@@ -5,18 +5,18 @@ class UserOauthFinder
 
   def find_for_oauth provider, auth, resource=nil
     # Rails.logger.info 'auth: ' + auth.to_yaml
+      uid = auth.uid
     case provider
     when 'facebook', 'github', 'gplus', 'linkedin'
-      uid = auth.uid
       email = auth.info.email
       name = auth.info.name
     when 'twitter'
-      uid = auth.uid
       name = auth.info.name
     when 'windowslive'
-      uid = auth.uid
       name = auth.info.name
       email = auth.info.emails.try(:first).try(:value)
+    when 'arduino'
+      email = auth.info.email
     else
       raise 'Provider #{provider} not handled'
     end

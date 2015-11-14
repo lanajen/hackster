@@ -15,6 +15,7 @@
 //= require ilightbox/ilightbox.packed
 //= require jquery_nested_form
 //= require js-cookie
+//= require clipboard
 //= require bitbucket-widget.min
 //= require slick
 //= require rangy-core

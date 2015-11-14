@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
   before_filter :load_project, only: [:redirect_to_slug_route]
-  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
+  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :redirect_to_slug_route]
   before_filter :load_and_authorize_resource, only: [:edit, :submit, :update_workflow]
   respond_to :html
   after_action :allow_iframe, only: :embed
@@ -87,8 +87,8 @@ class ProjectsController < ApplicationController
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
     if @project.public?
-      @respecting_users = @project.respecting_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
-      @replicating_users = @project.replicated_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @respecting_users = @project.respecting_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @replicating_users = @project.replicated_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
       if is_whitelabel?
         @respecting_users = @respecting_users.where(users: { enable_sharing: true })
         @replicating_users = @replicating_users.where(users: { enable_sharing: true })

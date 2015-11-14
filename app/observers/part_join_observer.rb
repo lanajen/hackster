@@ -36,7 +36,7 @@ class PartJoinObserver < ActiveRecord::Observer
     end
 
     def update_project record
-      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable.class.name == 'BaseArticle')
+      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable_type == 'BaseArticle')
 
       project = case record.partable
       when BaseArticle

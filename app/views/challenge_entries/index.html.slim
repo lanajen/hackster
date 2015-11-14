@@ -6,6 +6,9 @@ h1
 
 = link_to 'Download list as CSV', challenge_admin_entries_path(@challenge, format: :csv)
 
+.row
+  .col-xs-12= will_paginate @entries
+
 table.table.table-striped
   thead
     tr
@@ -44,3 +47,6 @@ table.table.table-striped
               = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this entry?', container: 'body' }
     - else
       td.text-center colspan=7 No entries yet
+
+.row
+  .col-xs-12= will_paginate @entries

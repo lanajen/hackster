@@ -1,0 +1,36 @@
+- if @user.private?
+  - content_for :head do
+    meta name='robots' content='noindex'
+
+= inserts_stats_for @user
+
+- cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}-projects-replicated", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
+  section#projects-list
+    .wrapper
+      .main-section-actions.clearfix.mg-30
+        - if user_is_current_or_admin?
+          .pull-left
+            ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
+          .btn-group.pull-right
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
+            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              i.fa.fa-ellipsis-v
+            ul.dropdown-menu.pull-right
+              li= link_to "Submit a link", new_project_path(type: 'external')
+
+      h2
+        ' Replicated projects
+        = content_tag(:span, @replicated_projects.count, class: 'badge')
+      - if @replicated_projects.any?
+        .thumb-list
+          .row.project-list
+            - @replicated_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+      - elsif user_is_current?
+        p
+          ' You haven't replicated any projects yet.
+          ==> link_to 'Browse around', projects_path
+          | for cool projects!
+      - else
+        | #{@user.name} hasn't replicated any projects yet.

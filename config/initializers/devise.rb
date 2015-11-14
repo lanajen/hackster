@@ -234,12 +234,83 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
 
+  config.omniauth :arduino, ENV['ARDUINO_API_KEY'], ENV['ARDUINO_API_SECRET'], scope: 'email+uid', setup: true
   config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
   config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email', setup: true
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
   # config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
   config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
   config.omniauth :windowslive, ENV['WINDOWS_LIVE_API_KEY'], ENV['WINDOWS_LIVE_API_SECRET'], scope: 'wl.basic,wl.emails', setup: true
+
+  base_url = APP_CONFIG['use_ssl'] ? 'https' : 'http'
+  base_url += '://'
+  base_url += APP_CONFIG['full_host']
+  issuer_url = base_url + '/users/auth/saml/metadata'
+  saml_callback_url = base_url + '/users/auth/saml/callback'
+  config.omniauth :saml,
+    idp_cert: ENV['CYPRESS_CERT'],
+    idp_entity_id: ENV['CYPRESS_ENTITY_ID'],
+    idp_sso_target_url: ENV['CYPRESS_SSO_TARGET_URL'],
+    idp_slo_target_url: ENV['CYPRESS_SLO_TARGET_URL'],
+    assertion_consumer_service_url: saml_callback_url,
+    issuer: issuer_url,
+    request_attributes: [
+        { name: 'email', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Email address' },
+        { name: 'name', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Full name' },
+      ],
+    certificate: %q(-----BEGIN CERTIFICATE-----
+      MIIEdzCCA1+gAwIBAgIJANPwUIzcAIrGMA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD
+      VQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xFzAV
+      BgNVBAoTDkhhY2tzdGVyLCBJbmMuMRQwEgYDVQQDEwtoYWNrc3Rlci5pbzEgMB4G
+      CSqGSIb3DQEJARYRYWRtaW5AaGFja3N0ZXIuaW8wHhcNMTUxMTAzMTkxMjU3WhcN
+      MTYxMTAyMTkxMjU3WjCBgzELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYD
+      VQQHEw1TYW4gRnJhbmNpc2NvMRcwFQYDVQQKEw5IYWNrc3RlciwgSW5jLjEUMBIG
+      A1UEAxMLaGFja3N0ZXIuaW8xIDAeBgkqhkiG9w0BCQEWEWFkbWluQGhhY2tzdGVy
+      LmlvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAynEf26N4n+o3XsLK
+      C6A2g2Auvi14tAWzGyfGZ3K5/BIpazzLMh5EJWSmz8uKXWUP9fcR2BzJ9v4oxucn
+      cKFhAI+AknUEU9HNMgny7rqXBFShYqA/N2A3HisaHjpn8FBa37/zCR0FWyqSGEjR
+      b77j8kdxJGoL8Ch0yYlGk+HsruLysj5dBShmJg3e0FIV2rD6oK0SM6K9jP39g4bQ
+      cEduCHYadz4uZyAOc7B6c0SFEGIzJaZFiKs7FtW3ucKTPOBo/kM447cVInNjSEH0
+      06RLYCxrV3hfDBxFge3yVkGqwB2ufQLrhOmlot9TSyp5MHNyA49Qwijik/f1ZPe5
+      3E0iAwIDAQABo4HrMIHoMB0GA1UdDgQWBBS4sI+jcyOeAJO1EZKe3br+GkfZoDCB
+      uAYDVR0jBIGwMIGtgBS4sI+jcyOeAJO1EZKe3br+GkfZoKGBiaSBhjCBgzELMAkG
+      A1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1TYW4gRnJhbmNpc2NvMRcw
+      FQYDVQQKEw5IYWNrc3RlciwgSW5jLjEUMBIGA1UEAxMLaGFja3N0ZXIuaW8xIDAe
+      BgkqhkiG9w0BCQEWEWFkbWluQGhhY2tzdGVyLmlvggkA0/BQjNwAisYwDAYDVR0T
+      BAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEABx+ncHwKq1YcysfPl3/s5n5J/hvB
+      OiTmyRzN3/xWdK3lenZNGFt9EuzNB8JaC6uY5/wh7sECIxz5meCB8KEQ18OnlHXV
+      XxdZ4zzcZe+cPXJaZl7l+QXps8XKeXhszU2MW+3EHa35AjaG/bwVUgw8DutqiGXG
+      esOYduAou70qKHfG5My6nyEJohcU55PRTPK0ykGUUkXEr/cXyX5Y8TFtGk5XhAUj
+      gnm/jhqoL1q+ACzV3U1gsQGfosortqd8PBNCRQ3hYWhieMZiI1T/KS0DLJ4jJ/Yq
+      iN2zrnD+5dTkIB/9sljxbBeqBxwVFLILVsiVHYX5zMEKdMF8ajOqJDbu4Q==
+      -----END CERTIFICATE-----),
+    private_key: %q(-----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAynEf26N4n+o3XsLKC6A2g2Auvi14tAWzGyfGZ3K5/BIpazzL
+      Mh5EJWSmz8uKXWUP9fcR2BzJ9v4oxucncKFhAI+AknUEU9HNMgny7rqXBFShYqA/
+      N2A3HisaHjpn8FBa37/zCR0FWyqSGEjRb77j8kdxJGoL8Ch0yYlGk+HsruLysj5d
+      BShmJg3e0FIV2rD6oK0SM6K9jP39g4bQcEduCHYadz4uZyAOc7B6c0SFEGIzJaZF
+      iKs7FtW3ucKTPOBo/kM447cVInNjSEH006RLYCxrV3hfDBxFge3yVkGqwB2ufQLr
+      hOmlot9TSyp5MHNyA49Qwijik/f1ZPe53E0iAwIDAQABAoIBAB4W9GJECPDT8kju
+      cPOLa67ZQ/lWbuNrGXUG03Ga1tQFqwxaa+VWJFDehgDKwxUgqV+oyokxtj81BcCS
+      qQUPp4hazAR4yhzfST2PxwD+0OV+4sHzCZJkhazBQU+O5NYOS4OIV0paeupTCIX9
+      hMu0NtNTFRkRfhbDHKC7+7aNVQ2lP+3P80fnJfugj8bMoHyTEZsB6bNbGivr/Hhh
+      AWQFJh0pf6xHVLeGQq9kY45WSjsZkTpPF3tD9ZEQEb+ErBAjVJER1+u7cSoj9zR0
+      FRBX5MN8UPWrSHlzkaummLzc5EUGl222eTp0eDfNPNWefS5u/SBjZXnTreDJQVRp
+      qCvjWskCgYEA+ipgBpW95Tr39r9SnNKXWlbq+H0oGOlNcjEMa0QIG4LNuk0wnS7+
+      VWGVxzUZFFu/tJ3PRoToMxPsrjz4KEYVoaLRcju5g+lmv8l801pM5MlWt2Cxdl2k
+      C/AArHaJvwMMTpSROQIasKbmTgXXKpg1z+QSEl7uZZPaCu+lESpP260CgYEAzynQ
+      K38YJJmnXAHZhBcrrRxvzAvewjRcTevCwH9b4st4J6qrpUZ0jdkgOHDDlyTbxwrQ
+      dTCBmMp+yg6IQQ0liJ1fMiEHm/TSQp0XI54paCE6B+eiCIppUg7OOarnbs1rCEe9
+      i3xuHw1v+flQL1KeaQgPNcm4EKjIXoW/p+R8qm8CgYBUI1BspoxZvr2LVcnZSNLy
+      5Wzd6mpEBqOvlmOQ6C654gKDeFazZwzPdqTDfU5UFI+jlbgTBbx7AWaHK6ZjFT9N
+      P8+l1gSNI0EVnBTJmQNnp3fs8S5+mvwDr9LqLmwhvEq1Wy6Et/p2E4w+DaTShKME
+      qraRSzBvJY0eRH+GCG8XeQKBgQCl2u8L89vraY0A74Yq57YTCUJEVXiJeQwxYkBw
+      h0aUY5wV/eEgGDE2Y5AVP8qH1n2SdIkCWcxX/D7YHBxgIFtdbckKREFoTfCMXmJp
+      JLY35Ool6//g4JeDl9DpgHd7UUCQx4bsBrnPaJ2uvzjAOmAS7N3ojVAtHkQU0PXp
+      P9fDRwKBgCoKPamMxgqKOEP97GdsVttCq+URXGYHhYr9hM3NmxXUKx4XxZSGfk49
+      pId0gbSeQD4EAInOeRUCnwvP6BOcy6FlWgH2OJdD8d14DIpvdw70V13yQt6uWbgD
+      SZDH9yjWU/uaGK/R6drekNhp4wfw4vYkDzv3q8mtWoyjiFj8OwL1
+      -----END RSA PRIVATE KEY-----)
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

@@ -15,9 +15,12 @@
             = form_tag "/groups/#{platform.id}/projects/link", method: :patch, class: 'disable-on-submit' do
               .form-group
                 = select_tag :project_id, options_from_collection_for_select(platform_projects, :id, :name), include_blank: true, class: 'form-control'
-              = submit_tag 'Link project', class: 'btn btn-primary btn-block'
+              = submit_tag "Link #{@project.identifier}", class: 'btn btn-primary btn-block'
 
       .col-md-8.col-md-offset-2
         .hr or
 
-  = render "#{@project.type.underscore.pluralize}/new_form"
+  - if params[:type]
+    = render "#{@project.type.underscore.pluralize}/new_form"
+  - else
+    = render "base_articles/new_form"
