@@ -95,6 +95,7 @@ HackerIo::Application.routes.draw do
           patch '' => 'microsoft_chrome_sync#update', on: :collection
         end
         resources :notifications, only: [:index]
+        get 'search' => 'search#index'
         resources :thoughts
         resources :users, only: [] do
           get :autocomplete, on: :collection
