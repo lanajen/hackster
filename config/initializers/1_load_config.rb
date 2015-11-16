@@ -6,7 +6,6 @@ POPULAR_TAGS = {
   'Bluetooth' => '/tags/bluetooth',
   'Display' => '/tags/display',
   'Embedded' => '/tags/embedded',
-  'Bluetooth' => '/tags/bluetooth',
   'Home automation' => '/tags/home+automation',
   'IoT' => '/tags/internet+of+things',
   'Intel Edison' => '/intel-edison',
