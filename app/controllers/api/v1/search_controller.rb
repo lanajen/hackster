@@ -1,8 +1,9 @@
 class Api::V1::SearchController < Api::V1::BaseController
-  before_filter :public_api_methods
-  before_filter :authenticate_platform_or_user
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
+  skip_before_filter :authorize_access!
+  before_filter :public_api_methods
+  before_filter :authenticate_platform_or_user
 
   def index
     set_surrogate_key_header 'api/search'

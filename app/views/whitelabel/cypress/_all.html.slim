@@ -4,7 +4,7 @@
   = render "whitelabel/#{current_site.subdomain}/head"
 
 = content_for :header do
-  - cache [I18n.locale, 'cy_chrome_header'], tag: %W(cy_chrome-#{I18n.short_locale}:nav cy_chrome-#{I18n.short_locale}:chrome_header) do
+  - cache [I18n.locale, 'cy_chrome_header'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_header) do
     = raw chrome_sync.chrome_header(I18n.locale)
 
   .navbar.navbar-default.navbar-static-top#navigation
@@ -50,7 +50,7 @@
           - if user_signed_in?
             .btn-group.btn-group-default
               = link_to 'My projects', current_user, class: 'btn btn-default'
-              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body' }
+              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body', position: 'bottom' }
           - else
             = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
 
