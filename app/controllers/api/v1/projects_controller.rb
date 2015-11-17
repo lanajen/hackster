@@ -22,17 +22,23 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       BaseArticle
     end
 
-    projects = projects.indexable.for_thumb_display
-
-    if params[:sort]
-      projects = projects.send(BaseArticle::SORTING[params[:sort]])
+    unless params[:platform_user_name] and params[:part_mpn]
+      projects = projects.indexable
     end
 
     if by and by.in? BaseArticle::FILTERS.keys
       projects = projects.send(BaseArticle::FILTERS[by])
     end
 
-    @projects = projects.paginate(page: safe_page_params)
+    if params[:only_count]
+      @count = projects.count
+    else
+      if params[:sort]
+        projects = projects.send(BaseArticle::SORTING[params[:sort]])
+      end
+
+      @projects = projects.for_thumb_display.paginate(page: safe_page_params)
+    end
   end
 
   def show
