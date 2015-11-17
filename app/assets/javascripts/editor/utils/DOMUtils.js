@@ -749,7 +749,7 @@ const Utils = {
 
           /** Merges two nodes with the same nodeName. */
           if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName
-             && child.nodeName !== 'LI' && child.nodeName !== 'UL' && child.children.length < 1) {
+             && child.nodeName !== 'LI' && child.nodeName !== 'UL' && child.children && child.children.length < 1) {
             child.previousSibling.textContent += child.textContent;
             node.removeChild(child);
           }
@@ -843,7 +843,6 @@ const Utils = {
           a.href = href;
           a.textContent = url;
           /** Replace the current text with our new anchor. */
-          console.log('HIT', range, child, url);
           range.setStart(child, index);
           range.setEnd(child, index + url.length);
           range.deleteContents();

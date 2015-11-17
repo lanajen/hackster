@@ -39,7 +39,8 @@ const ImageUtils = {
 
   handleImageResize(imgSrc, fileName, hash, callback) {
     let image = new Image();
-    image.crossOrigin = 'Anonymous';
+    /** Setting the crossOrigin to Anon will upset Safari CORS gods. */
+    // image.crossOrigin = 'Anonymous';
     image.onload = function(e) {
       // Resize the image.
       let canvas = document.createElement('canvas'),

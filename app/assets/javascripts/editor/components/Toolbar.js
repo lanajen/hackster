@@ -102,9 +102,9 @@ const Toolbar = React.createClass({
         this.props.actions.forceUpdate(true);
       }
     } else {
+      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
       this.props.actions.transformBlockElement(tagType, depth, false, this.props.editor.currentStoreIndex);
       this.props.actions.forceUpdate(true);
-      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
       this.handleUnsavedChanges();
     }
   },

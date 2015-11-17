@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import rangy from 'rangy';
-import Sanitize from 'sanitize-html';
 import Validator from 'validator';
 import Utils from '../utils/DOMUtils';
 import Parser from '../utils/Parser';
@@ -477,7 +476,7 @@ const ContentEditable = React.createClass({
     /** A span gets placed in converted empty LI's.  This will replace the span for a br so that the node has dimensions in Chrome. */
     if(e.keyCode === 40 && parentNode.nodeName === 'UL') {
       let li = Utils.getListItemFromTextNode(anchorNode);
-      if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1 && li.nextSibling.childNodes[0].nodeName === 'SPAN') {
+      if(li && li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1 && li.nextSibling.childNodes[0].nodeName === 'SPAN') {
         li.nextSibling.replaceChild(document.createElement('br'), li.nextSibling.childNodes[0]);
       }
     }
@@ -617,7 +616,8 @@ const ContentEditable = React.createClass({
     let pastedText, dataType;
     let { parentNode, depth } = Utils.getSelectionData();
 
-    if(window.clipboardData && window.clipboardData.getData) {  // IE
+    if(window.clipboardData && window.clipboardData.getData) {
+      /** IE */
       pastedText = window.clipboardData.getData('Text');
       dataType = 'html';
     } else if(e.clipboardData && e.clipboardData.getData) {
@@ -641,39 +641,10 @@ const ContentEditable = React.createClass({
         let clean = results.filter(item => {
           return item.type === 'CE' ? true : false;
         });
-        console.log(clean);
         this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       })
       .catch(err => { console.log('ERR0R', err); });
-  },
-
-  handleOnPasteSanitization(dirty) {
-    return Sanitize(dirty, {
-      allowedTags: [ 'p', 'div', 'a', 'ul', 'ol', 'li', 'b', 'i', 'blockquote', 'pre', 'code', 'strong', 'em', 'h3' ],
-      allowedAttributes: {
-        'a': [ 'href' ]
-      },
-      allowedSchemes: [ 'data', 'http', 'https' ],
-      transformTags: {
-        'br': function(tagType, attribs) {
-          return {
-            tagType: 'span',
-            attribs: attribs
-          };
-        },
-        'ol': 'ul',
-        'h1': 'h3',
-        'h2': 'h3'
-      },
-      exclusiveFilter: function(frame) {
-        if(frame.tag === 'a' || frame.tag === 'img' && Object.keys(frame.attribs).length > 0) {
-          return true;
-        } else {
-          return !frame.text.trim();
-        }
-      }
-    });
   },
 
   render() {

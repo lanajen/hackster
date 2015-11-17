@@ -35,7 +35,7 @@ const FigCaption = React.createClass({
       '40': true
     };
 
-    if(node.textContent === 'caption (optional)' && !arrowKeys[e.keyCode]) { 
+    if(node.textContent === 'caption (optional)' && !arrowKeys[e.keyCode]) {
       node.textContent = '';
     } else if(e.keyCode === 8 && node.textContent.length <= 1) {
       node.textContent = 'caption (optional)';
@@ -45,12 +45,12 @@ const FigCaption = React.createClass({
       case 13: // ENTER
         this.props.handleFigCaptionKeys(e, 'Enter');
         break;
-    default: 
+    default:
       break;
     }
   },
 
-  handleKeyUp() {
+  handleKeyUp(e) {
     /** Input handler for IE. */
     if(this.props.isIE) {
       let html = React.findDOMNode(e.target).textContent;
@@ -61,8 +61,8 @@ const FigCaption = React.createClass({
   },
 
   render() {
-    /** 
-      * We keep the main source of truth (this.props.html) coming from the reducer. 
+    /**
+      * We keep the main source of truth (this.props.html) coming from the reducer.
       * State is only held here to update the reducer once the component loses focus.
       * This way the cursor stays where we want it and doesn't jump around on rerenders.
       */
@@ -73,7 +73,7 @@ const FigCaption = React.createClass({
                   onBlur={this.handleBlur}
                   onKeyDown={this.handleKeyDown}
                   onKeyUp={this.handleKeyUp}
-                  contentEditable={true} 
+                  contentEditable={true}
                   dangerouslySetInnerHTML={{__html: this.props.html}}>
       </figcaption>
     );

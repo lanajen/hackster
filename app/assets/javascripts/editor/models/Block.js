@@ -8,7 +8,7 @@ const hashids = new Hashids('hackster', 4);
 export default {
 
   getTextContent(json) {
-    let text = json[0].tag === 'li' ? '' : json[0].content;
+    let text = '';
 
     treeWalk(json, child => {
       if(child.content) {
