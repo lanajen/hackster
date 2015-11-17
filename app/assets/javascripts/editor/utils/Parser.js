@@ -236,6 +236,7 @@ export default {
   },
 
   getAttributesByTagType(item) {
+    item.attribs = item.attribs || {};
     let hash = item.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1));
     let block = BlockElements[item.tag.toUpperCase()] ? item.tag : null;
     let classes = item.attribs.class || '';
@@ -244,5 +245,14 @@ export default {
       [block]: ` data-hash="${hash}" class="${classes}"`
     };
     return attribs[item.tag] ? attribs[item.tag] : '';
-  }
+  },
+
+  stringifyLineBreaksToParagraphs(text, nodeName) {
+    let lines = text.split('\n');
+    let tag = nodeName === 'PRE' ? 'pre' : 'p';
+    return lines.map(line => {
+      line = !line.length ? '<br/>' : line;
+      return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${line}</${tag}>`;
+    }).join('');
+  },
 }

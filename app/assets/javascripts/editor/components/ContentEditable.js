@@ -459,7 +459,7 @@ const ContentEditable = React.createClass({
         parentNode.nextSibling.appendChild(document.createElement('br'));
       } else if(parentNode.nodeName === 'UL') {
         let li = Utils.getListItemFromTextNode(anchorNode);
-        if(li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1) {
+        if(li && li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1) {
           li.nextSibling.appendChild(document.createElement('br'));
         }
       }
@@ -468,7 +468,7 @@ const ContentEditable = React.createClass({
         parentNode.previousSibling.appendChild(document.createElement('br'));
       } else if(parentNode.nodeName === 'UL') {
         let li = Utils.getListItemFromTextNode(anchorNode);
-        if(li.previousSibling && li.previousSibling.nodeName === 'LI' && li.previousSibling.textContent.length < 1) {
+        if(li && li.previousSibling && li.previousSibling.nodeName === 'LI' && li.previousSibling.textContent.length < 1) {
           li.previousSibling.appendChild(document.createElement('br'));
         }
       }
@@ -632,22 +632,20 @@ const ContentEditable = React.createClass({
     }
 
     if(dataType === 'text') {
-      let clean = this.handleOnPasteSanitization(pastedText);
-      parentNode.innerHTML += clean;
-      Utils.setCursorByNode(React.findDOMNode(parentNode));
-      this.emitChange();
-    } else {
-      return Utils.parseDescription(pastedText)
-        .then(results => {
-          /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
-          let clean = results.filter(item => {
-            return item.type === 'CE' ? true : false;
-          });
-          this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
-          this.props.actions.forceUpdate(true);
-        })
-        .catch(err => { console.log('ERR0R', err); });
+      pastedText = Parser.stringifyLineBreaksToParagraphs(pastedText, parentNode.nodeName);
     }
+
+    return Utils.parseDescription(pastedText)
+      .then(results => {
+        /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
+        let clean = results.filter(item => {
+          return item.type === 'CE' ? true : false;
+        });
+        console.log(clean);
+        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
+        this.props.actions.forceUpdate(true);
+      })
+      .catch(err => { console.log('ERR0R', err); });
   },
 
   handleOnPasteSanitization(dirty) {

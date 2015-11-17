@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import Hashids from 'hashids';
+const hashids = new Hashids('hackster', 4);
 
 export default {
   /**
@@ -62,11 +64,14 @@ export default {
    * @return {[array]}                        [Map of depth/positions and built nodes to splice in Content Editable]
    */
   transformListItems(json, childDepthsToTransform, listDepth) {
+    let nodeToFocus;
     let flattenedJson = json[0].children.map((child, index) => {
       let newChild = { node: child, listDepth: listDepth, toList: true };
-      childDepthsToTransform.forEach(depth => {
+      childDepthsToTransform.forEach((depth, i) => {
         if(depth === index) {
           child.tag = 'p';
+          child.attribs['data-hash'] = hashids.encode(Math.floor(Math.random() * 9999 + 1));
+          if(i === 0) { nodeToFocus = child; }
           newChild = { node: child, listDepth: listDepth, toList: false };
         }
       });
@@ -87,6 +92,6 @@ export default {
     }, []);
 
     elements[0].node.attribs['data-hash'] = json[0].attribs['data-hash'];
-    return elements;
+    return { elements: elements, nodeToFocus: nodeToFocus };
   },
 }
