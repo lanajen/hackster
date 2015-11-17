@@ -178,6 +178,17 @@
     }
   }
 }
+@media only screen and (max-width: 1000px) {
+  .navbar {
+    .navbar-brand {
+      height: 58px;
+      margin-top: 1px;
+      @include border-radius(60px);
+      padding: 8px 5px;
+      border-bottom: 0;
+    }
+  }
+}
 
 @media only screen and (min-width: 1600px) {
   .wrapper {
