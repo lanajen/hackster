@@ -255,8 +255,9 @@ Devise.setup do |config|
     assertion_consumer_service_url: saml_callback_url,
     issuer: issuer_url,
     request_attributes: [
-        { name: 'email', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Email address' },
-        { name: 'name', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Full name' },
+        { name: 'User.Email', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Email address' },
+        { name: 'User.LastName', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Last name' },
+        { name: 'User.FirstName', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'First name' },
       ],
     certificate: %q(-----BEGIN CERTIFICATE-----
       MIIEdzCCA1+gAwIBAgIJANPwUIzcAIrGMA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD
