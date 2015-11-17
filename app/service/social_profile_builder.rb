@@ -21,9 +21,9 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    logger.info 'data: ' + data.to_yaml
-    logger.info 'provider: ' + provider.to_s
-    # logger.info 'user: ' + @user.to_yaml
+    Rails.logger.info 'data: ' + data.to_yaml
+    Rails.logger.info 'provider: ' + provider.to_s
+    # Rails.logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
       @user.email_confirmation = @user.email
@@ -126,6 +126,13 @@ class SocialProfileBuilder
     end
 
     def saml info, data
+      assign_attributes(
+        full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
+        user_name: info.user_name,
+        email: info.email,
+        state: info.state,
+        country: info.country
+      )
     end
 
     def twitter info, data

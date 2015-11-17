@@ -77,6 +77,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         request.env['omniauth.auth']
       end
 
+      puts 'session0: ' + session.inspect
+
       if session.delete(:link_accounts)
         session['devise.provider_data'] = omniauth_data
         session['devise.provider'] = kind
@@ -98,6 +100,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         else
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
+          puts 'session: ' + session.inspect
           redirect_to new__authorization_url(autosave: 1, host: @redirect_host)
         end
       end
