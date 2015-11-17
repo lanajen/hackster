@@ -1,4 +1,5 @@
 class Api::V1::PartsController < Api::V1::BaseController
+  skip_before_filter :authorize_access!
   before_filter :public_api_methods
   before_filter :authenticate_platform_or_user, only: [:index]
   before_filter :authenticate_and_load_resource, only: [:show, :create, :update, :destroy]

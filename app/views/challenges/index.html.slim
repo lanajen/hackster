@@ -1,3 +1,8 @@
+= content_for :head do
+
+  = auto_discovery_link_tag :rss, challenges_path(format: :rss), title: 'Active hardware contests - Hackster.io'
+  = auto_discovery_link_tag :atom, challenges_path(format: :atom), title: 'Active hardware contests - Hackster.io'
+
 = content_for :no_container do
   - cache [I18n.locale, 'challenge-index', params[:sort], (!user_signed_in? or !current_user.subscribed_to? :email, 'newsletter')], tag: ['challenge-index'], expires_in: 24.hours do
     .container

@@ -1,0 +1,1 @@
+User.user_name_set.not_hackster.find_each{|u| u.skill_tags_string_from_tags; u.interest_tags_string_from_tags; u.save if u.changed? }

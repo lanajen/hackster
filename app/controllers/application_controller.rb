@@ -58,6 +58,12 @@ class ApplicationController < ActionController::Base
 
   before_action :set_locale, except: [:not_found]
 
+  # hoping that putting it here will only make the condition run once when the
+  # app loads and not on every request
+  if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']
+    before_filter :authorize_access!
+  end
+
   def set_signed_in_cookie
     if user_signed_in?
       cookies[:hackster_user_signed_in] = '1' if cookies[:hackster_user_signed_in].blank?
@@ -176,6 +182,12 @@ class ApplicationController < ActionController::Base
   end
 
   private
+    def authorize_access!
+      authenticate_or_request_with_http_basic do |username, password|
+        username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
+      end
+    end
+
     def allow_iframe
       response.headers.except! 'X-Frame-Options'
     end

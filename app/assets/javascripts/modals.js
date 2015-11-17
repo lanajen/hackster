@@ -20,6 +20,11 @@ function resizeModal(id) {
     $('body').addClass('modal-open');
     m.addClass('open');
     m.trigger('modal:open');
+    $(document).on('keyup.modal', function(e){
+      if (e.keyCode == 27) {
+        closeModal(id);
+      }
+    });
   });
 
   var height = Math.max(-(p.outerHeight() / 2), -($(window).height() / 2 - 20));  // 20 for padding
@@ -28,6 +33,7 @@ function resizeModal(id) {
 
 function closeModal(id) {
   var m = $(id);
+  $(document).off('keyup.modal');
   m.trigger('modal:closing');
   m.fadeOut(200, function(){
     if ($(this).hasClass('modal-remove')) $(this).remove();

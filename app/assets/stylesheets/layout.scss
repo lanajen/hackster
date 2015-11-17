@@ -1125,7 +1125,7 @@ a.hidden-link {
   height: 100%;
   width: 100%;
   background: #000;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.5);
   z-index: 100000000000;
   display: none;
   text-align: center;
@@ -1181,6 +1181,7 @@ a.hidden-link {
   z-index: 100000000002;
   -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
   transition: all 200ms;
+  @include box-shadow(0 0 5px #666);
   &.transparent {
     background: transparent;
     color: #fff;
@@ -1486,4 +1487,36 @@ i + span, span + i {
       }
     }
   }
+}
+
+.tweet-preview {
+  position: relative;
+  background: #fafafa;
+  border: 2px solid #ddd;
+  margin-bottom: 20px;
+  padding: 10px;
+  @include border-radius(4px);
+}
+.tweet-preview:after, .tweet-preview:before {
+  top: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.tweet-preview:after {
+  border-color: rgba(250, 250, 250, 0);
+  border-top-color: #fafafa;
+  border-width: 15px;
+  margin-left: -15px;
+}
+.tweet-preview:before {
+  border-color: rgba(221, 221, 221, 0);
+  border-top-color: #ddd;
+  border-width: 18px;
+  margin-left: -18px;
 }

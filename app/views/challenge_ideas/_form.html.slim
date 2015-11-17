@@ -1,5 +1,7 @@
 = simple_form_for [@challenge, @idea], url: url_for_challenge_idea_form(@challenge, @idea), html: { class: 'widget-form' } do |f|
   = f.error_notification
+  - if @idea.errors.any? and current_user.is? :admin
+    = debug @idea.errors
 
   = f.input :name, label: 'Name of your idea or concept'
   .form-group class=(@idea.errors.messages.include?(:image_id) ? 'has-error' : '')
@@ -25,7 +27,7 @@
 
   = f.input :description, as: :text, input_html: { class: "text-editor" }
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
-    = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }
+    = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }, required: field.required
 
   p
     small

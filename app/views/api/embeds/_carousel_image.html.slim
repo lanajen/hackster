@@ -1,10 +1,11 @@
-.image  data-type='file' data-file-id=image.id contenteditable='false'
+.image
   figure
     a.embed-img href="javascript:openLightBox('#{uid}', #{i});"
-      = image_tag image.imgix_url(:headline)
+      - if lazyload
+        = image_tag asset_url('transparent.gif'), 'data-async-src' => image.imgix_url(:headline), class: (i.zero? ? 'load-slick' : '')
+        noscript
+          = image_tag image.imgix_url(:headline), class: 'loaded'
+      - else
+        = image_tag image.imgix_url(:headline), class: 'loaded'
     - if caption.present?
-      figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' } = caption
-    - else
-      figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' }
-    span.widget-attribute*{ 'data-attribute' => "[images_attributes][#{i}][id]", 'data-value' => image.id }
-    span.widget-attribute.position*{ 'data-attribute' => "[images_attributes][#{i}][position]", 'data-value' => image.position }
+      figcaption= caption

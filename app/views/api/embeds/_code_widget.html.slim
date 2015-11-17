@@ -3,9 +3,9 @@
     .button-content
       h5= widget.name
       .buttons
-        / button.btn.btn-default.btn-md
-          ' Copy to clipboard
-          /  https://github.com/zeroclipboard/zeroclipboard-rails
+        - if widget.formatted_code.present?
+          button.btn.btn-primary.btn-sm.copy-code
+            ' Copy to clipboard
         - if document = widget.document and document.file_url.present?
           a.btn.btn-primary.btn-sm href=document.file_url
             ' Download

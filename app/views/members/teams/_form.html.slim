@@ -20,7 +20,7 @@
     = f.input :full_name, label: 'Team name'
     = f.input :new_user_name, label: 'Pretty URL' do
       .input-group
-        span.input-group-addon hackster.io/
+        span.input-group-addon #{site_domain}/
         = f.input_field :new_user_name
         span.input-group-addon
           | /#{@project.slug_hid}

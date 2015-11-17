@@ -8,6 +8,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     super
   end
 
+  def arduino
+    oauthorize 'arduino'
+  end
+
   def facebook
     oauthorize 'facebook'
   end
@@ -48,7 +52,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def failure
     set_flash_message :alert, :failure, kind: OmniAuth::Utils.camelize(failed_strategy.name), reason: failure_message
 
-    logger.error env['omniauth.error'].to_s
+    logger.error "env['omniauth.error']: " + env['omniauth.error'].inspect
 
     redirect_to after_omniauth_failure_path_for(resource_name)
   end

@@ -11,7 +11,7 @@
 
     = render 'projects/project_embed_popup'
 
-    #content.project-page.hljs-active class="project-#{@project.id}"
+    #content.project-page class="project-#{@project.id}"
       .container-desktop.container
         - if @project.content_type_to_human
           .project-type
@@ -93,7 +93,7 @@
                       ' About this project
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
-                  .section-content
+                  .section-content.hljs-active
                     .medium-editor= @project.description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do

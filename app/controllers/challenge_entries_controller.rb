@@ -6,7 +6,7 @@ class ChallengeEntriesController < ApplicationController
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at).paginate(page: safe_page_params, per_page: 100)
 
     respond_to do |format|
       format.html do
@@ -28,14 +28,19 @@ class ChallengeEntriesController < ApplicationController
     authorize! :enter_in_challenge, @project
 
     @project.private = false
-    @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
 
     entry.user_id = current_user.id
     entry.project_id = @project.id
     if entry.save
       entry.approve! if @challenge.auto_approve?
-      flash[:notice] = "Thanks for entering #{@challenge.name}!"
+
+      session[:share_modal] = 'new_entry_challenge_share_prompt'
+      session[:share_modal_model] = 'challenge'
+      session[:share_modal_model_id] = @challenge.id
+      session[:share_modal_time] = 'after_redirect'
+
+      # flash[:notice] = "Thanks for entering #{@challenge.name}!"
     else
       flash[:alert] = "Your project couldn't be entered."
     end

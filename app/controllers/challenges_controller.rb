@@ -13,12 +13,18 @@ class ChallengesController < ApplicationController
   skip_after_filter :track_landing_page, only: [:show, :brief, :projects, :ideas]
 
   def index
-    title 'Hardware challenges'
+    title 'Hardware contests'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
     @active_challenges = Challenge.public.active.ends_first.includes(sponsors: :avatar)
     @coming_challenges = Challenge.public.coming.starts_first.includes(sponsors: :avatar)
     @past_challenges = Challenge.public.past.ends_last.includes(sponsors: :avatar)
+
+    respond_to do |format|
+      format.html
+      format.atom { render layout: false }
+      format.rss { redirect_to challenges_path(params.merge(format: :atom).reject{|k, v| k.to_s.in? %w(action controller)}), status: :moved_permanently }
+    end
   end
 
   def show
@@ -105,8 +111,14 @@ class ChallengesController < ApplicationController
 
   def update
     authorize! :update, @challenge
-    if @challenge.update_attributes(params[:challenge])
-      redirect_to @challenge, notice: 'Changes saved.'
+    @challenge.assign_attributes(params[:challenge])
+    message = if @challenge.pre_contest_awarded_changed? and @challenge.pre_contest_awarded?
+      'The announcement is being processed in the background. Results and emails will be visible momentarily.'
+    else
+      'Changes saved.'
+    end
+    if @challenge.save
+      redirect_to @challenge, notice: message
     else
       render 'edit'
     end

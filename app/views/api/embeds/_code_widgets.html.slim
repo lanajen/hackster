@@ -1,0 +1,27 @@
+- if widgets.count > 0
+  .code-widgets class=(widgets.count == 1 ? ['single-file', ((widgets.first.binary? or widgets.first.formatted_code.blank?) ? 'no-preview' : '')].join(' ') : '')
+    .sidebar
+      ul
+        - widgets.each_with_index do |widget, i|
+          li
+            = link_to widget.name, 'javascript:void(0)', data: { target: "#code-widget-#{widget.id}" }, class: (i.zero? ? 'active' : '')
+    .preview-container
+      - widgets.each_with_index do |widget, i|
+        .preview-pane class=(i.zero? ? 'active' : '') id="code-widget-#{widget.id}"
+          .preview-header
+            .clearfix
+              h5= widget.name
+              .buttons.btn-group.btn-group-default
+                - if !widget.binary? and widget.formatted_code.present?
+                  button.btn.btn-primary.btn-xs.copy-code.istooltip title='Copy the code' data-container='body' data-trigger='hover'
+                    i.fa.fa-clipboard
+                - if document = widget.document and document.file_url.present?
+                  a.btn.btn-primary.btn-xs rel='tooltip' title='Download' href=document.file_url data-container='body'
+                    i.fa.fa-cloud-download
+            - if widget.comment.present?
+              .comment= plain_to_html(widget.comment)
+          .preview-body.pygments-syntax
+            - if !widget.binary? and widget.formatted_code.present?
+              = raw widget.formatted_code
+            - else
+              pre No preview.

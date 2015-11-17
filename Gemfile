@@ -28,6 +28,7 @@ gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do
+  gem 'rails-assets-clipboard', '1.5.3'
   gem 'rails-assets-js-cookie', '2.0.3'
   gem 'rails-assets-medium-editor', '1.8.14'
   gem 'rails-assets-underscore', '1.7.0'
@@ -72,18 +73,21 @@ gem 'impressionist', '1.5.1'
 gem 'imgix', '0.3.1'
 gem 'ipcat', '2.0.1'
 gem 'jbuilder', '2.3.0'
-gem 'mandrill_dm', '1.2.0'
+gem 'mandrill_dm', git: 'https://github.com/blarralde/mandrill_dm.git'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
 gem 'momentjs-rails', '2.8.1'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.12.0.288'
 gem 'nokogiri', '1.6.0'
+# I know bad it's practice to have passwords committed but this is just a dummy account with only read access to that specific repo
+gem 'omniauth-arduino', git: "https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git"
 gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
+gem 'omniauth-saml', '1.4.1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https

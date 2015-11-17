@@ -4,7 +4,7 @@ development:
   default_domain: localhost.local
   default_port: 5000
   port_required: true
-  send_emails: false
+  send_emails: <%= ENV['USE_MANDRILL'] == 'true' %>
   workers_running: false
   stats_url: www.localhost.local:5000
   use_ssl: <%= ENV['USE_SSL'] == 'true' %>
@@ -15,6 +15,17 @@ development:
 #   default_domain: lvh.me
 #   default_port: 5000
 #   send_emails: false
+
+# development:
+#   full_host: www.hackster.io:5000
+#   default_host: www.hackster.io
+#   default_domain: hackster.io
+#   default_port: 5000
+#   port_required: true
+#   send_emails: <%= ENV['USE_MANDRILL'] == 'true' %>
+#   workers_running: false
+#   stats_url: www.hackster.io:5000
+#   use_ssl: <%= ENV['USE_SSL'] == 'true' %>
 
 test:
   full_host: www.localhost.local

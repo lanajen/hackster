@@ -83,7 +83,7 @@
                 = f_team.input :disable_team_append, inline_label: 'Do not add "Team" to the team name', label: false, as: :boolean
               = f_team.input :new_user_name, label: 'Pretty URL' do
                 .input-group
-                  span.input-group-addon hackster.io/
+                  span.input-group-addon #{site_domain}/
                   = f_team.input_field :new_user_name
                   span.input-group-addon
                     | /#{@project.slug_hid.truncate(20)}

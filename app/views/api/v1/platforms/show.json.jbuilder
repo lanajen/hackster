@@ -6,7 +6,7 @@ json.platform do
       project = col.project
 
       json.name project.name
-      json.url project_url(project)
+      json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
       json.embed_url project_embed_url(project)
       json.cover_image_url project.cover_image.try(:imgix_url, :cover_thumb)
       json.one_liner project.one_liner

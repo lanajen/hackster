@@ -197,6 +197,10 @@
         $('#code-editor-form [data-field-type="raw_code"]').val(cEditor.ace.getValue());
         resizeModal('#code-editor-popup');
       });
+
+      $(window).load(function(){
+        loadSlickSlider();
+      });
     });
 
 = render 'projects/forms/part_form'

@@ -57,6 +57,7 @@ class Groups::ProjectsController < ApplicationController
     if @group.update_attributes(params[:group])
       redirect_to group_admin_projects_path(@group), notice: 'Featured projects saved.'
     else
+      @projects = @group.project_collections.featured.includes(:project)
       render :featured
     end
   end

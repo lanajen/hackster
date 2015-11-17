@@ -163,7 +163,7 @@ class SitemapController < ApplicationController
     end
 
     def users_query
-      User.invitation_accepted_or_not_invited.user_name_set
+      User.invitation_accepted_or_not_invited.user_name_set.public
     end
 
     def users_pages offset=0

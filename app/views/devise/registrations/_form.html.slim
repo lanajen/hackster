@@ -4,5 +4,5 @@
   input name='source' value=params[:source] type='hidden'
   = f.input :email, label: false, placeholder: 'Email', autofocus: (defined?(autofocus) ? autofocus : true)
   = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
-  = f.input :password, label: false, placeholder: 'Password'
+  = f.input :password, label: false, placeholder: 'Password', hint: '8 characters minimum'
   = f.button :submit, "Create my account", class: 'btn btn-primary btn-block'
