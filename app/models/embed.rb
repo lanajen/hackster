@@ -63,6 +63,10 @@ class Embed
     provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github schemeit)
   end
 
+  def hid
+    @hid ||= SecureRandom.hex(10)
+  end
+
   def format
     @format || DEFAULT_FORMAT
   end
