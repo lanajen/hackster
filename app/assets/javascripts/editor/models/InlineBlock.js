@@ -5,10 +5,13 @@ import { domWalk, treeWalk } from '../utils/Traversal';
 export default {
 
   removeInline(parent, range, element) {
+    let newNode = null;
+    let textNode = null;
     if(parent.nodeName === 'UL') {
       let selectedNodes = range.getNodes([3]);
       let tree;
 
+      parent = parent.cloneNode(true);
       selectedNodes.forEach(item => {
         tree = domWalk(parent, child => {
           if(child.isEqualNode(item)) {
@@ -16,6 +19,8 @@ export default {
             let replacement = child.parentNode.nodeName.toLowerCase() === element ? child : child.parentNode;
             while(child.parentNode) {
               if(child.nodeName.toLowerCase() === element) {
+                newNode = replacement.nodeType === 3 ? replacement.parentNode.parentNode : replacement.parentNode;
+                textNode = replacement.nodeType === 3 ? replacement : replacement.childNodes[0];
                 child.parentNode.replaceChild(replacement, child);
                 break;
               }
@@ -24,20 +29,23 @@ export default {
           }
         });
       });
-      return tree;
+      return { newHtml: tree, newNode: newNode, textNode: textNode };
     } else {
-      let start = range.startContainer;
-      return domWalk(parent, child => {
-        if(child.isEqualNode(start)) {
+      let tree = domWalk(parent, child => {
+        if(child.isEqualNode(range.startContainer)) {
           while(child.parentNode) {
             if(child.nodeName.toLowerCase() === element) {
-              child.parentNode.replaceChild(document.createTextNode(child.textContent), child);
+              let text = document.createTextNode(child.textContent);
+              newNode = child.parentNode;
+              textNode = text;
+              child.parentNode.replaceChild(text, child);
               break;
             }
             child = child.parentNode;
           }
         }
       });
+      return { newHtml: tree, newNode: newNode, textNode: textNode };
     }
   },
 
@@ -46,18 +54,18 @@ export default {
       let selectedNodes = range.getNodes([3]);
       let fragment = range.cloneContents();
       let frags = this.createFragmentArray([].slice.apply(fragment.childNodes));
-      parent = parent.cloneNode(true);
-      let tree;
+      let tree, startChild, middleChild, endChild;
 
+      parent = parent.cloneNode(true);
       selectedNodes.forEach((node, index) => {
         let frag = frags[index];
         let position = index === 0 ? 'start' : index === selectedNodes.length-1 ? 'end' : 'middle';
         tree = domWalk(parent, (child, root) => {
           if(node.isEqualNode(child)) {
             let { start, middle, end } = this.createTextContent(child, frag, range, position);
-            let startChild = child.cloneNode();
-            let middleChild = document.createElement(element);
-            let endChild = child.cloneNode();
+            startChild = child.cloneNode();
+            middleChild = document.createElement(element);
+            endChild = child.cloneNode();
             startChild.textContent = start;
             middleChild.textContent = middle;
             endChild.textContent = end;
@@ -67,13 +75,13 @@ export default {
           }
         });
       });
-      return tree;
+      return { newHtml: tree, newNode: middleChild, textNode: middleChild.childNodes[0] };
     } else {
       let element = document.createElement('code');
       element.appendChild(range.cloneContents());
       range.deleteContents();
       range.insertNode(element);
-      return parent;
+      return { newHtml: parent, newNode: element, textNode: element.childNodes[0] };
     }
   },
 

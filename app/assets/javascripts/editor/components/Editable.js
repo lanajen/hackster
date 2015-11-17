@@ -149,6 +149,8 @@ const Editable = React.createClass({
       if(item.type === 'CE') {
         cleaned = Parser.removeAttributes(item.json);
         cleaned = Parser.concatPreBlocks(cleaned);
+        cleaned = Parser.postCleanUp(cleaned);
+        console.log('POST', cleaned);
         item.json = cleaned;
         return Promise.resolve(item);
       } else if(item.type === 'Carousel') {

@@ -7,6 +7,7 @@ import Helpers from '../../utils/Helpers';
 import { BlockElements } from './Constants';
 import Request from './Requests';
 import Validator from 'validator';
+import { domWalk } from './Traversal';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
@@ -218,6 +219,16 @@ const Utils = {
     return indexes;
   },
 
+  getLiveNode(parent, clone) {
+    let liveNode = null;
+    domWalk(parent, child => {
+      if(child.isEqualNode(clone)) {
+        liveNode = child;
+      }
+    });
+    return liveNode;
+  },
+
   createULGroups(startContainer, endContainer, parentNode) {
     let groups = [], group = [], cont = false, child;
 
@@ -385,15 +396,18 @@ const Utils = {
     return li;
   },
 
-  getListItemPositions(startContainer, endContainer, parent) {
+  getListItemPositions(start, end, parent) {
     let positions = [], cont = false, child;
-    startContainer = this.getListItemFromTextNode(startContainer);
-    endContainer = this.getListItemFromTextNode(endContainer);
+    let startContainer = this.getListItemFromTextNode(start);
+    let endContainer = this.getListItemFromTextNode(end);
 
     for(let i = 0; i < parent.childNodes.length; i++) {
       child = parent.childNodes[i];
-
       if(startContainer === endContainer && startContainer === child) {
+        positions.push(i);
+        break;
+      } else if(start === parent && parent.children.length === 1) {
+        /** If theres only one item left in the list, Ranges will equal the parent element.  So we just want to pass index 0 here. */
         positions.push(i);
         break;
       }

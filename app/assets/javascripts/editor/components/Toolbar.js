@@ -102,6 +102,7 @@ const Toolbar = React.createClass({
         this.props.actions.forceUpdate(true);
       }
     } else {
+      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
       this.props.actions.transformBlockElement(tagType, depth, false, this.props.editor.currentStoreIndex);
       this.handleUnsavedChanges();
       this.props.actions.forceUpdate(true);
@@ -166,7 +167,7 @@ const Toolbar = React.createClass({
        && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
       let clone = parentNode.cloneNode(true);
-      let newHtml;
+      let cursorPosition = this.props.editor.cursorPosition;
 
       /** Don't allow H3's to be styled. */
       if(parentNode.nodeName === 'H3') {
@@ -175,19 +176,21 @@ const Toolbar = React.createClass({
       }
 
       if(Utils.isNodeChildOfElement(range.startContainer, 'CODE') || Utils.isNodeChildOfElement(range.endContainer, 'CODE')) {
-        newHtml = InlineBlockModel.removeInline(clone, range.cloneRange(), 'code');
+        let { newHtml, newNode, textNode } = InlineBlockModel.removeInline(parentNode, range, 'code');
         return Parser.parseDOM(newHtml.outerHTML)
           .then(json => {
             this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
+            this.props.actions.setCursorPosition(depth, newNode, cursorPosition.offset, textNode, cursorPosition.rootHash)
             this.props.actions.forceUpdate(true);
           }).catch(err => {
             console.log(err);
           });
       } else {
-        newHtml = InlineBlockModel.transformInline(parentNode, range, 'code');
+        let { newHtml, newNode, textNode } = InlineBlockModel.transformInline(parentNode, range, 'code');
         return Parser.parseDOM(newHtml.outerHTML)
           .then(json => {
             this.props.actions.transformInlineToText(json, depth, this.props.editor.currentStoreIndex);
+            this.props.actions.setCursorPosition(depth, newNode, cursorPosition.offset, textNode, cursorPosition.rootHash)
             this.props.actions.forceUpdate(true);
           }).catch(err => {
             console.log(err);
@@ -204,6 +207,7 @@ const Toolbar = React.createClass({
     let { sel, range, anchorNode, parentNode, depth } = Utils.getSelectionData();
     let startContainerParent = Utils.getRootParentElement(range.startContainer);
     let endContainerParent = Utils.getRootParentElement(range.endContainer);
+    let cursorPosition = this.props.editor.cursorPosition;
 
     if(Utils.isElementTypeInSelection(startContainerParent, endContainerParent, 'UL')) {
       /** A list exists in the current selection. */
@@ -211,25 +215,30 @@ const Toolbar = React.createClass({
         /** Selection is in the same list; Undo list. */
         return Parser.parseDOM(parentNode.cloneNode(true).outerHTML)
           .then(json => {
-            let elements = ListModel.transformListItems(json, Utils.getListItemPositions(range.startContainer, range.endContainer, parentNode), depth);
+            let { elements, nodeToFocus } = ListModel.transformListItems(json, Utils.getListItemPositions(range.startContainer, range.endContainer, parentNode), depth);
+            let realNode = document.createElement('p');
+            realNode.innerHTML = Parser.toHtml([nodeToFocus]);
+            realNode = realNode.children[0];
             this.props.actions.handleUnorderedList(false, elements, {}, this.props.editor.currentStoreIndex);
+            this.props.actions.setCursorPosition(depth, realNode, cursorPosition.offset, anchorNode, cursorPosition.rootHash);
             this.props.actions.forceUpdate(true);
           }).catch(err => { console.log(err); });
 
       } else {
         /** Selection ranges outside of the list, we're going to create a list of all selected nodes. */
-        this._buildList(startContainerParent, endContainerParent, parentNode);
+        this._buildList(startContainerParent, endContainerParent, parentNode, anchorNode, depth);
       }
 
     } else {
       /** Build a fresh list. */
-      this._buildList(startContainerParent, endContainerParent, parentNode);
+      this._buildList(startContainerParent, endContainerParent, parentNode, anchorNode, depth);
     }
     this.handleUnsavedChanges();
     this.focusCE();
   },
 
-  _buildList(startContainerParent, endContainerParent, parentNode) {
+  _buildList(startContainerParent, endContainerParent, parentNode, anchorNode, depth) {
+    let cursorPosition = this.props.editor.cursorPosition;
     let nodes = ListModel.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
     let promises = nodes.map(node => {
       return Parser.parseDOM(node.node.outerHTML);
@@ -238,9 +247,10 @@ const Toolbar = React.createClass({
     Promise.all(promises)
       .then(results => {
         results = results.map((item, index) => { return { json: item, hash: nodes[index].hash, depth: nodes[index].depth }});
-
         let list = ListModel.toList(results);
+        let node = parentNode.previousSibling && parentNode.previousSibling.nodeName === 'UL' ? parentNode.previousSibling : parentNode;
         this.props.actions.handleUnorderedList(true, list, { startDepth: results[0].depth, itemsToRemove: results.length }, this.props.editor.currentStoreIndex);
+        this.props.actions.setCursorPosition(depth, node, cursorPosition.offset, anchorNode, cursorPosition.rootHash);
         this.props.actions.forceUpdate(true);
       });
   },
@@ -367,6 +377,7 @@ const Toolbar = React.createClass({
     }
 
     ImageUtils.handleImagesAsync(filteredFiles, map => {
+      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
       this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
@@ -388,8 +399,16 @@ const Toolbar = React.createClass({
   },
 
   handleVideoButtonClick() {
-    let { depth } = Utils.getSelectionData();
-    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth, this.props.editor.currentStoreIndex);
+    let { depth, anchorNode } = Utils.getSelectionData();
+    let cursorPosition = this.props.editor.cursorPosition;
+    let placeholder = BlockModel.createElement({ attribs: { class: 'react-editor-placeholder-text' }, content: 'Paste a link to Youtube, Vimeo or Vine and press Enter' });
+    let realNode = document.createElement('p');
+    realNode.innerHTML = Parser.toHtml([placeholder]);
+    realNode = realNode.children[0];
+
+    if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
+    this.props.actions.createPlaceholderElement(placeholder, depth, this.props.editor.currentStoreIndex);
+    this.props.actions.setCursorPosition(depth, realNode, 0, anchorNode, cursorPosition.rootHash);
     this.props.actions.forceUpdate(true);
   },
 

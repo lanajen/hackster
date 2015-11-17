@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import { domWalk, treeWalk } from '../utils/Traversal';
 import Utils from '../utils/DOMUtils';
+import Hashids from 'hashids';
+
+const hashids = new Hashids('hackster', 4);
 
 export default {
 
@@ -43,5 +46,15 @@ export default {
     });
 
     return hasText;
-  }
+  },
+
+  createElement(options) {
+    let hash = options.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1));
+    return {
+      tag: options.tag || 'p',
+      attribs: options.attribs ? { ...options.attribs, 'data-hash': hash } : { 'data-hash': hash },
+      children: options.children || [],
+      content: options.content || ''
+    };
+  },
 }

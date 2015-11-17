@@ -102,46 +102,37 @@ const ContentEditable = React.createClass({
   },
 
   setCursorOnUpdate() {
-    let cursorPosition = this.props.editor.cursorPosition;
-    /** Means we added another Component and we should do nothing in this CE. */
-    if(cursorPosition.rootHash !== this.props.hash) { return; }
+    /** Don't do any operations if the cursor is not in this CE. */
+    if(this.props.editor.cursorPosition.rootHash !== this.props.hash) { return; }
 
-    let CE = React.findDOMNode(this);
-    CE.focus();
+    const cursorPosition = this.props.editor.cursorPosition;
+    React.findDOMNode(this).focus();
 
-    let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(CE));
-    let node = cursorPosition.node || rootNode.children[cursorPosition.pos];
-    if(!node) { return; }
-    let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos) || rootNode;
-    let el = (this.props.editor.setCursorToNextLine && nodeByHash.nextSibling !== undefined) ? nodeByHash.nextSibling : nodeByHash;
-
+    let node = cursorPosition.node.hasAttribute('data-hash') ? cursorPosition.node : Utils.getRootParentElement(cursorPosition.node);
+    let liveNode = document.querySelector(`[data-hash="${node.getAttribute('data-hash')}"]`);
+    let el = (this.props.editor.setCursorToNextLine && liveNode.nextSibling !== null) ? liveNode.nextSibling : liveNode;
     if(el === undefined || el === null) { return; }
 
-    let { sel, range } = Utils.getSelectionData();
-    let textNode, offset;
-
-    /** If Enter was pressed and we need to focus the next line, grab the first element at position 0. */
-    if(this.props.editor.setCursorToNextLine) {
-      textNode = Utils.getFirstTextNode(el);
-      offset = 0;
-    } else {
-      textNode = Utils.getLastTextNode(el);
-      offset = cursorPosition.offset;
-    }
-
-    /** Abort if something went wrong. */
-    if(!textNode) { return; }
-
+    /** If we're moving to a new line, set the cursor at index 0. */
+    let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
+    let textNode = Utils.getLiveNode(el, cursorPosition.anchorNode);
+    textNode = textNode === null ? Utils.getFirstTextNode(el) : textNode;
     /** Protects setStart from an index that was deleted. */
     if(textNode.textContent.length < offset) {
       offset = textNode.textContent.length;
     }
 
-    range.setStart(textNode, offset);
-    range.collapse(true);
-    rangy.getSelection().setSingleRange(range);
+    this.setCursorAt(textNode, offset);
     this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     this.props.actions.setCursorToNextLine(false);
+  },
+
+  setCursorAt(node, offset) {
+    let range = rangy.createRange();
+    let sel = rangy.getSelection();
+    range.setStart(node, offset);
+    range.collapse(false);
+    sel.setSingleRange(range);
   },
 
   trackCursor(e) {
@@ -205,11 +196,6 @@ const ContentEditable = React.createClass({
       if(e.keyCode === 8 && parentNode.nodeName === 'UL' && parentNode.children.length === 1 && parentNode.children[0].textContent < 1) {
         this.props.actions.transformBlockElement('p', depth, true, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
-      } else if(e.keyCode === 8 && range.startContainer.nodeName === 'LI' && range.startContainer.textContent.length < 1) {
-        /** When a list item is being removed, this sets the cursor to the previous LI.  Saves us a forceUpdate render.*/
-        range.selectNodeContents(parentNode.lastChild);
-        range.collapse(false);
-        sel.setSingleRange(range);
       }
 
       /** Handles Anchor PopOver. */

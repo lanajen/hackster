@@ -8,7 +8,7 @@ export default {
   toList(nodes) {
     let children = nodes.map(node => {
       if(node.json[0].tag === 'ul') {
-        return node.json[0].children.map(child => { return child; });
+        return node.json[0].children;
       } else {
         return { ...node.json[0], tag: 'li', attribs: {} };
       }
@@ -30,7 +30,7 @@ export default {
 
       if(child === startContainer || cont === true) {
         cont = true;
-        group.push({ node: child, depth: i, hash: child.getAttribute('data-hash')});
+        group.push({ node: child, depth: i, hash: child.getAttribute('data-hash') });
       }
 
       if(child === endContainer) {
@@ -54,7 +54,7 @@ export default {
   },
 
   /**
-   * Transforms list items into paragraphs where seleceted.  Splits and recreates the lists accordingly.
+   * Transforms list items into paragraphs where selected.  Splits and recreates the lists accordingly.
    *
    * @param  {[array]} json                   [Parsed html of the current list]
    * @param  {[array]} childDepthsToTransform [Depths of selected list items]

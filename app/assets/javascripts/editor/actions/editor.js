@@ -282,10 +282,10 @@ export function deleteComponent(storeIndex) {
   };
 }
 
-export function createPlaceholderElement(msg, depth, storeIndex) {
+export function createPlaceholderElement(element, depth, storeIndex) {
   return {
     type: Editor.createPlaceholderElement,
-    msg: msg,
+    element: element,
     depth: depth,
     storeIndex: storeIndex
   };

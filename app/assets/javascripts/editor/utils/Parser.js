@@ -3,6 +3,7 @@ import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import _ from 'lodash';
 import { BlockElements, ElementWhiteList } from './Constants';
+import { treeWalk } from './Traversal';
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
 
@@ -151,72 +152,52 @@ export default {
   },
 
   concatPreBlocks(json) {
-    let clone = _.clone(json);
-    let indexesToConcat = this._getIndexesToConcat(clone);
-    let map = indexesToConcat.map(indexes => {
-      let merged = this._mergeBlocksByIndex(clone, indexes);
-      return { ...indexes, pre: merged };
-    });
-
-    map.forEach(item => {
-      let indexesToRemove = item.stop - item.start;
-      json.splice(item.start, indexesToRemove+1, item.pre);
-    });
+    json = json.reduce((prev, curr, index) => {
+      if(prev.length > 0 && prev[prev.length-1].tag === 'pre' && curr.tag === 'pre') {
+        let children = this._createPreChildren(curr);
+        prev[prev.length-1].children[0].children.push(...children);
+      } else {
+        if(curr.tag === 'pre') {
+          let code = { tag: 'code', attribs: {}, content: '', children: this._createPreChildren(curr) };
+          prev.push({ tag: 'pre', attribs: {}, content: '', children: [ code ] });
+        } else {
+          prev.push(curr);
+        }
+      }
+      return prev;
+    }, []);
 
     return json;
   },
 
-  _getIndexesToConcat(json) {
-    let indexesToConcat = [];
-    let start = null, stop = null;
+  _createPreChildren(node) {
+    let children = [];
 
-    json.forEach((item, index) => {
-      if(item.tag === 'pre' && json[index+1] && json[index+1].tag === 'pre' && start === null) {
-        start = index;
-      } else if(item.tag === 'pre' && json[index+1] && json[index+1].tag !== 'pre' && start !== null) {
-        stop = index;
-        indexesToConcat.push({ start: start, stop: stop });
-        start = null;
-        stop = null;
-      }
-    });
+    if(node.children.length) {
+      node = node.children[0].tag === 'code' ? node.children[0] : node;
+      children.push(this._flattenChildren(node.children));
+    } else {
+      children.push(this._createSpan(node.content));
+    }
 
-    return indexesToConcat;
+    return children;
   },
 
-  _mergeBlocksByIndex(json, indexes) {
-    let merger = {},
-        cont = false,
-        children,
-        code = { tag: 'code', attribs: {}, content: '', children: [] };
-
-    json.forEach((item, index) => {
-      if(index === indexes.start) {
-        cont = true;
-        if(item.children.length) {
-          code.children.push(this._flattenChildren(item.children));
-          merger = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
+  postCleanUp(json) {
+    return json.map((child, index) => {
+      if(child.tag === 'br') {
+        return null;
+      } else if(child.content === 'Paste a link to Youtube, Vimeo or Vine and press Enter') {
+        return null;
+      } else {
+        if(child.children.length) {
+          child.children = this.postCleanUp(child.children);
+          return child;
         } else {
-          code.children.push(this._createSpan(item.content));
-          merger = { tag: 'pre', attribs: {}, content: '', children: [ code ] };
-        }
-      } else if(index === indexes.stop) {
-        cont = false;
-        if(item.children.length) {
-          merger.children[0].children.push(this._flattenChildren(item.children));
-        } else {
-          merger.children[0].children.push(this._createSpan(item.content));
-        }
-      } else if(cont === true) {
-        if(item.children.length) {
-          merger.children[0].children.push(this._flattenChildren(item.children));
-        } else {
-          merger.children[0].children.push(this._createSpan(item.content));
+          return child;
         }
       }
-    });
-
-    return merger;
+    }).filter(item => item !== null);
   },
 
   _createSpan(content) {

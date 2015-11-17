@@ -282,11 +282,10 @@ export default function(state = initialState, action) {
 
     case Editor.createPlaceholderElement:
       dom = state.dom;
-      data = createPlaceholderElement(dom, action.msg, action.depth, action.storeIndex);
+      newDom = createPlaceholderElement(dom, action.element, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: data.newDom,
-        setCursorToNextLine: data.setCursorToNextLine
+        dom: newDom
       };
 
     case Editor.resetImageUrl:
@@ -1014,28 +1013,21 @@ function updateCarouselImages(dom, images, storeIndex) {
   return dom;
 }
 
-function createPlaceholderElement(dom, msg, position, storeIndex) {
+function createPlaceholderElement(dom, element, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   let replaceLine = 1;
-  let setCursorToNextLine = false;
-  let el = _createElement('p', {
-    attribs: { 'data-hash': _createNewHash(), class: 'react-editor-placeholder-text' },
-    content: msg,
-    children: []
-  });
 
   if( (json[position].children && json[position].children.length > 0 && json[position].children[0].tag !== 'br') ||
       (json[position].content && json[position].content.length > 0) ) {
     replaceLine = 0;
     position += 1;
-    setCursorToNextLine = true;
   }
 
-  json.splice(position, replaceLine, el);
+  json.splice(position, replaceLine, element);
   component.json = json;
   dom.splice(storeIndex, 1, component);
-  return { newDom: dom, setCursorToNextLine: setCursorToNextLine };
+  return dom;
 }
 
 function handlePastedHTML(dom, html, depth, storeIndex) {
