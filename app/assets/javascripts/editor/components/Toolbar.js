@@ -83,10 +83,10 @@ const Toolbar = React.createClass({
     let blockEls = BlockElements;
 
     if(isNodeInUL && blockEls[tagType.toUpperCase()]) { // Cleans UL's lis if transforming.
-      // this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
-      // this.handleUnsavedChanges();
-      // this.props.actions.forceUpdate(true);
-      this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
+      this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
+      this.handleUnsavedChanges();
+      this.props.actions.forceUpdate(true);
+      // this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
@@ -102,10 +102,10 @@ const Toolbar = React.createClass({
         this.props.actions.forceUpdate(true);
       }
     } else {
-      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
       this.props.actions.transformBlockElement(tagType, depth, false, this.props.editor.currentStoreIndex);
-      this.handleUnsavedChanges();
       this.props.actions.forceUpdate(true);
+      if(this.props.toolbar.showPopOver) { this.props.actions.showPopOver(false, {}); }
+      this.handleUnsavedChanges();
     }
   },
 
