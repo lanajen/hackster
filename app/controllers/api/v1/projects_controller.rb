@@ -2,8 +2,13 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   before_filter :public_api_methods, only: [:index, :show]
   before_filter :authenticate_user!, only: [:create, :update, :destroy]
   before_filter :load_and_authorize_resource, only: [:create, :update, :destroy]
+  skip_before_filter :track_visitor, only: [:index]
+  skip_after_filter :track_landing_page, only: [:index]
 
   def index
+    set_surrogate_key_header 'api/projects'
+    set_cache_control_headers
+
     params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
     by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 

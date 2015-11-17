@@ -1,0 +1,1 @@
+= link_to 'Login with Arduino', user_omniauth_authorize_url('arduino', host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)), class: "zocial #{css} email"

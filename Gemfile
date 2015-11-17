@@ -80,6 +80,8 @@ gem 'momentjs-rails', '2.8.1'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.12.0.288'
 gem 'nokogiri', '1.6.0'
+# I know bad it's practice to have passwords committed but this is just a dummy account with only read access to that specific repo
+gem 'omniauth-arduino', git: "https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git"
 gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'

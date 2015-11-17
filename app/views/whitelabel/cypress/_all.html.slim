@@ -1,15 +1,11 @@
-- ms_sync = ChromeSync::Base.new('microsoft')
+- chrome_sync = ChromeSync::Base.new('cypress')
 
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
-  - cache [I18n.locale, 'ms_chrome_css'], tag: %W(ms_chrome-#{I18n.short_locale}:nav_css) do
-    style text='text/css'
-      = raw ms_sync.nav_css(I18n.locale)
 
 = content_for :header do
-  - cache [I18n.locale, 'ms_chrome_header'], tag: %W(ms_chrome-#{I18n.short_locale}:nav ms_chrome-#{I18n.short_locale}:chrome_header) do
-    = raw ms_sync.chrome_header(I18n.locale)
-    = raw ms_sync.nav(I18n.locale)
+  - cache [I18n.locale, 'cy_chrome_header'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_header) do
+    = raw chrome_sync.chrome_header(I18n.locale)
 
   .navbar.navbar-default.navbar-static-top#navigation
     .navbar-in  style='position:relative;'
@@ -62,11 +58,5 @@
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 
 = content_for :footer do
-  - cache [I18n.locale, 'ms_chrome_footer'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
-    = raw ms_sync.chrome_footer(I18n.locale)
-    javascript:
-      var varAutoFirePV=1;
-      var varClickTracking=1;
-      var varCustomerTracking=1;
-      var Route="13201";
-      document.write("<script type='text/javascript' src='" + (window.location.protocol) + "//c.microsoft.com/ms.js'" + "'><\/script>");
+  - cache [I18n.locale, 'cy_chrome_footer'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_footer) do
+    = raw chrome_sync.chrome_footer(I18n.locale)

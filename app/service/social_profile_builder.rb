@@ -2,6 +2,7 @@ require 'country_iso_translater'
 
 class SocialProfileBuilder
   KNOWN_PROVIDERS = {
+    'arduino' => :arduino,
     'facebook' => :facebook,
     'github' => :github,
     'gplus' => :google_plus,
@@ -65,6 +66,13 @@ class SocialProfileBuilder
     def provider_link provider
       attr_name = "#{KNOWN_PROVIDERS[provider]}_link"
       @user.send attr_name if @user.respond_to? attr_name
+    end
+
+    def arduino info, data
+      assign_attributes(
+        user_name: clean_user_name(info.id),
+        email: info.email,
+      )
     end
 
     def facebook info, data

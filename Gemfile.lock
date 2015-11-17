@@ -39,6 +39,14 @@ GIT
       sqlite3 (~> 1.3)
       thin (~> 1.5.0)
 
+GIT
+  remote: https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git
+  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
+
 GEM
   remote: http://rubygems.org/
   remote: https://rails-assets.org/
@@ -316,7 +324,7 @@ GEM
       activesupport (>= 4.1.0)
     gmaps4rails (2.1.2)
     google_visualr (2.4.0)
-    hashie (3.4.2)
+    hashie (3.4.3)
     hashr (0.0.22)
     heapy (0.1.0)
     heroku-api (0.3.22)
@@ -746,6 +754,7 @@ DEPENDENCIES
   nested_form (= 0.3.2)
   newrelic_rpm (= 3.12.0.288)
   nokogiri (= 1.6.0)
+  omniauth-arduino!
   omniauth-facebook (= 1.5.1)
   omniauth-github (= 1.1.2)
   omniauth-gplus (= 1.2.0)
