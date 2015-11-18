@@ -161,12 +161,12 @@ group :development, :test do
   # gem 'web-console', '~> 2.0'
   gem 'byebug'
   gem 'ffaker'
+  gem 'rspec-rails'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
-  gem 'rspec-rails'
   gem 'selenium-webdriver'
 end
