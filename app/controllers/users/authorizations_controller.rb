@@ -53,9 +53,6 @@ class Users::AuthorizationsController < Users::RegistrationsController
 
   private
     def ensure_provider_data
-      puts 'session: ' + session.inspect
-      puts 'devise.provider: ' + session['devise.provider'].inspect
-      puts 'devise.provider_data: ' + session['devise.provider_data'].inspect
       raise ActionController::RoutingError, 'Not found' unless session.include? 'devise.provider' and session.include? 'devise.provider_data'
       @provider = session['devise.provider']
     end

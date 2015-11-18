@@ -21,8 +21,8 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    Rails.logger.info 'data: ' + data.to_yaml
-    Rails.logger.info 'provider: ' + provider.to_s
+    # Rails.logger.info 'data: ' + data.to_yaml
+    # Rails.logger.info 'provider: ' + provider.to_s
     # Rails.logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
@@ -128,10 +128,10 @@ class SocialProfileBuilder
     def saml info, data
       assign_attributes(
         full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
-        user_name: info.user_name,
+        user_name: data.extra.raw_info.attributes['username'].first,
         email: info.email,
-        state: info.state,
-        country: info.country
+        city: data.extra.raw_info.attributes['state'].first,
+        country: data.extra.raw_info.attributes['country'].first
       )
     end
 

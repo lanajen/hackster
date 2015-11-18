@@ -32,19 +32,8 @@
                 li= link_to 'Log out', destroy_user_session_path, method: :delete
 
         - else
-          ul#navbar-right.clearfix
-            li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
-
-            li.dropdown
-              a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                | Log in
-              .dropdown-menu style=("padding: 15px; width: 250px;")
-                = render 'devise/sessions/form'
-                hr
-                .social-icons.text-center
-                  p.text-muted
-                    small Or connect with your social account:
-                  = render 'devise/shared/omniauth', css: 'icon'
+          ul#navbar-right.clearfix style='margin-left:10px;'
+            li= link_to 'Login with Cypress', user_omniauth_authorize_url('saml', host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)), class: 'login-link btn btn-primary'
 
         .pull-right style='padding-top:11px'
           - if user_signed_in?

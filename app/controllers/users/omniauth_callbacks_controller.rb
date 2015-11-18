@@ -1,6 +1,7 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :authenticate_user!
   skip_before_filter :set_locale
+  protect_from_forgery except: :saml
 
   def passthru
     track_event 'Connecting via social account', { referrer: request.referrer }
@@ -50,6 +51,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
     session[:omniauth_login_locale] = I18n.locale
 
+    puts 'session setup: ' + session.inspect
+
     render text: 'Setup complete.', status: 404
   end
 
@@ -63,7 +66,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
     def oauthorize(kind)
-      logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
+      # logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
 
       @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
       is_hackster = @redirect_host == APP_CONFIG['default_host']
@@ -76,8 +79,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       else
         request.env['omniauth.auth']
       end
-
-      puts 'session0: ' + session.inspect
 
       if session.delete(:link_accounts)
         session['devise.provider_data'] = omniauth_data
@@ -100,7 +101,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         else
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
-          puts 'session: ' + session.inspect
           redirect_to new__authorization_url(autosave: 1, host: @redirect_host)
         end
       end
