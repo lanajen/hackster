@@ -61,11 +61,9 @@ html lang="en" class=content_for(:html_class)
                   = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
             #nav-non-logo.show-on-desktop
               - if user_signed_in?
-                ul.navbar-nav.navbar-right
-                  li.btn-group.navbar-btn#user-navigation-links
+                ul#user-navigation-links.navbar-nav.navbar-right
+                  li.btn-group.navbar-btn.dropdown
                     = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
-                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
-                      span.caret
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
                       li= link_to 'My projects', current_user

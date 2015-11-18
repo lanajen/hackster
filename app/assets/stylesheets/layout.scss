@@ -102,6 +102,9 @@ img {
       color: #999;
     }
   }
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
 }
 
 .navbar {
@@ -117,7 +120,7 @@ img {
   .navbar-brand {
     position: relative;
     display: block;
-    padding: 10px 14px;
+    padding: 10px;
     margin: 0;
     text-align: center;
     height: 60px;
@@ -342,8 +345,11 @@ img {
   text-decoration: none;
 }
 #user-navigation-links{
-  margin-right: 28px;
-  margin-top: 13px;
+  padding-left: 22px;
+  .navbar-btn {
+    margin-right: 28px;
+    margin-top: 13px;
+  }
 }
 
 #user-nav-face {
