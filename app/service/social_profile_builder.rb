@@ -128,10 +128,10 @@ class SocialProfileBuilder
     def saml info, data
       assign_attributes(
         full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
-        user_name: data.extra.raw_info.attributes['username'].first,
+        user_name: data.extra.raw_info.attributes['username'].try(:first),
         email: info.email,
-        city: data.extra.raw_info.attributes['state'].first,
-        country: data.extra.raw_info.attributes['country'].first
+        city: data.extra.raw_info.attributes['state'].try(:first),
+        country: data.extra.raw_info.attributes['country'].try(:first)
       )
     end
 
