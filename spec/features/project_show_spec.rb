@@ -10,9 +10,7 @@ describe 'Project show page' do
     project
   end
 
-  let(:user) do
-    User.create email: 'email@email.com', email_confirmation: 'email@email.com', password: 'password'
-  end
+  let(:user) { FactoryGirl.create(:user) }
 
   it 'has the name of the project' do
     visit "/" + project.uri
