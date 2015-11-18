@@ -22,7 +22,11 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       BaseArticle
     end
 
-    unless params[:platform_user_name] and params[:part_mpn]
+    if params[:part_mpns]
+      projects = projects.joins(:parts).where(parts: { mpn: params[:part_mpns].split(/,/) })
+    end
+
+    unless (params[:platform_user_name] and params[:part_mpn]) or params[:part_mpns]
       projects = projects.indexable
     end
 
