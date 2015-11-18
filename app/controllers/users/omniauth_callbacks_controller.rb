@@ -85,7 +85,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         session['devise.provider'] = kind
         redirect_to update__authorizations_url(host: @redirect_host, link_accounts: true)
       else
-        @user = UserOauthFinder.new.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
+        @user = UserOauthFinder.new.find_for_oauth(kind, request.env['omniauth.auth'])
 
         if @user
           case @user.match_by
