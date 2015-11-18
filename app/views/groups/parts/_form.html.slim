@@ -17,9 +17,12 @@
 = f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
 
 .row
-  .col-md-8
-    = f.submit 'Save changes', class: 'btn btn-primary'
-    = link_to 'Cancel', group_products_path, class: 'btn btn-link'
+  .col-md-8.col-md-offset-4
+    .pull-left
+      = f.submit 'Save changes', class: 'btn btn-primary'
+      = link_to 'Cancel', group_products_path, class: 'btn btn-link'
+    - if @part.persisted?
+      .pull-right= link_to 'Delete product', group_product_path(@group, @part), class: 'btn btn-danger', data: { confirm: "Are you sure you want to delete this product? There's no way back!", method: :delete }
 
 = content_for :js do
   = tinymce_assets

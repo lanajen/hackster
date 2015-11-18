@@ -7,8 +7,8 @@
 - unless resource.invited_to_sign_up?
   = f.input :email_confirmation, label: 'Confirm email'
 - unless resource.logging_in_socially  # for social login
-  = f.input :password, label: 'Password'
-- resource.errors.reject{|k, v| k.to_s.in? %w(email email_confirmation password) }.each do |attr, v|
+  = f.input :password, label: 'Password', hint: '8 characters minimum'
+- resource.errors.reject{|k, v| k.to_s.in? %w(email email_confirmation password user_name) }.each do |attr, v|
   - if resource.respond_to? attr
     = f.input attr
 = hidden_field_tag :redirect_to, @redirect_to

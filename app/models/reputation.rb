@@ -36,3 +36,6 @@ class Reputation < ActiveRecord::Base
 end
 
 # reputation = number of respects, number of followers, number of views (profile+project)
+
+# find out how many people have enough reputation to buy something and have never bought anything
+# User.not_hackster.user_name_set.where("NOT users.id IN (SELECT DISTINCT orders.user_id FROM orders WHERE orders.workflow_state != 'new')").joins(:reputation).where("reputations.redeemable_points > 129").count

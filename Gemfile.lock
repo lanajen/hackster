@@ -19,6 +19,15 @@ GIT
       mandrill-api (~> 1.0.53)
 
 GIT
+  remote: https://github.com/blarralde/omniauth-saml.git
+  revision: 4d92b6997488be4a1ef276f77002db825d2482ec
+  branch: patch-1
+  specs:
+    omniauth-saml (1.4.1)
+      omniauth (~> 1.1)
+      ruby-saml (~> 1.0)
+
+GIT
   remote: https://github.com/joel/omniauth-windowslive.git
   revision: 9b77fd320ceac3ad390484501512d5e49572fcd7
   specs:
@@ -38,6 +47,14 @@ GIT
       skinny (~> 0.2.3)
       sqlite3 (~> 1.3)
       thin (~> 1.5.0)
+
+GIT
+  remote: https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git
+  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
 
 GEM
   remote: http://rubygems.org/
@@ -316,7 +333,7 @@ GEM
       activesupport (>= 4.1.0)
     gmaps4rails (2.1.2)
     google_visualr (2.4.0)
-    hashie (3.4.2)
+    hashie (3.4.3)
     hashr (0.0.22)
     heapy (0.1.0)
     heroku-api (0.3.22)
@@ -420,9 +437,6 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
-    omniauth-saml (1.4.1)
-      omniauth (~> 1.1)
-      ruby-saml (~> 1.0.0)
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -472,6 +486,7 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.2.3)
       sprockets-rails
+    rails-assets-clipboard (1.5.3)
     rails-assets-fluxxor (1.5.2)
     rails-assets-js-cookie (2.0.3)
     rails-assets-medium-editor (1.8.14)
@@ -539,7 +554,7 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
-    ruby-saml (1.0.0)
+    ruby-saml (1.1.1)
       nokogiri (>= 1.5.10)
       uuid (~> 2.3)
     rubyzip (1.1.7)
@@ -745,12 +760,13 @@ DEPENDENCIES
   nested_form (= 0.3.2)
   newrelic_rpm (= 3.12.0.288)
   nokogiri (= 1.6.0)
+  omniauth-arduino!
   omniauth-facebook (= 1.5.1)
   omniauth-github (= 1.1.2)
   omniauth-gplus (= 1.2.0)
   omniauth-oauth (= 1.0.1)
   omniauth-oauth2 (= 1.1.1)
-  omniauth-saml (= 1.4.1)
+  omniauth-saml!
   omniauth-twitter (= 1.0.1)
   omniauth-windowslive!
   open_uri_redirections (= 0.2.1)
@@ -765,6 +781,7 @@ DEPENDENCIES
   rack-attack (= 4.1.0)
   rack-timeout (= 0.3.2)
   rails (= 4.2.3)
+  rails-assets-clipboard (= 1.5.3)!
   rails-assets-fluxxor (= 1.5.2)!
   rails-assets-js-cookie (= 2.0.3)!
   rails-assets-medium-editor (= 1.8.14)!

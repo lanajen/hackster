@@ -871,12 +871,79 @@ $select2target = null;
     }, 1000);
 
     cleanUpSelectBlueprint();
+
+    // handles copying code snippets with clipboard plugin
+    new Clipboard('.code-widgets .copy-code', {
+      target: function(trigger) {
+        var widget = $(trigger).closest('.preview-pane');
+        var code = widget.find('pre')[0];
+        return code;
+      }
+    })
+      .on('success', function(e) {
+        var trigger = $(e.trigger);
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
+          title: 'Copied!',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          parent.tooltip('destroy');
+        }, 1500);
+        trigger.blur();
+
+        e.clearSelection();
+      })
+      .on('error', function(e) {
+        var trigger = $(e.trigger);
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
+          title: 'Press CTRL+C to copy',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          parent.tooltip('destroy');
+        }, 1500);
+        trigger.blur();
+      });
+
+
+    $('.code-widgets .sidebar a').on('click', function(e){
+      var container = $(this).closest('.code-widgets');
+      container.find('.sidebar a, .preview-pane').removeClass('active');
+
+      $(this).addClass('active');
+      var target = $($(this).data('target'));
+      target.addClass('active');
+
+      setPreviewPaneHeight(target);
+    });
+
+    var codeWidget = $('.code-widgets');
+    if (codeWidget.length) {
+      if (codeWidget.hasClass('single-file') && codeWidget.hasClass('no-preview')) {
+        var header = codeWidget.find('.preview-header');
+        codeWidget.css('height', header.outerHeight() + 'px');
+        updatedScrollEventHandlers();
+      } else if (codeWidget.find('.preview-pane').length) {
+        setPreviewPaneHeight(codeWidget.first());
+      }
+    }
   });
 })(jQuery, window, document);
 
-$(window).load(function(){
-  // loadSlickSlider();
-});
+function setPreviewPaneHeight(target){
+  var header = target.find('.preview-header');
+  var body = target.find('.preview-body');
+  var height = target.outerHeight() - header.outerHeight();
+  body.css('height', height + 'px');
+}
 
 function ProjectCodeEditor(language, id) {
   this.ace = null;

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :index, :redirect_to_show]
-  before_filter :load_user, only: [:show]
-  authorize_resource except: [:after_registration, :after_registration_save, :toolbox, :toolbox_save, :redirect_to_show]
+  before_filter :authenticate_user!, only: [:edit, :update, :after_registration, :after_registration_save, :toolbox, :toolbox_save]
+  before_filter :load_user, only: [:show, :projects_public, :projects_drafts, :projects_guest, :projects_respected, :projects_replicated, :toolbox_show, :comments]
+  authorize_resource only: [:update, :edit]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
   skip_before_filter :track_visitor, only: [:show]
@@ -25,12 +25,18 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
-    @public_count = @public_projects.count
-    @private_projects = @user.projects.private.for_thumb_display
-    @guest_projects = @user.projects.live.guest.for_thumb_display
-    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC')
-    @replicated_projects = @user.replicated_projects
+    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc).limit(3)
+    @private_projects = @user.projects.private.for_thumb_display.limit(3)
+    @guest_projects = @user.projects.live.guest.for_thumb_display.limit(3)
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC').limit(3)
+    @replicated_projects = @user.replicated_projects.limit(3)
+
+    @public_query = @user.projects.public.own
+    @private_query = @user.projects.private
+    @guest_query = @user.projects.live.guest
+    @respected_query = @user.respected_projects.indexable_and_external
+    @replicated_query = @user.replicated_projects
+
     if is_whitelabel?
       @private_projects = if current_user == @user
         @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
@@ -46,8 +52,14 @@ class UsersController < ApplicationController
         @other_projects = @user.projects.where.not(id: ids).for_thumb_display
         @public_count += @other_projects.count
       end
+
+      @public_query = @public_query.with_group(current_platform)
+      @private_query = @private_query.with_group(current_platform)
+      @guest_query = @guest_query.with_group(current_platform)
+      @respected_query = @respected_query.with_group(current_platform)
     else
-      @parts = @user.owned_parts
+      @parts = @user.owned_parts.limit(3)
+      @parts_count = @user.owned_parts.count
       @lists = if @user.id == current_user.try(:id) or current_user.try(:is?, :admin)
         @user.lists.order(:full_name)
       else
@@ -55,13 +67,97 @@ class UsersController < ApplicationController
       end
     end
 
+    @public_count = @public_query.count
+    @private_count = @private_query.count
+    @guest_count = @guest_query.count
+    @respected_count = @respected_query.count
+    @replicated_count = @replicated_query.count
+
+    if current_platform
+      @comments = @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'BaseArticle'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }).limit(3)
+      @comments_count = @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'BaseArticle'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }).count
+    else
+      @comments = @user.live_comments.includes(:commentable).limit(3)
+      @comments_count = @user.live_comments.count
+    end
+
+    # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
+  end
+
+  def projects_public
+    title "#{@user.name}'s public projects"
+    meta_desc "#{@user.name}'s public projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    if is_whitelabel?
+      @public_projects = @public_projects.with_group(current_platform)
+    end
+  end
+
+  def projects_drafts
+    not_found unless user_signed_in? and (current_user.id == @user.id or current_user.is?(:admin))
+
+    title "#{@user.name}'s private projects"
+    meta_desc "#{@user.name}'s private projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @private_projects = @user.projects.private.for_thumb_display
+    if is_whitelabel?
+      @private_projects = if current_user == @user
+        @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
+      else
+        @private_projects.with_group(current_platform)
+      end
+    end
+  end
+
+  def projects_guest
+    title "#{@user.name}'s guest projects"
+    meta_desc "#{@user.name}'s guest projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @guest_projects = @user.projects.live.guest.for_thumb_display
+    if is_whitelabel?
+      @guest_projects = @guest_projects.with_group(current_platform)
+    end
+  end
+
+  def projects_respected
+    title "#{@user.name}'s respected projects"
+    meta_desc "#{@user.name}'s respected projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC')
+    if is_whitelabel?
+      @respected_projects = @respected_projects.with_group(current_platform)
+    end
+  end
+
+  def projects_replicated
+    title "#{@user.name}'s replicated projects"
+    meta_desc "#{@user.name}'s replicated projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @replicated_projects = @user.replicated_projects
+    if is_whitelabel?
+      @replicated_projects = @replicated_projects.with_group(current_platform)
+    end
+  end
+
+  def toolbox_show
+    not_found if is_whitelabel?
+
+    title "#{@user.name}'s toolbox"
+    meta_desc "#{@user.name}'s toolbox on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
+    @parts = @user.owned_parts
+  end
+
+  def comments
+    title "#{@user.name}'s comments"
+    meta_desc "#{@user.name}'s comments on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
+
     @comments = if current_platform
       @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'BaseArticle'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' })
     else
       @user.live_comments.includes(:commentable)
     end
-
-    # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
   end
 
   def redirect_to_show
@@ -149,6 +245,6 @@ class UsersController < ApplicationController
 
   private
     def set_layout
-      action_name.in?(%w(edit update show)) ? 'user' : current_layout
+      action_name.in?(%w(edit update show projects_public projects_drafts projects_guest projects_respected projects_replicated toolbox_show comments)) ? 'user' : current_layout
     end
 end

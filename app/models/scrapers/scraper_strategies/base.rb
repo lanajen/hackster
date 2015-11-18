@@ -27,7 +27,7 @@ module ScraperStrategies
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
       @article = select_article
-      @project.name = extract_title
+      @project.name = extract_title.gsub(/&/, 'and').try(:truncate, 60)
 
       before_parse
 
@@ -60,9 +60,9 @@ module ScraperStrategies
       def after_parse
         @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
+        @project.one_liner ||= extract_one_liner.try(:truncate, 140)
         @project.product_tags_string = @parsed.css('a[rel=tag]').map{|a| a.text }.join(',') if @project.product_tags_string.blank?
         @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',') if @project.product_tags_string.present?
-        @project.one_liner ||= extract_one_liner.try(:truncate, 140)
       end
 
       def before_parse
@@ -353,12 +353,12 @@ module ScraperStrategies
       end
 
       def parse_code base=@article
-        extract_code_blocks(base).each do |node|
+        extract_code_blocks(base).each_with_index do |node, i|
           code, lang = extract_code_lines(node)
           next unless code
 
           if code.size >= 5
-            file = CodeWidget.new raw_code: code, name: 'Code', language: lang || 'text'
+            file = CodeWidget.new raw_code: code, name: "Code snippet ##{i+1}", language: lang || 'text'
             file.project = @project
             @widgets << file
           end

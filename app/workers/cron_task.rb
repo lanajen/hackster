@@ -144,7 +144,7 @@ class CronTask < BaseWorker
       challenges = Challenge.where("CAST(challenges.hproperties -> 'activate_pre_contest' AS BOOLEAN) = 't' AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) < ? AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) > ?", time.from_now.to_i, (time.from_now - 1.day).to_i)
 
       challenges.each do |challenge|
-        NotificationCenter.notify_all :ending_soon, :challenge, challenge.id, 'pre_contest_ending_soon'
+        NotificationCenter.notify_all :pre_contest_ending_soon, :challenge, challenge.id, 'pre_contest_ending_soon'
       end
 
       # contest

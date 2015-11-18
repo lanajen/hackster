@@ -1,11 +1,11 @@
 json.projects @projects do |project|
   json.id project.id
   json.name project.name
-  json.url project_url(project, subdomain: 'www')
+  json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
   json.authors project.users do |user|
     json.id user.id
     json.name user.name
-    json.url user_url(user, subdomain: 'www')
+    json.url user_url(user, subdomain: ENV['SUBDOMAIN'])
   end
   json.views project.impressions.where("impressions.created_at > ? AND impressions.created_at < ?", @range_start, @range_end).group("DATE(impressions.created_at)").order("date_impressions_created_at").count do |date, count|
     json.date date

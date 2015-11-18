@@ -60,8 +60,8 @@ html(lang="en")
       - if user_signed_in? and !current_user.confirmed?
         .alert.alert-flat.alert-warning.alert-smaller
           .container
-            ' Hi! Please confirm your email address by clicking the link in the email we've sent you.
-            ' Haven't received such email?
+            ' Hi! Please confirm your email address by clicking the link in the email we sent you.
+            ' Haven't received it?
             = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
 
     #outer-wrapper

@@ -36,6 +36,10 @@ class NotificationDecorator < ApplicationDecorator
         "#{challenge_link} is now open for submissions!"
       when :completed
         "The challenge #{challenge_link} is now closed for submissions. Time to award prizes!"
+      when :pre_contest_awarded
+        "Winners for the pre-contest of #{challenge_link} have been announced."
+      when :pre_contest_winners
+        "Your idea has been selected as a winner for the pre-contest of #{challenge_link}. Congrats!"
       end
     when ChallengeEntry
       entry = notifiable
@@ -177,7 +181,11 @@ class NotificationDecorator < ApplicationDecorator
     end
 
     unless msg.present?
-      message = "Unknown notification: #{model.inspect}"
+      message = if notifiable
+        "Unknown notification: #{model.inspect}"
+      else
+        "Notifiable doesn't exist anymore: #{model.inspect}"
+      end
       if ENV['ENABLE_ERROR_NOTIF']
         log_line = LogLine.create(message: message, log_type: 'error', source: 'notification_decorator')
         NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
