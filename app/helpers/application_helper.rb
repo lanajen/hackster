@@ -220,6 +220,8 @@ module ApplicationHelper
       'Google+'
     when :windowslive
       'Microsoft Account'
+    when :saml
+      'Cypress Account'
     end
   end
 
@@ -255,6 +257,8 @@ module ApplicationHelper
       'googleplus'
     when :windowslive
       'windows'
+    when :saml
+      'guest'
     end
   end
 end
