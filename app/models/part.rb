@@ -241,7 +241,7 @@ class Part < ActiveRecord::Base
     self.product_tags_string = val
   end
 
-  private
+  protected
     def ensure_partable
       self.partable_id = 0
       self.partable_type = 'Orphan'

@@ -89,7 +89,7 @@ class Collection < Group
     user_name
   end
 
-  private
+  protected
     def user_name_is_unique
       raise StandardError, "'user_name_is_unique' needs to be implemented in '#{self.class.name}'"
     end

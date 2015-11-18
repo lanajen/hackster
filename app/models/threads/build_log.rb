@@ -24,7 +24,7 @@ class BuildLog < Post
     super.presence || DEFAULT_TITLE
   end
 
-  private
+  protected
     def generate_sub_id
       self.sub_id = self.class.where(threadable_type: threadable_type, threadable_id: threadable_id).published.size + 1
     end

@@ -142,6 +142,10 @@ gem 'rails_12factor', group: :production
 # gem 'ruby-prof', group: [:development, :profile]
 gem 'derailed_benchmarks', group: :development
 
+group :development do
+  gem 'letter_opener'
+end
+
 group :development, :test do
   gem 'foreman'
   # gem 'guard-livereload'
@@ -156,13 +160,13 @@ group :development, :test do
   gem 'spring'
   # gem 'web-console', '~> 2.0'
   gem 'byebug'
+  gem 'ffaker'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
-  # gem 'faker'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
 end

@@ -40,7 +40,7 @@ class BlogPost < Post
     blog_tags
   end
 
-  private
+  protected
     def generate_slug
       return if title.blank?
 

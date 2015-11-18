@@ -841,7 +841,7 @@ class User < ActiveRecord::Base
     update_column :last_seen_at, time || Time.now
   end
 
-  private
+  protected
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end
@@ -871,7 +871,6 @@ class User < ActiveRecord::Base
       end
     end
 
-  protected
     # overwrites devise
     def confirmation_required?
       false

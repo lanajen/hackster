@@ -671,7 +671,21 @@ class BaseArticle < ActiveRecord::Base
     end
   end
 
-  private
+  def slug_hid
+    [slug, hid].join('-')
+  end
+
+  protected
+
+    def generate_hid
+      exists = true
+      while exists
+        hid = SecureRandom.hex(3)
+        exists = BaseArticle.exists?(hid: hid)
+      end
+      self.hid = hid
+    end
+
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
     end
@@ -705,19 +719,6 @@ class BaseArticle < ActiveRecord::Base
       return 'untitled' if name.blank?
 
       self.slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
-    end
-
-    def generate_hid
-      exists = true
-      while exists
-        hid = SecureRandom.hex(3)
-        exists = BaseArticle.exists?(hid: hid)
-      end
-      self.hid = hid
-    end
-
-    def slug_hid
-      [slug, hid].join('-')
     end
 
     def remove_whitespaces_from_html text

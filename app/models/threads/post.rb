@@ -14,7 +14,7 @@ class Post < ThreadPost
     draft
   end
 
-  private
+  protected
     def generate_sub_id
       self.sub_id = ThreadPost.where(threadable_type: threadable_type, threadable_id: threadable_id, type: type).size + 1
     end

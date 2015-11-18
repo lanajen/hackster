@@ -224,7 +224,7 @@ class Platform < Collection
     send "generate_#{type}_credentials", force: true
   end
 
-  private
+  protected
     def format_hashtag
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
     end

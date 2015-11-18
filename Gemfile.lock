@@ -222,6 +222,7 @@ GEM
       railties (>= 3.0.0)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
+    ffaker (2.1.0)
     ffi (1.9.10)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
@@ -378,6 +379,10 @@ GEM
     jwt (0.1.13)
       multi_json (>= 1.5)
     kgio (2.10.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     libv8 (3.16.14.11)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -733,6 +738,7 @@ DEPENDENCIES
   easypost (= 2.1.6)
   factory_girl_rails
   fastly-rails!
+  ffaker
   fog
   fog-aws (= 0.1.2)
   font-awesome-rails (= 4.1.0.0)
@@ -751,6 +757,7 @@ DEPENDENCIES
   jbuilder (= 2.3.0)
   jquery-rails (= 4.0.4)
   jquery-ui-rails (= 5.0.5)
+  letter_opener
   mail (>= 2.6.3)
   mailcatcher!
   mandrill_dm!

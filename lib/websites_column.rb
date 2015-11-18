@@ -20,7 +20,15 @@ module WebsitesColumn
 
     def has_websites store_attribute, *websites
       @@websites_column = store_attribute
-      if column_for_attribute(store_attribute).type == :text
+
+      store_column = begin
+        column_for_attribute(store_attribute)
+      rescue ActiveRecord::StatementInvalid => e
+        Rails.logger.debug e
+        nil
+      end
+
+      if store_column.try(:type) == :text
         store store_attribute, accessors: []
       end
       add_websites *websites

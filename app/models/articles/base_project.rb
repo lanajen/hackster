@@ -60,7 +60,7 @@ class BaseProject < BaseArticle
   has_counter :software_parts, 'software_parts.count'
   has_counter :tool_parts, 'tool_parts.count'
 
-  private
+  protected
     def delete_empty_part_ids
       (hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
         part_join.delete if part_join.part_id.blank?
