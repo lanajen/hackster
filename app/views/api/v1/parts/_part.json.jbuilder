@@ -14,7 +14,7 @@ json.get_started_link part.get_started_link
 json.documentation_link part.documentation_link
 json.libraries_link part.libraries_link
 json.datasheet_link part.datasheet_link
-json.private part.private
+json.private part.pryvate
 json.status part.workflow_state
 json.image_url part.decorate.image(params[:image_size] || :part_thumb)
 if platform = part.platform

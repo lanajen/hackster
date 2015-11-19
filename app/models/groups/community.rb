@@ -16,7 +16,7 @@ class Community < Group
     Group.model_name
   end
 
-  protected
+  private
     def user_name_is_unique
       errors.add :new_user_name, 'has already been taken' if new_user_name.present? and self.class.where(type: type, parent_id: parent_id).where("LOWER(groups.user_name) = ?", new_user_name.downcase).where.not(id: id).any?
     end

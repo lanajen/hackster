@@ -238,13 +238,13 @@ class User < ActiveRecord::Base
   has_counter :hacker_spaces, 'hacker_spaces.count'
   has_counter :interest_tags, 'interest_tags.count'
   has_counter :invitations, 'invitations.count'
-  has_counter :lists, 'lists.public.count'
-  has_counter :live_projects, 'projects.public.own.count'
-  has_counter :live_hidden_projects, 'projects.public.where(hide: true).count'
+  has_counter :lists, 'lists.publyc.count'
+  has_counter :live_projects, 'projects.publyc.own.count'
+  has_counter :live_hidden_projects, 'projects.publyc.where(hide: true).count'
   has_counter :owned_parts, 'owned_parts.count'
   has_counter :platforms, 'followed_platforms.count'
   has_counter :project_platforms, 'project_platforms.count'
-  has_counter :popularity_points, 'projects.public.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum'
+  has_counter :popularity_points, 'projects.publyc.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum'
   has_counter :projects, 'projects.count'
   has_counter :project_respects, 'projects.includes(:respects).count(:respects)'
   has_counter :project_views, 'projects.sum(:impressions_count)'
@@ -841,7 +841,7 @@ class User < ActiveRecord::Base
     update_column :last_seen_at, time || Time.now
   end
 
-  protected
+  private
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end

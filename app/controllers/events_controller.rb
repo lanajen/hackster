@@ -54,7 +54,7 @@ class EventsController < ApplicationController
   def embed
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     # @list_style = '_horizontal'
-    @projects = @event.projects.public.order('projects.respects_count DESC')
+    @projects = @event.projects.publyc.order('projects.respects_count DESC')
     render "groups/events/#{self.action_name}", layout: 'embed'
   end
 
@@ -75,7 +75,7 @@ class EventsController < ApplicationController
     authorize! :create, @event
 
     admin = @event.members.new(user_id: current_user.id, group_roles: ['organizer'])
-    @event.private = true
+    @event.pryvate = true
 
     if @event.save
 

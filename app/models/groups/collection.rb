@@ -12,8 +12,8 @@ class Collection < Group
 
   has_counter :external_projects, 'projects.external.count'
   has_counter :members, 'followers.count', accessor: false
-  has_counter :private_projects, 'projects.private.count'
-  has_counter :projects, 'projects.public.visible.count', accessor: false
+  has_counter :private_projects, 'projects.pryvate.count'
+  has_counter :projects, 'projects.publyc.visible.count', accessor: false
   has_counter :team_members, 'team_members.count'
 
   hstore_column :hproperties, :hashtag, :string, default: "#%{name.gsub(/\s+/, '')}"
@@ -42,7 +42,7 @@ class Collection < Group
   end
 
   def self.index_all
-    index.import public
+    index.import publyc
   end
   # end of search methods
 
@@ -89,7 +89,7 @@ class Collection < Group
     user_name
   end
 
-  protected
+  private
     def user_name_is_unique
       raise StandardError, "'user_name_is_unique' needs to be implemented in '#{self.class.name}'"
     end

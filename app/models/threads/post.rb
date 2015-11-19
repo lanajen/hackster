@@ -4,7 +4,7 @@ class Post < ThreadPost
   belongs_to :threadable, polymorphic: true
   has_many :widgets, as: :widgetable
 
-  attr_accessible :private, :draft, :widget_attributes
+  attr_accessible :draft, :widget_attributes
 
   accepts_nested_attributes_for :widgets
 
@@ -14,7 +14,7 @@ class Post < ThreadPost
     draft
   end
 
-  protected
+  private
     def generate_sub_id
       self.sub_id = ThreadPost.where(threadable_type: threadable_type, threadable_id: threadable_id, type: type).size + 1
     end

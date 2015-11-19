@@ -16,9 +16,9 @@ class ChallengesController < ApplicationController
     title 'Hardware contests'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
-    @active_challenges = Challenge.public.active.ends_first.includes(sponsors: :avatar)
-    @coming_challenges = Challenge.public.coming.starts_first.includes(sponsors: :avatar)
-    @past_challenges = Challenge.public.past.ends_last.includes(sponsors: :avatar)
+    @active_challenges = Challenge.publyc.active.ends_first.includes(sponsors: :avatar)
+    @coming_challenges = Challenge.publyc.coming.starts_first.includes(sponsors: :avatar)
+    @past_challenges = Challenge.publyc.past.ends_last.includes(sponsors: :avatar)
 
     respond_to do |format|
       format.html
@@ -70,7 +70,7 @@ class ChallengesController < ApplicationController
 
   def faq
     title "#{@challenge.name} FAQ"
-    @faq_entries = @challenge.faq_entries.public.order("LOWER(threads.title) ASC")
+    @faq_entries = @challenge.faq_entries.publyc.order("LOWER(threads.title) ASC")
     # template = ERB.new
     # template.result(binding)
     conf = YAML.load(File.new("#{Rails.root}/config/contest_faq.yml").read)

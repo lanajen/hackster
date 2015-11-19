@@ -33,7 +33,7 @@ class AssignmentsController < ApplicationController
 
     @list_style = ([params[:list_style]] & ['_vertical', '_horizontal']).first || '_horizontal'
     # @list_style = '_horizontal'
-    @projects = @assignment.projects.public.order(:created_at)
+    @projects = @assignment.projects.publyc.order(:created_at)
     render layout: 'embed'
   end
 

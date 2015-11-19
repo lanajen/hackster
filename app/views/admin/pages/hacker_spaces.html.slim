@@ -38,7 +38,7 @@ table.table.table-striped
           small
             | (#{group.members.invitation_accepted_or_not_invited.size})
         td
-          - if group.private?
+          - if group.pryvate?
             b Private
           - else
             | Public

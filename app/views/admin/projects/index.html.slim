@@ -34,7 +34,7 @@ table.table.table-striped
             - if project.users.any?
               ' - posted by:
           = project.users.map { |u| link_to html_escape(u.name), u }.to_sentence.html_safe
-        td= project.private? ? content_tag(:b, 'Private') : (project.pending_review? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public') + '<br>(' + project.workflow_state + ')').html_safe
+        td= project.pryvate? ? content_tag(:b, 'Private') : (project.pending_review? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public') + '<br>(' + project.workflow_state + ')').html_safe
         td= l project.created_at
         td= l project.made_public_at if project.made_public_at
         td= project.checklist_completion

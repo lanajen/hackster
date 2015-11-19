@@ -28,7 +28,7 @@ class PromotionsController < ApplicationController
     authorize! :create, @promotion
 
     admin = @promotion.members.new(user_id: current_user.id)
-    @promotion.private = true
+    @promotion.pryvate = true
 
     if @promotion.save
       admin.update_attribute :permission_action, 'manage'

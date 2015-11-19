@@ -53,9 +53,9 @@ class Part < ActiveRecord::Base
     :product_page, :review, :get_started
 
   counters_column :counters_cache, long_format: true
-  has_counter :all_projects, 'all_projects.public.count'
+  has_counter :all_projects, 'all_projects.publyc.count'
   has_counter :owners, 'owners.count'
-  has_counter :projects, 'projects.public.count'
+  has_counter :projects, 'projects.publyc.count'
 
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
@@ -160,7 +160,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.visible
-    public.with_slug
+    publyc.with_slug
   end
 
   def all_projects
@@ -241,7 +241,7 @@ class Part < ActiveRecord::Base
     self.product_tags_string = val
   end
 
-  protected
+  private
     def ensure_partable
       self.partable_id = 0
       self.partable_type = 'Orphan'

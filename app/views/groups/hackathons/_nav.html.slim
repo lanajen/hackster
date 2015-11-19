@@ -8,7 +8,7 @@ section.group-nav.affixable
       - if @group.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
-      - @group.pages.public.order(created_at: :asc).each do |page|
+      - @group.pages.publyc.order(created_at: :asc).each do |page|
         = active_li_link_to page.title, group_page_path(@group, page)
 
     ul.list-inline.manage
@@ -47,7 +47,7 @@ section.group-nav.affixable
       - if @group.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
-      - @group.pages.public.order(created_at: :asc).each do |page|
+      - @group.pages.publyc.order(created_at: :asc).each do |page|
         = active_li_link_to page.title, group_page_path(@group, page)
 
       - if can? :manage, @group

@@ -1,4 +1,4 @@
-- if @project.public?
+- if @project.publyc?
   - if (@project.pending_review? or @project.unpublished?)
     .alert.alert-warning.text-center
       p
@@ -28,7 +28,7 @@
   = f.input :content_type, collection: content_types_for_article(@project), label: "#{@project.identifier.capitalize} type", required: true
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
-- if @project.public?
+- if @project.publyc?
   = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
 - else
   .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')

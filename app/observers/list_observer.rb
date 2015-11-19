@@ -1,6 +1,6 @@
 class ListObserver < ActiveRecord::Observer
   def after_destroy record
-    Cashier.expire 'lists-index' if record.public?
+    Cashier.expire 'lists-index' if record.publyc?
   end
 
   def after_save record

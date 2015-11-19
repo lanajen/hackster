@@ -10,7 +10,7 @@ describe 'Project show page' do
     project = FactoryGirl.build(:project, name: 'An example project')
     team = project.build_team user_name: 'test-team'
     project.team.members.new user_id: user.id
-    project.private = false
+    project.pryvate = false
     project.workflow_state = 'approved'
     project.save
     project
