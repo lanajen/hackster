@@ -45,7 +45,7 @@ module MediumEditorDecorator
             next unless code
             code = code.try(:force_encoding, "UTF-8")  # somehow slim templates come out as ASCII
 
-            if caption = el['data-caption']
+            if caption = el['data-caption'] and caption != 'Type in a caption'
               code = Nokogiri::HTML::DocumentFragment.parse code
               if figcaption = code.at_css('.embed-figcaption')
                 figcaption.content = caption
