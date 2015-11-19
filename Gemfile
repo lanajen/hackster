@@ -162,11 +162,11 @@ group :development, :test do
   gem 'byebug'
   gem 'ffaker'
   gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
   gem 'selenium-webdriver'
 end
