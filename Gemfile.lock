@@ -578,6 +578,8 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
+    shoulda-matchers (3.0.1)
+      activesupport (>= 4.0.0)
     sidekiq (3.2.5)
       celluloid (= 0.15.2)
       connection_pool (>= 2.0.0)
@@ -807,6 +809,7 @@ DEPENDENCIES
   sanitize (= 2.0.6)
   sass-rails (= 5.0.1)
   selenium-webdriver
+  shoulda-matchers
   sidekiq (= 3.2.5)
   sidekiq-cron (~> 0.3.0)
   sidekiq-failures (= 0.4.3)
