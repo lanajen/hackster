@@ -43,9 +43,10 @@ HackerIo::Application.routes.draw do
         post 'projects' => 'lists#link_project', on: :member
         delete 'projects' => 'lists#unlink_project', on: :member
       end
+      # legacy route, replaced by global chrome_sync below
       resources :microsoft_chrome_sync, only: [] do
-        get '' => 'microsoft_chrome_sync#show', on: :collection
-        patch '' => 'microsoft_chrome_sync#update', on: :collection
+        get '' => 'chrome_sync#show', on: :collection
+        patch '' => 'chrome_sync#update', on: :collection
       end
       resources :notifications, only: [:index], defaults: { format: :json }
       resources :thoughts
@@ -92,11 +93,12 @@ HackerIo::Application.routes.draw do
           post 'projects' => 'lists#link_project', on: :member
           delete 'projects' => 'lists#unlink_project', on: :member
         end
-        resources :microsoft_chrome_sync, only: [] do
-          get '' => 'microsoft_chrome_sync#show', on: :collection
-          patch '' => 'microsoft_chrome_sync#update', on: :collection
+        resources :chrome_sync, only: [] do
+          get '' => 'chrome_sync#show', on: :collection
+          patch '' => 'chrome_sync#update', on: :collection
         end
         resources :notifications, only: [:index]
+        get 'search' => 'search#index'
         resources :thoughts
         resources :users, only: [] do
           get :autocomplete, on: :collection

@@ -8,11 +8,11 @@ class ExternalProjectsController < ApplicationController
     title @project.name
     meta_desc @project.one_liner
 
-    @respecting_users = @project.respecting_users.public.includes(:avatar) if @project.public?
+    @respecting_users = @project.respecting_users.publyc.includes(:avatar) if @project.publyc?
 
     if is_whitelabel?
       @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-      @respecting_users = @respecting_users.where(users: { enable_sharing: true }) if @project.public?
+      @respecting_users = @respecting_users.where(users: { enable_sharing: true }) if @project.publyc?
     else
       @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
     end

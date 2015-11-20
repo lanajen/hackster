@@ -32,7 +32,7 @@ class BlogPost < Post
     extract_excerpt[1].present?
   end
 
-  def public?
+  def publyc?
     super and (published_at.nil? or published_at < Time.now)
   end
 
@@ -40,7 +40,7 @@ class BlogPost < Post
     blog_tags
   end
 
-  private
+  protected
     def generate_slug
       return if title.blank?
 

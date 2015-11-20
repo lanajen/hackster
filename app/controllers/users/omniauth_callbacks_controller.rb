@@ -1,6 +1,7 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :authenticate_user!
   skip_before_filter :set_locale
+  protect_from_forgery except: :saml
 
   def passthru
     track_event 'Connecting via social account', { referrer: request.referrer }
@@ -28,6 +29,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     oauthorize 'linkedin'
   end
 
+  def saml
+    oauthorize 'saml'
+  end
+
   def twitter
     oauthorize 'twitter'
   end
@@ -46,6 +51,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
     session[:omniauth_login_locale] = I18n.locale
 
+    puts 'session setup: ' + session.inspect
+
     render text: 'Setup complete.', status: 404
   end
 
@@ -59,7 +66,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
     def oauthorize(kind)
-      # logger.info request.env['omniauth.auth'].to_yaml
+      # logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
 
       @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
       is_hackster = @redirect_host == APP_CONFIG['default_host']
@@ -78,7 +85,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         session['devise.provider'] = kind
         redirect_to update__authorizations_url(host: @redirect_host, link_accounts: true)
       else
-        @user = UserOauthFinder.new.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
+        @user = UserOauthFinder.new.find_for_oauth(kind, request.env['omniauth.auth'])
 
         if @user
           case @user.match_by

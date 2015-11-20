@@ -86,9 +86,9 @@ class ProjectsController < ApplicationController
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
-    if @project.public?
-      @respecting_users = @project.respecting_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
-      @replicating_users = @project.replicated_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+    if @project.publyc?
+      @respecting_users = @project.respecting_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @replicating_users = @project.replicated_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
       if is_whitelabel?
         @respecting_users = @respecting_users.where(users: { enable_sharing: true })
         @replicating_users = @replicating_users.where(users: { enable_sharing: true })
@@ -179,7 +179,7 @@ class ProjectsController < ApplicationController
       event = 'Submitted link'
     else
       # @project.approve!
-      @project.private = true
+      @project.pryvate = true
       event = 'Created project'
     end
 
@@ -225,11 +225,11 @@ class ProjectsController < ApplicationController
 
     respond_with @project do |format|
       format.html do
-        private_was = @project.private
+        private_was = @project.pryvate
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
-          if private_was != @project.private
-            if @project.private == false
+          if private_was != @project.pryvate
+            if @project.pryvate == false
               notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
               session[:share_modal] = 'published_share_prompt'
               session[:share_modal_model] = 'project'
@@ -237,7 +237,7 @@ class ProjectsController < ApplicationController
               session[:share_modal_time] = 'after_redirect'
 
               track_event 'Made project public', @project.to_tracker
-            elsif @project.private == false
+            elsif @project.pryvate == false
               notice = "#{@project.name} is now private again."
             end
           end
@@ -314,7 +314,7 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_slug_route
-    if @project.public?
+    if @project.publyc?
       redirect_to url_for(@project), status: 301
     else
       redirect_to polymorphic_path(@project, auth_token: params[:auth_token])
@@ -381,7 +381,7 @@ class ProjectsController < ApplicationController
         @results = case params[:ref]
         when 'assignment'
           if assignment = Assignment.find_by_id(params[:ref_id])
-            assignment.projects.public.order(:created_at)
+            assignment.projects.publyc.order(:created_at)
           end
 
         when 'custom'
@@ -416,7 +416,7 @@ class ProjectsController < ApplicationController
 
         when 'event'
           if event = Event.find_by_id(params[:ref_id])
-            event.projects.public.order('projects.respects_count DESC')
+            event.projects.publyc.order('projects.respects_count DESC')
           end
 
         when 'list'
@@ -467,7 +467,7 @@ class ProjectsController < ApplicationController
 
         when 'part'
           if part = Part.find_by_id(params[:ref_id])
-            part.projects.public.magic_sort
+            part.projects.publyc.magic_sort
           end
 
         when 'tag'
@@ -478,7 +478,7 @@ class ProjectsController < ApplicationController
 
         when 'user'
           if user = User.find_by_id(params[:ref_id])
-            projects = user.projects.public.own.order(start_date: :desc, created_at: :desc)
+            projects = user.projects.publyc.own.order(start_date: :desc, created_at: :desc)
             projects = projects.with_group(current_platform) if is_whitelabel?
             projects
           end

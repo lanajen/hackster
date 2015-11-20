@@ -11,7 +11,7 @@ class ListsController < ApplicationController
   def index
     title "Explore lists"
     meta_desc "Explore hardware projects by topics through curated lists."
-    @lists = List.public.order(members_count: :desc)
+    @lists = List.publyc.order(members_count: :desc)
 
     render "groups/lists/#{self.action_name}"
   end
@@ -37,7 +37,7 @@ class ListsController < ApplicationController
 
   def create
     @list = List.new params[:group]
-    @list.private = true
+    @list.pryvate = true
     authorize! :create, @list
 
     if user_signed_in?

@@ -20,7 +20,7 @@
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
             .pull-right-desktop
-              - if @project.public?
+              - if @project.publyc?
                 a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                   i.fa.fa-share-square-o
                   span Share
@@ -28,7 +28,7 @@
                   = render partial: 'respects/article_button', locals: { respectable: @project }
               span style='margin-left:5px' = render 'base_articles/manage_actions', { btn_size: 'btn-sm' }
 
-          - elsif @project.private?
+          - elsif @project.pryvate?
             p.pull-right-desktop
               i.fa.fa-lock>
               | This article is private.
@@ -167,7 +167,7 @@
             .section-content
               = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
 
-    - if @project.public?
+    - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
         - if @other_projects.count > 0
           section.other-projects

@@ -121,7 +121,7 @@
           = link_to '(buggy)', admin_projects_path(filters: { status: :unpublished, private: 0 })
       .panel-body
         => number_with_delimiter @waiting_for_approval_project_count
-        small.text-muted (#{BaseArticle.unpublished.public.count})
+        small.text-muted (#{BaseArticle.unpublished.publyc.count})
 
     .panel.panel-default.panel-dashboard
       .panel-heading

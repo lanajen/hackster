@@ -30,7 +30,7 @@ class Groups::ProjectsController < ApplicationController
 
   def create
     @project = @group.projects.new params[:base_article]
-    @project.private = true
+    @project.pryvate = true
     @project.build_team
     @project.team.members.new(user_id: current_user.id)
 

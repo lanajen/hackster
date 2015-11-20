@@ -3,20 +3,22 @@ class UserOauthFinder
     @relation = relation
   end
 
-  def find_for_oauth provider, auth, resource=nil
+  def find_for_oauth provider, auth
     # Rails.logger.info 'auth: ' + auth.to_yaml
-      uid = auth.uid
+    uid = auth.uid
     case provider
+    when 'arduino'
+      email = auth.info.email
     when 'facebook', 'github', 'gplus', 'linkedin'
       email = auth.info.email
       name = auth.info.name
+    when 'saml'
+      email = auth.info.email
     when 'twitter'
       name = auth.info.name
     when 'windowslive'
-      name = auth.info.name
       email = auth.info.emails.try(:first).try(:value)
-    when 'arduino'
-      email = auth.info.email
+      name = auth.info.name
     else
       raise 'Provider #{provider} not handled'
     end

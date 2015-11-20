@@ -29,7 +29,7 @@
 
       / # = f.input :enable_comments, inline_label: 'Enable comments', label: false, as: :boolean
       - if @group.checklist_completed?(:get_started)
-        = f.input :public, as: :boolean, inline_label: 'Make this list public', label: false
+        = f.input :publyc, as: :boolean, inline_label: 'Make this list public', label: false
 
     .col-md-6
       .form-group

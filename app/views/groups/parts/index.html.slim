@@ -27,7 +27,7 @@ h2.text-center
             td= link_to part.name, platform_part_path(@group.user_name, part.slug)
             td= part.projects_count
             td
-              - if part.private?
+              - if part.pryvate?
                 i.fa.fa-eye-slash.istooltip title='Hidden' data-container='body'
               - else
                 i.fa.fa-eye.istooltip title='Visible' data-container='body'

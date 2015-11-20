@@ -3,6 +3,9 @@
   _gaq.push(['_setAccount', '<%= tracker %>']);
   _gaq.push(['_setDomainName', '<%= domain %>']);
   _gaq.push(['_trackPageview']);
+  _gaq.push(['_setCustomVar', 1, 'User Type', '<%= user_signed_in? ? 'Member' : 'Visitor' %>', 2]);
+  _gaq.push(['_setCustomVar', 1, 'Controller', '<%= self.controller_name %>', 3]);
+  _gaq.push(['_setCustomVar', 2, 'Action', '<%= self.action_name %>', 3]);
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

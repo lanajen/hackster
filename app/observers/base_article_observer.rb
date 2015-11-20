@@ -73,7 +73,7 @@ class BaseArticleObserver < ActiveRecord::Observer
 
     if record.private_changed?
       record.private_changed = true
-      if record.private?
+      if record.pryvate?
       else
         if record.force_hide?
           record.reject! if record.can_reject?

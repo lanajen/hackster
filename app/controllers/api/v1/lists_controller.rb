@@ -16,7 +16,7 @@ class Api::V1::ListsController < Api::V1::BaseController
     @list = List.new params[:group]
     authorize! :create, @list
 
-    @list.private = true
+    @list.pryvate = true
     @list.members.new user_id: current_user.id
 
     if @list.save

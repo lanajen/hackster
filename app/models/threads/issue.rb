@@ -38,7 +38,7 @@ class Issue < Post
     (commenters + [user]).uniq
   end
 
-  private
+  protected
     def generate_sub_id
       self.sub_id = threadable.issues.size + 1
     end

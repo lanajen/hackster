@@ -254,10 +254,7 @@ Devise.setup do |config|
     idp_slo_target_url: ENV['CYPRESS_SLO_TARGET_URL'],
     assertion_consumer_service_url: saml_callback_url,
     issuer: issuer_url,
-    request_attributes: [
-        { name: 'email', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Email address' },
-        { name: 'name', name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic', friendly_name: 'Full name' },
-      ],
+    request_attributes: [],
     certificate: %q(-----BEGIN CERTIFICATE-----
       MIIEdzCCA1+gAwIBAgIJANPwUIzcAIrGMA0GCSqGSIb3DQEBBQUAMIGDMQswCQYD
       VQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xFzAV
@@ -310,7 +307,8 @@ Devise.setup do |config|
       P9fDRwKBgCoKPamMxgqKOEP97GdsVttCq+URXGYHhYr9hM3NmxXUKx4XxZSGfk49
       pId0gbSeQD4EAInOeRUCnwvP6BOcy6FlWgH2OJdD8d14DIpvdw70V13yQt6uWbgD
       SZDH9yjWU/uaGK/R6drekNhp4wfw4vYkDzv3q8mtWoyjiFj8OwL1
-      -----END RSA PRIVATE KEY-----)
+      -----END RSA PRIVATE KEY-----),
+    setup: true
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

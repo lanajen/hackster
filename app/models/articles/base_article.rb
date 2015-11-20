@@ -139,7 +139,7 @@ class BaseArticle < ActiveRecord::Base
   before_save :ensure_name
   before_create :generate_slug
   before_update :update_slug, if: proc {|p| p.name_changed? }
-  after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
+  after_update :publish!, if: proc {|p| p.private_changed? and p.publyc? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
 
@@ -212,7 +212,7 @@ class BaseArticle < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index 'private or hide or !approved?'
+  has_tire_index 'pryvate or hide or !approved?'
 
   tire do
     mapping do
@@ -303,7 +303,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.live
-    public
+    publyc
   end
 
   def self.last_7days
@@ -572,7 +572,7 @@ class BaseArticle < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      is_public: public?,
+      is_public: publyc?,
       project_id: id,
       project_name: name,
       product_tags_count: product_tags_count,
@@ -672,6 +672,10 @@ class BaseArticle < ActiveRecord::Base
     end
   end
 
+  def slug_hid
+    [slug, hid].join('-')
+  end
+
   private
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
@@ -715,10 +719,6 @@ class BaseArticle < ActiveRecord::Base
         exists = BaseArticle.exists?(hid: hid)
       end
       self.hid = hid
-    end
-
-    def slug_hid
-      [slug, hid].join('-')
     end
 
     def remove_whitespaces_from_html text

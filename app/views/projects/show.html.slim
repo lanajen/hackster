@@ -264,7 +264,7 @@
                   / h4 Manage this project
                   = render 'base_articles/manage_actions', { btn_size: '' }
 
-              - elsif @project.private?
+              - elsif @project.pryvate?
                 .alert.alert-warning.text-center
                   p
                     i.fa.fa-lock>
@@ -304,7 +304,7 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
-              - if @project.public?
+              - if @project.publyc?
                 section.section-thumbs
                   = render 'actions'
 
@@ -376,7 +376,7 @@
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
               - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
-                - if @project.public?
+                - if @project.publyc?
                   - if @respecting_users.count > 0
                     section.section-thumbs
                       h4 Members who respect this project
@@ -480,11 +480,11 @@
                               = @project.comments_count
                               | )
 
-                    - if @project.public?
+                    - if @project.publyc?
                       .show-on-affix style='margin-top:20px;'
                         = render 'actions'
 
-    - if @project.public?
+    - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
         - if @other_projects.count > 0
           section.other-projects

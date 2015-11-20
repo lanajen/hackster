@@ -21,7 +21,7 @@ table.table.table-striped
       tr
         td= link_to post.title, blog_post_path(post.slug)
         td
-          - if post.public
+          - if post.publyc
             - if post.published_at > Time.now
               | Scheduled #{post.published_at}
             - else

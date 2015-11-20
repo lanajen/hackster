@@ -4,10 +4,11 @@ class SocialProfileBuilder
   KNOWN_PROVIDERS = {
     'arduino' => :arduino,
     'facebook' => :facebook,
-    'twitter' => :twitter,
+    'github' => :github,
     'gplus' => :google_plus,
     'linkedin' => :linked_in,
-    'github' => :github,
+    'saml' => :saml,
+    'twitter' => :twitter,
     'windowslive' => :windowslive,
   }
 
@@ -20,8 +21,8 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # Rails.logger.info data.to_yaml
-    # Rails.logger.info provider.to_s
+    # Rails.logger.info 'data: ' + data.to_yaml
+    # Rails.logger.info 'provider: ' + provider.to_s
     # Rails.logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
@@ -72,6 +73,8 @@ class SocialProfileBuilder
         user_name: clean_user_name(info.id),
         email: info.email,
       )
+      image_url = "https://dcw9y8se13llu.cloudfront.net/avatars/#{data.uid}.jpg"
+      build_avatar image_url
     end
 
     def facebook info, data
@@ -122,6 +125,16 @@ class SocialProfileBuilder
             info.location.try(:country).try(:code).try(:upcase))
       )
       build_avatar info.image
+    end
+
+    def saml info, data
+      assign_attributes(
+        full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
+        user_name: data.extra.raw_info.attributes['username'].try(:first),
+        email: info.email,
+        city: data.extra.raw_info.attributes['state'].try(:first),
+        country: data.extra.raw_info.attributes['country'].try(:first)
+      )
     end
 
     def twitter info, data

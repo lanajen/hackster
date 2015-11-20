@@ -29,7 +29,7 @@ class ExternalProject < BaseProject
     'link'
   end
 
-  private
+  protected
     def set_content_type
       self.content_type = :external
     end

@@ -142,12 +142,14 @@ $(function () {
 
     img.onload = function() {
       el.attr('src', src);
+      el.removeClass('loading');
       el.addClass('loaded');
       if (el.hasClass('load-slick')) {
         loadSlickSlider(el.closest('.image-gallery'));
       }
     }
 
+    el.addClass('loading');
     img.src = src;
     el.removeAttr('data-async-src');
   }

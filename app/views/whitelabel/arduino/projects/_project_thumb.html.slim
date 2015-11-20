@@ -24,7 +24,7 @@
               = project.one_liner
         .thumb-inner
           h4
-            - if project.private?
+            - if project.pryvate?
               i.fa.fa-lock>
             ==> link_to project.name, project_link, class: 'project-link-with-ref'
             / - if project.external?

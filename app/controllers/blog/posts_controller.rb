@@ -31,7 +31,7 @@ class Blog::PostsController < ApplicationController
     else
       @post = BlogPost.published.find_by_slug! params[:slug]
     end
-    set_surrogate_key_header @post.record_key if @post.public?
+    set_surrogate_key_header @post.record_key if @post.publyc?
 
     meta_desc ActionController::Base.helpers.strip_tags(@post.body).truncate 155
     title @post.title

@@ -181,7 +181,11 @@ class NotificationDecorator < ApplicationDecorator
     end
 
     unless msg.present?
-      message = "Unknown notification: #{model.inspect}"
+      message = if notifiable
+        "Unknown notification: #{model.inspect}"
+      else
+        "Notifiable doesn't exist anymore: #{model.inspect}"
+      end
       if ENV['ENABLE_ERROR_NOTIF']
         log_line = LogLine.create(message: message, log_type: 'error', source: 'notification_decorator')
         NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'

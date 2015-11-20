@@ -14,7 +14,7 @@ class ProjectScraper
 
     project = s.document.to_project options[:model_class]
     project.website ||= options[:website].presence || page_url
-    project.private = (options[:private].nil? ? true : options[:private])
+    project.pryvate = (options[:private].nil? ? true : options[:private])
     project.workflow_state = options[:workflow_state]
     project.name = project.name[0..59]
     project

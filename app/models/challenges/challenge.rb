@@ -172,7 +172,7 @@ class Challenge < ActiveRecord::Base
     where workflow_state: PAST_STATES
   end
 
-  def self.public
+  def self.publyc
     where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
   end
 

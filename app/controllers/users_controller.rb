@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   def index
     title "Browse top community members"
-    @users = User.not_admin.invitation_accepted_or_not_invited.public.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
+    @users = User.not_admin.invitation_accepted_or_not_invited.publyc.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
   end
 
   def show
@@ -25,14 +25,14 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc).limit(3)
-    @private_projects = @user.projects.private.for_thumb_display.limit(3)
+    @public_projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc).limit(3)
+    @private_projects = @user.projects.pryvate.for_thumb_display.limit(3)
     @guest_projects = @user.projects.live.guest.for_thumb_display.limit(3)
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC').limit(3)
     @replicated_projects = @user.replicated_projects.limit(3)
 
-    @public_query = @user.projects.public.own
-    @private_query = @user.projects.private
+    @public_query = @user.projects.publyc.own
+    @private_query = @user.projects.pryvate
     @guest_query = @user.projects.live.guest
     @respected_query = @user.respected_projects.indexable_and_external
     @replicated_query = @user.replicated_projects
@@ -63,7 +63,7 @@ class UsersController < ApplicationController
       @lists = if @user.id == current_user.try(:id) or current_user.try(:is?, :admin)
         @user.lists.order(:full_name)
       else
-        @user.lists.public.order(:full_name)
+        @user.lists.publyc.order(:full_name)
       end
     end
 
@@ -88,7 +88,7 @@ class UsersController < ApplicationController
     title "#{@user.name}'s public projects"
     meta_desc "#{@user.name}'s public projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.public.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     if is_whitelabel?
       @public_projects = @public_projects.with_group(current_platform)
     end
@@ -100,7 +100,7 @@ class UsersController < ApplicationController
     title "#{@user.name}'s private projects"
     meta_desc "#{@user.name}'s private projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @private_projects = @user.projects.private.for_thumb_display
+    @private_projects = @user.projects.pryvate.for_thumb_display
     if is_whitelabel?
       @private_projects = if current_user == @user
         @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }

@@ -17,7 +17,10 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def authenticate_api_user
-      return load_platform('') if Rails.env == 'development'
+      if Rails.env == 'development'
+        @platform = Platform.find_by_user_name('microsoft')
+        return
+      end
 
       authenticate_or_request_with_http_basic do |username, password|
         load_platform(username)

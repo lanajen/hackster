@@ -87,7 +87,7 @@ gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
-gem 'omniauth-saml', '1.4.1'
+gem 'omniauth-saml', git: 'https://github.com/blarralde/omniauth-saml.git', branch: 'patch-1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https
@@ -142,6 +142,10 @@ gem 'rails_12factor', group: :production
 # gem 'ruby-prof', group: [:development, :profile]
 gem 'derailed_benchmarks', group: :development
 
+group :development do
+  gem 'letter_opener'
+end
+
 group :development, :test do
   gem 'foreman'
   # gem 'guard-livereload'
@@ -156,13 +160,13 @@ group :development, :test do
   gem 'spring'
   # gem 'web-console', '~> 2.0'
   gem 'byebug'
+  gem 'ffaker'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
-  # gem 'faker'
-  gem 'rspec-rails'
   gem 'selenium-webdriver'
 end

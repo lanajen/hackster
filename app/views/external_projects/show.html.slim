@@ -114,7 +114,7 @@
                 - platforms.each do |platform|
                   = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
 
-            - if @project.public? and @respecting_users.count > 0
+            - if @project.publyc? and @respecting_users.count > 0
               section.section-thumbs
                 h4 Members who respect this project
                 #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

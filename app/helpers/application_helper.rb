@@ -8,7 +8,7 @@ module ApplicationHelper
   def affix_top project, user=nil
     affix = 725
     affix += 53 if ProjectCollection.assignment_or_event_for_project?(project.id)
-    affix += 52 if project.private and user and user.can? :edit, @project
+    affix += 52 if project.pryvate and user and user.can? :edit, @project
     affix += 52 if user and user.is_team_member? project, false
     affix += 53 if flash.any?
     affix
@@ -220,6 +220,8 @@ module ApplicationHelper
       'Google+'
     when :windowslive
       'Microsoft Account'
+    when :saml
+      'Cypress Account'
     end
   end
 
@@ -255,6 +257,8 @@ module ApplicationHelper
       'googleplus'
     when :windowslive
       'windows'
+    when :saml
+      'guest'
     end
   end
 end

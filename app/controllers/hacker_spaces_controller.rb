@@ -6,7 +6,7 @@ class HackerSpacesController < ApplicationController
 
   def index
     title 'Hacker spaces around the world'
-    @hacker_spaces = HackerSpaceDecorator.decorate_collection(HackerSpace.public.includes(:avatar).order(:full_name))
+    @hacker_spaces = HackerSpaceDecorator.decorate_collection(HackerSpace.publyc.includes(:avatar).order(:full_name))
     @hash = Gmaps4rails.build_markers(@hacker_spaces) do |space, marker|
       marker.lat space.latitude
       marker.lng space.longitude

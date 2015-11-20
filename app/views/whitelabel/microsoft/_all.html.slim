@@ -1,4 +1,4 @@
-- ms_sync = MicrosoftChromeSync.instance
+- ms_sync = ChromeSync::Base.new('microsoft')
 
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
@@ -54,7 +54,7 @@
           - if user_signed_in?
             .btn-group.btn-group-default
               = link_to 'My projects', current_user, class: 'btn btn-default'
-              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body' }
+              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body', position: 'bottom' }
           - else
             = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
 

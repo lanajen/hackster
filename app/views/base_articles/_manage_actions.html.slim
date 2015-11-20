@@ -5,7 +5,7 @@
     = link_to 'Locked for editing', 'javascript:void(0)', class: "btn btn-default #{btn_size} disabled"
 
   a.btn.btn-default class=btn_size href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'base_articles/publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
-    - if @project.public?
+    - if @project.publyc?
       - if @project.pending_review? or @project.unpublished?
         span Public - Pending review
       - else
@@ -23,7 +23,7 @@
       li= link_to 'Project logs', project_logs_path(@project)
       li= link_to 'Issue tracker', project_issues_path(@project)
       li.divider
-    - if @project.private?
+    - if @project.pryvate?
       li= link_to 'Private sharing link', 'javascript:void(0)', class: 'modal-open', data: { target: '#project-private-share' }
       = content_for :js do
 
