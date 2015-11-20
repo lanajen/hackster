@@ -12,22 +12,23 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
     by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
-    projects = if params[:platform_user_name]
-      parent = Platform.find_by_user_name! params[:platform_user_name]
+    projects = if params[:part_mpns]
+      BaseArticle.joins(:parts).where(parts: { mpn: params[:part_mpns].split(/,/) })
+    elsif params[:platform_user_name]
+      platform = Platform.find_by_user_name! params[:platform_user_name]
       if params[:part_mpn]
-        parent = parent.parts.find_by_mpn! params[:part_mpn]
+        platform.parts.find_by_mpn!(params[:part_mpn]).projects
+      else
+        platform.projects.visible
       end
-      parent.projects
     else
       BaseArticle
     end
 
-    if params[:part_mpns]
-      projects = projects.joins(:parts).where(parts: { mpn: params[:part_mpns].split(/,/) })
-    end
-
-    unless (params[:platform_user_name] and params[:part_mpn]) or params[:part_mpns]
-      projects = projects.indexable
+    projects = if params[:platform_user_name] or params[:part_mpn] or params[:part_mpns]
+      projects.publyc
+    else
+      projects.indexable
     end
 
     if by and by.in? BaseArticle::FILTERS.keys
@@ -46,7 +47,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def show
-    @project = BaseArticle.where(id: params[:id]).publyc.first!
+    @project = BaseArticle.where(id: params[:id]).public.first!
   end
 
   def create
