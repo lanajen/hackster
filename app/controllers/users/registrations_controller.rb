@@ -62,7 +62,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     data = current_user.to_tracker_profile.merge({ age: current_user.account_age })
     track_event 'Deleted account', data
 
-    message = "Closed account aged #{current_user.account_age} days, because \"#{params[:reason]}\"."
+    message = "#{current_user.name} (#{current_user.email}) closed account aged #{current_user.account_age} days, because \"#{params[:reason]}\"."
     AppLogger.new(message, 'closed_account', 'registrations_controller').log_and_notify
 
     super
