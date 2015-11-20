@@ -20,7 +20,7 @@ class Admin::ShortLinksController < Admin::BaseController
     @short_link = ShortLink.new(params[:short_link])
 
     if @short_link.save
-      redirect_to edit_short_link_path(@short_link), :notice => 'New short_link created'
+      redirect_to admin_short_links_path, :notice => 'New short_link created'
     else
       render :new
     end

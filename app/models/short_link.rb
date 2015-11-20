@@ -1,12 +1,12 @@
 class ShortLink < ActiveRecord::Base
   is_impressionable counter_cache: true
 
-  validates :slug, length: { maximum: 30 }, allow_blank: true
+  validates :slug, length: { maximum: 30 }, format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
   validates :slug, presence: true, if: proc {|s| s.persisted? }
   validates :slug, uniqueness: true, if: proc {|s| s.persisted? and s.slug_changed? }
   validates :redirect_to_url, presence: true
   validate :validate_redirect_to_url
-  before_create :generate_slug
+  before_create :generate_slug, if: proc {|s| s.slug.blank? }
 
   private
     def generate_slug
