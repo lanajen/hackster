@@ -170,6 +170,7 @@ HackerIo::Application.routes.draw do
           patch 'update_workflow' => 'payments#update_workflow', on: :member
         end
         resources :projects, except: [:show]
+        resources :short_links, except: [:show]
         resources :users, except: [:show]
 
         get 'store' => 'pages#store'
@@ -398,6 +399,8 @@ HackerIo::Application.routes.draw do
         patch 'edit' => 'notifications#update', on: :collection
       end
 
+      get 's/:slug' => 'short_links#show'
+
       scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
         resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
       end
@@ -438,7 +441,7 @@ HackerIo::Application.routes.draw do
       get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
-      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
+      get 'windows10kit', to: redirect('/s/windows10kit')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')

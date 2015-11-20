@@ -30,6 +30,10 @@ class NotificationDecorator < ApplicationDecorator
       challenge = notifiable
       challenge_link = h.link_to challenge.name, challenge
       case event
+      when :pre_contest_ending_soon
+        "The precontest of #{challenge_link} is ending soon, time to submit your idea!"
+      when :ending_soon
+        "#{challenge_link} is ending soon, time to submit your project!"
       when :launched_pre_contest
         "#{challenge_link} is now accepting ideas!"
       when :launched_contest
