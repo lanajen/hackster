@@ -21,6 +21,12 @@ body {
 
 img {
   max-width: 100%;
+  @include opacity(1);
+  @include transition(opacity 200ms);
+  &.loading {
+    @include opacity(0);
+    // background: asset-url("spin.svg") center center no-repeat;
+  }
 }
 .media {
   img {
