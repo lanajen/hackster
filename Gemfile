@@ -168,6 +168,7 @@ end
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'rspec-sidekiq'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
 end

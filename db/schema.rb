@@ -552,6 +552,21 @@ ActiveRecord::Schema.define(version: 20151120195418) do
     t.hstore   "properties"
   end
 
+  create_table "project_impressions", force: :cascade do |t|
+    t.integer  "project_id",      null: false
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
@@ -855,4 +870,5 @@ ActiveRecord::Schema.define(version: 20151120195418) do
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree
   add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
 
+  add_foreign_key "project_impressions", "projects"
 end
