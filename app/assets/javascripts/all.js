@@ -129,6 +129,7 @@ function showHelloWorld() {
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
   updatedScrollEventHandlers();
+  loadSlickSlider({lazyLoad: 'ondemand'});
 });
 
 $(function () {
@@ -144,9 +145,9 @@ $(function () {
       el.attr('src', src);
       el.removeClass('loading');
       el.addClass('loaded');
-      if (el.hasClass('load-slick')) {
-        loadSlickSlider(el.closest('.image-gallery'));
-      }
+      // if (el.hasClass('load-slick')) {
+      //   loadSlickSlider(el.closest('.image-gallery'));
+      // }
     }
 
     el.addClass('loading');
