@@ -1,4 +1,4 @@
-json.part_mpn params[:part_mpn] if params[:part_mpn]
+json.part_mpn params[:part_mpn] if params[:part_mpn] and params[:platform_user_name]
 
 if params[:only_count]
   json.total_results @count
