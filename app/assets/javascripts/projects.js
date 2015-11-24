@@ -1063,15 +1063,20 @@ function formatPart(result) {
   return $(output);
 };
 
-function loadSlickSlider(target){
-  target = target || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
-  target.slick({
+function loadSlickSlider(opts){
+  opts = opts || {};
+  target = opts['target'] || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
+  delete opts['target'];
+  slickOpts = {
     accessibility: false,
     speed: 500,
     fade: true,
     dots: true,
     adaptiveHeight: true
-  });
+  };
+  for (var attrname in opts) { slickOpts[attrname] = opts[attrname]; }
+  console.log('opts', slickOpts);
+  target.slick(slickOpts);
   updatedScrollEventHandlers();
 }
 
