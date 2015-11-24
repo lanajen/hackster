@@ -16,8 +16,12 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       BaseArticle.joins(:parts).where(parts: { mpn: params[:part_mpns].split(/,/) })
     elsif params[:platform_user_name]
       platform = Platform.find_by_user_name! params[:platform_user_name]
+      @url = group_url(platform, subdomain: 'www')
+      platform
       if params[:part_mpn]
-        platform.parts.find_by_mpn!(params[:part_mpn]).projects
+        part = platform.parts.find_by_mpn!(params[:part_mpn])
+        @url = part_url(part, subdomain: 'www') if part.has_own_page?
+        part.projects
       else
         platform.projects.visible
       end

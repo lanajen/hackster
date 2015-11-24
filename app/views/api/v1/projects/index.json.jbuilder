@@ -10,3 +10,5 @@ else
   json.next_page @projects.next_page
   json.total_results @projects.total_entries
 end
+
+json.url @url if @url and params[:only_count]
