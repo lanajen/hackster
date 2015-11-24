@@ -1,11 +1,11 @@
 .image
   figure
     a.embed-img href="javascript:openLightBox('#{uid}', #{i});"
-      - if lazyload
-        = image_tag asset_url('transparent.gif'), 'data-async-src' => image.imgix_url(:headline), class: (i.zero? ? 'load-slick' : '')
+      - if lazyload and !i.zero?
+        = image_tag nil, 'data-sync' => image.imgix_url(:headline)
         noscript
-          = image_tag image.imgix_url(:headline), class: 'loaded'
+          = image_tag image.imgix_url(:headline)
       - else
-        = image_tag image.imgix_url(:headline), class: 'loaded'
+        = image_tag image.imgix_url(:headline)
     - if caption.present?
       figcaption= caption
