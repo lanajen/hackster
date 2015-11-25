@@ -26,8 +26,11 @@ const ContentEditable = React.createClass({
     }
 
     /** Inits Mutation Observer. */
-    let config = { attributes: true, childList: true, characterData: true };
-    this.domObserver.observe(React.findDOMNode(this), config);
+    this.domObserver.observe(React.findDOMNode(this), {
+      attributes: true,
+      childList: true,
+      characterData: true
+    });
   },
 
   componentWillUnmount() {
@@ -650,7 +653,6 @@ const ContentEditable = React.createClass({
   render() {
     return (
       <div
-        ref="contentEditable"
         data-hash={this.props.hash}
         className="no-outline-focus content-editable"
         style={this.props.style || null}

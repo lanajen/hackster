@@ -44,6 +44,10 @@ const Utils = {
     }
   },
 
+  getWindowLocationHref() {
+    return window.location.href;
+  },
+
   /**
    * Gets the block level element of the current tree dictated by a Selection object.
    * @param  {[textNodeValue]} [window.getSelection().anchorNode]

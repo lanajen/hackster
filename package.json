@@ -16,8 +16,8 @@
     "highlight.js": "^8.6.0",
     "htmlparser2": "^3.8.3",
     "keymirror": "^0.1.1",
-    "lodash": "^3.7.0",
     "markdown-it": "^5.0.2",
+    "lodash": "^3.10.1",
     "material-ui": "^0.12.5",
     "node-uuid": "^1.4.3",
     "postal": "^1.0.6",
@@ -40,19 +40,27 @@
     "node": ">= 0.10"
   },
   "devDependencies": {
+    "babel-plugin-rewire": "^0.1.22",
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
+    "del": "^2.1.0",
     "es6-promise": "^2.1.1",
+    "glob": "^6.0.1",
+    "gulp": "^3.9.0",
+    "gulp-mocha-phantomjs": "^0.10.1",
     "jsdom": "^3.1.1",
     "mocha": "^2.2.4",
+    "mocha-jsdom": "^1.0.0",
+    "mutationobserver-shim": "^0.3.1",
     "redux-logger": "^1.0.8",
-    "rewire": "^2.3.3",
     "sinon": "^1.14.1",
+    "sinon-chai": "^2.8.0",
+    "vinyl-source-stream": "^1.1.0",
     "webpack": "^1.10.1"
   },
   "scripts": {
-    "browserify": "browserify -t [babelify --optional runtime] -o ./app/assets/javascripts/bundle.js",
-    "build": "webpack --config ./client/webpack.config.js --progress --profile --colors",
-    "test": "mocha --recursive --harmony --compilers js:babel/register --require ./app/assets/javascripts/tests/init.js ./app/assets/javascripts/**/**/__tests__/*-test.js"
+    "browserify": "-t [babelify --stage 0  --optional runtime]",
+    "mocha": "mocha --recursive --compilers js:babel/register --require ./spec/javascripts/helpers/init.js ./spec/javascripts/**/**/*_test.js",
+    "test": "npm run mocha"
   }
 }

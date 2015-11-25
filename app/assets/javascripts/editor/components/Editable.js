@@ -21,7 +21,7 @@ const Editable = React.createClass({
   componentWillMount() {
     let metaList = document.getElementsByTagName('meta');
     let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
-    let projectId = window.location.href.match(/\/[\d]+/).join('').slice(1);
+    let projectId = Utils.getWindowLocationHref().match(/\/[\d]+/).join('').slice(1);
 
     this.props.actions.setProjectData(projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
@@ -187,8 +187,8 @@ const Editable = React.createClass({
 
     Promise.all(promised)
       .then(results => {
-        if(!results || !results.length) {
-          return;
+        if(!Array.isArray(results)) {
+          this.props.actions.toggleErrorMessenger(true, 'Bummer, the project didn\'t save correctly.');
         } else {
           let input = document.getElementById('story_json');
           input.value = JSON.stringify(results);
@@ -237,7 +237,7 @@ const Editable = React.createClass({
       } else {
         return null;
       }
-    });
+    }).filter(item => item !== null);
 
     let mainContent = this.props.editor.isFetching
                     ? (<div style={{ textAlign: 'center', padding: '5%' }}><i className="fa fa-spin fa-spinner fa-3x"></i>LOADING...</div>)
