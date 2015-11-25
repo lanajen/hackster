@@ -220,7 +220,7 @@ class UsersController < ApplicationController
         # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
         " Welcome!"
       end
-      redirect_to (is_whitelabel? ? user_return_to : user_toolbox_path), notice: message
+      redirect_to user_toolbox_path, notice: message
 
       track_user @user.to_tracker_profile
       track_event 'Completed after registration update', {
