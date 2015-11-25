@@ -80,7 +80,7 @@ gem 'momentjs-rails', '2.8.1'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.12.0.288'
 gem 'nokogiri', '1.6.0'
-# I know bad it's practice to have passwords committed but this is just a dummy account with only read access to that specific repo
+# I know it's bad practice to have passwords committed but this is just a dummy account with only read access to that specific repo
 gem 'omniauth-arduino', git: "https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git"
 gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.1.2'
@@ -96,7 +96,7 @@ gem 'premailer-rails', '1.7.0'
 gem 'protected_attributes', '1.0.9'
 # gem 'puma', '2.10.2'
 gem 'pusher', '0.14.2'
-gem 'pygments.rb', '0.5.4'
+gem 'pygments.rb', git: 'https://github.com/blarralde/pygments.rb.git'
 gem 'rabl', '0.11.6'
 gem 'rack-attack', '4.1.0'
 gem 'rack-timeout', '0.3.2'
@@ -130,7 +130,7 @@ gem 'unicorn', '4.7.0'
 gem 'vimeo', '1.5.3'
 gem 'will_paginate', github: 'mislav/will_paginate'
 gem 'workflow', '1.0.0'
-gem 'yajl-ruby', '1.1.0'
+gem 'yajl-ruby', '1.2.0'
 
 # heroku
 gem 'heroku-api', '0.3.22'

@@ -62,24 +62,22 @@
   }
   .highlight {
     position: relative;
-    border-left: 5.2ex solid #292929;
-    // border-left: 5.2ex solid rgba(0, 0, 0, 0.15);
+    border-left: 5.2ex solid;
     pre {
       border: 0;
-      border-left: 1px solid #222;
       padding: 9.5px 20px;
       counter-reset: linenumbers;
       margin: 0;
       @include border-radius(0);
       & > span:before {
         font-size: .9em;
-        color: #bbb;
         content: counter(linenumbers);
         counter-increment: linenumbers;
         left: -5ex;
         position: absolute;
         text-align: right;
         width: 4.5ex;
+        padding-right: .2ex;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -168,6 +166,9 @@
       float: left;
       margin: 0;
       margin-top: 3px;
+      small {
+        margin-left: 5px;
+      }
     }
     .buttons {
       float: right;
@@ -182,7 +183,6 @@
   .preview-body {
     height: calc(100% - 42px);
     overflow: scroll;
-    background-color: #333;
     .highlight {
       min-height: 100%;
     }

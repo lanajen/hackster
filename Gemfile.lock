@@ -28,6 +28,14 @@ GIT
       ruby-saml (~> 1.0)
 
 GIT
+  remote: https://github.com/blarralde/pygments.rb.git
+  revision: 1e9a4144801d37ea7982de00efea8480c49dc721
+  specs:
+    pygments.rb (0.6.3)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.2.0)
+
+GIT
   remote: https://github.com/joel/omniauth-windowslive.git
   revision: 9b77fd320ceac3ad390484501512d5e49572fcd7
   specs:
@@ -465,9 +473,6 @@ GEM
       httpclient (~> 2.4)
       multi_json (~> 1.0)
       signature (~> 0.1.6)
-    pygments.rb (0.5.4)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rabl (0.11.6)
@@ -710,7 +715,7 @@ GEM
     workflow (1.0.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
-    yajl-ruby (1.1.0)
+    yajl-ruby (1.2.0)
     zocial-rails (1.0.2)
       railties (>= 3.1)
 
@@ -791,7 +796,7 @@ DEPENDENCIES
   protected_attributes (= 1.0.9)
   pry
   pusher (= 0.14.2)
-  pygments.rb (= 0.5.4)
+  pygments.rb!
   quiet_assets
   rabl (= 0.11.6)
   rack-attack (= 4.1.0)
@@ -841,7 +846,7 @@ DEPENDENCIES
   vimeo (= 1.5.3)
   will_paginate!
   workflow (= 1.0.0)
-  yajl-ruby (= 1.1.0)
+  yajl-ruby (= 1.2.0)
   zocial-rails (= 1.0.2)
 
 BUNDLED WITH
