@@ -73,7 +73,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       cookies[:hackster_user_signed_in] = '1'
       track_signup resource
 
-      user_after_registration_path
+      (is_whitelabel? and current_site.disable_onboarding_screens?) ? user_return_to : user_after_registration_path
     end
 
     def after_update_path_for(resource)
