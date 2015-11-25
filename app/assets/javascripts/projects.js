@@ -462,8 +462,7 @@ $select2target = null;
       cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
       cEditor.ace.selection.clearSelection();
       var lang = $(this).find('[data-field-type="language"]').val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
 
     $('#code-editor-popup').on('modal:open', function(){
@@ -472,9 +471,22 @@ $select2target = null;
 
     $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
       var lang = $(this).val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
+
+    function updateEditorMode(editor, lang) {
+      console.log('lang1', lang);
+      switch (lang) {
+        case '':
+          lang = 'text';
+          break;
+        case 'arduino':
+          lang = 'c_cpp';
+          break;
+      }
+      console.log('lang2', lang);
+      editor.ace.getSession().setMode("ace/mode/" + lang);
+    }
 
     $('#code-editor-popup').on('click', '.upload-code', function(e){
       e.preventDefault();

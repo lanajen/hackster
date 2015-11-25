@@ -10,7 +10,9 @@
         .preview-pane class=(i.zero? ? 'active' : '') id="code-widget-#{widget.id}"
           .preview-header
             .clearfix
-              h5= widget.name
+              h5
+                = widget.name
+                small= widget.human_language
               .buttons.btn-group.btn-group-default
                 - if !widget.binary? and widget.formatted_code.present?
                   button.btn.btn-primary.btn-xs.copy-code.istooltip title='Copy the code' data-container='body' data-trigger='hover'
@@ -20,7 +22,7 @@
                     i.fa.fa-cloud-download
             - if widget.comment.present?
               .comment= plain_to_html(widget.comment)
-          .preview-body.pygments-syntax
+          .preview-body.pygments-syntax class=(widget.language == 'arduino' ? 'arduino' : 'all')
             - if !widget.binary? and widget.formatted_code.present?
               = raw widget.formatted_code
             - else
