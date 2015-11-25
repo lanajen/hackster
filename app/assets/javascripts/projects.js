@@ -475,16 +475,16 @@ $select2target = null;
     });
 
     function updateEditorMode(editor, lang) {
-      console.log('lang1', lang);
       switch (lang) {
+        // default if empty
         case '':
           lang = 'text';
           break;
+        // ace doesn't have an arduino mode and C/C++ is good enough
         case 'arduino':
           lang = 'c_cpp';
           break;
       }
-      console.log('lang2', lang);
       editor.ace.getSession().setMode("ace/mode/" + lang);
     }
 
