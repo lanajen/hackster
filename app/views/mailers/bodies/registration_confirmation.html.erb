@@ -1,4 +1,4 @@
-<p>Welcome to <% if @context[:user].platform %><%= ClientSubdomain.find_by_subdomain!(@context[:user].platform).name %>, powered by Hackster.io<% else %>Hackster.io<% end %>!</p>
+<p>Welcome to <% if @context[:user].platform.present? and @context[:user].platform != 'hackster' %><%= ClientSubdomain.find_by_subdomain!(@context[:user].platform).name %>, powered by Hackster.io<% else %>Hackster.io<% end %>!</p>
 
 <p>We're so excited to have you onboard :)</p>
 
@@ -15,7 +15,7 @@
   <li><a href="<%= u.talk_url %>?ref=confemail">Join the conversation</a> and share interesting things with the community</li>
 </ul>
 
-<% if @context[:user].platform %>
+<% if @context[:user].platform.present? and @context[:user].platform != 'hackster' %>
   <p>Please note: your account will allow you to log in onto any Hackster.io site.</p>
 <% end %>
 
