@@ -1105,7 +1105,6 @@ function loadSlickSlider(opts){
     adaptiveHeight: true
   };
   for (var attrname in opts) { slickOpts[attrname] = opts[attrname]; }
-  console.log('opts', slickOpts);
   target.slick(slickOpts);
   updatedScrollEventHandlers();
 }

@@ -1,4 +1,4 @@
-<p>Welcome!</p>
+<p>Welcome to <% if @context[:user].platform %><%= ClientSubdomain.find_by_subdomain!(@context[:user].platform).name %>, powered by Hackster.io<% else %>Hackster.io<% end %>!</p>
 
 <p>We're so excited to have you onboard :)</p>
 
@@ -14,6 +14,10 @@
   <li><a href="<%= u.hacker_spaces_url %>?ref=confemail">Find local hacker spaces</a> and join the ones you're already part of</li>
   <li><a href="<%= u.talk_url %>?ref=confemail">Join the conversation</a> and share interesting things with the community</li>
 </ul>
+
+<% if @context[:user].platform %>
+  <p>Please note: your account will allow you to log in onto any Hackster.io site.</p>
+<% end %>
 
 <p>Any questions? Just reply to this email and help will be on its way.</p>
 

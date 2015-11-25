@@ -10,53 +10,51 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  constraints(MainSite) do
-    # kept for compatibility, remove when fully migrated
-    namespace :api do
-      namespace :v1 do
-        get 'embeds' => 'embeds#show'
-        # post 'embeds' => 'embeds#create'
-        resources :announcements
-        resources :build_logs
-        resources :code_files, only: [:create]
-        resources :comments, only: [:create, :destroy]
-        resources :flags, only: [:create]
-        resources :followers, only: [:create, :index], defaults: { format: :json } do
-          collection do
-            delete '' => 'followers#destroy'
-          end
+  # kept for compatibility, remove when fully migrated
+  namespace :api do
+    namespace :v1 do
+      get 'embeds' => 'embeds#show'
+      # post 'embeds' => 'embeds#create'
+      resources :announcements
+      resources :build_logs
+      resources :code_files, only: [:create]
+      resources :comments, only: [:create, :destroy]
+      resources :flags, only: [:create]
+      resources :followers, only: [:create, :index], defaults: { format: :json } do
+        collection do
+          delete '' => 'followers#destroy'
         end
-        resources :jobs, only: [:create, :show]
-        resources :likes, only: [:create] do
-          delete '' => 'likes#destroy', on: :collection
-        end
-        scope 'mandrill/webhooks' do
-          post 'unsub' => 'mandrill_webhooks#unsub'
-        end
-        resources :projects do
-          get 'description' => 'projects#description'
-        end
-        resources :parts, except: [:new, :edit], defaults: { format: :json }
-        scope 'platforms' do
-          get ':user_name' => 'platforms#show', defaults: { format: :json }
-        end
-        resources :lists, only: [:index, :create], defaults: { format: :json } do
-          post 'projects' => 'lists#link_project', on: :member
-          delete 'projects' => 'lists#unlink_project', on: :member
-        end
-        # legacy route, replaced by global chrome_sync below
-        resources :microsoft_chrome_sync, only: [] do
-          get '' => 'chrome_sync#show', on: :collection
-          patch '' => 'chrome_sync#update', on: :collection
-        end
-        resources :notifications, only: [:index], defaults: { format: :json }
-        resources :thoughts
-        resources :users, only: [] do
-          get :autocomplete, on: :collection
-        end
-        resources :widgets, only: [:destroy, :update, :create]
-        match "*all" => "base#cors_preflight_check", via: :options
       end
+      resources :jobs, only: [:create, :show]
+      resources :likes, only: [:create] do
+        delete '' => 'likes#destroy', on: :collection
+      end
+      scope 'mandrill/webhooks' do
+        post 'unsub' => 'mandrill_webhooks#unsub'
+      end
+      resources :projects do
+        get 'description' => 'projects#description'
+      end
+      resources :parts, except: [:new, :edit], defaults: { format: :json }
+      scope 'platforms' do
+        get ':user_name' => 'platforms#show', defaults: { format: :json }
+      end
+      resources :lists, only: [:index, :create], defaults: { format: :json } do
+        post 'projects' => 'lists#link_project', on: :member
+        delete 'projects' => 'lists#unlink_project', on: :member
+      end
+      # legacy route, replaced by global chrome_sync below
+      resources :microsoft_chrome_sync, only: [] do
+        get '' => 'chrome_sync#show', on: :collection
+        patch '' => 'chrome_sync#update', on: :collection
+      end
+      resources :notifications, only: [:index], defaults: { format: :json }
+      resources :thoughts
+      resources :users, only: [] do
+        get :autocomplete, on: :collection
+      end
+      resources :widgets, only: [:destroy, :update, :create]
+      match "*all" => "base#cors_preflight_check", via: :options
     end
   end
 
