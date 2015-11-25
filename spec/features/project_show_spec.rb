@@ -36,6 +36,27 @@ RSpec.describe 'Project show page', type: :feature do
     end
   end
 
+  it 'tracks respects for the project' do
+    login_as(user, :scope => :user, :run_callbacks => false)
+    # expect(page).to have_selector '#user-nav-face'
+
+
+    visit project_path(project_slug: project.slug_hid, user_name: user.user_name)
+    within "#home" do
+      expect(page).to have_content "0 respect"
+    end
+
+    within ".mg-10" do
+      expect(page).to have_content "Respect project"
+      page.find('.respect-button').click
+    end
+
+    # visit project_path(project_slug: project.slug_hid, user_name: user.user_name)
+    # within "#home" do
+    #   expect(page).to have_content "1 respect"
+    # end
+  end
+
   context 'when there are two projects' do
     let!(:other_project) do
       project = FactoryGirl.build(:project, name: 'An example project')
