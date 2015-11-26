@@ -9,8 +9,8 @@ RSpec.describe Chores::ProjectImpressionMoveWorker do
 
   describe '.perform_async' do
     it 'enqueues a worker' do
-      Chores::ProjectImpressionMoveWorker.perform_async
-      expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job
+      Chores::ProjectImpressionMoveWorker.perform_async 'load_all'
+      expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job("load_all")
     end
   end
 
@@ -35,25 +35,32 @@ RSpec.describe Chores::ProjectImpressionMoveWorker do
         let(:controller_name) { 'projects' }
 
         it 'will get migrated' do
-          expect { worker.perform }.to change(ProjectImpression, :count).by(1)
+          expect { worker.perform('create_single_impression', Impression20151119.last.id) }.to change(ProjectImpression, :count).by(1)
+        end
+
+        it 'will be queued' do
+          worker.perform('load_all')
+          expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job('create_single_impression', Impression20151119.last.id)
         end
 
         it 'carries over the action name' do
-          worker.perform
+          worker.perform('create_single_impression', Impression20151119.last.id)
           expect(ProjectImpression.all.last.action_name).to eq('fund')
         end
       end
 
       context 'when the impression was not created by the projects controller' do
         it 'does not get migrated' do
-          expect { worker.perform }.not_to change(ProjectImpression, :count)
+          worker.perform('load_all')
+          expect(Chores::ProjectImpressionMoveWorker).not_to have_enqueued_job
         end
       end
     end
 
     context 'when an impression exists for something else' do
       it 'does not get migrated' do
-        expect { worker.perform }.not_to change(ProjectImpression, :count)
+        worker.perform('load_all')
+        expect(Chores::ProjectImpressionMoveWorker).not_to have_enqueued_job
       end
     end
   end

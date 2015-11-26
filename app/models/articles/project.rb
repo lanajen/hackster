@@ -18,12 +18,15 @@ class Project < BaseProject
   }.freeze
   DEFAULT_CONTENT_TYPE = :tutorial
 
-  def self.is_impressionable_options(options)
-    @impressionist_cache_options = options
-  end
-  is_impressionable_options counter_cache: true, unique: :session_hash
+  # def self.is_impressionable_options(options)
+  #   @impressionist_cache_options = options
+  # end
+  # is_impressionable_options counter_cache: true, unique: :session_hash
 
-  has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression'
+  # has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression'
+
+  is_impressionable counter_cache: true, unique: :session_hash
+
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy

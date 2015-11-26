@@ -13,9 +13,9 @@ class CreateProjectImpressions < ActiveRecord::Migration
       t.text :referrer
       t.timestamps null: false
     end
-    add_index :impressions, [:controller_name,:action_name,:request_hash], :name => "controlleraction_request_index", :unique => false
-    add_index :impressions, [:controller_name,:action_name,:ip_address], :name => "controlleraction_ip_index", :unique => false
-    add_index :impressions, [:controller_name,:action_name,:session_hash], :name => "controlleraction_session_index", :unique => false
-    add_index :impressions, :user_id
+    add_index :project_impressions, [:controller_name,:action_name,:request_hash], :name => "pi_controlleraction_request_index", :unique => false
+    add_index :project_impressions, [:controller_name,:action_name,:ip_address], :name => "pi_controlleraction_ip_index", :unique => false
+    add_index :project_impressions, [:controller_name,:action_name,:session_hash], :name => "pi_controlleraction_session_index", :unique => false
+    add_index :project_impressions, :user_id
   end
 end

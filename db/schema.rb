@@ -101,6 +101,19 @@ ActiveRecord::Schema.define(version: 20151120195418) do
 
   add_index "awarded_badges", ["awardee_id", "awardee_type", "badge_code"], name: "awarded_badges_awardee_badge_index", unique: true, using: :btree
 
+  create_table "blobs", force: :cascade do |t|
+    t.text   "content"
+    t.string "path",    null: false
+    t.hstore "meta"
+  end
+
+  create_table "branches", force: :cascade do |t|
+    t.integer "branchable_id"
+    t.string  "branchable_type"
+    t.integer "commit_id"
+    t.string  "name"
+  end
+
   create_table "challenge_admins", force: :cascade do |t|
     t.integer "challenge_id"
     t.integer "user_id"
@@ -215,6 +228,18 @@ ActiveRecord::Schema.define(version: 20151120195418) do
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "commits", force: :cascade do |t|
+    t.integer  "committable_id",   null: false
+    t.string   "committable_type", null: false
+    t.integer  "tree_id",          null: false
+    t.integer  "author_id",        null: false
+    t.integer  "committer_id"
+    t.datetime "created_at",       null: false
+    t.text     "comment"
+    t.string   "workflow_state"
+    t.datetime "committed_at"
+  end
 
   create_table "conversations", force: :cascade do |t|
     t.string   "subject",    limit: 255
@@ -542,6 +567,11 @@ ActiveRecord::Schema.define(version: 20151120195418) do
     t.datetime "updated_at",      null: false
   end
 
+  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
+  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
@@ -690,6 +720,15 @@ ActiveRecord::Schema.define(version: 20151120195418) do
   add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
   add_index "store_products", ["unit_cost"], name: "index_store_products_on_unit_cost", using: :btree
 
+  create_table "stories", force: :cascade do |t|
+    t.integer  "project_id",      null: false
+    t.datetime "completion_date"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree
+
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255
     t.string   "name",        limit: 255
@@ -747,6 +786,15 @@ ActiveRecord::Schema.define(version: 20151120195418) do
   add_index "threads", ["sub_id", "threadable_id", "threadable_type"], name: "threadable_sub_ids", using: :btree
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
+
+  create_table "tree_items", force: :cascade do |t|
+    t.integer "tree_id", null: false
+    t.integer "blob_id", null: false
+  end
+
+  create_table "trees", force: :cascade do |t|
+    t.hstore "meta"
+  end
 
   create_table "user_activities", force: :cascade do |t|
     t.integer  "user_id"
