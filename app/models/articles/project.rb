@@ -18,6 +18,11 @@ class Project < BaseProject
   }.freeze
   DEFAULT_CONTENT_TYPE = :tutorial
 
+  # TO MIGRATE TO PROJECT_IMPRESSION:
+  # - uncomment below
+  # - delete is_impressionable line 32
+  # - uncomment counter_cache in project_impression.rb
+
   # def self.is_impressionable_options(options)
   #   @impressionist_cache_options = options
   # end
