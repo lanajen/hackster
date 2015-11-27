@@ -10,7 +10,7 @@
     meta(property="twitter:image:height" content='300')
   meta(property="og:url" content=platform_part_url(@platform.user_name, @part.slug))
   meta(property="og:site_name" content="Hackster.io")
-  meta(property="twitter:card" content="summary")
+  meta(property="twitter:card" content=((@part.projects_count.zero? or @part.owners_count.zero?) ? 'summary' : 'product'))
   meta(property="twitter:site" content="@hacksterio")
   meta(property="twitter:domain" content="hackster.io")
   meta(property="twitter:title" content="#{@part.full_name} projects")
