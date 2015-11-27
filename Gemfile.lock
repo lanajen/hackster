@@ -547,6 +547,10 @@ GEM
     reverse_markdown (0.8.2)
       nokogiri
     rinku (1.5.1)
+    rspec (3.3.0)
+      rspec-core (~> 3.3.0)
+      rspec-expectations (~> 3.3.0)
+      rspec-mocks (~> 3.3.0)
     rspec-core (3.3.2)
       rspec-support (~> 3.3.0)
     rspec-expectations (3.3.1)
@@ -563,6 +567,9 @@ GEM
       rspec-expectations (~> 3.3.0)
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
+    rspec-sidekiq (2.1.0)
+      rspec (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.3.0)
     ruby-saml (1.1.1)
       nokogiri (>= 1.5.10)
@@ -583,6 +590,8 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
+    shoulda-matchers (3.0.1)
+      activesupport (>= 4.0.0)
     sidekiq (3.2.5)
       celluloid (= 0.15.2)
       connection_pool (>= 2.0.0)
@@ -808,10 +817,12 @@ DEPENDENCIES
   rest-client (= 1.6.7)
   reverse_markdown
   rspec-rails
+  rspec-sidekiq
   rubyzip (= 1.1.7)
   sanitize (= 2.0.6)
   sass-rails (= 5.0.1)
   selenium-webdriver
+  shoulda-matchers
   sidekiq (= 3.2.5)
   sidekiq-cron (~> 0.3.0)
   sidekiq-failures (= 0.4.3)

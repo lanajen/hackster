@@ -1,12 +1,9 @@
 require 'rails_helper'
 
-describe 'Project show page' do
-  let(:user) { FactoryGirl.create(:user) }
+RSpec.describe 'Project show page', type: :feature do
+  let!(:user) { FactoryGirl.create(:user).tap { |u| u.confirmed_at = Time.now; u.save! } }
 
-  # let(:platform) { FactoryGirl.create(:platform) }
-  # let(:project_collection) { FactoryGirl.create(:project_collection, projects: [ project ], collectable: platform )}
-
-  let(:project) do
+  let!(:project) do
     project = FactoryGirl.build(:project, name: 'An example project')
     team = project.build_team user_name: 'test-team'
     project.team.members.new user_id: user.id
@@ -16,21 +13,42 @@ describe 'Project show page' do
     project
   end
 
-  it 'has the name of the project' do
-    visit "/" + project.uri
+  it 'tracks views for the project' do
+    login_as(user)
+
+    expect {
+      visit project_path(project_slug: project.slug_hid, user_name: user.user_name)
+    }.to change(ImpressionistQueue.jobs, :size).by(1)
 
     within ".project-title" do
       expect(page).to have_content "An example project"
     end
+
+    within "#home" do
+      expect(page).to have_content "0 views"
+    end
+
+    ImpressionistQueue.drain
+    visit project_path(project_slug: project.slug_hid, user_name: user.user_name)
+
+    within "#home" do
+      expect(page).to have_content "1 view"
+    end
   end
 
   context 'when there are two projects' do
-    # let!(:another_project) { FactoryGirl.create(:project) }
+    let!(:other_project) do
+      project = FactoryGirl.build(:project, name: 'An example project')
+      team = project.build_team user_name: 'test-team'
+      project.team.members.new user_id: user.id
+      project.private = false
+      project.workflow_state = 'approved'
+      project.save
+      project
+    end
 
     it 'has a navigation tab to the next project' do
-      visit '/' + project.uri
-      p current_url
-      Project.all.each { |thing| p thing }
+      visit project_path(project_slug: project.slug_hid, user_name: user.user_name)
       click_link_or_button 'Next project'
       expect(page).to have_content 'Respect project'
     end

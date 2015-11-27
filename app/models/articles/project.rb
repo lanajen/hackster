@@ -18,7 +18,7 @@ class Project < BaseProject
   }.freeze
   DEFAULT_CONTENT_TYPE = :tutorial
 
-  is_impressionable counter_cache: true, unique: :session_hash
+  has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression'
 
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy
