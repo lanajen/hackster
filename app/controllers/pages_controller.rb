@@ -71,6 +71,8 @@ class PagesController < ApplicationController
   end
 
   def home
+    redirect_to projects_path(format: :atom) and return if request.format == :rss
+
     featured_lists = %w(home-automation lights wearables animals remote-control displays)
 
     if user_signed_in?
