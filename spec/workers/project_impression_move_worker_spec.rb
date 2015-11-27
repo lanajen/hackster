@@ -24,7 +24,8 @@ RSpec.describe Chores::ProjectImpressionMoveWorker do
         impressionable_type: impressionable_type,
         impressionable_id: project.id,
         controller_name: controller_name,
-        action_name: 'fund',
+        action_name: 'show',
+        session_hash: SecureRandom.hex(10),
       )
     end
 
@@ -38,6 +39,11 @@ RSpec.describe Chores::ProjectImpressionMoveWorker do
           expect { worker.perform('create_single_impression', Impression20151119.last.id) }.to change(ProjectImpression, :count).by(1)
         end
 
+        it 'will increment project counter' do
+          worker.perform('create_single_impression', Impression20151119.last.id)
+          expect(Project.first.impressions_count).to eq(1)
+        end
+
         it 'will be queued' do
           worker.perform('load_all')
           expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job('create_single_impression', Impression20151119.last.id)
@@ -45,7 +51,15 @@ RSpec.describe Chores::ProjectImpressionMoveWorker do
 
         it 'carries over the action name' do
           worker.perform('create_single_impression', Impression20151119.last.id)
-          expect(ProjectImpression.all.last.action_name).to eq('fund')
+          expect(ProjectImpression.all.last.action_name).to eq('show')
+        end
+
+        context 'when the session hash already exists' do
+          it 'will not increment project counter' do
+            worker.perform('create_single_impression', Impression20151119.last.id)
+            worker.perform('create_single_impression', Impression20151119.last.id)
+            expect(Project.first.impressions_count).to eq(1)
+          end
         end
       end
 
