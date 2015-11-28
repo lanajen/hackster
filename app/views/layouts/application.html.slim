@@ -68,7 +68,7 @@ html(lang="en")
       - unless params[:blank_frame]
         - unless user_signed_in?
           = render 'shared/modals/simplified_signup_popup'
-        - if true#show_hello_world?
+        - if show_hello_world?
           = render 'shared/modals/signup_popup'
 
         - unless @no_flash
