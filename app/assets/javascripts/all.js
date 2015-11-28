@@ -119,7 +119,7 @@ function showHelloWorld() {
   $('#hello-world').fadeIn(100, function(){
     updatedScrollEventHandlers();
     var content = $('#hello-world .content');
-    var height = 200 - content.height();
+    var height = 100 - content.height();
     $(this)
       .css('padding-top', height / 2)
       .find('.content').css('opacity', 1);
@@ -317,6 +317,8 @@ $(function () {
           form.submit();
         }
       });
+    } else {
+      form.submit();
     }
   });
 
@@ -543,6 +545,10 @@ $(function () {
     hljs.highlightBlock(block);
   });
 
+  $('#signup-popup').on('modal:open', function(e){
+    $(this).find('input:visible').first().focus();
+  });
+
   updateProjectThumbLinks();
 });
 
@@ -555,22 +561,23 @@ function closeNav(nav) {
 // show popup if cookie doesn't exist or expired
 // create cookie or update it with expiration date in 24 hours
 function showSignupPopupOrNot() {
-  var val = Cookies.get('showedSignupPopup');
-  if (val) val = parseInt(val);
-  if (!val || val % 5 == 0) {
-    val = 0;
-    Cookies.set('showedSignupPopup', val, { expires: 1 });
-  } else if (val == 1) {
-    // show on scroll to make sure they're on the page
-    $window = $(window);
-    $window.on('scroll.showSignupPopup', function(){
-      $window.off('scroll.showSignupPopup');
-      window.setTimeout(function() {
-        openModal('#signup-popup');
-      }, 100);
-    });
-  }
-  Cookies.set('showedSignupPopup', val + 1);
+  openModal('#signup-popup');
+  // var val = Cookies.get('showedSignupPopup');
+  // if (val) val = parseInt(val);
+  // if (!val || val % 5 == 0) {
+  //   val = 0;
+  //   Cookies.set('showedSignupPopup', val, { expires: 1 });
+  // } else if (val == 1) {
+  //   // show on scroll to make sure they're on the page
+  //   $window = $(window);
+  //   $window.on('scroll.showSignupPopup', function(){
+  //     $window.off('scroll.showSignupPopup');
+  //     window.setTimeout(function() {
+  //       openModal('#signup-popup');
+  //     }, 100);
+  //   });
+  // }
+  // Cookies.set('showedSignupPopup', val + 1);
 }
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {

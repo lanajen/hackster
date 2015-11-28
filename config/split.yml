@@ -39,3 +39,15 @@ promise_20150821:
     # - 'Receive support and feedback for your hardware projects.'
     - 'Get help building your hardware projects.'
   resettable: false
+
+signup_popup:
+  alternatives:
+    - original
+    - free
+  metadata:
+    original:
+      title: 'dedicated to learning hardware'
+      button: 'Create my free account'
+    free:
+      title: 'and start earning free hardware'
+      button: 'Start earning free hardware'
