@@ -444,11 +444,14 @@ HackerIo::Application.routes.draw do
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
       get 'windows10kit', to: redirect('/s/windows10kit')
 
-      get 'tinyduino', to: redirect('/tinycircuits')
+      # platform renamings
+      get 'intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-galileo', to: redirect('/intel/products/intel-galileo')
       get 'spark', to: redirect('/particle')
       get 'spark/projects', to: redirect('/particle/projects')
       get 'spark/makes', to: redirect('/particle/components')
       get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
+      get 'tinyduino', to: redirect('/tinycircuits')
 
       get 'home' => 'pages#home'
       get 'about' => 'pages#about'
