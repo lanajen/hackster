@@ -44,7 +44,7 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id, :part_joins_attributes,
     :part_join_ids, :workflow_state, :slug, :one_liner, :position,
     :child_part_relations_attributes, :parent_part_relations_attributes, :type,
-    :link, :image_url, :tags, :should_generate_slug
+    :link, :image_url, :tags, :should_generate_slug, :generic
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
