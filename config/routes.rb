@@ -446,7 +446,13 @@ HackerIo::Application.routes.draw do
 
       # platform renamings
       get 'intel-edison', to: redirect('/intel/products/intel-edison')
-      get 'intel-galileo', to: redirect('/intel/products/intel-galileo')
+      get 'intel-edison/projects', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products/intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-galileo', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/projects', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products/intel-galileo-gen-2', to: redirect('/intel/products/intel-galileo-gen-2')
       get 'spark', to: redirect('/particle')
       get 'spark/projects', to: redirect('/particle/projects')
       get 'spark/makes', to: redirect('/particle/components')
