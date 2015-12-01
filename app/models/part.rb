@@ -29,6 +29,7 @@ class Part < ActiveRecord::Base
   has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :follow_relations, as: :followable
+  has_many :impressions, dependent: :destroy, class_name: 'PartImpression'
   has_many :owners, through: :follow_relations, class_name: 'User', source: :user
   has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'

@@ -22,6 +22,8 @@ class PartsController < ApplicationController
   end
 
   def show
+    impressionist_async @part, "", unique: [:session_hash]
+
     title "#{@part.full_name} projects"
     @meta_desc = if @part.projects_count > 0
       "#{ActionController::Base.helpers.pluralize @part.projects_count, 'hardware project'} made with #{@part.name} from #{@platform.name}."

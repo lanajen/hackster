@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201230956) do
+ActiveRecord::Schema.define(version: 20151201230957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -463,6 +463,21 @@ ActiveRecord::Schema.define(version: 20151201230956) do
 
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
+  create_table "part_impressions", force: :cascade do |t|
+    t.integer  "part_id",         null: false
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "part_joins", force: :cascade do |t|
     t.integer  "part_id",                                       null: false
     t.integer  "partable_id",                                   null: false
@@ -513,6 +528,7 @@ ActiveRecord::Schema.define(version: 20151201230956) do
     t.hstore   "counters_cache"
     t.string   "type",                limit: 15,  default: "HardwarePart"
     t.boolean  "generic"
+    t.integer  "impressions_count",               default: 0
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
@@ -895,5 +911,6 @@ ActiveRecord::Schema.define(version: 20151201230956) do
   add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
 
   add_foreign_key "group_impressions", "groups"
+  add_foreign_key "part_impressions", "parts"
   add_foreign_key "project_impressions", "projects"
 end
