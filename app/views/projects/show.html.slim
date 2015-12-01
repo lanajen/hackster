@@ -3,11 +3,24 @@
 
 = inserts_stats_for @project
 
+/ update counters via JS so we can cache the views longer
+- content_for :js do
+
+  javascript:
+    $(function(){
+      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span> #{pluralize_without_count @project.impressions_count, 'view'}";
+      $('.impression-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.comments_count}</span> #{pluralize_without_count @project.comments_count, 'comment'}";
+      $('.comment-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span> #{pluralize_without_count @project.respects_count, 'respect'}";
+      $('.respect-stats').html(s);
+    });
+
 = content_for :no_container do
 
   = render 'projects/switcher'
 
-  - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
+  - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 5.days do
 
     = render 'projects/project_embed_popup'
 
@@ -17,7 +30,7 @@
           .project-type
             = @project.content_type_to_human
         .row
-          - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
+          - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"] do
 
             .col-md-8.left-column
               - if @project.event
@@ -26,7 +39,7 @@
                   ' This project is part of
                   ==> link_to @project.event.name, @project.event
 
-              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], expires_in: 24.hours do
+              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"] do
                 - if ProjectCollection.assignment_or_event_for_project?(@project.id)
                   .project-group
                     i.fa.fa-graduation-cap>
@@ -72,13 +85,13 @@
                           li= link_to tag, tag_path(tag), class: 'tag'
 
                     ul.list-inline.project-stats
-                      li
+                      li.impression-stats
                         span.stat-figure> = number_with_delimiter @project.impressions_count
                         = pluralize_without_count @project.impressions_count, 'view'
-                      li
+                      li.comment-stats
                         span.stat-figure> = number_with_delimiter @project.comments_count
                         = pluralize_without_count @project.comments_count, 'comment'
-                      li
+                      li.respect-stats
                         span.stat-figure> = number_with_delimiter @project.respects_count
                         = pluralize_without_count @project.respects_count, 'respect'
                       - if @project.replications_count > 0
@@ -308,7 +321,7 @@
                 section.section-thumbs
                   = render 'actions'
 
-              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
+              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"] do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
@@ -485,7 +498,7 @@
                         = render 'actions'
 
     - if @project.publyc?
-      - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
+      - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other", expires_in: 5.days do
         - if @other_projects.count > 0
           section.other-projects
             .container
