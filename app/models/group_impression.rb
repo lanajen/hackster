@@ -2,7 +2,7 @@ class GroupImpression < ActiveRecord::Base
   belongs_to :group
   belongs_to :user
 
-  after_create :increment_counter_cache
+  # after_create :increment_counter_cache
 
   private
     def increment_counter_cache
