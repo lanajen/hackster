@@ -1,5 +1,5 @@
 module Chores
-  class GroupImpressionMoveWorker < BaseWorker
+  class ProjectImpressionMoveWorker < BaseWorker
     sidekiq_options queue: :lowest, retry: 0
 
     COLUMNS = %w[
@@ -16,14 +16,14 @@ module Chores
     ]
 
     def load_all before_date=nil, after_id=nil
-      impressions = Impression.where(impressionable_type: 'Group')
+      impressions = Impression.where(impressionable_type: 'BaseArticle').where.not(controller_name: 'projects')
       impressions = impressions.where("impressions.created_at < ?", before_date) if before_date
       impressions = impressions.where("impressions.id > ?", after_id) if after_id
       impressions.find_each do |impression|
         @id = impression.id
         # doesn't put everything in the queue at once so as to not overload the DB (hopefully)
         # should take about a day altogether
-        Chores::GroupImpressionMoveWorker.perform_in 0.05.seconds, 'create_single_impression', impression.id
+        Chores::ProjectImpressionMoveWorker.perform_in 0.05.seconds, 'create_single_impression', impression.id
       end
     rescue => e
       raise "failed on ID #{@id} because #{e.inspect}"
@@ -32,8 +32,8 @@ module Chores
     def create_single_impression id
       impression = Impression.find id
       impression_attributes = impression.attributes.slice(*COLUMNS)
-      impression_attributes[:group_id] = impression.impressionable_id
-      GroupImpression.create!(impression_attributes)
+      impression_attributes[:project_id] = impression.impressionable_id
+      ProjectImpression.create!(impression_attributes)
     end
   end
 end

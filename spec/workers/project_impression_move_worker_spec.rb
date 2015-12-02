@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe Chores::GroupImpressionMoveWorker do
-  let!(:group) { FactoryGirl.create(:group) }
+RSpec.describe Chores::ProjectImpressionMoveWorker do
+  let!(:project) { FactoryGirl.create(:article) }
   let(:impressionable_type) { 'Taco' }
   let(:controller_name) { 'tacos' }
 
-  subject(:worker) { Chores::GroupImpressionMoveWorker.new }
+  subject(:worker) { Chores::ProjectImpressionMoveWorker.new }
 
   describe '.perform_async' do
     it 'enqueues a worker' do
-      Chores::GroupImpressionMoveWorker.perform_async 'load_all'
-      expect(Chores::GroupImpressionMoveWorker).to have_enqueued_job("load_all")
+      Chores::ProjectImpressionMoveWorker.perform_async 'load_all'
+      expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job("load_all")
     end
   end
 
@@ -22,51 +22,51 @@ RSpec.describe Chores::GroupImpressionMoveWorker do
     before do
       Impression20151119.create!(
         impressionable_type: impressionable_type,
-        impressionable_id: group.id,
+        impressionable_id: project.id,
         controller_name: controller_name,
         action_name: 'show',
         session_hash: SecureRandom.hex(10),
       )
     end
 
-    context 'when an impression exists for a Group' do
-      let(:impressionable_type) { 'Group' }
+    context 'when an impression exists for a BaseArticle' do
+      let(:impressionable_type) { 'BaseArticle' }
 
-      context 'when the impression was created by the groups controller' do
-        let(:controller_name) { 'groups' }
+      context 'when the impression was created by the articles controller' do
+        let(:controller_name) { 'articles' }
 
         it 'will get migrated' do
-          expect { worker.perform('create_single_impression', Impression20151119.last.id) }.to change(GroupImpression, :count).by(1)
+          expect { worker.perform('create_single_impression', Impression20151119.last.id) }.to change(ProjectImpression, :count).by(1)
         end
 
-        it 'will increment group counter' do
+        it 'will increment project counter' do
           worker.perform('create_single_impression', Impression20151119.last.id)
-          expect(Group.first.impressions_count).to eq(1)
+          expect(Article.first.impressions_count).to eq(1)
         end
 
         it 'will be queued' do
           worker.perform('load_all')
-          expect(Chores::GroupImpressionMoveWorker).to have_enqueued_job('create_single_impression', Impression20151119.last.id)
+          expect(Chores::ProjectImpressionMoveWorker).to have_enqueued_job('create_single_impression', Impression20151119.last.id)
         end
 
         it 'carries over the action name' do
           worker.perform('create_single_impression', Impression20151119.last.id)
-          expect(GroupImpression.all.last.action_name).to eq('show')
+          expect(ProjectImpression.all.last.action_name).to eq('show')
         end
 
         context 'when the session hash already exists' do
-          it 'will not increment group counter' do
+          it 'will not increment project counter' do
             worker.perform('create_single_impression', Impression20151119.last.id)
             worker.perform('create_single_impression', Impression20151119.last.id)
-            expect(Group.first.impressions_count).to eq(1)
+            expect(Article.first.impressions_count).to eq(1)
           end
         end
       end
 
-      context 'when the impression was not created by the groups controller' do
+      context 'when the impression was not created by the projects controller' do
         it 'does not get migrated' do
           worker.perform('load_all')
-          expect(Chores::GroupImpressionMoveWorker).not_to have_enqueued_job
+          expect(Chores::ProjectImpressionMoveWorker).not_to have_enqueued_job
         end
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Chores::GroupImpressionMoveWorker do
     context 'when an impression exists for something else' do
       it 'does not get migrated' do
         worker.perform('load_all')
-        expect(Chores::GroupImpressionMoveWorker).not_to have_enqueued_job
+        expect(Chores::ProjectImpressionMoveWorker).not_to have_enqueued_job
       end
     end
   end
