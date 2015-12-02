@@ -6,6 +6,9 @@ if defined?(Bundler)
   Bundler.require(:default, Rails.env)
 end
 
+# rack reverse proxy mod
+require File.expand_path('../../lib/rack_reverse_proxy_mod', __FILE__)
+
 require File.expand_path('../redis', __FILE__)
 
 module HackerIo
@@ -105,5 +108,7 @@ module HackerIo
     # cashier tag caching
     config.cashier.adapter = :redis_store
     config.cashier.adapter.redis = RedisConn.conn
+
+    config.middleware.insert_before(Rack::Lock, RackReverseProxyMod)
   end
 end

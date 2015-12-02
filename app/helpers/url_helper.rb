@@ -396,7 +396,15 @@ module UrlHelper
         options = params_for_project options
       end
     end
-    super options
+
+    output = super options
+
+    # hack to give arduino its path prefix
+    if site_user_name == 'arduino' and output !~ /\Ahttp/ and output !~ /\A\/projects/
+      '/projects' + output
+    else
+      output
+    end
   end
 
   def url_for_wiki_page_form group, page
