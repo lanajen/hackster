@@ -2,7 +2,7 @@ class ProjectImpression < ActiveRecord::Base
   belongs_to :project, class_name: 'BaseArticle', foreign_key: :project_id
   belongs_to :user
 
-  after_create :increment_counter_cache, if: proc{|i| i.project.type == 'Project' }
+  after_create :increment_counter_cache
 
   private
     def increment_counter_cache

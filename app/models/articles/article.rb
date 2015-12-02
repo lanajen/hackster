@@ -7,8 +7,6 @@ class Article < BaseArticle
   DEFAULT_CONTENT_TYPE = :protip
   CONTENT_TYPES_TO_HUMAN = PUBLIC_CONTENT_TYPES.invert.freeze
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   add_checklist :parts, 'Products', 'parts.any?'
   add_checklist :description, 'Description', 'Sanitize.clean(description).try(:strip).present?'
 

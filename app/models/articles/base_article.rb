@@ -49,9 +49,6 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
-  # this needs to be in every child model too; somehow they don't inherit the unique prop
-  is_impressionable counter_cache: true, unique: :session_hash
-
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
@@ -63,6 +60,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :follow_relations, as: :followable
   has_many :grades, foreign_key: :project_id
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression', foreign_key: :project_id
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
