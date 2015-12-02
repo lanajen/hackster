@@ -62,8 +62,8 @@ class ProjectsController < ApplicationController
     @parts = @project.part_joins.includes(part: [:image, :platform])
 
     @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?])
-    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?])
-    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?])
 
     puts 'getting widgets'
     @widgets = @project.widgets.order(:position, :id)
