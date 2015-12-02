@@ -61,9 +61,9 @@ class ProjectsController < ApplicationController
     # categories. That way we limit the number of db queries
     @parts = @project.part_joins.includes(part: [:image, :platform])
 
-    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?])
-    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?])
-    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?])
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
 
     @widgets = @project.widgets.order(:position, :id)
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
@@ -71,9 +71,9 @@ class ProjectsController < ApplicationController
       @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
     end
 
-    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"])
-    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-schematics"])
-    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-code"])
+    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-cad"])
+    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-schematics"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-schematics"])
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-code"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-code"])
       @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
       @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
       @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
