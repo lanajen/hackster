@@ -60,22 +60,26 @@ class ProjectsController < ApplicationController
     # we load parts and widgets all at once and then split them into their own
     # categories. That way we limit the number of db queries
     @parts = @project.part_joins.includes(part: [:image, :platform])
-    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' }
-    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' }
-    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' }
 
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?])
+
+    puts 'getting widgets'
     @widgets = @project.widgets.order(:position, :id)
-    @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
-    @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+    puts 'widgets loaded'
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
+      @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+      @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+    end
 
-    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) }
-    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) }
-    @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
-    @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
-    @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
-
-    @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
-    @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"])
+    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-schematics"])
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-code"])
+      @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
+      @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
+      @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
+    end
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
@@ -83,7 +87,11 @@ class ProjectsController < ApplicationController
     @project = @project.decorate
 
     # call with already loaded widgets and images
-    @description = @project.description(nil, widgets: @widgets, images: @images)
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+      @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+      @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+      @description = @project.description(nil, widgets: @widgets, images: @images)
+    end
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     @other_projects = @other_projects.with_group current_platform if is_whitelabel?

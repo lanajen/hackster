@@ -35,6 +35,8 @@ class WidgetObserver < ActiveRecord::Observer
           keys << "project-#{record.project_id}-code"
         when 'PartsWidget'
           keys << "project-#{record.project_id}-components"
+        when 'CreditsWidget'
+          keys << "project-#{record.project_id}-credits"
         else
           keys << "project-#{record.project_id}-widgets"
         end
