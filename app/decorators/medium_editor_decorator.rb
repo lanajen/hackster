@@ -25,9 +25,13 @@ module MediumEditorDecorator
 
               Embed.new video_id: video_id
             when 'widget'
-              widget = options[:widgets].select{|w| w.id == el['data-widget-id'] }.first
+              widget = if options[:widgets]
+                options[:widgets].select{|w| w.id.to_s == el['data-widget-id'] }.first
+              else
+                Widget.find_by_id el['data-widget-id']
+              end
               embed = Embed.new widget: widget
-              raise "widget ID #{el['data-widget-id']} not found" if embed.widget.nil?
+              raise "widget ID #{el['data-widget-id']} not found, widget: #{widget.inspect}" if embed.widget.nil?
 
               if options[:except]
                 if embed.widget.type.in? options[:except]

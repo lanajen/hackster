@@ -91,7 +91,11 @@ class Embed
       @type = 'widget'
       @format = @widget.embed_format || 'original'
       if @widget.type == 'ImageWidget'
-        @images = options[:images].select{|i| i.attachable_type == 'Widget' and i.attachable_id == @widget.id }
+        @images = if options[:images]
+          options[:images].select{|i| i.attachable_type == 'Widget' and i.attachable_id == @widget.id }
+        else
+          widget.images
+        end
       end
     elsif file_id = options[:file_id]
       if file = Attachment.find_by_id(file_id)
