@@ -65,9 +65,7 @@ class ProjectsController < ApplicationController
     @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?])
     @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?])
 
-    puts 'getting widgets'
     @widgets = @project.widgets.order(:position, :id)
-    puts 'widgets loaded'
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
       @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
       @credit_lines = @credits_widget ? @credits_widget.credit_lines : []

@@ -88,8 +88,6 @@ class Platform < Collection
 
   taggable :platform_tags, :product_tags
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@platform)', group: :get_started
   add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
   add_checklist :logo, 'Upload a logo', 'avatar.present?', goto: 'edit_group_path(@platform)', group: :get_started
