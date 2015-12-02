@@ -107,10 +107,10 @@
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
                   .section-content.hljs-active
-                    .medium-editor= @project.description
+                    .medium-editor= @description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
-                - if @hardware_parts.exists?
+                - if @hardware_parts.any?
                   section#components.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -127,7 +127,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
               - cache [I18n.locale, "project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
-                - if @tool_parts.exists?
+                - if @tool_parts.any?
                   section#tools.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -141,7 +141,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
-                - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).exists?
+                - if @cad_widgets.any?
                   section#cad.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -149,11 +149,11 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
+                      - @cad_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
               - cache [I18n.locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"] do
-                - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).exists?
+                - if @schematic_widgets.any?
                   section#schematics.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -161,11 +161,11 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
+                      - @schematic_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
               - cache [I18n.locale, "project-#{@project.id}-software-parts"], tag: ["project-#{@project.id}-software-parts"] do
-                - if @software_parts.exists?
+                - if @software_parts.any?
                   section#apps.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -179,7 +179,7 @@
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
-                - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).exists?
+                - if @code_widgets.any?
                   section#code.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -187,8 +187,8 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      = render partial: "api/embeds/code_widgets", locals: { widgets: @project.widgets.where(type: %w(CodeWidget)).order(:position, :id) }
-                      - @project.widgets.where(type: %w(CodeRepoWidget)).order(:position, :id).each do |widget|
+                      = render partial: "api/embeds/code_widgets", locals: { widgets: @code_file_widgets }
+                      - @code_repo_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
               - cache [I18n.locale, "project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"] do
@@ -365,11 +365,11 @@
                   javascript:
                     $(function(){ $('.team-request').insertAfter('#team h4'); });
 
-              - if @project.credit_lines.any?
+              - if @credit_lines.any?
                 section.section-thumbs
                   h4 Additional contributors
                   ul
-                    - @project.credit_lines.each do |credit_line|
+                    - @credit_lines.each do |credit_line|
                       li
                         - if credit_line.name.present?
                           - if credit_line.work.present?
@@ -445,27 +445,27 @@
                         li
                           a.smooth-scroll href="#about-project" data-target="#about-project"
                             | About this project
-                        - if @hardware_parts.exists?
+                        - if @hardware_parts.any?
                           li
                             a.smooth-scroll href="#components" data-target="#components"
                               | Components and supplies
-                        - if @tool_parts.exists?
+                        - if @tool_parts.any?
                           li
                             a.smooth-scroll href="#tools" data-target="#tools"
                               | Necessary tools and machines
-                        - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).exists?
+                        - if @cad_widgets.any?
                           li
                             a.smooth-scroll href="#cad" data-target="#cad"
                               | Custom parts and enclosures
-                        - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).exists?
+                        - if @schematic_widgets.any?
                           li
                             a.smooth-scroll href="#schematics" data-target="#schematics"
                               | Schematics
-                        - if @software_parts.exists?
+                        - if @software_parts.any?
                           li
                             a.smooth-scroll href="#apps" data-target="#apps"
                               | Apps and online services
-                        - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).exists?
+                        - if @code_widgets.any?
                           li
                             a.smooth-scroll href="#code" data-target="#code"
                               | Code

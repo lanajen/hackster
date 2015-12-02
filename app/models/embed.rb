@@ -27,7 +27,7 @@ class Embed
     # /(.+\.[a-z]{3,4}(\?.*)?)$/ => { embed_class: 'original', code: '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a href="|id|">|id|</a></div></div>',},
   }
 
-  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url, :default_caption
+  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url, :default_caption, :images
 
   def self.find_provider_for_url url, fallback_to_default=false
     provider = nil
@@ -85,6 +85,13 @@ class Embed
         @provider_name = @widget.identifier
         @type = 'widget'
         @format = @widget.embed_format || 'original'
+      end
+    elsif @widget = options[:widget]
+      @provider_name = @widget.identifier
+      @type = 'widget'
+      @format = @widget.embed_format || 'original'
+      if @widget.type == 'ImageWidget'
+        @images = options[:images].select{|i| i.attachable_type == 'Widget' and i.attachable_id == @widget.id }
       end
     elsif file_id = options[:file_id]
       if file = Attachment.find_by_id(file_id)

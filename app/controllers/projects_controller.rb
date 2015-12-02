@@ -57,14 +57,33 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
-    @hardware_parts = @project.part_joins.hardware.includes(part: :image)
-    @software_parts = @project.part_joins.software.includes(part: :image)
-    @tool_parts = @project.part_joins.tool.includes(part: :image)
+    # we load parts and widgets all at once and then split them into their own
+    # categories. That way we limit the number of db queries
+    @parts = @project.part_joins.includes(part: [:image, :platform])
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' }
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' }
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' }
+
+    @widgets = @project.widgets.order(:position, :id)
+    @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+    @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+
+    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) }
+    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) }
+    @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
+    @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
+    @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
+
+    @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+    @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
+
+    # call with already loaded widgets and images
+    @description = @project.description(nil, widgets: @widgets, images: @images)
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     @other_projects = @other_projects.with_group current_platform if is_whitelabel?
