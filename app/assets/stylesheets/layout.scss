@@ -1199,9 +1199,38 @@ a.hidden-link {
     margin-bottom: 0;
   }
 }
+@media (min-width: 768px) {
+  .popup-overlay-inner {
+    &.has-columns {
+      @include flexbox((
+        display: flex
+      ));
+    }
+  }
+  .popup-left-column, .popup-right-column {
+    flex-basis: 50%
+  }
+  .popup-left-column {
+    padding-right: 25px;
+  }
+  .popup-right-column {
+    padding-left: 25px;
+  }
+}
 
 #signup-popup {
+  .popup-left-column, .popup-right-column {
+    padding: 50px;
+  }
+  .popup-left-column {
+    @include background-cover;
+    background-image: asset-url('signup-popup.png');
+    color: #fff;
+    padding: 50px 25px;
+    font-size: 1.1em;
+  }
   .popup-overlay-inner {
+    padding: 0;
     // height: 175px;
     width: 450px;
     // margin-top: -88px;
