@@ -14,24 +14,31 @@
         .container
           h1 Welcome to your dashboard!
 
-    / section#intro.showcase-section.section-short
+    section#live-challenges.showcase-section.section-short
       .container
-        = link_to content_tag(:i, '', class: 'fa fa-comments') + content_tag(:span, 'Ask a question or share something interesting with the community &rarr;'.html_safe), talk_path
-
-    / section.showcase-section.section-short
-      .container
-        strong> New:
-        => link_to 'follow projects by topic', lists_path
-        ' and
-        = link_to 'create your own lists', new_list_path
-        | .
-
-    / # - if @suggested_platforms.any?
-      section#suggested-platforms.showcase-section
-        .container
-          h4 Based on your activity, we think you might be interested in:
-          - @suggested_platforms.each do |platform|
-            = render partial: ''
+        .row
+          .col-sm-6
+            strong> Get free hardware
+            ' from the
+            = link_to 'Free Store', store_path
+            | !
+          .col-sm-6.text-right
+            ul.list-inline
+              - if current_user.reputation
+                li
+                  a> href=users_stats_path
+                    strong>= number_with_delimiter current_user.reputation_count
+                    = pluralize_without_count current_user.reputation_count, 'point'
+                li
+                  strong>= number_with_delimiter current_user.reputation.redeemable_points
+                  | available
+              - else
+                li
+                  strong> 0
+                  | points
+              li
+                a rel="tooltip" title="How do I earn reputation points?" data-placement="bottom" href="http://hackster.uservoice.com/knowledgebase/articles/616629-how-do-i-earn-reputation"
+                  i.fa.fa-question-circle
 
     - if @projects.count.zero?
       section#intro.showcase-section
@@ -57,7 +64,6 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Suggested lists to follow
-            / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.category-full-row
             - @lists.each do |list|
@@ -68,8 +74,6 @@
                     .thumb-image-inner
                       h4
                         = link_to list.name, list
-
-          / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#suggested-hackers.showcase-section
         .container

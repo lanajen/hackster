@@ -2,8 +2,10 @@
 
 <p>This is to let you know that <a href="|project_link|">|project_name|</a> has been approved!</p>
 
+<p>With that, you've earned 50 reputation points, which you can spend on <strong>free hardware</strong> in the <a href="<%= u.store_url %>?ref=emailnotif">Hackster Free Store</a>.</p>
+
 <p>
-  It will show on <a href="https://www.hackster.io">Hackster's home page</a> and all related platform pages
+  Your write-up will show on <a href="https://www.hackster.io?ref=emailnotif">Hackster's home page</a> and all related platform pages
   <% if @context[:project].made_public_at < Time.now %>
     immediately.
   <% else %>
