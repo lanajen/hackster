@@ -34,7 +34,7 @@ class ChallengeObserver < ActiveRecord::Observer
       purge = true
     end
     Cashier.expire *keys if keys.any?
-    record.purge if purge
+    FastlyWorker.perform_async 'purge', record.record_key if purge
 
     if (record.changed & %w(mailchimp_api_key mailchimp_list_id activate_mailchimp_sync)).any? and record.mailchimp_setup?
       MailchimpWorker.perform_async 'sync_challenge', record.id
@@ -111,7 +111,7 @@ class ChallengeObserver < ActiveRecord::Observer
 
     def expire_cache record
       Cashier.expire "challenge-#{record.id}-projects", "challenge-#{record.id}-status", "challenge-#{record.id}-timeline"
-      record.purge
+      FastlyWorker.perform_async 'purge', record.record_key
     end
 
     def expire_index

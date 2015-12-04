@@ -20,19 +20,21 @@ class BaseArticleObserverWorker < BaseWorker
   def after_destroy record
     update_counters record, [:projects, :live_projects]
     record.team.destroy if record.team
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
   end
 
   def after_update record, private_changed
+    fastly_keys = []
     if private_changed
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       keys = []
       record.users.each { |u| keys << "user-#{u.id}" }
       Cashier.expire *keys
-      record.users.each { |u| u.purge }
+      fastly_keys = record.users.map { |u| u.record_key }
     end
-    record.purge
+    fastly_keys << record.record_key
+    FastlyWorker.perform_async 'purge', *fastly_keys
   end
 
   def after_approved record

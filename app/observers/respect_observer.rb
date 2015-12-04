@@ -19,7 +19,7 @@ class RespectObserver < ActiveRecord::Observer
       when BaseArticle
         record.respectable.update_counters only: [:respects]
         Cashier.expire "project-#{record.respectable_id}-respects", "project-#{record.respectable_id}"
-        record.respectable.purge
+        FastlyWorker.perform_async 'purge', record.respectable.record_key
         record.user.update_counters only: [:respects]
       end
     end

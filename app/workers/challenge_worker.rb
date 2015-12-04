@@ -6,7 +6,7 @@ class ChallengeWorker < BaseWorker
       idea.mark_lost!
     end
     Cashier.expire "challenge-#{challenge.id}-ideas", "challenge-#{challenge.id}-brief"
-    challenge.purge
+    FastlyWorker.perform_async 'purge', challenge.record_key
 
     NotificationCenter.notify_all :pre_contest_awarded, :challenge, id, 'pre_contest_awarded'
     NotificationCenter.notify_all :pre_contest_winners, :challenge, id, 'awarded_challenge_idea'
@@ -26,6 +26,6 @@ class ChallengeWorker < BaseWorker
   private
     def expire_cache challenge
       Cashier.expire "challenge-#{challenge.id}-projects", "challenge-#{challenge.id}-status"
-      challenge.purge
+      FastlyWorker.perform_async 'purge', challenge.record_key
     end
 end

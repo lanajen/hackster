@@ -41,7 +41,7 @@ class PartJoinObserverWorker < BaseWorker
       end
       keys = ["project-#{project.id}-#{record.part.identifier}-parts", "project-#{project.id}-left-column", "project-#{project.id}"]
       Cashier.expire *keys
-      project.purge
+      FastlyWorker.perform_async 'purge', project.record_key
     end
 
     def update_counters record

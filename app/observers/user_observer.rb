@@ -10,7 +10,7 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
   end
 
   def after_invitation_accepted record
@@ -42,7 +42,7 @@ class UserObserver < ActiveRecord::Observer
         team.update_attribute :user_name, record.user_name if team.user_name == record.user_name_was
       end
     end
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
   end
 
   def before_update record
