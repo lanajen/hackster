@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has launched in the pre-contest phase and is now accepting ideas. This phase will run until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.</p>
+<p>This is to let you know that <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> has launched in the pre-contest phase and is now accepting ideas. This phase will run until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.</p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

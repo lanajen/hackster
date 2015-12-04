@@ -137,6 +137,7 @@ class BaseMailer < ActionMailer::Base
     def send_email type, opts={}
       @context[:devise_token] = opts['token']
       @context[:personal_message] = opts['personal_message']
+      @context[:email_template] = type
       layout = type == 'new_projects' ? 'nicer_email' : 'email'
       subject = render template: "mailers/subjects/#{type}"
       body = render template: "mailers/bodies/#{type}.html", locals: { u: url }, layout: layout
