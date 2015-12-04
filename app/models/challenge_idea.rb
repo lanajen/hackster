@@ -32,7 +32,9 @@ class ChallengeIdea < ActiveRecord::Base
       event :mark_needs_approval, transitions_to: :new
       event :approve, transitions_to: :approved
     end
-    state :won
+    state :won do
+      event :undo_won, transitions_to: :approved
+    end
     state :lost
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{triggering_event}")
