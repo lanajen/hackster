@@ -56,7 +56,6 @@ class ProjectsController < ApplicationController
 
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
-
     # we load parts and widgets all at once and then split them into their own
     # categories. That way we limit the number of db queries
     @parts = @project.part_joins.includes(part: [:image, :platform])

@@ -171,5 +171,4 @@ group :test do
   gem 'rspec-sidekiq'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
-  gem 'warden'
 end
