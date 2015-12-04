@@ -51,6 +51,7 @@ RSpec.describe 'Project #show view', type: :feature do
       visit project_path(project_slug: project.slug_hid, user_name: other_user.user_name)
 
       within '#home' do
+<<<<<<< HEAD
         expect(page).to have_content('0 respects');
       end
     end
@@ -58,6 +59,13 @@ RSpec.describe 'Project #show view', type: :feature do
     it 'has a respect button that increments respect', :js => true do
       worker = BaseArticleObserverWorker.new
 
+=======
+        expect(page).to have_content('0 respect');
+      end
+    end
+
+    it 'has a respect button that increments respect' do
+>>>>>>> 7c4e3e18860ebfe67f20823b119063ca40079148
       visit project_path(project_slug: project.slug_hid, user_name: other_user.user_name)
 
       within page.first(:css, '.mg-10') do
@@ -65,11 +73,18 @@ RSpec.describe 'Project #show view', type: :feature do
         page.find('.respect-button').click
       end
 
+<<<<<<< HEAD
       worker.perform('after_create', project.id)
       visit project_path(project_slug: project.slug_hid, user_name: other_user.user_name)
 
       within '#home' do
         expect(page).to have_content('1 RESPECT');
+=======
+      visit project_path(project_slug: project.slug_hid, user_name: other_user.user_name)
+
+      within '#home' do
+        expect(page).to have_content('1 respect');
+>>>>>>> 7c4e3e18860ebfe67f20823b119063ca40079148
       end
     end
   end

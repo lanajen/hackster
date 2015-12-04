@@ -861,5 +861,3 @@ ActiveRecord::Schema.define(version: 20151201230957) do
 
   add_foreign_key "group_impressions", "groups"
   add_foreign_key "part_impressions", "parts"
-  add_foreign_key "project_impressions", "projects"
-end
