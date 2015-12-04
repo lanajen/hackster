@@ -56,7 +56,6 @@ class ProjectsController < ApplicationController
 
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
-
     @hardware_parts = @project.part_joins.hardware.includes(part: :image)
     @software_parts = @project.part_joins.software.includes(part: :image)
     @tool_parts = @project.part_joins.tool.includes(part: :image)

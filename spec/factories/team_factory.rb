@@ -1,5 +1,5 @@
-# FactoryGirl.define do
-#   factory :team do
-#     member
-#   end
-# end
+FactoryGirl.define do
+  factory :team do
+    # member
+  end
+end
