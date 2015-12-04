@@ -275,9 +275,6 @@ ActiveRecord::Schema.define(version: 20151201230957) do
     t.datetime "updated_at",      null: false
   end
 
-  add_index "group_impressions", ["group_id", "session_hash"], name: "gi_group_session_index", using: :btree
-  add_index "group_impressions", ["group_id"], name: "index_group_impressions_on_group_id", using: :btree
-
   create_table "groups", force: :cascade do |t|
     t.string   "user_name",         limit: 100
     t.string   "city",              limit: 50
@@ -577,11 +574,6 @@ ActiveRecord::Schema.define(version: 20151201230957) do
     t.datetime "updated_at",      null: false
   end
 
-  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
-  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
-  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
-  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
-
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
@@ -869,3 +861,5 @@ ActiveRecord::Schema.define(version: 20151201230957) do
 
   add_foreign_key "group_impressions", "groups"
   add_foreign_key "part_impressions", "parts"
+  add_foreign_key "project_impressions", "projects"
+end

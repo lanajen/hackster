@@ -70,6 +70,6 @@ class PlatformObserver < ActiveRecord::Observer
   private
     def expire_index
       Cashier.expire 'platform-index'
-      FastlyWorker.perform_async 'purge', record.table_key
+      FastlyWorker.perform_async 'purge', 'groups'
     end
 end
