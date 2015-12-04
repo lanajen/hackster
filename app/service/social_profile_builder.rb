@@ -37,7 +37,7 @@ class SocialProfileBuilder
       )
     end
     # logger.info 'auth: ' + @user.authorizations.inspect
-    @user.generate_user_name if SlugHistory.where(value: @user.user_name).any?
+    @user.generate_user_name if SlugHistory.where(value: @user.user_name).exists?
     @user.password = Devise.friendly_token[0,20]
     @user.logging_in_socially = true
     @user
@@ -60,7 +60,7 @@ class SocialProfileBuilder
     end
 
     def clean_user_name user_name
-      user_name.try(:downcase).try(:gsub, /[^a-z0-9_\-]/, '')
+      user_name.try(:gsub, /[^a-zA-Z0-9_\-]/, '')
     end
 
     def provider_link provider
@@ -130,7 +130,7 @@ class SocialProfileBuilder
     def saml info, data
       assign_attributes(
         full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
-        user_name: data.extra.raw_info.attributes['username'].try(:first),
+        user_name: clean_user_name(data.extra.raw_info.attributes['username'].try(:first)),
         email: info.email,
         city: data.extra.raw_info.attributes['state'].try(:first),
         country: data.extra.raw_info.attributes['country'].try(:first)

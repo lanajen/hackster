@@ -7,9 +7,9 @@
 <p>What now? Here are three tips to help you make the best out of Hackster:</p>
 
 <ul>
-  <li>Find out <a href="https://hackster.uservoice.com/knowledgebase/articles/616629-how-do-i-earn-reputation">how to <strong>earn free hardware</strong></a> from the <a href="<%= u.store_url %>?ref=confemail">Hackster Free Store</a></li>
-  <li><a href="<%= u.platforms_url %>?ref=confemail">Follow platforms</a> and <a href="<%= u.user_toolbox_url %>?ref=confemail">add products to your toolbox</a> to <strong>be alerted when new projects are posted</strong></li>
-  <li><a href="<%= u.challenges_url %>?ref=confemail">Participate in contests</a> for a chance to <strong>win awesome prizes</strong></li>
+  <li>Find out <a href="https://hackster.uservoice.com/knowledgebase/articles/616629-how-do-i-earn-reputation">how to <strong>earn free hardware</strong></a> from the <a href="<%= u.store_url %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Hackster Free Store</a></li>
+  <li><a href="<%= u.platforms_url %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Follow platforms</a> and <a href="<%= u.user_toolbox_url %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">add products to your toolbox</a> to <strong>be alerted when new projects are posted</strong></li>
+  <li><a href="<%= u.challenges_url %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Participate in contests</a> for a chance to <strong>win awesome prizes</strong></li>
 </ul>
 
 <% if @context[:user].platform.present? and @context[:user].platform != 'hackster' %>
