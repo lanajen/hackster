@@ -258,7 +258,7 @@ class ApplicationController < ActionController::Base
 
     def default_url_options(options = {})
       # pass in the locale we have in the URL because it's always the right one
-      { locale: params[:locale] }.merge options
+      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http') }.merge options
     end
 
     def disable_flash
