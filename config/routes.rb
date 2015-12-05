@@ -478,6 +478,7 @@ HackerIo::Application.routes.draw do
       get 'infringement_policy' => 'pages#infringement_policy'
       get 'privacy' => 'pages#privacy'
       get 'conduct' => 'pages#conduct'
+      get 'guidelines' => 'pages#guidelines'
       get 'terms' => 'pages#terms'
       get 'press' => 'pages#press'
       get 'jobs' => 'pages#jobs'
