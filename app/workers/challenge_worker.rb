@@ -9,7 +9,9 @@ class ChallengeWorker < BaseWorker
     FastlyWorker.perform_async 'purge', challenge.record_key
 
     NotificationCenter.notify_all :pre_contest_awarded, :challenge, id, 'pre_contest_awarded'
-    NotificationCenter.notify_all :pre_contest_winners, :challenge, id, 'awarded_challenge_idea'
+    challenge.ideas.won.each do |idea|
+      NotificationCenter.notify_all :winner, :challenge_idea, idea.id, 'awarded_challenge_idea'
+    end
   end
 
   def do_after_judged id

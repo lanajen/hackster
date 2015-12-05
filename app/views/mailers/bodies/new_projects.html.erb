@@ -98,7 +98,7 @@
                                                             style=
                                                             "word-wrap:break-word;color:#337AB7;text-decoration:underline;font-weight:bold;">
                                                             <%= project.name %></a>
-                                                            <% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a style='word-wrap:break-word;color:#337AB7;text-decoration:underline;font-weight:bold;' href='#{u.user_url(user)}?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>
+                                                            <% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a style='word-wrap:break-word;color:#337AB7;text-decoration:underline;font-weight:bold;' href='#{u.user_url(user)}?utm_source=hackster&utm_medium=email&utm_campaign=#{@context[:email_template]}'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>
                                                             <% if project.guest_name.present? and user %> (posted by <a style='color:#337AB7;' href="<%= u.user_url(user) %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>"><%= user.name %></a>)<% end %>
                                                           </h3>
 

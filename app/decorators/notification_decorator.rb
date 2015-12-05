@@ -61,7 +61,9 @@ class NotificationDecorator < ApplicationDecorator
       challenge_link = h.link_to challenge.name, challenge
       case event
       when :approved
-        "Your idea for #{challenge_link} has been approved."
+        "Your idea '#{idea.name}' for #{challenge_link} has been approved."
+      when :winner
+        "Your idea '#{idea.name}' for #{challenge_link} has won!"
       end
     when Comment
       comment = notifiable
