@@ -5,8 +5,8 @@
 - rows = [headers]
 - @ideas.each do |idea|
   - user = idea.user
-  - output = [idea.name, strip_tags(idea.description), idea.image.try(:imgix_url, :thumb)]
-  - output += fields.each_with_index.map{|f, i| idea.send("cfield#{i}") }
+  - output = [idea.name, strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb)]
+  - output += fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
   - output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state]
   - rows << output
 - rows.each do |row|
