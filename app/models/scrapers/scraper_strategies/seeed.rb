@@ -54,7 +54,7 @@ module ScraperStrategies
       def select_article
         text = @parsed.at_css('#step_detail').to_html
         text ||= ''
-        text += @parsed.at_css('.section-links').try(:to_html)
+        text += @parsed.at_css('.section-links').try(:to_html) if @parsed.at_css('.section-links')
         Nokogiri::HTML::DocumentFragment.parse(text)
       end
   end
