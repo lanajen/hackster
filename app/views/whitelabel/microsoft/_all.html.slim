@@ -62,7 +62,7 @@
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 
 = content_for :footer do
-  = javascript_link_tag 'https://assets.onestore.ms/cdnfiles/onestorerolling-1511-18012/shell/generated/shellservice.v3.min.js'
+  = javascript_include_tag 'https://assets.onestore.ms/cdnfiles/onestorerolling-1511-18012/shell/generated/shellservice.v3.min.js'
   - cache [I18n.locale, 'ms_chrome_footer'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
     = raw ms_sync.chrome_footer(I18n.locale)
     javascript:
