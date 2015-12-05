@@ -50,11 +50,19 @@ class ApplicationController < ActionController::Base
   helper_method :current_site
   helper_method :current_platform
   before_action :current_site
+  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
   before_action :current_platform
   helper_method :current_layout
+  before_filter :set_view_paths
   layout :current_layout
 
   before_action :set_locale, except: [:not_found]
+
+  # hoping that putting it here will only make the condition run once when the
+  # app loads and not on every request
+  if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']
+    before_filter :authorize_access!
+  end
 
   def set_signed_in_cookie
     if user_signed_in?
@@ -174,6 +182,12 @@ class ApplicationController < ActionController::Base
   end
 
   private
+    def authorize_access!
+      authenticate_or_request_with_http_basic do |username, password|
+        username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
+      end
+    end
+
     def allow_iframe
       response.headers.except! 'X-Frame-Options'
     end
@@ -244,7 +258,7 @@ class ApplicationController < ActionController::Base
 
     def default_url_options(options = {})
       # pass in the locale we have in the URL because it's always the right one
-      { locale: params[:locale] }.merge options
+      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http') }.merge options
     end
 
     def disable_flash
@@ -560,7 +574,11 @@ class ApplicationController < ActionController::Base
     end
 
     def ssl_configured?
-      APP_CONFIG['use_ssl']
+      ssl_configured = APP_CONFIG['use_ssl']
+      # if is_whitelabel?
+      #   ssl_configured = (ssl_configured and !current_site.disable_https?)
+      # end
+      ssl_configured
     end
 
     def user_signed_in?
@@ -592,7 +610,7 @@ class ApplicationController < ActionController::Base
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "#{SLOGAN} Share your projects and learn from other makers. Come build awesome hardware!"
+        @meta_desc || "#{SLOGAN} Share your projects and learn from other developers. Come build awesome hardware!"
       end
     end
 
@@ -622,6 +640,10 @@ class ApplicationController < ActionController::Base
       raise ActiveRecord::RecordNotFound
     end
 
+    def set_view_paths
+      prepend_view_path "app/views/whitelabel/#{current_site.subdomain}" if is_whitelabel?
+    end
+
     def show_hello_world?
       # incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
@@ -634,9 +656,5 @@ class ApplicationController < ActionController::Base
 
     def show_profile_needs_care?
       user_signed_in? and !(params[:controller] == 'users' and params[:action] == 'after_registration') and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
-    end
-
-    def ssl_configured?
-      !Rails.env.development?
     end
 end

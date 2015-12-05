@@ -12,11 +12,11 @@ class HackathonsController < ApplicationController
     @upcoming_events = if can? :manage, @hackathon
       @hackathon.events
     else
-      @hackathon.events.public
+      @hackathon.events.publyc
     end
     @upcoming_events = @upcoming_events.upcoming.paginate(page: safe_page_params)
-    @past_events = @hackathon.events.public.past.paginate(page: safe_page_params)
-    @now_events = @hackathon.events.public.now.paginate(page: safe_page_params)
+    @past_events = @hackathon.events.publyc.past.paginate(page: safe_page_params)
+    @now_events = @hackathon.events.publyc.now.paginate(page: safe_page_params)
     @event = @hackathon.closest_event
 
     render "groups/hackathons/show"

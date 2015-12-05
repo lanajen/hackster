@@ -12,7 +12,7 @@ class SplitController < ApplicationController
   def finished_test
     experiment = params[:experiment]
     finished(experiment)
-    render status: :ok, text: 'OK'
+    render status: :ok, nothing: true
   end
 
   def finish_and_redirect

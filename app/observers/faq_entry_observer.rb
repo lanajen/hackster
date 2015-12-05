@@ -1,10 +1,10 @@
 class FaqEntryObserver < ActiveRecord::Observer
   def after_create record
-    expire_cache record if record.public?
+    expire_cache record if record.publyc?
   end
 
   def after_update record
-    expire_cache record if record.public? or (record.private_changed? and record.private?)
+    expire_cache record if record.publyc? or (record.private_changed? and record.pryvate?)
   end
 
   alias_method :after_destroy, :after_create
@@ -12,6 +12,6 @@ class FaqEntryObserver < ActiveRecord::Observer
   private
     def expire_cache record
       Cashier.expire "challenge-#{record.threadable_id}-faq"
-      record.threadable.purge
+      FastlyWorker.perform_async 'purge', record.threadable.record_key
     end
 end

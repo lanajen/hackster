@@ -1,0 +1,8 @@
+= f.error_notification
+
+= f.input :slug
+= f.input :redirect_to_url
+
+.col-md-offset-4.col-md-8
+  ==> f.button :submit, :class => 'btn btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_short_links_path, :class => 'btn btn-default'

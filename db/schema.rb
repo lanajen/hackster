@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151022171705) do
+ActiveRecord::Schema.define(version: 20151201230957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,10 +146,12 @@ ActiveRecord::Schema.define(version: 20151022171705) do
   add_index "challenge_registrations", ["user_id"], name: "index_challenge_registrations_on_user_id", using: :btree
 
   create_table "challenges", force: :cascade do |t|
+    t.integer  "duration"
     t.text     "properties"
     t.datetime "start_date"
     t.string   "video_link",        limit: 255
     t.text     "counters_cache"
+    t.integer  "platform_id"
     t.string   "name",              limit: 255
     t.string   "slug",              limit: 255
     t.string   "workflow_state",    limit: 255
@@ -215,11 +217,9 @@ ActiveRecord::Schema.define(version: 20151022171705) do
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "conversations", force: :cascade do |t|
-    t.string   "subject",               limit: 255
+    t.string   "subject",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "conversationable_type"
-    t.integer  "conversationable_id"
   end
 
   create_table "courses_universities", force: :cascade do |t|
@@ -260,6 +260,21 @@ ActiveRecord::Schema.define(version: 20151022171705) do
   add_index "grades", ["type"], name: "index_grades_on_type", using: :btree
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
 
+  create_table "group_impressions", force: :cascade do |t|
+    t.integer  "group_id",        null: false
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "groups", force: :cascade do |t|
     t.string   "user_name",         limit: 100
     t.string   "city",              limit: 50
@@ -270,6 +285,7 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.text     "websites"
     t.string   "type",              limit: 15,  default: "Group", null: false
     t.integer  "impressions_count",             default: 0
+    t.text     "counters_cache"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "private",                       default: false
@@ -280,6 +296,7 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.float    "longitude"
     t.string   "address",           limit: 255
     t.string   "state",             limit: 255
+    t.text     "properties"
     t.integer  "projects_count"
     t.integer  "members_count"
     t.string   "zipcode",           limit: 255
@@ -418,6 +435,21 @@ ActiveRecord::Schema.define(version: 20151022171705) do
 
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
+  create_table "part_impressions", force: :cascade do |t|
+    t.integer  "part_id",         null: false
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "part_joins", force: :cascade do |t|
     t.integer  "part_id",                                       null: false
     t.integer  "partable_id",                                   null: false
@@ -445,12 +477,19 @@ ActiveRecord::Schema.define(version: 20151022171705) do
   create_table "parts", force: :cascade do |t|
     t.integer  "quantity",                        default: 1
     t.float    "unit_price",                      default: 0.0
+    t.float    "total_cost",                      default: 0.0
     t.string   "name",                limit: 255
+    t.string   "vendor_name",         limit: 255
+    t.string   "vendor_sku",          limit: 255
+    t.string   "vendor_link",         limit: 255
+    t.string   "partable_type",       limit: 255,                          null: false
+    t.integer  "partable_id",                                              null: false
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
     t.string   "mpn",                 limit: 255
     t.text     "description"
     t.integer  "position"
+    t.string   "comment",             limit: 255
     t.text     "websites"
     t.integer  "platform_id"
     t.boolean  "private",                         default: false
@@ -460,11 +499,11 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.string   "one_liner",           limit: 140
     t.hstore   "counters_cache"
     t.string   "type",                limit: 15,  default: "HardwarePart"
-    t.string   "vendor_link"
-    t.integer  "partable_id"
-    t.string   "partable_type"
+    t.boolean  "generic"
+    t.integer  "impressions_count",               default: 0
   end
 
+  add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
@@ -520,39 +559,63 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.hstore   "properties"
   end
 
+  create_table "project_impressions", force: :cascade do |t|
+    t.integer  "project_id",      null: false
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
     t.date     "start_date"
+    t.date     "end_date"
     t.datetime "created_at",                                              null: false
     t.datetime "updated_at",                                              null: false
     t.string   "website",                 limit: 255
     t.boolean  "private",                             default: false,     null: false
     t.string   "workflow_state",          limit: 255
     t.string   "one_liner",               limit: 255
+    t.boolean  "featured"
     t.integer  "impressions_count",                   default: 0
     t.text     "counters_cache"
     t.integer  "team_id",                             default: 0,         null: false
     t.string   "license",                 limit: 100
     t.string   "slug",                    limit: 105
+    t.datetime "featured_date"
     t.datetime "made_public_at"
     t.boolean  "hide",                                default: false
+    t.integer  "collection_id"
     t.boolean  "graded",                              default: false
     t.boolean  "wip",                                 default: false
     t.float    "popularity_counter",                  default: 0.0
     t.integer  "respects_count",                      default: 0
+    t.text     "layout"
+    t.boolean  "external",                            default: false
     t.string   "guest_name",              limit: 128
+    t.boolean  "approved"
+    t.boolean  "open_source",                         default: true
+    t.string   "buy_link",                limit: 255
     t.datetime "last_edited_at"
+    t.text     "properties"
     t.string   "platform_tags_string",    limit: 255
     t.text     "product_tags_string"
     t.datetime "assignment_submitted_at"
+    t.text     "story"
     t.string   "difficulty",              limit: 255
     t.string   "type",                    limit: 15,  default: "Project", null: false
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
-    t.string   "buy_link"
-    t.boolean  "open_source"
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
@@ -620,6 +683,16 @@ ActiveRecord::Schema.define(version: 20151022171705) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
   add_index "sessions", ["user_id"], name: "index_sessions_on_user_id", using: :btree
+
+  create_table "short_links", force: :cascade do |t|
+    t.string   "slug",              limit: 30
+    t.string   "redirect_to_url"
+    t.integer  "impressions_count"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "short_links", ["slug"], name: "index_short_links_on_slug", using: :btree
 
   create_table "slug_histories", force: :cascade do |t|
     t.string   "value",          limit: 255,                     null: false
@@ -720,7 +793,7 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.string   "city",                   limit: 50
     t.string   "country",                limit: 50
     t.integer  "roles_mask"
-    t.string   "email",                  limit: 255, default: "",    null: false
+    t.string   "email",                  limit: 255, default: "",     null: false
     t.string   "encrypted_password",     limit: 255, default: ""
     t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
@@ -730,18 +803,22 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip",     limit: 255
     t.string   "last_sign_in_ip",        limit: 255
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
     t.string   "full_name",              limit: 255
     t.text     "websites"
+    t.integer  "categories_mask"
     t.string   "invitation_token",       limit: 255
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type",        limit: 255
+    t.string   "type",                   limit: 255, default: "User", null: false
+    t.integer  "invite_code_id"
     t.integer  "impressions_count",                  default: 0
     t.text     "counters_cache"
+    t.text     "properties"
     t.datetime "invitation_created_at"
     t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
@@ -750,20 +827,22 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.integer  "subscriptions_mask",                 default: 0
     t.boolean  "mailchimp_registered",               default: false
     t.string   "authentication_token",   limit: 25
-    t.boolean  "enable_sharing",                     default: true,  null: false
+    t.boolean  "enable_sharing",                     default: true,   null: false
     t.string   "platform",               limit: 255
     t.datetime "last_seen_at"
-    t.hstore   "subscriptions_masks",                default: {},    null: false
+    t.hstore   "subscriptions_masks",                default: {},     null: false
     t.hstore   "hcounters_cache"
     t.hstore   "hproperties"
-    t.text     "properties"
+    t.boolean  "private",                            default: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["enable_sharing"], name: "index_users_on_enable_sharing", using: :btree
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
+  add_index "users", ["private"], name: "index_users_on_private", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["type"], name: "index_users_on_type", using: :btree
 
   create_table "widgets", force: :cascade do |t|
     t.string   "type",            limit: 255,                     null: false
@@ -771,11 +850,14 @@ ActiveRecord::Schema.define(version: 20151022171705) do
     t.string   "name",            limit: 255
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
+    t.integer  "project_id",                  default: 0,         null: false
     t.string   "position",        limit: 255, default: "",        null: false
     t.integer  "widgetable_id"
     t.string   "widgetable_type", limit: 255, default: "Project"
   end
 
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree
+  add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
 
-end
+  add_foreign_key "group_impressions", "groups"
+  add_foreign_key "part_impressions", "parts"

@@ -5,15 +5,17 @@ class ExternalProjectsController < ApplicationController
 
   def show
     impressionist_async @project, '', unique: [:session_hash]
+
     title @project.name
     meta_desc @project.one_liner
 
+    @respecting_users = @project.respecting_users.publyc.includes(:avatar) if @project.publyc?
+
     if is_whitelabel?
       @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+      @respecting_users = @respecting_users.where(users: { enable_sharing: true }) if @project.publyc?
     else
       @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
-      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
     end
 
     @project = @project.decorate

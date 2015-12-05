@@ -30,7 +30,7 @@ class Groups::ProjectsController < ApplicationController
 
   def create
     @project = @group.projects.new params[:base_article]
-    @project.private = true
+    @project.pryvate = true
     @project.build_team
     @project.team.members.new(user_id: current_user.id)
 
@@ -57,6 +57,7 @@ class Groups::ProjectsController < ApplicationController
     if @group.update_attributes(params[:group])
       redirect_to group_admin_projects_path(@group), notice: 'Featured projects saved.'
     else
+      @projects = @group.project_collections.featured.includes(:project)
       render :featured
     end
   end

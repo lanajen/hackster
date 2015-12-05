@@ -88,8 +88,6 @@ class Platform < Collection
 
   taggable :platform_tags, :product_tags
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@platform)', group: :get_started
   add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
   add_checklist :logo, 'Upload a logo', 'avatar.present?', goto: 'edit_group_path(@platform)', group: :get_started
@@ -102,7 +100,7 @@ class Platform < Collection
   add_checklist_family :followers, 'followers_count >= %{n}', labels: { 1 => 'Be your first follower', n: 'Reach %{n} followers' }, thresholds: [1, 25, 100, 500, 1_000, 2_500, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 25 => :featured, n: :next_level }, goto: 'create_followers_path(followable_type: "Group", followable_id: @platform.id)'
 
   # beginning of search methods
-  has_tire_index 'private'
+  has_tire_index 'pryvate'
 
   tire do
     mapping do
@@ -127,7 +125,7 @@ class Platform < Collection
   end
 
   def self.index_all
-    index.import public
+    index.import publyc
   end
   # end of search methods
 
@@ -194,7 +192,7 @@ class Platform < Collection
 
   # def projects
   #   # Project.includes(:platform_tags).where(tags: { name: platform_tags.pluck(:name) })
-  #   Project.public.includes(:platform_tags).references(:tags).where('lower(tags.name) IN (?)', platform_tags.pluck(:name).map{|n| n.downcase })
+  #   Project.publyc.includes(:platform_tags).references(:tags).where('lower(tags.name) IN (?)', platform_tags.pluck(:name).map{|n| n.downcase })
   #   # SearchRepository.new(q: platform_tags_string).search.results
   # end
 
@@ -224,7 +222,7 @@ class Platform < Collection
     send "generate_#{type}_credentials", force: true
   end
 
-  private
+  protected
     def format_hashtag
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
     end

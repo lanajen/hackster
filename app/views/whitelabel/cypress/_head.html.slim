@@ -1,0 +1,38 @@
+- content_for :html_class do
+  = 'cypress-html'
+
+css:
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 1200px;
+      width: 90%;
+    }
+  }
+  #navigation {
+    background: #f2f2f2;
+    border-bottom: 0;
+  }
+  body.whitelabel .powered-by {
+    padding: 13px 0 0;
+    text-align: left;
+  }
+  body.whitelabel .powered-by a {
+    display: block;
+  }
+  #user-navigation-links {
+    margin-right: 16px;
+  }
+  .l2-nav-container {
+    // background-color: #505050;
+  }
+  .l2-nav {
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .navbar-static-top {
+    z-index: 10;
+    border-top-width: 1px;
+  }
+  header.main {
+    background: #fff;
+  }

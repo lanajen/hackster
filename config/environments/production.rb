@@ -63,10 +63,4 @@ HackerIo::Application.configure do
   if ENV["MEMCACHIER_SERVERS"]
     config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { username: ENV["MEMCACHIER_USERNAME"], password: ENV["MEMCACHIER_PASSWORD"], compress: true }
   end
-
-  if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']
-    config.middleware.insert_after(::Rack::Runtime, "::Rack::Auth::Basic", "Restricted access") do |u, p|
-      [u, p] == [ENV['SITE_USERNAME'], ENV['SITE_PASSWORD']]
-    end
-  end
 end

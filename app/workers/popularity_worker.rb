@@ -11,28 +11,28 @@ class PopularityWorker < BaseWorker
       median_impressions: BaseArticle.median_impressions,
       median_respects: BaseArticle.median_respects,
     }
-    BaseArticle.indexable_and_external.pluck(:id).each do |project_id|
-      self.class.perform_async 'compute_popularity_for_project', project_id, defaults
+    BaseArticle.indexable_and_external.select(:id).find_each do |project|
+      self.class.perform_async 'compute_popularity_for_project', project.id, defaults
     end
   end
 
   def compute_popularity_for_project project_id, defaults={}
     project = BaseArticle.find project_id
-    project.update_counters
+    project.update_counters only: [:comments, :real_respects]
 
     count = ProjectPopularityCounter.new(project, defaults).adjusted_score
     project.update_column :popularity_counter, count
   end
 
   def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.pluck(:id).each do |user_id|
-      self.class.perform_async 'compute_popularity_for_user', user_id
+    User.invitation_accepted_or_not_invited.select(:id).find_each do |user|
+      self.class.perform_async 'compute_popularity_for_user', user.id
     end
   end
 
   def compute_popularity_for_user user_id
     user = User.find user_id
-    user.update_counters
+    user.update_counters only: [:live_projects, :live_hidden_projects, :followers]
     user.build_reputation unless user.reputation
     reputation = user.reputation
     reputation.compute
@@ -41,7 +41,7 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_platforms
     Platform.find_each do |platform|
-      platform.update_counters
+      platform.update_counters only: [:projects, :members, :parts]
     end
   end
 end

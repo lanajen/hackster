@@ -69,7 +69,7 @@ function fetchPartsFromServer(req) {
   return new Promise((resolve, reject) => {
     request
       .get('/api/v1/parts')
-      .query({ q: req.query, sort: req.filter, page: req.page, image_size: 'medium' })
+      .query({ q: req.query, sort: req.filter, page: req.page, image_size: 'medium', approved: true })
       .end(function(err, res) {
         err ? reject(err) : resolve(res);
       });

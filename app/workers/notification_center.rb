@@ -14,8 +14,11 @@ class NotificationCenter < BaseWorker
     end
   rescue ActiveRecord::RecordNotFound, Timeout::Error => e
     message = "Error while working on '#{method_name}' in '#{self.class.name}' with args #{method_args}: \"#{e.message}\""
-    Rails.logger.error message
-    log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
+    AppLogger.new(message, 'error', 'worker', e).create_log
+  rescue => e
+    message = "Error while working on '#{method_name}' in '#{self.class.name}' with args #{method_args}: \"#{e.message}\""
+    AppLogger.new(message, 'error', 'worker', e).log_and_notify_with_stdout
+    raise e
   end
 end
 

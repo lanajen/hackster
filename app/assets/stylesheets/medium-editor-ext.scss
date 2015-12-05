@@ -83,6 +83,7 @@
     &:first-child, &.preceded-by-h3 {
       border-top: 0;
       padding-top: 0;
+      margin-top: 0;
     }
     &.followed-by-embed-frame, &:last-child {
       border-bottom: 0;
@@ -129,34 +130,13 @@
   }
 }
 .image-gallery-container {
-  &.update-201509 {
-    text-align: center;
-    .embed-img {
-      display: block;
-      position: relative;
-    }
-    .image:not(.slick-active) {
-      margin-bottom: 30px;
-    }
-  }
-  &:not(.update-201509) {
-    width: 100%;
-    height: 0;
-    padding-bottom: 75%;
+  text-align: center;
+  .embed-img {
+    display: block;
     position: relative;
-    margin-bottom: 50px;
-    .figure {
-      position: relative;
-    }
-    .embed-img {
-      display: block;
-      position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 75%;
-      background: white center center no-repeat;
-      @include background-size(contain);
-    }
+  }
+  .image:not(.slick-active) {
+    margin-bottom: 30px;
   }
 }
 

@@ -12,8 +12,8 @@ module PlatformHelper
     @new_comments_count = @platform.projects.joins(:comments).where('comments.created_at > ?', Date.today).count
     @new_likes_count = @platform.projects.joins(:respects).where('respects.created_at > ?', Date.today).count
     @new_follows_count = @platform.followers.where('follow_relations.created_at > ?', Date.today).count
-    @new_views_count = @platform.impressions.where('impressions.created_at > ?', Date.today).count
-    @new_project_views_count = @platform.projects.joins(:impressions).where('impressions.created_at > ?', Date.today).count
+    @new_views_count = @platform.impressions.where('group_impressions.created_at > ?', Date.today).count
+    @new_project_views_count = @platform.projects.joins(:impressions).where('project_impressions.created_at > ?', Date.today).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, @platform.id])
@@ -24,7 +24,7 @@ module PlatformHelper
     sql = "SELECT projects.*, t1.count FROM (SELECT respects.respectable_id as project_id, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id WHERE respects.respectable_type = 'BaseArticle' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? GROUP BY respects.respectable_id) AS t1 INNER JOIN projects ON projects.id = t1.project_id WHERE t1.count > 1 AND projects.private = 'f' AND projects.workflow_state = 'approved' ORDER BY t1.count DESC LIMIT 10;"
     @most_respected_projects = BaseArticle.find_by_sql([sql, @platform.id])
 
-    sql = "SELECT projects.*, t1.count FROM (SELECT impressions.impressionable_id as project_id, COUNT(*) as count FROM impressions INNER JOIN project_collections ON project_collections.project_id = impressions.impressionable_id WHERE project_collections.collectable_type = 'Group' AND impressions.impressionable_type = 'BaseArticle' AND project_collections.collectable_id = ? GROUP BY impressions.impressionable_id) AS t1 INNER JOIN projects ON projects.id = t1.project_id WHERE t1.count > 1 AND projects.private = 'f' AND projects.workflow_state = 'approved' ORDER BY t1.count DESC LIMIT 10;"
+    sql = "SELECT projects.*, t1.count FROM (SELECT project_impressions.project_id as project_id, COUNT(*) as count FROM project_impressions INNER JOIN project_collections ON project_collections.project_id = project_impressions.project_id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? GROUP BY project_impressions.project_id) AS t1 INNER JOIN projects ON projects.id = t1.project_id WHERE t1.count > 1 AND projects.private = 'f' AND projects.workflow_state = 'approved' ORDER BY t1.count DESC LIMIT 10;"
     @most_viewed_projects = BaseArticle.find_by_sql([sql, @platform.id])
 
     @most_recent_projects = @platform.projects.visible.indexable_and_external.joins(:users).order(made_public_at: :desc).distinct("projects.id").limit(3)
@@ -36,9 +36,9 @@ module PlatformHelper
 
     @new_projects_sql = "SELECT to_char(projects.made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND (projects.private = 'f' OR projects.type = 'ExternalProject') AND date_part('days', now() - projects.made_public_at) < 31 AND date_part('days', now() - projects.made_public_at) > 1 GROUP BY date ORDER BY date;"
 
-    @new_project_views_sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions INNER JOIN project_collections ON project_collections.project_id = impressions.impressionable_id WHERE impressions.impressionable_type = 'BaseArticle' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - impressions.created_at) < 32 GROUP BY date ORDER BY date;"
+    @new_project_views_sql = "SELECT to_char(project_impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM project_impressions INNER JOIN project_collections ON project_collections.project_id = project_impressions.project_id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - project_impressions.created_at) < 32 GROUP BY date ORDER BY date;"
 
-    @new_views_sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions WHERE impressions.impressionable_type = 'Group' AND impressions.impressionable_id = %i AND date_part('days', now() - impressions.created_at) < 32  GROUP BY date ORDER BY date;"
+    @new_views_sql = "SELECT to_char(group_impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM group_impressions WHERE group_impressions.group_id = %i AND date_part('days', now() - group_impressions.created_at) < 32  GROUP BY date ORDER BY date;"
 
 
     @new_respects_sql = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'BaseArticle' WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - respects.created_at) < 32 GROUP BY date ORDER BY date;"

@@ -5,6 +5,7 @@ class Embed
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/ => :channel9,
     /codebender\.cc\/((?:sketch:|example\/)[0-9a-zA-Z\/:]+)/ => :codebender,
+    /digikey.com\/schemeit\/(?:embed\/)?(#[0-9a-zA-Z]+)/ => :schemeit,
     /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/ => :github,
     /fritzing\.org\/projects\/([0-9a-z-]+)/ => :fritzing,
@@ -26,7 +27,7 @@ class Embed
     # /(.+\.[a-z]{3,4}(\?.*)?)$/ => { embed_class: 'original', code: '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a href="|id|">|id|</a></div></div>',},
   }
 
-  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url, :default_caption
+  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url, :default_caption, :images
 
   def self.find_provider_for_url url, fallback_to_default=false
     provider = nil
@@ -59,7 +60,11 @@ class Embed
   end
 
   def schematic_repo?
-    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github)
+    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github schemeit)
+  end
+
+  def hid
+    @hid ||= SecureRandom.hex(10)
   end
 
   def format
@@ -80,6 +85,17 @@ class Embed
         @provider_name = @widget.identifier
         @type = 'widget'
         @format = @widget.embed_format || 'original'
+      end
+    elsif @widget = options[:widget]
+      @provider_name = @widget.identifier
+      @type = 'widget'
+      @format = @widget.embed_format || 'original'
+      if @widget.type == 'ImageWidget'
+        @images = if options[:images]
+          options[:images].select{|i| i.attachable_type == 'Widget' and i.attachable_id == @widget.id }
+        else
+          widget.images
+        end
       end
     elsif file_id = options[:file_id]
       if file = Attachment.find_by_id(file_id)

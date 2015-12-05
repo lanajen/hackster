@@ -4,14 +4,14 @@
       h1.title What are achievements?
     .section-content
       p
-        | Hackster is a community, and it's its members that make it a great place. Given this, we wanted to celebrate the makers that put time and effort into making Hackster a great place to share and learn. Now, every time you do something that helps the greater community, you get rewarded.
+        | Hackster is a community, and it's its members that make it a great place. Given this, we wanted to celebrate the developers that put time and effort into making Hackster a great place to share and learn. Now, every time you do something that helps the greater community, you get rewarded.
 
       h2 Green badges
       p
        | Green badges reward the first time an action was taken on the site. It's an encouragement to try out all the ways to get involved in the community.
        ul
         li
-          ' Maker profile completed
+          ' Profile completed
           strong
             small
               | (#{AwardedBadge.where(level: :green, badge_code: :profile_completed).count})
@@ -21,7 +21,7 @@
             small
               | (#{AwardedBadge.where(level: :green, badge_code: :respected_project).count})
         li
-          ' First maker followed
+          ' First fellow member followed
           strong
             small
               | (#{AwardedBadge.where(level: :green, badge_code: :followed_user).count})
@@ -71,22 +71,22 @@
             small
               | (#{AwardedBadge.where(level: :bronze, badge_code: :useful_feedback).count})
         / li
-          ' You published a detailed and well formatted project that other makers can take a replicate easily
+          ' You published a detailed and well formatted project that other members can take a replicate easily
           strong
             small
               | (#{AwardedBadge.where(level: :bronze, badge_code: :detailed_project).count})
         li
-          ' You answered a question from another maker that was posted on your own project
+          ' You answered a question from another member that was posted on your own project
           strong
             small
               | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_own).count})
         li
-          ' You answered a question from another maker that was posted on somebody else's project
+          ' You answered a question from another member that was posted on somebody else's project
           strong
             small
               | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_other).count})
         li
-          ' 10+ makers followed your profile
+          ' 10+ members followed your profile
           strong
             small
               | (#{AwardedBadge.where(level: :bronze, badge_code: :profile_followed).count})

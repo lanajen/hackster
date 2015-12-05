@@ -9,7 +9,7 @@ class HackerSpace < GeographicCommunity
     :mailing_list_link
 
   # beginning of search methods
-  has_tire_index 'private'
+  has_tire_index 'pryvate'
 
   tire do
     mapping do
@@ -33,7 +33,7 @@ class HackerSpace < GeographicCommunity
       country: country,
       state: state,
       mini_resume: mini_resume,
-      private: private,
+      private: pryvate,
       created_at: created_at,
     }.to_json
   end

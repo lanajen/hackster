@@ -10,7 +10,7 @@ class Grade < ActiveRecord::Base
     project.assignment
   end
 
-  def private?
+  def pryvate?
     assignment.private_grades
   end
 end

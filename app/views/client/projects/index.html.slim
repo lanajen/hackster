@@ -49,12 +49,12 @@
 
   .mg-20.clearfix
     .pull-left.btn-group-split
-      = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
+      - unless user_signed_in?
+        = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
       - if @custom_header.present?
-        = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
-
-        - if current_platform.cta_link.present?
-          = link_to current_platform.cta_text, current_platform.cta_link, target: '_blank', class: 'btn btn-sm btn-link', style: 'color: #777'
+        - unless user_signed_in?
+          - if current_platform.cta_link.present?
+            = link_to current_platform.cta_text, current_platform.cta_link, target: '_blank', class: 'btn btn-sm btn-link', style: 'color: #777'
 
     .btn-group.btn-group-default.pull-right
       .btn-group
@@ -114,7 +114,7 @@
   - if @projects.any?
     .row.thumb-list
       - @projects.each_with_index do |project_collection, i|
-        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: i }
+        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
         = content_for :js do
           - if project_collection.featured?(I18n.short_locale)
             javascript:

@@ -5,7 +5,7 @@
     - if @assignment.document.present?
       small<= link_to content_tag(:i, '', class: 'fa fa-info-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank', data: { container: 'body' }
 h1
-  - if @group.private?
+  - if @group.pryvate?
     small>
       i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
   => link_to "#{@group.course.name}", course_path(@group.course)

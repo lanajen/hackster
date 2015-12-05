@@ -3,7 +3,14 @@ module HstoreCounter
     def counters_column store_attribute, options={}
       self.counters_options = options.merge(counters_column: store_attribute)
 
-      if column_for_attribute(store_attribute).try(:type) == :text
+      store_column = begin
+        column_for_attribute(store_attribute)
+      rescue ActiveRecord::StatementInvalid => e
+        Rails.logger.debug e
+        nil
+      end
+
+      if store_column.try(:type) == :text
         store store_attribute, accessors: []
       end
     end

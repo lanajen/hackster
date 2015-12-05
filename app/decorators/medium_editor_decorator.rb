@@ -25,8 +25,13 @@ module MediumEditorDecorator
 
               Embed.new video_id: video_id
             when 'widget'
-              embed = Embed.new widget_id: el['data-widget-id']
-              raise "widget ID #{el['data-widget-id']} not found" if embed.widget.nil?
+              widget = if options[:widgets]
+                options[:widgets].select{|w| w.id.to_s == el['data-widget-id'] }.first
+              else
+                Widget.find_by_id el['data-widget-id']
+              end
+              embed = Embed.new widget: widget
+              raise "widget ID #{el['data-widget-id']} not found, widget: #{widget.inspect}" if embed.widget.nil?
 
               if options[:except]
                 if embed.widget.type.in? options[:except]
@@ -41,11 +46,11 @@ module MediumEditorDecorator
 
             next unless embed.provider_name
             template_append = options[:print] ? '_print' : nil
-            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed }
+            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed, options: options }
             next unless code
             code = code.try(:force_encoding, "UTF-8")  # somehow slim templates come out as ASCII
 
-            if caption = el['data-caption']
+            if caption = el['data-caption'] and caption != 'Type in a caption'
               code = Nokogiri::HTML::DocumentFragment.parse code
               if figcaption = code.at_css('.embed-figcaption')
                 figcaption.content = caption

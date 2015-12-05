@@ -28,6 +28,9 @@ class Rack::Attack
       ua.in? req.user_agent
     end if req.user_agent
   end
+  whitelist('sparkfun') do |req|
+    req.path =~ /\/v1\/projects\.json\?.*platform_user_name=sparkfun/
+  end
 
   ### Throttle Spammy Clients ###
 
@@ -78,11 +81,13 @@ class Rack::Attack
   end
 
   # Block logins from a bad user agent
-  blacklist('block scraper access') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
-  end
-  track('bad_scraper') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
+  unless Rails.env.test? or Rails.env.development?
+    blacklist('block scraper access') do |req|
+      req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
+    end
+    track('bad_scraper') do |req|
+      req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
+    end
   end
 
   ### Custom Throttle Response ###

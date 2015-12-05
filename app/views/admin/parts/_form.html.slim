@@ -1,6 +1,7 @@
 = simple_nested_form_for [:admin, @part], html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
   = f.input :name
+  = f.input :generic, inline_label: 'Generic part', label: false
   = f.input :slug, label: 'Pretty URL'
   = f.input :type, collection: Part::TYPES
   = f.input :description, input_html: { class: 'text-editor', rows: 10 }

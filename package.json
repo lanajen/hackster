@@ -26,7 +26,7 @@
     "react-input-autosize": "^0.4.4",
     "react-redux": "^2.1.2",
     "react-select": "^0.4.9",
-    "react-tap-event-plugin": "^0.1.6",
+    "react-tap-event-plugin": "0.1.6",
     "react-tween-state": "0.0.5",
     "react-vendor-prefix": "0.0.1",
     "redux": "^3.0.0",

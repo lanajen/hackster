@@ -1,0 +1,27 @@
+- if @user.pryvate?
+  - content_for :head do
+    meta name='robots' content='noindex'
+
+= inserts_stats_for @user
+
+section#projects-list
+  .wrapper
+    .main-section-actions.clearfix.mg-30
+      - if user_is_current_or_admin?
+        .pull-left
+          ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
+        .btn-group.pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
+          a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            i.fa.fa-ellipsis-v
+          ul.dropdown-menu.pull-right
+            li= link_to "Submit a link", new_project_path(type: 'external')
+
+    - if user_is_current_or_admin? and @private_projects.any?
+        h2
+          ' Private projects and articles
+          = content_tag(:span, @private_projects.count, class: 'badge')
+        .thumb-list
+          .row.project-list
+            - @private_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }

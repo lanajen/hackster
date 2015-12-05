@@ -1,11 +1,18 @@
 module Taggable
   module ClassMethods
     def taggable *tags
+      all_column_names = begin
+        self.column_names
+      rescue ActiveRecord::StatementInvalid => error
+        Rails.logger.debug error
+        []
+      end
+
       tags.each do |tag_type|
         attr_accessible :"#{tag_type}_string", :"#{tag_type}_array"
         has_many tag_type, -> { order(name: :asc) }, as: :taggable, dependent: :destroy
 
-        if "#{tag_type}_string".in? self.column_names or :"#{tag_type}_string".in? self.instance_methods
+        if "#{tag_type}_string".in? all_column_names or :"#{tag_type}_string".in? self.instance_methods
           before_save :"format_#{tag_type}_string", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           after_save :"save_#{tag_type}", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           self.send :define_method, "#{tag_type}_cached" do

@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that your entry "|idea_name|" for the pre-contest phase of <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has been accepted. Hurray!</p>
+<p>This is to let you know that your entry "|idea_name|" for the pre-contest phase of <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> has been accepted. Hurray!</p>
 
 <p>Please note that you have not won any prizes yet; this email simply confirms that your entry is eligible to participate in the pre-contest.</p>
 

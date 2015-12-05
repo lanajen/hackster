@@ -32,7 +32,7 @@ class FollowRelationObserver < ActiveRecord::Observer
         record.followable.update_counters only: [:replications]
         record.user.update_counters only: [:replicated_projects]
         Cashier.expire "project-#{record.followable_id}-replications", "project-#{record.followable_id}"
-        record.followable.purge
+        FastlyWorker.perform_async 'purge', record.followable.record_key
       when 'User'
         record.followable.update_counters only: [:followers]
       when 'Platform', 'List'

@@ -16,7 +16,7 @@ class Ability
       cannot :read, [BaseArticle, Group, SkillRequest]
       can :read, [BaseArticle, Group], private: false
       can :read, Assignment do |assignment|
-        assignment.promotion.private == false
+        assignment.promotion.pryvate == false
       end
       can :read, Page do |thread|
         @user.can? :read, thread.threadable
@@ -144,7 +144,7 @@ class Ability
     end
     cannot :edit_locked, BaseArticle
     can :read, BaseArticle do |project|
-      project.private? and @user.is_staff? project
+      project.pryvate? and @user.is_staff? project
     end
     can [:update_team, :update_widgets, :comment], BaseArticle do |project|
       @user.can? :manage, project

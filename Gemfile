@@ -28,6 +28,7 @@ gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do
+  gem 'rails-assets-clipboard', '1.5.3'
   gem 'rails-assets-js-cookie', '2.0.3'
   gem 'rails-assets-medium-editor', '1.8.14'
   gem 'rails-assets-underscore', '1.7.0'
@@ -72,18 +73,21 @@ gem 'impressionist', '1.5.1'
 gem 'imgix', '0.3.1'
 gem 'ipcat', '2.0.1'
 gem 'jbuilder', '2.3.0'
-gem 'mandrill_dm', '1.2.0'
+gem 'mandrill_dm', git: 'https://github.com/blarralde/mandrill_dm.git'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
 gem 'momentjs-rails', '2.8.1'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.12.0.288'
 gem 'nokogiri', '1.6.0'
+# I know it's bad practice to have passwords committed but this is just a dummy account with only read access to that specific repo
+gem 'omniauth-arduino', git: "https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git"
 gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
+gem 'omniauth-saml', git: 'https://github.com/blarralde/omniauth-saml.git', branch: 'patch-1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https
@@ -92,7 +96,7 @@ gem 'premailer-rails', '1.7.0'
 gem 'protected_attributes', '1.0.9'
 # gem 'puma', '2.10.2'
 gem 'pusher', '0.14.2'
-gem 'pygments.rb', '0.5.4'
+gem 'pygments.rb', git: 'https://github.com/blarralde/pygments.rb.git'
 gem 'rabl', '0.11.6'
 gem 'rack-attack', '4.1.0'
 gem 'rack-timeout', '0.3.2'
@@ -126,7 +130,7 @@ gem 'unicorn', '4.7.0'
 gem 'vimeo', '1.5.3'
 gem 'will_paginate', github: 'mislav/will_paginate'
 gem 'workflow', '1.0.0'
-gem 'yajl-ruby', '1.1.0'
+gem 'yajl-ruby', '1.2.0'
 
 # heroku
 gem 'heroku-api', '0.3.22'
@@ -137,6 +141,10 @@ gem 'rails_12factor', group: :production
 # gem "bullet", :group => "development"
 # gem 'ruby-prof', group: [:development, :profile]
 gem 'derailed_benchmarks', group: :development
+
+group :development do
+  gem 'letter_opener'
+end
 
 group :development, :test do
   gem 'foreman'
@@ -152,13 +160,15 @@ group :development, :test do
   gem 'spring'
   # gem 'web-console', '~> 2.0'
   gem 'byebug'
+  gem 'ffaker'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
-  # gem 'faker'
-  gem 'rspec-rails'
+  gem 'rspec-sidekiq'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers'
 end

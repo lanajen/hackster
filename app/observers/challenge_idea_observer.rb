@@ -4,6 +4,13 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
     NotificationCenter.notify_via_email :new, :challenge_idea_admin, record.id unless record.challenge.auto_approve
   end
 
+  def after_update record
+    custom = record.hstore_columns[:properties].select{|v| v =~ /cfield/ }
+    if (record.changed & (%w(name description image_id) + custom)).any?
+      expire_cache record
+    end
+  end
+
   def after_approve record
     expire_cache record
     NotificationCenter.notify_all :approved, :challenge_idea, record.id
@@ -26,6 +33,6 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
     def expire_cache record
       record.challenge.update_counters only: [:ideas]
       Cashier.expire "challenge-#{record.challenge_id}-ideas"
-      record.challenge.purge
+      FastlyWorker.perform_async 'purge', record.challenge.record_key
     end
 end

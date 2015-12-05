@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>We are sorry to inform you that your entry "|idea_name|" for the pre-contest phase of <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> did not qualify because it did not meet eligibility requirements. Please refer to <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, ref: 'emailnotif') %>">the challenge rules</a> for more information.</p>
+<p>We are sorry to inform you that your entry "|idea_name|" for the pre-contest phase of <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> did not qualify because it did not meet eligibility requirements. Please refer to <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> for more information.</p>
 
 <% if @context[:challenge].pre_contest_in_progress? %>
   <p>

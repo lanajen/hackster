@@ -29,6 +29,7 @@ class Part < ActiveRecord::Base
   has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :follow_relations, as: :followable
+  has_many :impressions, dependent: :destroy, class_name: 'PartImpression'
   has_many :owners, through: :follow_relations, class_name: 'User', source: :user
   has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
@@ -44,7 +45,7 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id, :part_joins_attributes,
     :part_join_ids, :workflow_state, :slug, :one_liner, :position,
     :child_part_relations_attributes, :parent_part_relations_attributes, :type,
-    :link, :image_url, :tags, :should_generate_slug
+    :link, :image_url, :tags, :should_generate_slug, :generic
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -53,11 +54,12 @@ class Part < ActiveRecord::Base
     :product_page, :review, :get_started
 
   counters_column :counters_cache, long_format: true
-  has_counter :all_projects, 'all_projects.public.count'
+  has_counter :all_projects, 'all_projects.publyc.count'
   has_counter :owners, 'owners.count'
-  has_counter :projects, 'projects.public.count'
+  has_counter :projects, 'projects.publyc.count'
 
   validates :name, :type, presence: true
+  validates :name, length: { maximum: 255 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
     format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true
@@ -160,7 +162,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.visible
-    public.with_slug
+    publyc.with_slug
   end
 
   def all_projects

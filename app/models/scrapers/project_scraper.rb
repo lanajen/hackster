@@ -14,7 +14,7 @@ class ProjectScraper
 
     project = s.document.to_project options[:model_class]
     project.website ||= options[:website].presence || page_url
-    project.private = (options[:private].nil? ? true : options[:private])
+    project.pryvate = (options[:private].nil? ? true : options[:private])
     project.workflow_state = options[:workflow_state]
     project.name = project.name[0..59]
     project
@@ -67,6 +67,7 @@ class ProjectScraper
       'github.com' => :github,
       'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,
+      'littlebits.cc' => :littlebit,
       'kickstarter.com' => :kickstarter,
       'makezine.com' => :makezine,
       'medium.com' => :medium,
@@ -75,6 +76,7 @@ class ProjectScraper
       'e2e.ti.com' => :tie2e,
       'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,
+      'youtube.com' => :youtube,
     }
 
     def initialize content, page_url, strategy=nil

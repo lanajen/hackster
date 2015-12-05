@@ -30,7 +30,7 @@ class AttachmentObserver < ActiveRecord::Observer
     elsif record.attachable_type.in? %w(List)
       case record.type
       when 'CoverImage'
-        Cashier.expire "list-#{record.attachable_id}-thumb", 'lists-index' if record.attachable.public?
+        Cashier.expire "list-#{record.attachable_id}-thumb", 'lists-index' if record.attachable.publyc?
       end
     elsif record.attachable_type.in? %w(Platform)
       case record.type
@@ -44,11 +44,11 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Image'
         challenge = record.attachable.challenge
         Cashier.expire "challenge-#{challenge.id}-prizes"
-        challenge.purge
+        FastlyWorker.perform_async 'purge', challenge.record_key
       end
     end
     if record.attachable_type != 'Orphan' and record.attachable
-      record.attachable.purge
+      FastlyWorker.perform_async 'purge', record.attachable.record_key
       record.attachable.update_attribute :updated_at, Time.now if record.attachable.respond_to? :updated_at
     end
   end

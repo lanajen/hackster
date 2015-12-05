@@ -10,7 +10,7 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  # API (see if can be moved to its own subdomain)
+  # kept for compatibility, remove when fully migrated
   namespace :api do
     namespace :v1 do
       get 'embeds' => 'embeds#show'
@@ -36,17 +36,15 @@ HackerIo::Application.routes.draw do
       resources :parts, except: [:new, :edit], defaults: { format: :json }
       scope 'platforms' do
         get ':user_name' => 'platforms#show', defaults: { format: :json }
-        scope ':user_name' do
-          get 'analytics' => 'platforms#analytics', defaults: { format: :json }
-        end
       end
       resources :lists, only: [:index, :create], defaults: { format: :json } do
         post 'projects' => 'lists#link_project', on: :member
         delete 'projects' => 'lists#unlink_project', on: :member
       end
+      # legacy route, replaced by global chrome_sync below
       resources :microsoft_chrome_sync, only: [] do
-        get '' => 'microsoft_chrome_sync#show', on: :collection
-        patch '' => 'microsoft_chrome_sync#update', on: :collection
+        get '' => 'chrome_sync#show', on: :collection
+        patch '' => 'chrome_sync#update', on: :collection
       end
       resources :notifications, only: [:index], defaults: { format: :json }
       resources :thoughts
@@ -82,21 +80,23 @@ HackerIo::Application.routes.draw do
         end
         resources :projects
         resources :parts, except: [:new, :edit]
-        scope 'platforms' do
-          get ':user_name' => 'platforms#show'
-          scope ':user_name' do
-            get 'analytics' => 'platforms#analytics'
+        scope :platforms do
+          scope :analytics do
+            get '' => 'platform_analytics#show'
+            get 'projects' => 'platform_analytics#projects'
           end
+          get ':user_name' => 'platforms#show'
         end
         resources :lists, only: [:index, :create] do
           post 'projects' => 'lists#link_project', on: :member
           delete 'projects' => 'lists#unlink_project', on: :member
         end
-        resources :microsoft_chrome_sync, only: [] do
-          get '' => 'microsoft_chrome_sync#show', on: :collection
-          patch '' => 'microsoft_chrome_sync#update', on: :collection
+        resources :chrome_sync, only: [] do
+          get '' => 'chrome_sync#show', on: :collection
+          patch '' => 'chrome_sync#update', on: :collection
         end
         resources :notifications, only: [:index]
+        get 'search' => 'search#index'
         resources :thoughts
         resources :users, only: [] do
           get :autocomplete, on: :collection
@@ -165,6 +165,7 @@ HackerIo::Application.routes.draw do
           patch 'update_workflow' => 'payments#update_workflow', on: :member
         end
         resources :projects, except: [:show]
+        resources :short_links, except: [:show]
         resources :users, except: [:show]
 
         get 'store' => 'pages#store'
@@ -397,6 +398,8 @@ HackerIo::Application.routes.draw do
         get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
+      get 's/:slug' => 'short_links#show'
+
       scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
         resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
       end
@@ -439,13 +442,22 @@ HackerIo::Application.routes.draw do
       get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
-      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
+      get 'windows10kit', to: redirect('/s/windows10kit')
 
-      get 'tinyduino', to: redirect('/tinycircuits')
+      # platform renamings
+      get 'intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/projects', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products/intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-galileo', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/projects', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products/intel-galileo-gen-2', to: redirect('/intel/products/intel-galileo-gen-2')
       get 'spark', to: redirect('/particle')
       get 'spark/projects', to: redirect('/particle/projects')
       get 'spark/makes', to: redirect('/particle/components')
       get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
+      get 'tinyduino', to: redirect('/tinycircuits')
 
       get 'home' => 'pages#home'
       get 'about' => 'pages#about'
@@ -628,7 +640,18 @@ HackerIo::Application.routes.draw do
     end
 
     constraints(UserPage) do
-      get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ } do
+        get '' => 'users#show'
+        scope 'projects', as: :user_projects do
+          get '' => 'users#projects_public'
+          get 'drafts' => 'users#projects_drafts', as: :drafts
+          get 'guest' => 'users#projects_guest', as: :guest
+          get 'respected' => 'users#projects_respected', as: :respected
+          get 'replicated' => 'users#projects_replicated', as: :replicated
+        end
+        get 'toolbox' => 'users#toolbox_show', as: :user_toolbox_show
+        get 'comments' => 'users#comments', as: :user_comments
+      end
       get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     end
 

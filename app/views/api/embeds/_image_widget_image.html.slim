@@ -1,7 +1,12 @@
 .image  data-type='file' data-file-id=image.id contenteditable='false'
   figure
     a.embed-img href="javascript:openLightBox(#{widget.id},#{i});"
-      = image_tag image.imgix_url(:headline)
+      - if lazyload and !i.zero?
+        = image_tag nil, 'data-lazy' => image.imgix_url(:headline)
+        noscript
+          = image_tag image.imgix_url(:headline)
+      - else
+        = image_tag image.imgix_url(:headline)
     - if image.title.present?
       figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' } = image.title
     - else

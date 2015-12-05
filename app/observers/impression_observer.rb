@@ -10,8 +10,9 @@ class ImpressionObserver < ActiveRecord::Observer
         Cashier.expire *keys
 
         # fastly
-        project.users.each { |u| u.purge }
-        project.purge
+        keys = project.users.map { |u| u.record_key }
+        keys << project.record_key
+        FastlyWorker.perform_async 'purge', *keys if keys.any?
       end
     end
   end

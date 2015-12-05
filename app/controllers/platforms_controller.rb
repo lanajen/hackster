@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : Platform::DEFAULT_SORT)
 
-    @platforms = Platform.public.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+    @platforms = Platform.publyc.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
@@ -51,7 +51,7 @@ class PlatformsController < ApplicationController
     respond_to do |format|
       format.html do
         title "#{@platform.name}'s community hub"
-        meta_desc "Explore #{@platform.name}'s community hub to learn and share about their products! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+        meta_desc "Explore #{@platform.name}'s community hub to learn and share about their products! Join #{@platform.followers_count} hardware developers who follow #{@platform.name} on Hackster."
 
         sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
         @followers = User.find_by_sql([sql, @platform.id])
@@ -78,7 +78,7 @@ class PlatformsController < ApplicationController
     impressionist_async @platform, "", unique: [:session_hash]
 
     title "#{@platform.name}'s' community"
-    meta_desc "Join #{@platform.followers_count} makers in #{@platform.name}'s community on Hackster."
+    meta_desc "Join #{@platform.followers_count} hardware developers in #{@platform.name}'s community on Hackster."
 
     @team_members = @platform.team_members.includes(:user).includes(user: :avatar).paginate(page: safe_page_params)
     @members = @platform.followers.where.not(follow_relations: { user_id: @team_members.map{|m| m.user_id } }).order("CAST(users.hcounters_cache -> 'reputation' AS INTEGER) DESC NULLS LAST").includes(:avatar).paginate(page: safe_page_params, per_page: 24)
@@ -91,7 +91,7 @@ class PlatformsController < ApplicationController
     impressionist_async @platform, "", unique: [:session_hash]
 
     title "#{@platform.name} projects"
-    meta_desc "Explore #{@platform.projects_count} projects built with #{@platform.name}, and share your own! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+    meta_desc "Explore #{@platform.projects_count} projects built with #{@platform.name}, and share your own! Join #{@platform.followers_count} hardware developers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -115,7 +115,7 @@ class PlatformsController < ApplicationController
     impressionist_async @platform, "", unique: [:session_hash]
 
     title "Products made with #{@platform.name}"
-    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} hardware developers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -139,7 +139,7 @@ class PlatformsController < ApplicationController
     impressionist_async @platform, "", unique: [:session_hash]
 
     title "Platforms that use #{@platform.name}"
-    meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+    meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} hardware developers who follow #{@platform.name} on Hackster."
 
     @platforms = @platform.sub_platforms.sub_platform_most_members.page(safe_page_params)
 
@@ -175,9 +175,9 @@ class PlatformsController < ApplicationController
 
     @new_projects = graph_with_dates_for @new_projects_sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', BaseArticle.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
 
-    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'BaseArticle views in the last 30 days', 'AreaChart'
+    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'Project views in the last 30 days', 'AreaChart'
 
-    @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Page views in the last 30 days', 'AreaChart'
+    @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Hub page views in the last 30 days', 'AreaChart'
 
     @new_respects = graph_with_dates_for @new_respects_sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'BaseArticle'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
 

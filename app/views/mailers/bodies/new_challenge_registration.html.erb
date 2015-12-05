@@ -1,8 +1,12 @@
 <p>Hello there,</p>
 
-<p>This is to confirm that you are now registered for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a>.</p>
+<p>This is to confirm that you are now registered for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a>.</p>
 
-<p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, ref: 'emailnotif') %>">the challenge rules</a> to learn more about the requirements.</p>
+<% if @context[:challenge].custom_registration_email.present? %>
+  <p><%= raw @context[:challenge].custom_registration_email %></p>
+<% end %>
+
+<p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> to learn more about the requirements.</p>
 
 <% if @context[:challenge].activate_pre_contest? %>
   <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
@@ -10,7 +14,7 @@
   <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
 <% end %>
 
-<p>Here is the timeline:</p>
+<p>Finally, here is the timeline:</p>
 <ol>
   <% if @context[:challenge].activate_pre_registration %>
     <% if @context[:challenge].pre_registration_start_date %>

@@ -11,7 +11,7 @@
 
     / = render 'projects/project_embed_popup'
 
-    #content.project-page.hljs-active class="project-#{@project.id}"
+    #content.project-page class="project-#{@project.id}"
       .wrapper780.protip-show
         - if @project.content_type_to_human
           section.section-no-container
@@ -20,7 +20,7 @@
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
             .pull-right-desktop
-              - if @project.public?
+              - if @project.publyc?
                 a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                   i.fa.fa-share-square-o
                   span Share
@@ -28,7 +28,7 @@
                   = render partial: 'respects/article_button', locals: { respectable: @project }
               span style='margin-left:5px' = render 'base_articles/manage_actions', { btn_size: 'btn-sm' }
 
-          - elsif @project.private?
+          - elsif @project.pryvate?
             p.pull-right-desktop
               i.fa.fa-lock>
               | This article is private.
@@ -93,7 +93,7 @@
           - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
 
             section.section-container.section-no-title
-              .section-content
+              .section-content.hljs-active
                 .medium-editor= @project.description
 
           - if @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).exists?
@@ -102,7 +102,8 @@
                 span.title
                   ' Attachments
               .section-content
-                - @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).order(:position, :id).each do |widget|
+                = render partial: "api/embeds/code_widgets", locals: { widgets: @project.widgets.where(type: %w(CodeWidget)).order(:position, :id) }
+                - @project.widgets.where(type: %w(GenericEmbedWidget FileWidget)).order(:position, :id).each do |widget|
                   = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
           section#team.section-container
@@ -166,7 +167,7 @@
             .section-content
               = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
 
-    - if @project.public?
+    - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
         - if @other_projects.count > 0
           section.other-projects

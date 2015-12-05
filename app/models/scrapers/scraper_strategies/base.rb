@@ -27,7 +27,7 @@ module ScraperStrategies
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
       @article = select_article
-      @project.name = extract_title
+      @project.name = extract_title.gsub(/&/, 'and').try(:truncate, 60)
 
       before_parse
 
@@ -60,34 +60,112 @@ module ScraperStrategies
       def after_parse
         @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
+        @project.one_liner ||= extract_one_liner.try(:truncate, 140)
+        @project.product_tags_string = @parsed.css('a[rel=tag]').map{|a| a.text }.join(',') if @project.product_tags_string.blank?
+        @project.product_tags_string = @project.product_tags_string.split(',').map{|t| t.strip }[0..2].join(',') if @project.product_tags_string.present?
       end
 
       def before_parse
         @article.css(crap_list.join(',')).each{|n| n.remove }
       end
 
-      def clean_divs parent
-        traverse parent do |node|
-          if node.name == 'div' and node['class'] != 'embed-frame'
-            node.after '<br>'
-            node.replace node.children
+      def clean_brs text
+        return unless text
+
+        doc = Nokogiri::HTML text
+        doc.xpath('/html/body/br').each{|el| el.remove }
+        doc.at_css('body').inner_html
+      end
+
+      def clean_inline_text string
+        return unless string
+
+        strings = []
+        cur = ''
+        in_tag = nil
+        tag_opening = nil
+
+        string.gsub! /\s*(<br\/?>\s*)+<br\/?>\s*/i, '<br><br>'
+
+        string.split('').each do |char|
+          cur << char
+          if in_tag.present?
+            if cur.match Regexp.new("</#{in_tag}>")
+              strings << "#{tag_opening}#{cur}"
+              cur = ''
+              in_tag = nil
+            end
+          else
+            regex = /(<(h3|h4|h5|h6|ul|div|ol|pre|p|blockquote|table|tbody|th|tr|thead|tfoot|td|li)(\s+[^>]+)?>)/i
+            if cur.match regex
+              in_tag = $2
+              tag_opening = $1
+              cur.gsub! regex, ''
+              if cur.present?
+                s = cur.gsub /<br\/?>\s*<br\/?>/i, '</p><p>'
+                strings << ('<p>' + s + '</p>')
+              end
+              cur = ''
+            end
           end
         end
+        if cur.present?
+          s = cur.gsub /<br\/?>\s*<br\/?>/i, '</p><p>'
+          strings << ('<p>' + s + '</p>')
+        end
+
+        final = strings.join('')
+        final.gsub!(/([^p])>(<br>)+/i){|m| $1 + '>' }
+        final.gsub!(/(<br>)+<\/[^p]/i){|m| '<' + $1 }
+        final.gsub! /<p><\/p>/i, ''
+        final
+      end
+
+      def clean_divs parent
+        parent.css('div').each do |el|
+          if el['class'] !~ /embed-frame/
+            2.times do
+              node = Nokogiri::XML::Node.new 'br', parent
+              el.add_previous_sibling node
+            end
+            el.children.each do |c|
+              el.add_previous_sibling c
+            end
+            if el.next and el.next.name != 'div'
+              2.times do
+                node = Nokogiri::XML::Node.new 'br', parent
+                el.add_previous_sibling node
+              end
+            end
+            el.remove
+          else
+            el.children.each do |c|
+              c.remove
+            end
+          end
+        end
+
+        parent.name == 'div' ? parent.children : parent
       end
 
       def clean_up_formatting base_name='@article'
         base = instance_variable_get base_name
         # @article.search('//text()').each{|el| el.remove if el.content.strip.blank? }
-        base.css('a, p, h3, h4, pre').each{|el| el.remove if el.content.strip.blank? }
 
-        sanitized_text = Sanitize.clean(base.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
-        instance_variable_set base_name, Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
+        base = clean_divs base
+        text = clean_inline_text base.to_s
+        text = clean_brs text
 
-        clean_divs instance_variable_get(base_name)
+
+        sanitized_text = Sanitize.clean(text.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
+        html = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
+        html.css('a, p, h3, h4, pre').each{|el| el.remove if el.content.strip.blank? }
+
+        instance_variable_set base_name, html
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr .ssba)
       end
 
       def extract_code_blocks base=@article
@@ -97,8 +175,7 @@ module ScraperStrategies
       def extract_code_lines node
         out = if node.name.in? %w(code pre)
           lang = node['data-lang']
-          code = node.content.gsub(/<br ?\/?>/, "\r\n")
-          code.lines.count <= 5 ? nil : code  # we leave snippets in place
+          node.content.gsub(/<br ?\/?>/, "\r\n")
         else
           node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
         end
@@ -116,6 +193,10 @@ module ScraperStrategies
           return img if test_link src
         end
         nil
+      end
+
+      def extract_one_liner
+        @parsed.at_css('meta[property="og:description"]').try(:[], 'content') || @parsed.at_css('meta[name="twitter:description"]').try(:[], 'content') || @parsed.at_css('meta[name="description"]').try(:[], 'content')
       end
 
       def extract_images base=@article, super_base=nil
@@ -272,14 +353,18 @@ module ScraperStrategies
       end
 
       def parse_code base=@article
-        extract_code_blocks(base).each do |node|
+        extract_code_blocks(base).each_with_index do |node, i|
           code, lang = extract_code_lines(node)
           next unless code
 
-          file = CodeWidget.new raw_code: code, name: 'Code', language: lang || 'text'
-          file.project = @project
-          @widgets << file
-          # node.remove  # remove so it's not added to text later
+          if code.size >= 5
+            file = CodeWidget.new raw_code: code, name: "Code snippet ##{i+1}", language: lang || 'text'
+            file.project = @project
+            @widgets << file
+          end
+
+          node.after "<pre><code>#{CGI::escapeHTML code}</code></pre>"
+          node.remove  # remove so it's not added to text later
         end
       end
 
@@ -372,7 +457,7 @@ module ScraperStrategies
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             ext = File.extname(URI.parse(link).path)[1..-1]
-            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git)
+            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git gsp)
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''
@@ -444,7 +529,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('#content') || @parsed.at_css('#main') || @parsed.at_css('.post') || @parsed.at_css('.content') || @parsed.at_css('body')
+        @parsed.at_css('article') || @parsed.at_css('.entry-content') || @parsed.at_css('#content') || @parsed.at_css('#main') || @parsed.at_css('.post') || @parsed.at_css('.content') || @parsed.at_css('body')
       end
 
       def title_levels

@@ -8,7 +8,12 @@ class ChallengeRegistrationsController < ApplicationController
     @registration.user_id = current_user.id
 
     if @registration.save
-      flash[:notice] = "Welcome to #{@challenge.name}!"
+      session[:share_modal] = 'new_registration_challenge_share_prompt'
+      session[:share_modal_model] = 'challenge'
+      session[:share_modal_model_id] = @challenge.id
+      session[:share_modal_time] = 'after_redirect'
+
+      # flash[:notice] = "Welcome to #{@challenge.name}!"
     else
       flash[:alert] = "Something wrong happened, please try again."
     end

@@ -1,14 +1,17 @@
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '<%= tracker %>']);
-  _gaq.push(['_setDomainName', '<%= domain %>']);
-  _gaq.push(['_trackPageview']);
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  ga('create', '<%= tracker %>', 'auto');
+  ga('send', 'pageview');
+  <% if user_signed_in? %>
+    ga('set', '&uid', <%= current_user.id %>);
+  <% end %>
+  ga('set', 'dimension1', '<%= user_signed_in? ? 'Member' : 'Visitor' %>');
+  ga('set', 'dimension2', '<%= self.controller_name %>');
+  ga('set', 'dimension3', '<%= self.action_name %>');
 </script>
 
 <%- if defined?(track_outbound) and track_outbound %>
@@ -20,6 +23,7 @@
           var url = $(this).attr("href");
           if (e.currentTarget.host != window.location.host && url.indexOf('javascript:') == -1) {
             _gaq.push(['_trackEvent', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url]);
+            ga('send', 'event', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url);
             if (e.metaKey || e.ctrlKey || this.target == "_blank") {
               var newtab = true;
             }
@@ -27,6 +31,18 @@
               e.preventDefault();
               setTimeout('document.location = "' + url + '"', 100);
             }
+          }
+        });
+        $('.project-switcher').on('click', function(e){
+          var url = $(this).attr("href");
+          var dir = url.match(/dir=([a-z]+)/)[1];
+          ga('send', 'event', 'ProjectSwitcher', dir, url);
+          if (e.metaKey || e.ctrlKey) {
+            var newtab = true;
+          }
+          if (!newtab) {
+            e.preventDefault();
+            setTimeout('document.location = "' + url + '"', 100);
           }
         });
       });

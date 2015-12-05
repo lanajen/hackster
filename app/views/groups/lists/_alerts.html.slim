@@ -4,7 +4,7 @@
       .container
         h2.section-title.mg-20 Welcome to your list! Follow this checklist to get started:
         = render 'groups/platforms/checklist', model: @group, group: :get_started
-  - elsif @group.private?
+  - elsif @group.pryvate?
     section.section-admin
       .container
         p

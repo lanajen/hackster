@@ -99,7 +99,7 @@ class SitemapController < ApplicationController
     end
 
     def lists_query
-      List.public
+      List.publyc
     end
 
     def lists_pages offset=0
@@ -113,7 +113,7 @@ class SitemapController < ApplicationController
     end
 
     def platforms_query
-      Platform.public
+      Platform.publyc
     end
 
     def platforms_pages offset=0
@@ -163,7 +163,7 @@ class SitemapController < ApplicationController
     end
 
     def users_query
-      User.invitation_accepted_or_not_invited.user_name_set
+      User.invitation_accepted_or_not_invited.user_name_set.publyc
     end
 
     def users_pages offset=0
@@ -191,7 +191,7 @@ class SitemapController < ApplicationController
     end
 
     def hacker_spaces_query
-      HackerSpace.public
+      HackerSpace.publyc
     end
 
     def hacker_spaces_pages offset=0

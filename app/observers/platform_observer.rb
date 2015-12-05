@@ -6,7 +6,7 @@ class PlatformObserver < ActiveRecord::Observer
 
   def after_destroy record
     expire_index
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
   end
 
   def after_save record
@@ -18,7 +18,7 @@ class PlatformObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
   end
 
   def before_create record
@@ -70,6 +70,6 @@ class PlatformObserver < ActiveRecord::Observer
   private
     def expire_index
       Cashier.expire 'platform-index'
-      Platform.purge_all
+      FastlyWorker.perform_async 'purge', 'groups'
     end
 end

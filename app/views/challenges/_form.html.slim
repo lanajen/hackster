@@ -22,12 +22,14 @@
         .panel-body
           = f.input :name, label: 'Title'
           = f.input :new_slug, label: 'Challenge URL', wrapper: :addon do
-            span.input-group-addon hackster.io/challenges/
+            span.input-group-addon #{site_domain}/challenges/
             = f.input_field :new_slug
           = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @challenge.cover_image.try(:imgix_url), help_block: 'A high definition shot, at least 1600px wide and 430px high.', attribute_type: 'cover_image', image_version: nil, model: 'challenge' }
           = f.input :video_link, label: 'Video link'
           = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
-          = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "Leave room for the URL! Default: '#{@challenge.decorate.default_tweet}'"
+          = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "The default message under 'Invite others to compete', which is accessible by everyone whether they have registered or not. Leave room for the URL! Default: '#{@challenge.decorate.default_tweet}'", label: 'General tweet'
+          = f.input :after_registration_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they register for the contest. Leave room for the URL! Default: '#{@challenge.default_after_registration_tweet}'", label: "Tweet after entry submitted"
+          = f.input :custom_registration_email, label: "Registration email customization", hint: "Useful for providing custom info like coupons. Should only be one sentence, straight to the point. Don't forget the dot at the end. Supports limited HTML."
 
       .panel.panel-default
         .panel-heading
@@ -36,7 +38,7 @@
           /
             = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
             #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
-              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
+              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when developers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
                 #datepicker.input-group
                   = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
                   span.input-group-addon
@@ -73,18 +75,20 @@
                   thead
                     th Field label
                     th Required
+                    th Hide
                     th
                   tbody
                     = f.simple_fields_for :challenge_idea_fields, wrapper: false do |f_field|
                       tr.fields
                         td style='min-width: 80%' = f_field.input :label, label: false
                         td= f_field.input :required, label: false, as: :boolean
+                        td= f_field.input :hide, label: false, as: :boolean
                         td
                           = f_field.input :position, as: :hidden, input_html: { class: 'position' }
                           = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
                     tr.sortable-disabled
-                      td colspan=3 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
-
+                      td colspan=4 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
+          = f.input :after_submit_idea_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit an idea. Leave room for the URL! Default: '#{@challenge.default_after_submit_idea_tweet}'", label: "Tweet after idea submitted"
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
             #datepicker.input-group
@@ -92,7 +96,7 @@
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
-          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Times are PT (-08)." do
+          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "The maximum date by which developers can submit entries to the challenge. Times are PT (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon
@@ -104,6 +108,7 @@
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :winners_announced_date, as: :hidden, input_html: { id: 'winners_announced_date' }
+          = f.input :after_submit_entry_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit a project. Leave room for the URL! Default: '#{@challenge.default_after_submit_entry_tweet}'", label: "Tweet after entry submitted"
 
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
           / = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."

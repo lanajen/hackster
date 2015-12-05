@@ -9,15 +9,16 @@
       = link_to idea.user.name, idea.user
     .field= raw idea.description
     - idea.challenge.challenge_idea_fields.each_with_index do |field, i|
-      .field
-        .field-title
-          strong
-            = field.label
-            | :
-        - if field = idea.send("cfield#{i}")
-          - field.split(/\r\n/).each do |string|
-            = string
-            br
+      - unless field.hide and !params[:show_all_fields]
+        .field
+          .field-title
+            strong
+              = field.label
+              | :
+          - if field = idea.send("cfield#{i}")
+            - field.split(/\r\n/).each do |string|
+              = string
+              br
     .field Submitted on #{l idea.created_at}.
 
   = link_to 'View the full idea &rarr;'.html_safe, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }

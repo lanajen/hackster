@@ -10,7 +10,7 @@ module ScraperStrategies
 
       def before_parse
         tags = @parsed.css('.sideTags .tags a')
-        @project.product_tags_string = tags.map{|a| a.text }.join(',')[0..19]
+        @project.product_tags_string = tags.map{|a| a.text }[0..2].join(',')
 
         # els = @parsed.css('.public-info .mr')
         # if el = els.first
@@ -41,7 +41,7 @@ module ScraperStrategies
           part.save
 
           part_join = PartJoin.new part_id: part.id, partable_id: 0,
-            partable_type: 'Project'
+            partable_type: 'BaseArticle'
           part_join.position = i + 1
           @parts << part_join
         end

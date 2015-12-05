@@ -49,7 +49,7 @@ class SearchController < ApplicationController
 
       if params[:q].present?
         title "Results for #{params[:q]}"
-        meta_desc "Browse results for #{params[:q]}. Find platforms, projects and makers on hackster.io."
+        meta_desc "Browse results for #{params[:q]}. Find hardware platforms, projects and developers on hackster.io."
         begin
           @results = SearchRepository.new(params).search.results
 
@@ -57,7 +57,7 @@ class SearchController < ApplicationController
           @max = @results.offset + @results.size
           unless @results.total_count.zero?
             title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
-            meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find platforms, projects and makers on #{site_name}."
+            meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find hardware platforms, projects and developers on #{site_name}."
             meta_desc += " Page #{safe_page_params}" if safe_page_params and safe_page_params.to_i > 1
             meta_desc meta_desc
           end

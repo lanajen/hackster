@@ -3,6 +3,6 @@
     .user-thumbs.clearfix
       - users.each do |user|
         - cache [I18n.locale, "user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
-          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive user-img istooltip img-rounded', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
+          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive user-img img-rounded'), user , data: { container: 'body' }, rel: 'tooltip', title: user.name
     - if @project.respects_count > users.count
-      p style="font-size:0.8em" and #{pluralize @project.respects_count - users.count, 'other maker'}
+      p style="font-size:0.8em" and #{pluralize @project.respects_count - users.count, 'other'}

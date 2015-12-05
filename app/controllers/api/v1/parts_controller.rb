@@ -1,4 +1,5 @@
 class Api::V1::PartsController < Api::V1::BaseController
+  skip_before_filter :authorize_access!
   before_filter :public_api_methods
   before_filter :authenticate_platform_or_user, only: [:index]
   before_filter :authenticate_and_load_resource, only: [:show, :create, :update, :destroy]
@@ -7,7 +8,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     @parts = if current_platform
       current_platform.parts
     else
-      Part.approved
+      Part
     end
 
     if params[:q].present?
@@ -27,6 +28,10 @@ class Api::V1::PartsController < Api::V1::BaseController
 
     sort = params[:sort] || Part::DEFAULT_SORT
     @parts = @parts.send(Part::SORTING[sort])
+
+    if params[:approved]
+      @parts = @parts.approved
+    end
 
     @parts = @parts.includes(:image, platform: :avatar).paginate(page: safe_page_params)
   end

@@ -8,7 +8,7 @@ class UrlGenerator
 
   private
     def default_url_options(options = {})
-      { locale: nil, host: @host }.merge options
+      { locale: nil, host: @host, protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http') }.merge options
     end
 
     def is_whitelabel?

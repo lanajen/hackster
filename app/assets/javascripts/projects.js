@@ -17,11 +17,19 @@ $select2target = null;
   $(function() {
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
-      $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
+      var redirLink = $(this).data('redirect-to');
+      $('#simplified-signup-popup input[name="redirect_to"]').val(redirLink);
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
+
       if ($(this).hasClass('with-name')) {
         $('#simplified-signup-popup .full-name-wrapper').show();
       }
+
+      var signInHref = $('#simplified-signup-popup .sign-in-link');
+      var signInLink = signInHref.attr('href');
+      signInLink += '?redirect_to=' + encodeURIComponent(redirLink);
+      signInHref.attr('href', signInLink);
+
       openModal('#simplified-signup-popup');
     });
     $('#simplified-signup-popup').on('modal:open', function(e){
@@ -359,6 +367,23 @@ $select2target = null;
       $('.pe-save2').hide();
     });
 
+    // handles save on ctrl+s
+    if ($('.pe-save').length) {
+      $(window).bind('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+          if (String.fromCharCode(e.which).toLowerCase() == 's') {
+            e.preventDefault();
+            // check if we're on a modal form and if so save it, otherwise save pe
+            if ($('form.form-within-modal:visible').length) {
+              $('form.form-within-modal:visible').submit();
+            } else {
+              pe.saveChanges();
+            }
+          }
+        }
+      });
+    }
+
     // event methods for software/hardware
     $('.modal-with-form')
       .on('click', '.select-file', function(e){
@@ -437,8 +462,7 @@ $select2target = null;
       cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
       cEditor.ace.selection.clearSelection();
       var lang = $(this).find('[data-field-type="language"]').val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
 
     $('#code-editor-popup').on('modal:open', function(){
@@ -447,9 +471,22 @@ $select2target = null;
 
     $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
       var lang = $(this).val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
+
+    function updateEditorMode(editor, lang) {
+      switch (lang) {
+        // default if empty
+        case '':
+          lang = 'text';
+          break;
+        // ace doesn't have an arduino mode and C/C++ is good enough
+        case 'arduino':
+          lang = 'c_cpp';
+          break;
+      }
+      editor.ace.getSession().setMode("ace/mode/" + lang);
+    }
 
     $('#code-editor-popup').on('click', '.upload-code', function(e){
       e.preventDefault();
@@ -480,6 +517,13 @@ $select2target = null;
           input.val($(el).val());
       });
       openModal(popup, this);
+    });
+
+    $('body').on('modal:open', '.modal-focus-input', function(e){
+      var input = $(this).find('select:visible, input:visible, textarea:visible').first();
+      if (input.length) {
+        input.focus();
+      }
     });
 
     var select2Options = function(partType){
@@ -838,11 +882,80 @@ $select2target = null;
       $('.gist .gist-meta a').attr('target', '_blank');
     }, 1000);
 
-    loadSlickSlider();
-
     cleanUpSelectBlueprint();
+
+    // handles copying code snippets with clipboard plugin
+    new Clipboard('.code-widgets .copy-code', {
+      target: function(trigger) {
+        var widget = $(trigger).closest('.preview-pane');
+        var code = widget.find('pre')[0];
+        return code;
+      }
+    })
+      .on('success', function(e) {
+        var trigger = $(e.trigger);
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
+          title: 'Copied!',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          parent.tooltip('destroy');
+        }, 1500);
+        trigger.blur();
+
+        e.clearSelection();
+      })
+      .on('error', function(e) {
+        var trigger = $(e.trigger);
+        var parent = trigger.parent();
+        trigger.tooltip('hide');
+        parent.tooltip({
+          title: 'Press CTRL+C to copy',
+          trigger: 'manual',
+          placement: 'top',
+          container: 'body',
+        }).tooltip('show');
+        window.setTimeout(function(){
+          parent.tooltip('destroy');
+        }, 1500);
+        trigger.blur();
+      });
+
+
+    $('.code-widgets .sidebar a').on('click', function(e){
+      var container = $(this).closest('.code-widgets');
+      container.find('.sidebar a, .preview-pane').removeClass('active');
+
+      $(this).addClass('active');
+      var target = $($(this).data('target'));
+      target.addClass('active');
+
+      setPreviewPaneHeight(target);
+    });
+
+    var codeWidget = $('.code-widgets');
+    if (codeWidget.length) {
+      if (codeWidget.hasClass('single-file') && codeWidget.hasClass('no-preview')) {
+        var header = codeWidget.find('.preview-header');
+        codeWidget.css('height', header.outerHeight() + 'px');
+        updatedScrollEventHandlers();
+      } else if (codeWidget.find('.preview-pane').length) {
+        setPreviewPaneHeight(codeWidget.first());
+      }
+    }
   });
 })(jQuery, window, document);
+
+function setPreviewPaneHeight(target){
+  var header = target.find('.preview-header');
+  var body = target.find('.preview-body');
+  var height = target.outerHeight() - header.outerHeight();
+  body.css('height', height + 'px');
+}
 
 function ProjectCodeEditor(language, id) {
   this.ace = null;
@@ -962,14 +1075,20 @@ function formatPart(result) {
   return $(output);
 };
 
-function loadSlickSlider(){
-  $('.image-gallery:visible:not(.slick-initialized)').slick({
+function loadSlickSlider(opts){
+  opts = opts || {};
+  target = opts['target'] || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
+  delete opts['target'];
+  slickOpts = {
     accessibility: false,
     speed: 500,
     fade: true,
     dots: true,
     adaptiveHeight: true
-  });
+  };
+  for (var attrname in opts) { slickOpts[attrname] = opts[attrname]; }
+  target.slick(slickOpts);
+  updatedScrollEventHandlers();
 }
 
 function openLightBox(id, start) {

@@ -17,11 +17,14 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def authenticate_api_user
-      # return true if Rails.env == 'development'
+      if Rails.env == 'development'
+        @current_platform = Platform.find_by_user_name('microsoft')
+        return
+      end
 
       authenticate_or_request_with_http_basic do |username, password|
         load_platform(username)
-        @platform && username == @platform.api_username && password == @platform.api_password
+        @current_platform && username == @current_platform.api_username && password == @current_platform.api_password
       end
     end
 
@@ -44,11 +47,13 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def current_platform
-      @platform
+      return @current_platform if @current_platform
+
+      @current_platform = current_site.try(:platform)
     end
 
     def load_platform username
-      @platform = Platform.find_by_api_username username
+      @current_platform = Platform.find_by_api_username username
     end
 
     def public_api_methods

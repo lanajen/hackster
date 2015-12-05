@@ -33,6 +33,8 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :active_locales, :array, default: I18n.active_locales.map{|v| v.to_s }
   hstore_column :properties, :analytics_code, :string
   hstore_column :properties, :default_locale, :string, default: I18n.default_locale
+  hstore_column :properties, :disable_https, :boolean
+  hstore_column :properties, :disable_onboarding_screens, :boolean, default: false
   hstore_column :properties, :enable_localization, :boolean, default: false
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :force_explicit_locale, :boolean, default: false

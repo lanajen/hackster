@@ -18,7 +18,7 @@
     .col-md-6
       = f.input :full_name, label: 'Name'
       = f.input :new_user_name, label: 'Pretty URL', wrapper: :addon do
-        span.input-group-addon www.hackster.io/lists/
+        span.input-group-addon #{site_domain}/lists/
         = f.input_field :new_user_name
       = f.input :mini_resume, as: :text, label: 'Elevator pitch', input_html: { rows: 4 },
         hint: 'A short sentence, max 140 characters'
@@ -29,7 +29,7 @@
 
       / # = f.input :enable_comments, inline_label: 'Enable comments', label: false, as: :boolean
       - if @group.checklist_completed?(:get_started)
-        = f.input :public, as: :boolean, inline_label: 'Make this list public', label: false
+        = f.input :publyc, as: :boolean, inline_label: 'Make this list public', label: false
 
     .col-md-6
       .form-group

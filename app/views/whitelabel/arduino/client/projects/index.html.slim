@@ -1,0 +1,84 @@
+/ = content_for :head do
+  meta  name='robots' content='noindex'
+  = auto_discovery_link_tag :rss, root_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
+  = auto_discovery_link_tag :atom, root_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
+
+= inserts_stats_for current_platform
+
+- content_for :head do
+  meta(property="og:title" content="#{current_platform.name} projects")
+  meta(property="og:description" content=meta_desc)
+  - if current_platform.logo
+    meta(property="og:image" content=current_platform.logo.file_url)
+    meta(property="twitter:image:src" content=current_platform.logo.file_url)
+  meta(property="og:url" content="http://#{site_domain}")
+  meta(property="og:site_name" content=site_name)
+  - if site_twitter.present?
+    meta(property="twitter:site" content=site_twitter)
+  meta(property="twitter:card" content="summary")
+  meta(property="twitter:domain" content=site_domain)
+  meta(property="twitter:title" content=site_name)
+  meta(property="twitter:description" content=meta_desc)
+  link(rel="canonical" href="http://#{site_domain}")
+
+.content.projects
+  - if @announcement and @announcement.published?
+    .alert.alert-info.text-center
+      strong> Announcement:
+      = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
+  - elsif @challenge
+    .alert.alert-info.text-center
+      strong> #{current_platform.name} is holding a contest!
+      ' Join
+      ==> link_to @challenge.name, "https://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
+      | on Hackster.io
+
+  .mg-20.clearfix
+    .btn-group.btn-group-default
+      .btn-group
+        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+          ' Sort by
+          span.caret
+        ul.dropdown-menu.pull-right
+          li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', root_path(sort: 'updated', by: params[:by])
+          li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', root_path(sort: 'popular', by: params[:by])
+          li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', root_path(sort: 'recent', by: params[:by])
+          li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', root_path(sort: 'respected', by: params[:by])
+          li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', root_path(sort: 'trending', by: params[:by])
+
+      .btn-group
+        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+          ' Difficulty
+          span.caret
+        ul.dropdown-menu.pull-right
+          li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', root_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', root_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', root_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', root_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
+
+      .btn-group
+        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+          ' Type
+          span.caret
+        ul.dropdown-menu.pull-right
+          li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          / li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', root_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', root_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          / li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', root_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', root_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+
+  - if @projects.any?
+    .row.thumb-list
+      - @projects.each_with_index do |project_collection, i|
+        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
+        = content_for :js do
+          - if project_collection.featured?(I18n.short_locale)
+            javascript:
+              text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
+              $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
+
+    .text-center= will_paginate @projects
+
+  - else
+    p No projects match your criteria.

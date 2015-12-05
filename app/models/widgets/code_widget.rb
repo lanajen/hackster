@@ -5,25 +5,6 @@ require 'pygments'
 
 class CodeWidget < Widget
 
-  LANGUAGES = {
-    'Assembly' => '',
-    'C' => 'c',
-    'C++' => 'cpp',
-    'C#' => 'csharp',
-    'Console' => 'console',
-    'HTML' => 'html',
-    'Java' => 'java',
-    'JavaScript' => 'js',
-    'Objective-C' => 'objective-c',
-    'Python' => 'python',
-    'Perl' => 'perl',
-    'Ruby' => 'rb',
-    'Scala' => 'scala',
-    'Verilog' => 'verilog',
-    'VHDL' => 'vhdl',
-    'XML' => 'xml',
-  }
-
   DEFAULT_LANGUAGE = 'bash'  # pygments format
 
   ACE_PYGMENTS_TRANSLATIONS = {
@@ -40,7 +21,7 @@ class CodeWidget < Widget
     'autohotkey' => 'AutoHotKey',
     'batchfile' => 'BatchFile',
     'c9search' => 'C9Search',
-    'c_cpp' => 'C/C++ (incl. Arduino)',
+    'c_cpp' => 'C/C++',
     'cirru' => 'Cirru',
     'clojure' => 'Clojure',
     'cobol' => 'Cobol',
@@ -140,12 +121,15 @@ class CodeWidget < Widget
     'xml' => 'XML',
     'xquery' => 'XQuery',
     'yaml' => 'YAML',
-  }
+  }.freeze
+  EXTRA_PYGMENTS_LANGUAGES = {
+    'arduino' => 'Arduino',
+  }.freeze
+  ALL_LANGUAGES = ACE_LANGUAGES.merge(EXTRA_PYGMENTS_LANGUAGES).sort.to_h.freeze
   LANGUAGE_MATCHER = {
-    'Arduino' => 'c_cpp',
     'c' => 'c_cpp',
     'cpp' => 'c_cpp',
-  }
+  }.freeze
   BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
@@ -158,7 +142,7 @@ class CodeWidget < Widget
 
   accepts_nested_attributes_for :document, allow_destroy: true
   validates :language, presence: true
-  before_validation :force_encoding
+  # before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
   # before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
@@ -251,12 +235,12 @@ class CodeWidget < Widget
   end
 
   def human_language
-    ACE_LANGUAGES[language]
+    ALL_LANGUAGES[language]
   end
 
   def language=(val)
     if val.present?
-      unless val.in? ACE_LANGUAGES.keys
+      unless val.in? ALL_LANGUAGES.keys
         if val.in? LANGUAGE_MATCHER.keys
           val = LANGUAGE_MATCHER[val]
         end

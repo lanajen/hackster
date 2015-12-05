@@ -1,4 +1,4 @@
-- if @project.public?
+- if @project.publyc?
   - if (@project.pending_review? or @project.unpublished?)
     .alert.alert-warning.text-center
       p
@@ -25,14 +25,14 @@
     .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
 
 = simple_form_for @project, url: api_v1_project_path(@project), html: { class: 'form-save-on-input remote', id: 'project-form-prepublish', data: { remote: true } } do |f|
-  = f.input :content_type, collection: @project.model.class::PUBLIC_CONTENT_TYPES, label: "#{@project.identifier.capitalize} type", required: true
+  = f.input :content_type, collection: content_types_for_article(@project), label: "#{@project.identifier.capitalize} type", required: true
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
-- if @project.public?
+- if @project.publyc?
   = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
 - else
   .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
     = simple_form_for @project, html: { id: 'project-form-publish' } do |f|
       = f.input :private, as: :hidden, input_html: { value: 0 }
       = f.submit 'Publish publicly', class: 'btn btn-success btn-block'
-    .small Please select a type before publishing.
+    .alert-msg Please select a type before publishing.
