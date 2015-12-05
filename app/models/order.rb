@@ -3,6 +3,7 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
+  BLACKLISTED_COUNTRIES = ['India']
   INVALID_STATES = %w(new rejected).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
@@ -83,6 +84,7 @@ class Order < ActiveRecord::Base
     validate_order_limits
     validate_products_in_stock
     validate_products_have_not_reached_limit
+    validate_country_is_not_blacklisted
 
     errors.empty?
   end
@@ -139,6 +141,10 @@ class Order < ActiveRecord::Base
 
     def validate_at_least_one_order_line
       errors.add :order_lines, 'at least one item is required' unless order_lines_count.to_i > 0
+    end
+
+    def validate_country_is_not_blacklisted
+      errors.add :base, "Unfortunately we cannot ship to your country. <a href='http://hackster.uservoice.com/knowledgebase/articles/790986' target='_blank'>More information.</a>".html_safe if address and address.country.in? BLACKLISTED_COUNTRIES
     end
 
     def validate_has_enough_points
