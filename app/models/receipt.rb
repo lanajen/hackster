@@ -3,6 +3,7 @@ class Receipt < ActiveRecord::Base
 
   belongs_to :receivable, polymorphic: true
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
 
   attr_accessible :user_id, :receivable_id, :receivable_type, :read
 

@@ -6,6 +6,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   belongs_to :challenge, inverse_of: :ideas
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_one :image, as: :attachable, dependent: :destroy
 
   hstore_column :properties, :description, :text

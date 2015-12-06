@@ -3,6 +3,7 @@ class Grade < ActiveRecord::Base
   belongs_to :gradable, polymorphic: true
   belongs_to :project
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
 
   validates :grade, presence: true#, length: { in: 1..3 }
 

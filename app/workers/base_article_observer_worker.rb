@@ -19,7 +19,6 @@ class BaseArticleObserverWorker < BaseWorker
 
   def after_destroy record
     update_counters record, [:projects, :live_projects]
-    record.team.destroy if record.team
     FastlyWorker.perform_async 'purge', record.record_key
   end
 

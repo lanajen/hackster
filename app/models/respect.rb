@@ -3,6 +3,8 @@ class Respect < ActiveRecord::Base
 
   belongs_to :respectable, polymorphic: true
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
+  has_many :reputation_events, as: :event_model, dependent: :delete_all
   attr_accessible :respectable_id, :respectable_type, :user_id
   # allow for non unique respects for challenge_entry (= anonymous votes)
   validates :user_id, uniqueness: { scope: [:respectable_id, :respectable_type] }, unless: proc{|r| r.respectable_type == 'ChallengeEntry' }
