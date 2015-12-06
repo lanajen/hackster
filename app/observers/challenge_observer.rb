@@ -30,6 +30,14 @@ class ChallengeObserver < ActiveRecord::Observer
       keys += ["challenge-#{record.id}-brief", "challenge-#{record.id}-faq"]
       purge = true
     end
+    if (record.changed & %w(name teaser slug)).any?
+      keys << "challenge-#{record.id}-meta"
+      purge = true
+    end
+    if (record.changed & %w(name teaser sponsor_name)).any?
+      keys << "challenge-#{record.id}-banner"
+      purge = true
+    end
     if record.password_protect_changed? or record.disable_projects_tab_changed?
       purge = true
     end
