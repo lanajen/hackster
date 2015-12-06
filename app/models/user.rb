@@ -158,7 +158,8 @@ class User < ActiveRecord::Base
   end
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
-  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
+  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification', dependent: :destroy
+  has_many :notification_inverses, as: :notifiable, dependent: :delete_all, class_name: 'Notification'
   has_many :orders, -> { order :placed_at }
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee

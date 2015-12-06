@@ -23,6 +23,7 @@ class Challenge < ActiveRecord::Base
   has_many :faq_entries, as: :threadable
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :idea_entrants, -> { uniq }, through: :ideas, source: :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about

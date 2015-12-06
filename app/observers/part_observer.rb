@@ -4,7 +4,7 @@ class PartObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    PartObserverWorker.perform_async 'after_destroy', record.id
+    PartObserverWorker.new.after_destroy record  # synchronous
   end
 
   def after_update record
