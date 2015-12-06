@@ -138,7 +138,7 @@
           script type="text/javascript" src="//static.addtoany.com/menu/page.js"
           <!-- AddToAny END -->
 
-    - cache ["challenge-#{@challenge.id}-prizes"], tag: ["challenge-#{@challenge.id}-prizes"] do
+    - cache ["challenge-#{@challenge.id}-prizes"], tag: ["challenge-#{@challenge.id}-prizes"], skip_digest: true do
 
       section.section-thumbs
         h4 Prizes
