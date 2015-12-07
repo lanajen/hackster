@@ -10,7 +10,7 @@ class Comment < ActiveRecord::Base
   has_many :receipts, as: :receivable, dependent: :destroy
   has_many :reputation_events, as: :event_model, dependent: :delete_all
 
-  attr_accessor :depth
+  attr_accessor :children, :depth
   attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
 
   validates :raw_body, presence: true
@@ -59,21 +59,25 @@ class Comment < ActiveRecord::Base
 
       sorted << child
     end
+
+    sorted
   end
 
   def association_name_for_notifications
     commentable_type
   end
 
-  def children
-    return @children if @children
-
-    @children = Comment.where(parent_id: id)
+  def children force=false
+    if force
+      @children = Comment.where(parent_id: id)
+    else
+      @children
+    end
   end
 
   # soft destroy
   def destroy
-    if is_root? and children.exists?
+    if is_root? and children(true).exists?
       update_attribute :deleted, true
     else
       super
