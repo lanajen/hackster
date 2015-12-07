@@ -153,6 +153,10 @@ class Platform < Collection
     order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
   end
 
+  def self.not_featured
+    where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", true
+  end
+
   def self.sub_platform_most_members
     order members_count: :desc
   end

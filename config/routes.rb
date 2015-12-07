@@ -263,6 +263,7 @@ HackerIo::Application.routes.draw do
 
       resources :platforms, except: [:show] do
         get 'create' => 'platforms#create', on: :collection, as: :create
+        get 'incubator' => 'platforms#incubator', on: :collection, as: :incubator
         get ':tag' => 'platforms#index', on: :collection, as: :tag, constraints: lambda{|req| req.params[:tag] != 'new' }
         resources :projects, only: [] do
           post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
