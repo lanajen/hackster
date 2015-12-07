@@ -5,15 +5,50 @@ import Comment from './Comment';
 export default class Comments extends Component {
   constructor(props) {
     super(props);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.triggerReplyBox = this.triggerReplyBox.bind(this);
+  }
+
+  deleteComment(id) {
+    this.props.actions.deleteComment({ id: id, csrfToken: this.props.commentStore.user.csrfToken });
+  }
+
+  triggerReplyBox(show, id) {
+    this.props.actions.triggerReplyBox(show, id);
   }
 
   render() {
+    console.log('c', this.props.commentStore.comments);
+    let user = this.props.commentStore.user;
     const comments = this.props.commentStore.comments.map((comment, index) => {
       let children = comment.children.map((child, i) => {
-        return <Comment key={i} comment={child} children={null} />
+        return <Comment key={i}
+                        comment={child}
+                        children={null}
+                        currentUser={user}
+                        formData={this.props.commentStore.formData}
+                        deleteComment={this.deleteComment}
+                        postComment={this.props.actions.postComment}
+                        replyBox={this.props.commentStore.replyBox}
+                        scrollTo={this.props.commentStore.scrollTo}
+                        toggleFormData={this.props.actions.toggleFormData}
+                        toggleScrollTo={this.props.actions.toggleScrollTo}
+                        triggerReplyBox={this.triggerReplyBox} />
       });
-      return <Comment key={index} comment={comment.root} children={children} />
+      return <Comment key={index}
+                      comment={comment.root}
+                      children={children}
+                      currentUser={user}
+                      formData={this.props.commentStore.formData}
+                      deleteComment={this.deleteComment}
+                      postComment={this.props.actions.postComment}
+                      replyBox={this.props.commentStore.replyBox}
+                      scrollTo={this.props.commentStore.scrollTo}
+                      toggleFormData={this.props.actions.toggleFormData}
+                      toggleScrollTo={this.props.actions.toggleScrollTo}
+                      triggerReplyBox={this.triggerReplyBox} />
     });
+
     return (
       <div>
         {comments}

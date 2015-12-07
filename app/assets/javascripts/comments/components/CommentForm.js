@@ -1,10 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import TextArea from './TextArea';
+import smoothScroll from 'smoothscroll';
 
 export default class CommentForm extends Component {
   constructor(props) {
     super(props);
     this.handlePostClick = this.handlePostClick.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.parentId && window) {
+      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2));
+      this.refs.textarea.autoFocus();
+    }
+  }
+
+  componentDidUpdate(nextProps) {
+    if(!nextProps.formData.isLoading && this.props.formData.isLoading) {
+      this.refs.textarea.clearTextArea();
+    }
   }
 
   handlePostClick(e) {
@@ -20,11 +34,14 @@ export default class CommentForm extends Component {
   }
 
   render() {
+    let buttonLabel = this.props.formData.isLoading
+                    ? (<i className="fa fa-spinner fa-spin"></i>)
+                    : ('Post')
     return (
       <div className="comments-form">
         <TextArea ref="textarea" />
         <div className="comments-form-button-container">
-          <button className="btn btn-primary" onClick={this.handlePostClick}>Post</button>
+          <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonLabel}</button>
         </div>
       </div>
     );
@@ -32,5 +49,8 @@ export default class CommentForm extends Component {
 }
 
 CommentForm.PropTypes = {
-  parentId: React.PropTypes.number
+  parentId: PropTypes.number.isRequired,
+  commentable: PropTypes.object.isRequired,
+  formData: PropTypes.object.isRequired,
+  onPost: PropTypes.func.isRequired,
 };

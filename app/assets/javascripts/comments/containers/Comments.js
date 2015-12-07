@@ -13,16 +13,18 @@ class CommentsContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getInitialComments(this.props.commentable, this.props.csrfToken);
+    this.props.actions.getInitialComments(this.props.commentable);
+    this.props.actions.getCurrentUser();
   }
 
   handleCommentPost(comment) {
-    this.props.actions.postComment(comment);
+    this.props.actions.postComment(comment, false);
+    this.props.actions.toggleFormData(true, null);
   }
 
   render() {
-    let initialForm = this.props.userSignedIn
-                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} />)
+    let initialForm = this.props.commentStore.user.id
+                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} />)
                     : (null);
     return (
       <div className="r-comments">
@@ -34,7 +36,7 @@ class CommentsContainer extends Component {
 }
 
 CommentsContainer.PropTypes = {
-  userSignedIn: PropTypes.number
+  commentable: PropTypes.object
 };
 
 function mapStateToProps(state) {

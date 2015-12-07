@@ -5,8 +5,16 @@ export default class TextArea extends Component {
     super(props);
   }
 
+  autoFocus() {
+    React.findDOMNode(this).focus();
+  }
+
+  clearTextArea() {
+    React.findDOMNode(this).value = '';
+  }
+
   render() {
-    let placeholder = 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.';
+    let placeholder = 'Write a comment';
 
     return (
       <textarea className="comments-textarea" placeholder={placeholder} rows={3}></textarea>

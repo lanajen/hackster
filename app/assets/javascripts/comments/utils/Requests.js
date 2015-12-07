@@ -2,16 +2,13 @@ import request from 'superagent';
 
 export default {
 
-  getComments(commentable, csrfToken) {
+  getComments(commentable) {
     return new Promise((resolve, reject) => {
       request('/api/v1/comments')
-        .set('X-CSRF-Token', csrfToken)
         .query({ id: commentable.id })
         .query({ type: commentable.type })
         .end((err, res) => {
-          if(err) reject(err);
-
-          resolve(res.body.comments);
+          err ? reject(err) : resolve(res.body.comments);
         });
     });
   },
@@ -22,9 +19,19 @@ export default {
         .post('/api/v1/comments')
         .send(comment)
         .end((err, res) => {
-          if(err) reject(err);
+          err ? reject(err) : resolve(res.body.comment);
+        });
+    });
+  },
 
-          resolve(res);
+  deleteComment(id, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .del('/api/v1/comments')
+        .set('X-CSRF-Token', csrfToken)
+        .query({ id: id })
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.comment);
         });
     });
   }

@@ -3,6 +3,12 @@ import keymirror from 'keymirror';
 export default {
 
   Comments: keymirror({
-    setInitialComments: null
+    addComment: null,
+    removeComment:null,
+    setCurrentUser: null,
+    setInitialComments: null,
+    toggleFormData: null,
+    toggleScrollTo: null,
+    triggerReplyBox: null,
   })
 }

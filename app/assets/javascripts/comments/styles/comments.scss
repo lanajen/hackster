@@ -96,6 +96,14 @@
         display: inline-block;
       }
     }
+
+    .reply-box {
+      .reply-box-center-line {
+        height: 20px;
+        width: 50%;
+        border-right: 1px solid #ddd;
+      }
+    }
   }
 
   .comment-nested {

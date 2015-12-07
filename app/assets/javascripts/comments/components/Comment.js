@@ -1,44 +1,73 @@
 import React, { Component, PropTypes } from 'react';
 import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
+import smoothScroll from 'smoothscroll';
 
 export default class Comment extends Component {
   constructor(props) {
     super(props);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleReplyClick = this.handleReplyClick.bind(this);
+    this.handlePost = this.handlePost.bind(this);
+  }
+
+  componentDidMount() {
+    if ( this.props.scrollTo.scroll
+      && this.props.scrollTo.element.id === this.props.comment.id
+      && window ) {
+      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
+        this.props.toggleScrollTo(false, null);
+      });
+    }
   }
 
   handleDeleteClick(commentId, e) {
     if(window) {
       let confirm = window.confirm('Are you sure you want to delete this comment?');
       if(confirm) {
-
+        this.props.deleteComment(commentId);
       } else {
         return;
       }
     }
   }
 
+  handleReplyClick(id, e) {
+    this.props.triggerReplyBox(true, id);
+  }
+
+  handlePost(comment) {
+    this.props.postComment(comment, true);
+    this.props.toggleFormData(true, null);
+  }
+
   render() {
-    const { avatarLink, body, canDestroy, createdAt, depth, id, user_id, userName, userSignedIn } = this.props.comment;
+    const { avatarLink, body, commentable_id, commentable_type, createdAt, depth, id, parent_id, user_id, userName } = this.props.comment;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
-    let deleteOrFlagButton = canDestroy
+    let deleteOrFlagButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
                            ? (<li className="default-hidden">
                                 <a href="javascript:void(0);" onClick={this.handleDeleteClick.bind(this, id)}>Delete</a>
                               </li>)
                            : (<li className="default-hidden">
-                                <FlagButton currentUserId={user_id} flaggable={{ type: "Comment", id: id }}/>
+                                <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
-    let actions = userSignedIn
+    let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
                     <li>
-                      <a href="javascript:void(0);">{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
+                      <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
                     </li>
                     {deleteOrFlagButton}
                   </ul>)
                 : (null);
-    // Bring the replyBox up, focus it and scroll to it.
 
+    let replyBox = (this.props.replyBox.show && this.props.replyBox.id === id)
+                 ? (<div className="reply-box">
+                      <div className="reply-box-center-line">
+                      </div>
+                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} />
+                    </div>
+                   )
+                 : (null);
 
     return (
       <div className={rootClass}>
@@ -54,12 +83,23 @@ export default class Comment extends Component {
         <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
         {actions}
         {this.props.children}
+        {replyBox}
       </div>
     );
   }
 }
 
 Comment.PropTypes = {
-  comment: React.PropTypes.object,
-  children: React.PropTypes.array
+  comment: PropTypes.object.isRequired,
+  children: PropTypes.array,
+  currentUser: PropTypes.object.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  handlePost: PropTypes.func.isRequired,
+  postComment: PropTypes.func.isRequired,
+  replyBox: PropTypes.object.isRequired,
+  scrollTo: PropTypes.object.isRequired,
+  toggleFormData: PropTypes.func.isRequired,
+  toggleScrollTo: PropTypes.func.isRequired,
+  triggerReplyBox: PropTypes.func.isRequired
 };

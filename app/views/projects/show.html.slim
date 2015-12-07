@@ -275,10 +275,7 @@
                       ' or
                       ==> link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: @project.class.model_name.to_s.underscore, id: @project.id, source: 'popup')
                       | to comment.
-                  = react_component('Comments', { userSignedIn: user_signed_in?, # current_user.try(:id)
-                                                  csrfToken: form_authenticity_token,
-                                                  commentable: { id: @project.id, type: 'BaseArticle' }}, {})
-                  / = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
+                  = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
 
           .col-md-4.right-column
             .container-mobile

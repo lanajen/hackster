@@ -18,7 +18,11 @@ HackerIo::Application.routes.draw do
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
-      resources :comments, only: [:create, :destroy, :index], defaults: { format: :json }
+      resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+        collection do
+          delete '' => 'comments#destroy'
+        end
+      end
       resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
@@ -32,6 +36,7 @@ HackerIo::Application.routes.draw do
       scope 'mandrill/webhooks' do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
+      resources :me, only: [:index]
       resources :projects
       resources :parts, except: [:new, :edit], defaults: { format: :json }
       scope 'platforms' do
@@ -64,7 +69,11 @@ HackerIo::Application.routes.draw do
         resources :announcements
         resources :build_logs
         resources :code_files, only: [:create]
-        resources :comments, only: [:create, :destroy]
+        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+          collection do
+            delete '' => 'comments#destroy'
+          end
+        end
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index] do
           collection do
@@ -78,6 +87,7 @@ HackerIo::Application.routes.draw do
         scope 'mandrill/webhooks' do
           post 'unsub' => 'mandrill_webhooks#unsub'
         end
+        resources :me, only: [:index]
         resources :projects
         resources :parts, except: [:new, :edit]
         scope :platforms do

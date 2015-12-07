@@ -86,7 +86,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
+              = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
 
         .col-md-4.right-column
           .container-mobile
