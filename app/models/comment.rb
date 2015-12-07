@@ -26,6 +26,10 @@ class Comment < ActiveRecord::Base
     joins("JOIN #{type.table_name} ON #{type.table_name}.id = #{self.table_name}.commentable_id AND #{self.table_name}.commentable_type = '#{type.to_s}'")
   end
 
+  def self.cache_key commentable_type, commentable_id
+    [commentable_type.underscore, commentable_id, 'comments'].join('/')
+  end
+
   def self.have_owner
     where.not(user_id: 0)
   end
@@ -57,16 +61,18 @@ class Comment < ActiveRecord::Base
     commentable_type
   end
 
+  def children
+    return @children if @children
+
+    @children = Comment.where(parent_id: id)
+  end
+
   def disable_notification!
     @disable_notification = true
   end
 
   def disable_notification?
     @disable_notification
-  end
-
-  def is_root?
-    parent_id.nil?
   end
 
   def has_parent?
@@ -77,6 +83,10 @@ class Comment < ActiveRecord::Base
     return unless body
 
     mentioned_users.any?
+  end
+
+  def is_root?
+    parent_id.nil?
   end
 
   def mentioned_users

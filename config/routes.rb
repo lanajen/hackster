@@ -15,6 +15,7 @@ HackerIo::Application.routes.draw do
     namespace :v1 do
       get 'embeds' => 'embeds#show'
       # post 'embeds' => 'embeds#create'
+      get 'me' => 'users#show'
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
@@ -36,7 +37,6 @@ HackerIo::Application.routes.draw do
       scope 'mandrill/webhooks' do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
-      resources :me, only: [:index]
       resources :projects
       resources :parts, except: [:new, :edit], defaults: { format: :json }
       scope 'platforms' do
@@ -65,6 +65,7 @@ HackerIo::Application.routes.draw do
     scope module: :api, defaults: { format: :json } do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
+        get 'me' => 'users#show'
         # post 'embeds' => 'embeds#create'
         resources :announcements
         resources :build_logs
@@ -87,7 +88,6 @@ HackerIo::Application.routes.draw do
         scope 'mandrill/webhooks' do
           post 'unsub' => 'mandrill_webhooks#unsub'
         end
-        resources :me, only: [:index]
         resources :projects
         resources :parts, except: [:new, :edit]
         scope :platforms do
