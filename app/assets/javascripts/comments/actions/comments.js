@@ -48,9 +48,9 @@ export function addComment(comment, isReply) {
   };
 }
 
-export function postComment(comment, isReply) {
+export function postComment(comment, isReply, csrfToken) {
   return function(dispatch) {
-    return Requests.postComment(comment)
+    return Requests.postComment(comment, csrfToken)
       .then(response => {
         dispatch(addComment(response, isReply));
       })
@@ -77,6 +77,13 @@ export function deleteComment(data) {
         console.log('DEL ERROR', err);
       });
   }
+}
+
+export function removeIdFromDeleteList(id) {
+  return {
+    type: Comments.removeIdFromDeleteList,
+    id: id
+  };
 }
 
 export function toggleFormData(isLoading, error) {

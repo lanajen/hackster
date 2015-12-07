@@ -1,5 +1,6 @@
 class Api::V1::CommentsController < Api::V1::BaseController
   before_filter :authenticate_user!, :except => [:index]
+  protect_from_forgery only: [:create, :destroy]
 
   def index
     surrogate_keys = [Comment.cache_key(params[:type], params[:id])]

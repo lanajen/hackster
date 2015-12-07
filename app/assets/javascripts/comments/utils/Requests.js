@@ -13,10 +13,11 @@ export default {
     });
   },
 
-  postComment(comment) {
+  postComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
         .post('/api/v1/comments')
+        .set('X-CSRF-Token', csrfToken)
         .send(comment)
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);

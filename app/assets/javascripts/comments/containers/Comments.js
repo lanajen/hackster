@@ -18,7 +18,7 @@ class CommentsContainer extends Component {
   }
 
   handleCommentPost(comment) {
-    this.props.actions.postComment(comment, false);
+    this.props.actions.postComment(comment, false, this.props.commentStore.user.csrfToken);
     this.props.actions.toggleFormData(true, null);
   }
 
@@ -26,17 +26,20 @@ class CommentsContainer extends Component {
     let initialForm = this.props.commentStore.user.id !== null
                     ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} />)
                     : (null);
+    let comments = this.props.commentStore.fetchedInitialComments
+                 ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} />)
+                 : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-4x fa-spin"></i> loading</div>);
     return (
       <div className="r-comments">
         {initialForm}
-        <Comments actions={this.props.actions} commentStore={this.props.commentStore} />
+        {comments}
       </div>
     );
   }
 }
 
 CommentsContainer.PropTypes = {
-  commentable: PropTypes.object
+  commentable: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

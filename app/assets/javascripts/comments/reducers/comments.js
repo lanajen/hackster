@@ -2,8 +2,10 @@ import { Comments } from '../constants/ActionTypes';
 
 const initialState = {
   comments: [],
+  fetchedInitialComments: false,
   formData: { isLoading: false, error: null },
   replyBox: { show: false, id: null },
+  rootCommentsToDelete: [],
   scrollTo: { scroll: false, element: null },
   user: {},
 };
@@ -20,10 +22,10 @@ export default function(state = initialState, action) {
       };
 
     case Comments.setInitialComments:
-    console.log(action.comments);
       return {
         ...state,
-        comments: action.comments
+        comments: action.comments,
+        fetchedInitialComments: true
       };
 
     case Comments.addComment:
@@ -38,12 +40,18 @@ export default function(state = initialState, action) {
       };
 
     case Comments.removeComment:
-      console.log('REMOVING', action.comment);
       newComments = removeComment(state.comments, action.comment);
-      console.log('NEW COMMENTS', newComments);
+      let rootCommentsToDelete = createListOfIdsToDelete(newComments);
       return {
         ...state,
-        comments: newComments
+        comments: newComments,
+        rootCommentsToDelete: rootCommentsToDelete
+      };
+
+    case Comments.removeIdFromDeleteList:
+      return {
+        ...state,
+        rootCommentsToDelete: state.rootCommentsToDelete.filter(id => id !== action.id)
       };
 
     case Comments.toggleFormData:
@@ -90,11 +98,20 @@ function removeComment(comments, comment) {
         return child.id !== comment.id;
       });
       prev.push(curr);
-    } else if(curr.root.id === comment.id) {
-      curr.root = comment;
+    } else if(curr.root.id === comment.id && curr.children.length > 0) {
+      curr.root = { ...curr.root, deleted: true };
       prev.push(curr);
-    } else {
+    } else if(curr.root.id !== comment.id) {
       prev.push(curr);
+    }
+    return prev;
+  }, []);
+}
+
+function createListOfIdsToDelete(comments) {
+  return comments.reduce((prev, curr) => {
+    if(curr.root.deleted && curr.children.length < 1) {
+      prev.push(curr.root.id);
     }
     return prev;
   }, []);

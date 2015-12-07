@@ -5,8 +5,23 @@ import Comment from './Comment';
 export default class Comments extends Component {
   constructor(props) {
     super(props);
+    this.postComment = this.postComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.triggerReplyBox = this.triggerReplyBox.bind(this);
+  }
+
+  componentWillUpdate(nextProps) {
+    if(nextProps.commentStore.rootCommentsToDelete.length > 0) {
+      nextProps.commentStore.rootCommentsToDelete.forEach(id => {
+        this.deleteComment(id);
+        this.props.actions.removeIdFromDeleteList(id);
+      });
+    }
+  }
+
+  postComment(comment) {
+    this.props.actions.postComment(comment, true, this.props.commentStore.user.csrfToken);
+    this.props.actions.toggleFormData(true, null);
   }
 
   deleteComment(id) {
@@ -28,10 +43,9 @@ export default class Comments extends Component {
                         currentUser={user}
                         formData={this.props.commentStore.formData}
                         deleteComment={this.deleteComment}
-                        postComment={this.props.actions.postComment}
+                        postComment={this.postComment}
                         replyBox={this.props.commentStore.replyBox}
                         scrollTo={this.props.commentStore.scrollTo}
-                        toggleFormData={this.props.actions.toggleFormData}
                         toggleScrollTo={this.props.actions.toggleScrollTo}
                         triggerReplyBox={this.triggerReplyBox} />
       });
@@ -41,10 +55,9 @@ export default class Comments extends Component {
                       currentUser={user}
                       formData={this.props.commentStore.formData}
                       deleteComment={this.deleteComment}
-                      postComment={this.props.actions.postComment}
+                      postComment={this.postComment}
                       replyBox={this.props.commentStore.replyBox}
                       scrollTo={this.props.commentStore.scrollTo}
-                      toggleFormData={this.props.actions.toggleFormData}
                       toggleScrollTo={this.props.actions.toggleScrollTo}
                       triggerReplyBox={this.triggerReplyBox} />
                     })

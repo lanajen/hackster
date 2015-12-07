@@ -38,7 +38,6 @@ export default class Comment extends Component {
 
   handlePost(comment) {
     this.props.postComment(comment, true);
-    this.props.toggleFormData(true, null);
   }
 
   handleExpandButtonClick() {
@@ -48,6 +47,8 @@ export default class Comment extends Component {
   render() {
     const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, parent_id, user_id, userName } = this.props.comment;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
+    let date = window ? window.moment(createdAt).fromNow() : createdAt;
+
     let deleteOrFlagButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
                            ? (<li className="default-hidden">
                                 <a href="javascript:void(0);" onClick={this.handleDeleteClick.bind(this, id)}>Delete</a>
@@ -71,31 +72,40 @@ export default class Comment extends Component {
                       <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} />
                     </div>)
                  : (null);
-    let commentBody = depth === 0 && deleted === true
-                    ? (<div className="comment-body">
-                        This comment has been deleted.
-                      </div>)
-                    : ( <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div> );
 
+    let comment = depth === 0 && deleted === true
+                ? (<div className={rootClass}>
+                    <div className="comment-title">
+                      <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                      <div className="profile-name">
+                        <h4>
+                          <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                        </h4>
+                        <span className="text-muted comment-date">{date}</span>
+                      </div>
+                    </div>
+                    <div className="comment-body">
+                      This comment has been deleted.
+                    </div>
+                    {this.props.children}
+                  </div>)
+                : (<div className={rootClass}>
+                    <div className="comment-title">
+                      <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                      <div className="profile-name">
+                        <h4>
+                          <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                        </h4>
+                        <span className="text-muted comment-date">{date}</span>
+                      </div>
+                    </div>
+                    <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
+                    {actions}
+                    {this.props.children}
+                    {replyBox}
+                  </div>);
 
-
-    return (
-      <div className={rootClass}>
-        <div className="comment-title">
-          <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
-          <div className="profile-name">
-            <h4>
-              <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
-            </h4>
-            <span className="text-muted comment-date">{createdAt + " ago"}</span>
-          </div>
-        </div>
-        {commentBody}
-        {actions}
-        {this.props.children}
-        {replyBox}
-      </div>
-    );
+    return (comment);
   }
 }
 
@@ -109,7 +119,6 @@ Comment.PropTypes = {
   postComment: PropTypes.func.isRequired,
   replyBox: PropTypes.object.isRequired,
   scrollTo: PropTypes.object.isRequired,
-  toggleFormData: PropTypes.func.isRequired,
   toggleScrollTo: PropTypes.func.isRequired,
   triggerReplyBox: PropTypes.func.isRequired
 };
