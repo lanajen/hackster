@@ -144,7 +144,7 @@ class BaseArticle < ActiveRecord::Base
   taggable :product_tags, :platform_tags
 
   counters_column :counters_cache, long_format: true
-  has_counter :comments, 'comments.count'
+  has_counter :comments, 'comments.live.count'
   has_counter :communities, 'groups.count'
   has_counter :platforms, 'platforms.count'
   has_counter :platform_tags, 'platform_tags_cached.count'

@@ -34,6 +34,10 @@ class Comment < ActiveRecord::Base
     where.not(user_id: 0)
   end
 
+  def self.live
+    where(destroyed: false)
+  end
+
   def self.sort_from_hierarchy comments
     parents = {}
     comments.each do |comment|
@@ -65,6 +69,11 @@ class Comment < ActiveRecord::Base
     return @children if @children
 
     @children = Comment.where(parent_id: id)
+  end
+
+  # soft destroy
+  def destroy
+    update_attribute :deleted, true
   end
 
   def disable_notification!

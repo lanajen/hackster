@@ -11,6 +11,8 @@ class UserObserver < ActiveRecord::Observer
 
   def after_destroy record
     FastlyWorker.perform_async 'purge', record.record_key
+
+    record.comments.update_all(user_id: -1)
   end
 
   def after_invitation_accepted record

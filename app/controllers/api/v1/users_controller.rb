@@ -26,6 +26,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def show
+    unless user_signed_in?
+      set_surrogate_key_header 'users/me'
+      set_cache_control_headers
+    end
+
     user = {
       id: current_user ? current_user.id : nil,
       isAdmin: current_user ? current_user.is?(:admin) : false,
