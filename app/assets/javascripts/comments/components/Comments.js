@@ -19,7 +19,8 @@ export default class Comments extends Component {
 
   render() {
     let user = this.props.commentStore.user;
-    const comments = this.props.commentStore.comments.map((comment, index) => {
+    const comments = this.props.commentStore.comments.length > 0
+                   ? this.props.commentStore.comments.map((comment, index) => {
       let children = comment.children.map((child, i) => {
         return <Comment key={i}
                         comment={child}
@@ -46,7 +47,8 @@ export default class Comments extends Component {
                       toggleFormData={this.props.actions.toggleFormData}
                       toggleScrollTo={this.props.actions.toggleScrollTo}
                       triggerReplyBox={this.triggerReplyBox} />
-    });
+                    })
+                    : ( <div>Be the first to comment!</div> );
 
     return (
       <div>

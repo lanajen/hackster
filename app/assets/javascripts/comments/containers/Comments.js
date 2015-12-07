@@ -23,7 +23,7 @@ class CommentsContainer extends Component {
   }
 
   render() {
-    let initialForm = this.props.commentStore.user.id
+    let initialForm = this.props.commentStore.user.id !== null
                     ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} />)
                     : (null);
     return (
