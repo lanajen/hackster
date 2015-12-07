@@ -20,6 +20,7 @@ export default function(state = initialState, action) {
       };
 
     case Comments.setInitialComments:
+    console.log(action.comments);
       return {
         ...state,
         comments: action.comments
@@ -37,7 +38,9 @@ export default function(state = initialState, action) {
       };
 
     case Comments.removeComment:
+      console.log('REMOVING', action.comment);
       newComments = removeComment(state.comments, action.comment);
+      console.log('NEW COMMENTS', newComments);
       return {
         ...state,
         comments: newComments
@@ -87,7 +90,10 @@ function removeComment(comments, comment) {
         return child.id !== comment.id;
       });
       prev.push(curr);
-    } else if(curr.root.id !== comment.id) {
+    } else if(curr.root.id === comment.id) {
+      curr.root = comment;
+      prev.push(curr);
+    } else {
       prev.push(curr);
     }
     return prev;

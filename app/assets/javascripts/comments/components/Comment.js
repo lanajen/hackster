@@ -69,20 +69,14 @@ export default class Comment extends Component {
                       <div className="reply-box-center-line">
                       </div>
                       <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} />
-                    </div>
-                   )
+                    </div>)
                  : (null);
     let commentBody = depth === 0 && deleted === true
-                ? (
-                    <div className="comment-body">
-                      This comment has been deleted.
-                      <button onClick={this.handleExpandButtonClick}>Expand</button>
-                      {this.props.children}
-                    </div>
-                  )
-                : (
-                    <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
-                  );
+                    ? (<div className="comment-body">
+                        This comment has been deleted.
+                      </div>)
+                    : ( <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div> );
+
 
 
     return (
