@@ -12,16 +12,16 @@ class RackReverseProxyMod
 
   def proxy?(env)
     # do not alter env here, but return true if you want to proxy for this request.
-    env['HTTP_HOST'] == ENV['ARDUINO_HOST']
+    env['HTTP_HOST'] == ENV['ARDUINO_INCOMING_HOST']
   end
 
   def rewrite_env(env)
     # change the env here
     # raise env.inspect
-    env['HTTP_HOST'] = 'arduino.localhost.local:5000'
-    env["REQUEST_PATH"] = env["REQUEST_PATH"].gsub(/^\/projects/, '')
-    env["PATH_INFO"] = env["PATH_INFO"].gsub(/^\/projects/, '')
-    env["REQUEST_URI"] = env["REQUEST_URI"].gsub(/^\/projects/, '')
+    # env['HTTP_HOST'] = ENV['ARDUINO_REAL_HOST']
+    env["REQUEST_PATH"] = env["REQUEST_PATH"].gsub(/projectshub\/?/, '')
+    env["PATH_INFO"] = env["PATH_INFO"].gsub(/projectshub\/?/, '')
+    env["REQUEST_URI"] = env["REQUEST_URI"].gsub(/projectshub\/?/, '')
     env
   end
 end

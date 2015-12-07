@@ -400,11 +400,29 @@ module UrlHelper
     output = super options
 
     # hack to give arduino its path prefix
-    if site_user_name == 'arduino' and output !~ /\Ahttp/ and output !~ /\A\/projects/
-      '/projects' + output
-    else
-      output
+    if is_whitelabel? and current_site.has_path_prefix?
+      if output == '/'
+        return current_site.path_prefix
+      elsif output =~ /\Ahttp/
+        unless current_site.path_prefix.in?(output)
+          u = URI.parse output
+          u.path = current_site.path_prefix + u.path
+          return u.to_s
+        end
+      elsif output.start_with?('/') and !output.start_with?(current_site.path_prefix)
+        return current_site.path_prefix + output
+      end
     end
+
+    output
+  end
+
+  def full_url_for options={}
+    raise ' full_url_for options!: ' + options.inspect
+  end
+
+  def path_for options={}
+    raise 'path_for options!: ' + options.inspect
   end
 
   def url_for_wiki_page_form group, page
