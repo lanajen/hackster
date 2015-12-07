@@ -10,7 +10,7 @@ class Comment < ActiveRecord::Base
   has_many :receipts, as: :receivable, dependent: :destroy
   has_many :reputation_events, as: :event_model, dependent: :delete_all
 
-  attr_accessor :children, :depth
+  attr_accessor :depth
   attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
 
   validates :raw_body, presence: true
@@ -73,7 +73,11 @@ class Comment < ActiveRecord::Base
 
   # soft destroy
   def destroy
-    update_attribute :deleted, true
+    if is_root? and children.exists?
+      update_attribute :deleted, true
+    else
+      super
+    end
   end
 
   def disable_notification!

@@ -13,6 +13,6 @@ class CommentObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    CommentObserverWorker.perform_async 'after_destroy', record.id
+    CommentObserverWorker.new.after_destroy record  # synchronous
   end
 end

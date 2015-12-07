@@ -7,7 +7,7 @@ class Api::V1::CommentsController < Api::V1::BaseController
     set_surrogate_key_header *surrogate_keys
     set_cache_control_headers
 
-    @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).includes(user: :avatar)
+    @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).order(created_at: :asc).includes(user: :avatar)
   end
 
   def create
