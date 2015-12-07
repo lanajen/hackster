@@ -27,7 +27,7 @@ class NotificationHandler
     @template = template
     if context = get_context_for('email')
       # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
-      BaseMailer.deliver_email(context, find_template, opts).deliver_now!
+      BaseMailer.deliver_email(context, find_template, opts).deliver_now! if context.present?
     end
   end
 

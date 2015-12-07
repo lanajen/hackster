@@ -14,6 +14,15 @@ p style="margin-top:20px"
       strong> Status:
       = @idea.workflow_state
     - if @idea.can_approve?
-      = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'approve'), class: 'btn btn-success', data: { method: :put, confirm: 'Are you sure you want to approve this idea?' }
+      = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'approve'), class: 'btn btn-success', data: { method: :put, confirm: 'Are you sure you want to approve this idea?', container: 'body' }
+    - if @challenge.current_state >= :pre_contest_ended
+      - if @idea.can_mark_won?
+        = link_to content_tag(:i, '', class: 'fa fa-trophy') + content_tag(:span, 'Mark as winner'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'mark_won'), class: 'btn btn-primary', data: { method: :put, confirm: 'Are you sure you want to mark this idea as a pre-contest winner?', container: 'body' }
+      - elsif @idea.can_undo_won?
+        = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Undo mark as winner'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'undo_won'), class: 'btn btn-danger', data: { method: :put, confirm: 'Are you sure you want to undo marking this idea as a pre-contest winner?', container: 'body' }
     - if @idea.can_reject?
-      = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'reject'), class: 'btn btn-danger', data: { method: :put, confirm: 'Are you sure you want to reject this idea?' }
+      = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject'), update_workflow_challenge_idea_path(@challenge, @idea, event: 'reject'), class: 'btn btn-danger', data: { method: :put, confirm: 'Are you sure you want to reject this idea?', container: 'body' }
+    p
+      = link_to content_tag(:i, '', class: 'fa fa-pencil') + content_tag(:span, 'Edit'), edit_challenge_idea_path(@challenge.slug, @idea), class: 'btn btn-default', data: { container: 'body' }
+      - if current_user.is? :admin
+        = link_to content_tag(:i, '', class: 'fa fa-trash-o') + content_tag(:span, 'Delete'), challenge_single_idea_path(@idea), class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }

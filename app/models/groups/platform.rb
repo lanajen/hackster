@@ -7,7 +7,7 @@ class Platform < Collection
   MINIMUM_FOLLOWERS = 5
   MINIMUM_FOLLOWERS_STRICT = 25
   MODERATION_LEVELS = {
-    'Approve all automatically' => 'auto',
+    # 'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
     'Only projects approved by our team' => 'manual',
   }
@@ -151,6 +151,10 @@ class Platform < Collection
 
   def self.new_first
     order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+  end
+
+  def self.not_featured
+    where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", true
   end
 
   def self.sub_platform_most_members

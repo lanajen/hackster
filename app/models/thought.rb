@@ -7,6 +7,7 @@ class Thought < ActiveRecord::Base
   has_many :commenters, through: :comments, source: :user, class_name: 'User'
   has_many :likes, class_name: 'Respect', as: :respectable, dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_one :link_datum, foreign_key: :link, primary_key: :link
 
   attr_accessible :raw_body, :link

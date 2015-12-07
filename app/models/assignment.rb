@@ -9,6 +9,7 @@ class Assignment < ActiveRecord::Base
 
   belongs_to :promotion
   has_many :grades, through: :projects
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :project_collections, as: :collectable
   has_many :projects, through: :project_collections do
     def submitted

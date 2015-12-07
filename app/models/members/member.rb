@@ -5,6 +5,7 @@ class Member < ActiveRecord::Base
   belongs_to :invited_by, polymorphic: true
   belongs_to :permission, dependent: :destroy
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   attr_protected #none
   before_create :set_default_role
 

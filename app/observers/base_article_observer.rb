@@ -8,7 +8,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    BaseArticleObserverWorker.perform_async 'after_destroy', record.id
+    BaseArticleObserverWorker.new.after_destroy record  # synchronous
   end
 
   def after_update record
