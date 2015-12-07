@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : Platform::DEFAULT_SORT)
 
-    @platforms = Platform.publyc.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+    @platforms = Platform.publyc.featured.for_thumb_display.new_first
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
@@ -34,6 +34,15 @@ class PlatformsController < ApplicationController
     if params[:tag]
       @platforms = @platforms.joins(:product_tags).where("LOWER(tags.name) = ?", params[:tag].downcase)
     end
+
+    render "groups/platforms/#{self.action_name}"
+  end
+
+  def incubator
+    title "Explore all-new platforms"
+    meta_desc "Check out the platforms that were just added to Hackster."
+
+    @platforms = Platform.publyc.not_featured.for_thumb_display.order(created_at: :desc)
 
     render "groups/platforms/#{self.action_name}"
   end

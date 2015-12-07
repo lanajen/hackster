@@ -34,6 +34,7 @@ class Ability
         !@user.persisted? and group.access_level == 'anyone'
       end
       can :create, Group
+      can :read, Platform
 
       member if @user.persisted?
       @user.roles.each{ |role| send role }
