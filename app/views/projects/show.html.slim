@@ -275,7 +275,7 @@
                       ' or
                       ==> link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: @project.class.model_name.to_s.underscore, id: @project.id, source: 'popup')
                       | to comment.
-                  = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
+                  = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' } })
 
           .col-md-4.right-column
             .container-mobile

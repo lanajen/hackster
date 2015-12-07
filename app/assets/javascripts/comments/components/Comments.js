@@ -18,7 +18,6 @@ export default class Comments extends Component {
   }
 
   render() {
-    console.log('c', this.props.commentStore.comments);
     let user = this.props.commentStore.user;
     const comments = this.props.commentStore.comments.map((comment, index) => {
       let children = comment.children.map((child, i) => {
