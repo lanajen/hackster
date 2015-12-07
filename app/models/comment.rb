@@ -35,7 +35,7 @@ class Comment < ActiveRecord::Base
   end
 
   def self.live
-    where(destroyed: false)
+    where(deleted: false)
   end
 
   def self.sort_from_hierarchy comments
