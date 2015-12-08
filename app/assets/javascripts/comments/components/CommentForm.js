@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import TextArea from './TextArea';
-import smoothScroll from 'smoothscroll';
+import smoothScroll from '../utils/SmoothScroll';
 
 export default class CommentForm extends Component {
   constructor(props) {

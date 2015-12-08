@@ -13,6 +13,7 @@
     "flummox": "^3.5.2",
     "highlight.js": "^8.6.0",
     "htmlparser": "^1.7.7",
+    "keymirror": "^0.1.1",
     "lodash": "^3.7.0",
     "markdown-it": "^4.1.1",
     "material-ui": "^0.9.1",
@@ -31,7 +32,6 @@
     "react-vendor-prefix": "0.0.1",
     "redux": "^3.0.0",
     "redux-thunk": "^0.1.0",
-    "smoothscroll": "^0.2.2",
     "superagent": "^1.2.0",
     "validator": "^3.40.0",
     "xml2js": "^0.4.8"
