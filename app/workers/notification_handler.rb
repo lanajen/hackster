@@ -126,7 +126,7 @@ class NotificationHandler
           if comment.has_parent?
             # finds the user who created the parent comment as well as everyone
             # who replied to it
-            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children.pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
+            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children(true).pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
           else
             # finds all the first level comments for commentable
             context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')

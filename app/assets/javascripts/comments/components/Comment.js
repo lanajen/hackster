@@ -56,11 +56,14 @@ export default class Comment extends Component {
                            : (<li className="default-hidden">
                                 <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
+    let replyButton = this.props.parentIsDeleted === false
+                ? (<li>
+                    <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
+                    </li>)
+                : (<li className="text-muted">(Discussion closed)</li>);
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
-                    <li>
-                      <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
-                    </li>
+                    {replyButton}
                     {deleteOrFlagButton}
                   </ul>)
                 : (null);
@@ -104,9 +107,9 @@ export default class Comment extends Component {
                       </div>
                       <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
                       {actions}
-                      {replyBox}
                     </div>
                     {this.props.children}
+                    {replyBox}
                   </div>);
 
     return (comment);

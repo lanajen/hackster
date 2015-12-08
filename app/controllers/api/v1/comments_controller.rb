@@ -3,7 +3,8 @@ class Api::V1::CommentsController < Api::V1::BaseController
   protect_from_forgery only: [:create, :destroy]
 
   def index
-    surrogate_keys = [Comment.cache_key(params[:type], params[:id])]
+    cache_key = Comment.cache_key(params[:type], params[:id])
+    surrogate_keys = [cache_key]
     surrogate_keys << current_platform.user_name if is_whitelabel?
     set_surrogate_key_header *surrogate_keys
     set_cache_control_headers
