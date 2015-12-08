@@ -1,11 +1,6 @@
 - unless @group.decorated?
   - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
 
-/ = content_for :before_main do
-  #about style='position: relative;z-index: 999;background: #F2F2F2;'
-    - if !user_signed_in?
-      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
-
 = content_for :head do
   = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
   meta name='group_id' content=@group.id
@@ -24,12 +19,6 @@
     section.top-banner
       .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
         .top-banner-image-inner
-          / .top-banner-image-inner-corner.top-right.text.hidden-xs
-            = @group.class.name
-          .top-banner-image-inner-corner.bottom-right.hidden-xs
-          / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
-            ul.list-unstyled.list-inline.project-stats
-              = render partial: "groups/#{@group.identifier.pluralize}/stats"
 
           .container.hidden-xs
             .media
@@ -70,8 +59,6 @@
                   strong==> @group.short_address
             - else
               h1
-                / # - if @group.model.respond_to?(:company_logo) and @group.company_logo
-                  = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
                 = @group.name
                 - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
                   i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
