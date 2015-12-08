@@ -160,8 +160,6 @@ class PlatformsController < ApplicationController
     set_cache_control_headers 3600
 
     title "Projects built with #{@platform.name}"
-    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-    @list_style = '_vertical' if @list_style == ''
 
     respond_to do |format|
       format.html { render "groups/platforms/embed", layout: 'embed' }
