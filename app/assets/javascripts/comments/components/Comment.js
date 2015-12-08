@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
-import smoothScroll from 'smoothscroll';
+import smoothScroll from '../utils/SmoothScroll';
 
 export default class Comment extends Component {
   constructor(props) {
