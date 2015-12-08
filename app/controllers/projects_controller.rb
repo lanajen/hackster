@@ -253,7 +253,7 @@ class ProjectsController < ApplicationController
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project
