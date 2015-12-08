@@ -39,6 +39,16 @@ module.exports = {
     });
   },
 
+  fetchCurrentUser() {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/me')
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.user);
+        });
+    });
+  },
+
   fetchFollowing(csrfToken) {
     return new Promise((resolve, reject) => {
       request

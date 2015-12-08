@@ -40,6 +40,7 @@
       = f_sub.input :domain
       = f_sub.input :name
       = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
+      = f.input :enable_moderators, as: :boolean, inline_label: 'Enable moderation permissions', label: false, hint: "This will allow platform admins and moderators to fully edit projects in the platform. Use only if requested!"
       = f_sub.input :disable_https, as: :boolean, inline_label: 'Disable forced HTTPS', label: false
       = f_sub.input :disable_onboarding_screens, as: :boolean, inline_label: 'Disable onboarding screens', label: false
       = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: subdomain.try(:logo).try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }

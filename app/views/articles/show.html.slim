@@ -1,4 +1,4 @@
-= content_for :head do
+c= content_for :head do
   = render 'meta_tags'
 
 = inserts_stats_for @project
@@ -165,7 +165,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
+              = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
 
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do

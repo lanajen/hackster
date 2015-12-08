@@ -18,7 +18,7 @@ class Api::V1::BaseController < ApplicationController
 
     def authenticate_api_user
       if Rails.env == 'development'
-        @current_platform = Platform.find_by_user_name('microsoft')
+        @current_platform = Platform.find_by_user_name('cypress')
         return
       end
 

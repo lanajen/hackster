@@ -56,7 +56,7 @@ module ChromeSync
           redis.set i18n_attribute(attribute, locale), val
           Cashier.expire cache_key(attribute, locale)
           # has memcache cache expired when we send the request to fastly?
-          FastlyWorker.perform_async 'purge', @platform.table_key
+          FastlyWorker.perform_async 'purge', @platform
         end
       end
 

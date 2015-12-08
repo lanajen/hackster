@@ -122,7 +122,16 @@ class NotificationHandler
           when BaseArticle
             comment.commentable
           end
-          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own') + comment.commentable.commenters.with_subscription(notification_type, 'new_comment_commented') - [author]
+          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own')
+          if comment.has_parent?
+            # finds the user who created the parent comment as well as everyone
+            # who replied to it
+            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children.pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
+          else
+            # finds all the first level comments for commentable
+            context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
+          end
+          context[:users] -= [author]
         when Thought
           thought = context[:thought] = commentable
           context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented').to_a  # to_a is so that uniq! doesn't fail later on

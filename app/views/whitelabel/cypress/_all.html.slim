@@ -6,6 +6,66 @@
 = content_for :header do
   - cache [I18n.locale, 'cy_chrome_header'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_header) do
     = raw chrome_sync.chrome_header(I18n.locale)
+  .cypress-submenu
+    div class="panel-pane pane-page-breadcrumb"
+      div class="pane-content"
+        h2 class="element-invisible" You are here
+        div class="breadcrumb"
+          span class="inline odd first"
+            a href="#{ENV['CYPRESS_BASE_URL']}" Home
+          span class="delimiter" ›
+          span class="inline even last" Cypress Developer Community
+
+    .pane-content
+      #block-system-main.block.block-system
+        .content
+          section.body-page-wrapper
+            .container
+              .headers-wrapper
+                .header-left.panel-panel
+                  .panel-pane.pane-custom.pane-2
+                    .pane-content
+                      h1.title-cdc-link
+                        a href="#{ENV['CYPRESS_BASE_URL']}/cdc"
+                          | Cypress Developer Community
+                          sup TM
+                  .panel-separator
+                  .panel-pane.pane-block.pane-menu-menu-community-menu
+                    .pane-content
+                      ul.menu
+                        li.first.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/forum"  Forums
+                        li.leaf
+                          a href="/"  Projects
+                        li.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/video-library"  Videos
+                        li.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/blog"  Blogs
+                        li.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/search/all?f%5B0%5D=meta_type%3Atraining&amp;f%5B1%5D=training_meta_type%3Aon_demand"  Training
+                        li.last.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/cdc/community-components"  Community components
+                .header-right.panel-panel
+                  / .panel-pane.pane-block.pane-addthis-addthis-block
+                    .pane-content
+                      a.addthis_button
+                        img alt=("Share page with AddThis") src="http://s7.addthis.com/static/btn/sm-share-en.gif" /
+                  .panel-separator
+                  .panel-pane.pane-custom.pane-3
+                    .pane-content
+                      div
+                        a.logo-cdc-link href="#{ENV['CYPRESS_BASE_URL']}/cdc"  CDC
+                  .panel-separator
+                  .panel-pane.pane-block.pane-menu-menu-community-submenu.pane-cdc-logo
+                    .pane-content
+                      ul.menu
+                        li.first.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/forum"  Forums
+                        li.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/blog"  Blogs
+                        li.last.leaf
+                          a href="#{ENV['CYPRESS_BASE_URL']}/video-library"  Videos
+
 
   .navbar.navbar-default.navbar-static-top#navigation
     .navbar-in  style='position:relative;'

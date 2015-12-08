@@ -15,10 +15,15 @@ HackerIo::Application.routes.draw do
     namespace :v1 do
       get 'embeds' => 'embeds#show'
       # post 'embeds' => 'embeds#create'
+      get 'me' => 'users#show'
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
-      resources :comments, only: [:create, :destroy]
+      resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+        collection do
+          delete '' => 'comments#destroy'
+        end
+      end
       resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
@@ -60,11 +65,16 @@ HackerIo::Application.routes.draw do
     scope module: :api, defaults: { format: :json } do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
+        get 'me' => 'users#show'
         # post 'embeds' => 'embeds#create'
         resources :announcements
         resources :build_logs
         resources :code_files, only: [:create]
-        resources :comments, only: [:create, :destroy]
+        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+          collection do
+            delete '' => 'comments#destroy'
+          end
+        end
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index] do
           collection do

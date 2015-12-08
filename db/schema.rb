@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201230957) do
+ActiveRecord::Schema.define(version: 20151207192941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,18 +202,20 @@ ActiveRecord::Schema.define(version: 20151201230957) do
   add_index "chat_messages", ["group_id"], name: "index_chat_messages_on_group_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.integer  "user_id",                      default: 0, null: false
-    t.integer  "commentable_id",                           null: false
-    t.string   "commentable_type", limit: 255,             null: false
+    t.integer  "user_id",                      default: 0,     null: false
+    t.integer  "commentable_id",                               null: false
+    t.string   "commentable_type", limit: 255,                 null: false
     t.text     "body"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.integer  "parent_id"
     t.string   "guest_name",       limit: 255
     t.text     "raw_body"
+    t.boolean  "deleted",                      default: false
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
+  add_index "comments", ["deleted"], name: "index_comments_on_deleted", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "conversations", force: :cascade do |t|
@@ -861,3 +863,5 @@ ActiveRecord::Schema.define(version: 20151201230957) do
 
   add_foreign_key "group_impressions", "groups"
   add_foreign_key "part_impressions", "parts"
+  add_foreign_key "project_impressions", "projects"
+end

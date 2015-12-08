@@ -1,47 +1,35 @@
 class Api::V1::CommentsController < Api::V1::BaseController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:index]
+  protect_from_forgery only: [:create, :destroy]
+
+  def index
+    surrogate_keys = [Comment.cache_key(params[:type], params[:id])]
+    surrogate_keys << current_platform.user_name if is_whitelabel?
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers
+
+    @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).order(created_at: :asc).includes(user: :avatar)
+  end
 
   def create
-    commentable = find_commentable
-    comment = commentable.comments.build(params[:comment])
-    authorize! :create, comment
-    comment.user = current_user
+    commentable = params[:commentable][:type].classify.constantize.find(params[:commentable][:id])
+    @comment = commentable.comments.build(params[:comment])
+    authorize! :create, @comment
+    @comment.user = current_user
 
-    if comment.save
-      render json: comment, status: :ok
+    if @comment.save
+      @comment
     else
-      render json: comment.errors, status: :unprocessable_entity
+      render json: { errors: @comment.errors }, status: :unprocessable_entity
     end
   end
 
-  # def edit
-  #   comment.body.gsub! /<br>/, "\r\n"
-  #   comment.body.gsub! /<\/p>/, "\r\n"
-  #   comment.body.gsub! /<p>/, ""
-  # end
-
-  # def update
-  #   commentable = comment.commentable
-  #   respond_to do |format|
-  #     if comment.update_attributes(params[:comment])
-  #       format.html { redirect_to path_for_commentable(commentable), notice: t('comment.update.success') }
-  #       format.js { render 'update_issue' }
-
-  #       track_event 'Edited comment', comment.to_tracker
-  #     else
-  #       format.html { redirect_to path_for_commentable(commentable), alert: t('comment.update.error') }
-  #       format.js { render 'error' }
-  #     end
-  #   end
-  # end
-
   def destroy
-    comment = Comment.find params[:id]
+    comment = Comment.find(params[:id])
     authorize! :destroy, comment
-    commentable = comment.commentable
     comment.destroy
 
-    render json: comment, status: :ok
+    render json: { comment: comment }, status: :ok
   end
 
   private
