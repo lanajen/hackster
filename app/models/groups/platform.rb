@@ -67,6 +67,7 @@ class Platform < Collection
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :disclaimer, :string
   hstore_column :hproperties, :enable_chat, :boolean
+  hstore_column :hproperties, :enable_moderators, :boolean
   hstore_column :hproperties, :enable_parts, :boolean
   hstore_column :hproperties, :enable_password, :boolean
   hstore_column :hproperties, :enable_products, :boolean
@@ -124,6 +125,17 @@ class Platform < Collection
     }.to_json
   end
 
+  def self.default_permission roles=nil
+    roles ||= []
+    roles = [:admin] if roles.empty?
+    # we expect that there's always exactly one role set
+    {
+      admin: 'manage',
+      moderator: 'read',
+      member: 'read',
+    }[roles.first.try(:to_sym)]
+  end
+
   def self.index_all
     index.import publyc
   end
@@ -147,6 +159,10 @@ class Platform < Collection
 
   def self.minimum_followers_strict
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
+  end
+
+  def self.moderation_enabled
+    where("CAST(groups.hproperties -> 'enable_moderators' AS BOOLEAN) = ?", true)
   end
 
   def self.new_first

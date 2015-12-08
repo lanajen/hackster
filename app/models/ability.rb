@@ -141,7 +141,7 @@ class Ability
 
     can :create, [BaseArticle, Community]
     can [:manage, :enter_in_challenge], BaseArticle do |project|
-      @user.can? :manage, project.team
+      @user.can?(:manage, project.team) or UserRelationChecker.new(@user).is_platform_moderator?(project)
     end
     cannot :edit_locked, BaseArticle
     can :read, BaseArticle do |project|
