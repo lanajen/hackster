@@ -28,7 +28,7 @@ class CommentsContainer extends Component {
                     : (null);
     let comments = this.props.commentStore.fetchedInitialComments
                  ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} />)
-                 : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-4x fa-spin"></i> loading</div>);
+                 : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-2x fa-spin"></i></div>);
     return (
       <div className="r-comments">
         {initialForm}
