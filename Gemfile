@@ -131,6 +131,7 @@ gem 'vimeo', '1.5.3'
 gem 'will_paginate', github: 'mislav/will_paginate'
 gem 'workflow', '1.0.0'
 gem 'yajl-ruby', '1.2.0'
+gem 'oj', '2.14.0'
 
 # heroku
 gem 'heroku-api', '0.3.22'
