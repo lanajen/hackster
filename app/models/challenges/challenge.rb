@@ -77,6 +77,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :disable_pre_contest_winners, :boolean
+  hstore_column :hproperties, :disable_projects_phase, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
@@ -92,6 +93,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :password, :string
   hstore_column :hproperties, :pre_contest_awarded, :boolean
   hstore_column :hproperties, :pre_contest_end_date, :datetime
+  hstore_column :hproperties, :pre_contest_label, :string, default: 'Pre-contest'
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
   hstore_column :hproperties, :pre_winners_announced_date, :datetime
@@ -125,6 +127,7 @@ class Challenge < ActiveRecord::Base
       event :take_offline, transitions_to: :new
     end
     state :pre_contest_in_progress do
+      event :end_pre_contest_fully, transitions_to: :judging
       event :end_pre_contest, transitions_to: :pre_contest_ended
       event :take_offline, transitions_to: :new
     end
@@ -211,19 +214,21 @@ class Challenge < ActiveRecord::Base
 
     @dates = []
 
-    if activate_pre_registration
+    if activate_pre_registration?
       @dates << { date: pre_registration_date, label: 'Registration opens' } if pre_registration_start_date
     end
 
-    if activate_pre_contest
-      @dates << { date: pre_contest_start_date, label: 'Pre-contest opens' } if pre_contest_start_date
-      @dates << { date: pre_contest_end_date, label: 'Pre-contest closes' } if pre_contest_end_date
-      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date and not disable_pre_contest_winners?
+    if activate_pre_contest?
+      @dates << { date: pre_contest_start_date, label: "#{pre_contest_label} opens" } if pre_contest_start_date
+      @dates << { date: pre_contest_end_date, label: "#{pre_contest_label} closes" } if pre_contest_end_date
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced" } if pre_winners_announced_date and not disable_pre_contest_winners?
     end
 
-    @dates << { date: start_date, label: 'Project submissions open' } if start_date
-    @dates << { date: end_date, label: 'Project submissions close' } if end_date
-    @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+    unless disable_projects_phase?
+      @dates << { date: start_date, label: 'Project submissions open' } if start_date
+      @dates << { date: end_date, label: 'Project submissions close' } if end_date
+      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+    end
 
     @dates
   end

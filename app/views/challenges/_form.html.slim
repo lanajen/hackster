@@ -233,6 +233,8 @@
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
             = f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
             = f.input :disable_pre_contest_winners, as: :boolean, inline_label: 'Disable pre-contest winners', label: false
+            = f.input :disable_projects_phase, as: :boolean, inline_label: 'Disable projects phase', label: false
+            = f.input :pre_contest_label, hint: "If you want to rename 'Pre-contest' into something else."
 
       .panel.panel-default
         .panel-heading

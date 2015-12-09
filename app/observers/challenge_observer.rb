@@ -18,7 +18,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-#{record.id}-status"
       purge = true
     end
-    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date disabled_pre_contest_winners)).any?
+    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date disabled_pre_contest_winners pre_contest_label)).any?
       keys += ["challenge-#{record.id}-timeline", "challenge-#{record.id}-faq"]
       purge = true
     end
@@ -70,6 +70,8 @@ class ChallengeObserver < ActiveRecord::Observer
     NotificationCenter.notify_via_email :ended_pre_contest, :challenge, record.id
     expire_cache record
   end
+
+  alias_method :after_end_pre_contest_fully, :after_end_pre_contest
 
   def after_launch_contest record
     NotificationCenter.notify_all :launched_contest, :challenge, record.id
