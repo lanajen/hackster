@@ -165,7 +165,7 @@ c= content_for :head do
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
+              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do

@@ -86,7 +86,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' }})
+              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
         .col-md-4.right-column
           .container-mobile

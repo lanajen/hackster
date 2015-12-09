@@ -259,8 +259,6 @@
 
                       = link_to 'See all issues', project_issues_path(@project), class: 'btn btn-default btn-sm'
 
-              / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
-              / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
               section#comments.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -268,14 +266,7 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  .user-signed-out style='display:none'
-                    p.sign-up-to-comment
-                      ' Please
-                      ==> link_to 'log in', new_user_session_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: @project.class.model_name.to_s.underscore, id: @project.id)
-                      ' or
-                      ==> link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: @project.class.model_name.to_s.underscore, id: @project.id, source: 'popup')
-                      | to comment.
-                  = react_component('Comments', { commentable: { id: @project.id, type: 'BaseArticle' } })
+                  = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
           .col-md-4.right-column
             .container-mobile

@@ -39,7 +39,7 @@ export default class CommentForm extends Component {
                     : ('Post')
     return (
       <div className="comments-form">
-        <TextArea ref="textarea" />
+        <TextArea ref="textarea" placeholder={this.props.placeholder} />
         <div className="comments-form-button-container">
           <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonLabel}</button>
         </div>

@@ -14,7 +14,7 @@ export default class TextArea extends Component {
   }
 
   render() {
-    let placeholder = 'Write a comment';
+    let placeholder = this.props.placeholder || 'Write a comment';
 
     return (
       <textarea className="comments-textarea" placeholder={placeholder} rows={3}></textarea>
