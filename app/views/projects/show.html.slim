@@ -420,7 +420,7 @@
                   section.section-thumbs
                     h4 Similar projects you might like
                     - @other_projects.each_with_index do |project, i|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
+                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_small)}')"
                         = link_to '', project_path(project, ref: 'similar', ref_id: @project.id, offset: i), class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
