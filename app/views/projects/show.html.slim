@@ -18,11 +18,11 @@
 
 = content_for :no_container do
 
-  = render 'projects/switcher'
-
   - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 5.days, skip_digest: true do
 
     = render 'projects/project_embed_popup'
+
+    = render 'projects/switcher'
 
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
@@ -30,7 +30,7 @@
           .project-type
             = @project.content_type_to_human
         .row
-          - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
+          - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
             .col-md-8.left-column
               - if @project.event
