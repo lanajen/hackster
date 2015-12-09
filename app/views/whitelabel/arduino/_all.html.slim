@@ -1,8 +1,8 @@
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
+  = stylesheet_link_tag 'whitelabel/arduino/application.css'
 
 = content_for :header do
-
 
   .navbar.navbar-default.navbar-static-top#navigation
     .navbar-in  style='position:relative;'
