@@ -21,7 +21,8 @@ class ProjectImportsController < ApplicationController
     def send_admin_message notif=false
       @message = Message.new(
         from_email: current_user.email,
-        message_type: 'generic'
+        message_type: 'generic',
+        to_email: 'ben@hackster.io'
       )
       @message.subject = "New import request"
       @message.subject = "[Notification] " + @message.subject if notif
