@@ -3,6 +3,17 @@ c= content_for :head do
 
 = inserts_stats_for @project
 
+/ update counters via JS so we can cache the views longer
+- content_for :js do
+
+  javascript:
+    $(function(){
+      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span> #{pluralize_without_count @project.impressions_count, 'view'}";
+      $('.impression-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span> #{pluralize_without_count @project.respects_count, 'respect'}";
+      $('.respect-stats').html(s);
+    });
+
 = content_for :no_container do
 
   = render 'projects/switcher'
@@ -53,10 +64,10 @@ c= content_for :head do
                 - else
                   = link_to @author.name, @author
               ul.list-inline.project-stats
-                li
+                li.impression-stats
                   span.stat-figure> = number_with_delimiter @project.impressions_count
                   = pluralize_without_count @project.impressions_count, 'view'
-                li
+                li.respect-stats
                   span.stat-figure> = number_with_delimiter @project.respects_count
                   = pluralize_without_count @project.respects_count, 'respect'
 
