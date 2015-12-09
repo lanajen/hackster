@@ -93,6 +93,17 @@ class Groups::ProjectsController < ApplicationController
     end
   end
 
+  def update_certificate
+    @collection = ProjectCollection.find params[:id]
+
+    authorize! :update, @collection
+
+    @collection.update_attribute :certified, !@collection.certified?
+
+    flash[:notice] = "Project #{'un' unless @collection.certified?}certified."
+    redirect_to group_admin_projects_path(@group, status: params[:status])
+  end
+
   def update_workflow
     @collection = ProjectCollection.find params[:id]
 

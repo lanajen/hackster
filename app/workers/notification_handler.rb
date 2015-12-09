@@ -244,6 +244,15 @@ class NotificationHandler
         user = context[:user] = project.users.first
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
         return unless user.subscribed_to? 'other'
+      when :project_collection
+        collection = ProjectCollection.find(context_id)
+        if collection.certified?
+          context[:group] = collection.collectable
+          context[:project] = project = collection.project
+          context[:users] = project.users
+        else
+          context[:users] = []
+        end
       when :order
         order = context[:order] = Order.find context_id
         context[:user] = order.user

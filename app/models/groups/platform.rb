@@ -66,6 +66,7 @@ class Platform < Collection
   hstore_column :hproperties, :cta_text, :string, default: "Buy %{h.indefinite_articlerize(name)}"
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :disclaimer, :string
+  hstore_column :hproperties, :enable_certification, :boolean
   hstore_column :hproperties, :enable_chat, :boolean
   hstore_column :hproperties, :enable_moderators, :boolean
   hstore_column :hproperties, :enable_parts, :boolean

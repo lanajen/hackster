@@ -232,6 +232,7 @@ HackerIo::Application.routes.draw do
           get 'projects/featured' => 'groups/projects#featured'
           patch 'projects/featured' => 'groups/projects#save_featured'
           patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
+          patch 'projects/:id/certificate' => 'groups/projects#update_certificate', as: :update_certificate
         end
 
         # get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
