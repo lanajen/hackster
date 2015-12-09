@@ -2,11 +2,11 @@
   figure
     a.embed-img href="javascript:openLightBox(#{widget.id},#{i});"
       - if lazyload and !i.zero?
-        = image_tag nil, 'data-lazy' => image.imgix_url(:headline)
+        = image_tag nil, 'data-lazy' => image.imgix_url(:headline), alt: image.title.presence
         noscript
-          = image_tag image.imgix_url(:headline)
+          = image_tag image.imgix_url(:headline), alt: image.title.presence
       - else
-        = image_tag image.imgix_url(:headline)
+        = image_tag image.imgix_url(:headline), alt: image.title.presence
     - if image.title.present?
       figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' } = image.title
     - else
