@@ -72,7 +72,7 @@ export default class Comment extends Component {
                  ? (<div className="reply-box">
                       <div className="reply-box-center-line">
                       </div>
-                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} />
+                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} placeholder={this.props.placeholder} />
                     </div>)
                  : (null);
 
