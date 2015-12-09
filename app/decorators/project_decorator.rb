@@ -1,10 +1,10 @@
 class ProjectDecorator < BaseArticleDecorator
-  def certified?
-    model.project_collections.certified.exists?
+  def certified? only_name_allowed=nil
+    certifier_names(only_name_allowed).any?
   end
 
-  def certifier_names
-    model.project_collections.certified.joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND project_collections.collectable_type = 'Group'").pluck("groups.full_name")
+  def certifier_names only_name_allowed=nil
+    only_name_allowed ? (model.certifier_names & [only_name_allowed]) : model.certifier_names
   end
 
   def components_for_buy_all

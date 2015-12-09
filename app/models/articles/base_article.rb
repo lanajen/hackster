@@ -399,6 +399,12 @@ class BaseArticle < ActiveRecord::Base
     approve! *args
   end
 
+  def certifier_names
+    Rails.cache.fetch ["project-#{id}-certified"], tag: ["project-#{id}-certified"] do
+      project_collections.certified.joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND project_collections.collectable_type = 'Group'").pluck("groups.full_name").sort
+    end
+  end
+
   def content_type_to_human
     @content_type_to_human ||= self.class::CONTENT_TYPES_TO_HUMAN[content_type.try(:to_sym)]
   end

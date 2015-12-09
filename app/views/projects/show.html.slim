@@ -39,12 +39,11 @@
                   ' This project is part of
                   ==> link_to @project.event.name, @project.event
 
-              - cache [I18n.locale, "project-#{@project.id}-certified"], tag: ["project-#{@project.id}-certified"] do
-                - if @project.certified?
-                  .project-group
-                    i.fa.fa-certificate.text-gold>
-                    ' This project is certified by
-                    = @project.certifier_names.to_sentence
+              - if @project.certified? current_platform.try(:full_name)
+                .project-group
+                  i.fa.fa-certificate.text-gold>
+                  ' This project is certified by
+                  = @project.certifier_names(current_platform.try(:full_name)).to_sentence
 
               - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
                 - if ProjectCollection.assignment_or_event_for_project?(@project.id)
