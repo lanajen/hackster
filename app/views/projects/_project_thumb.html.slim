@@ -18,9 +18,9 @@
     div class="project-#{project.id}"
       .thumb.project-thumb
         .thumb-image.has-link-overlay
-          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif')
+          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif') alt=project.name
           noscript
-            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb)
+            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
           = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (subdomain.present? ? '_blank' : nil)
           .thumb-image-inner-top
             .award-container
