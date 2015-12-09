@@ -1,0 +1,31 @@
+= content_for :head do
+  meta(name='keywords' content='hardware platforms,software platforms,diy machines')
+
+= content_for :no_container do
+  - cache [I18n.locale, 'platform-incubator'], tag: ['platform-incubator'], expires_in: 1.hour do
+
+    #platforms
+      section.section-header.hero-header
+        .container
+          h1 Platforms incubator
+
+      section.section-projects
+        .container
+          - if @platforms.any?
+            table.table
+              tbody
+                - @platforms.each do |platform|
+                  tr.hacker-space
+                    td
+                      span.avatar
+                        = image_tag platform.decorate.avatar(:tiny)
+                      = link_to platform.name, platform
+                    td= platform.mini_resume
+          - else
+            p Nothing matched your search, try another one!
+
+      section#bottom-bar
+        .container.text-center
+          p
+            ' Want a hub for your own platform?
+            = link_to 'Launch it', new_platform_path, class: 'btn btn-primary btn-sm'

@@ -41,7 +41,7 @@ class ProjectImportsController < ApplicationController
           if url !~ /^http/
             @errors << "'#{url}' doesn't start with http and is not a valid URL."
           elsif url =~ /hackster\.io/
-            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at hi@hackster.io."
+            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at help@hackster.io."
             break
           end
         end

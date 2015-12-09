@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that the idea you submitted to <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> was selected as a winner!</p>
+<p>This is to let you know that "|idea_name|", the idea you submitted to <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> was selected as a winner!</p>
 
 <p>We will send you a separate email to arrange shipping.</p>
 

@@ -49,10 +49,7 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
-  # this needs to be in every child model too; somehow they don't inherit the unique prop
-  is_impressionable counter_cache: true, unique: :session_hash
-
-  belongs_to :team
+  belongs_to :team, dependent: :destroy
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
@@ -63,6 +60,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :follow_relations, as: :followable
   has_many :grades, foreign_key: :project_id
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression', foreign_key: :project_id
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
@@ -86,7 +84,9 @@ class BaseArticle < ActiveRecord::Base
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :permissions, as: :permissible
+  has_many :reputation_events, as: :event_model, dependent: :delete_all
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
@@ -139,12 +139,12 @@ class BaseArticle < ActiveRecord::Base
   before_save :ensure_name
   before_create :generate_slug
   before_update :update_slug, if: proc {|p| p.name_changed? }
-  after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
+  after_update :publish!, if: proc {|p| p.private_changed? and p.publyc? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
 
   counters_column :counters_cache, long_format: true
-  has_counter :comments, 'comments.count'
+  has_counter :comments, 'comments.live.count'
   has_counter :communities, 'groups.count'
   has_counter :platforms, 'platforms.count'
   has_counter :platform_tags, 'platform_tags_cached.count'
@@ -211,7 +211,7 @@ class BaseArticle < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index 'private or hide or !approved?'
+  has_tire_index 'pryvate or hide or !approved?'
 
   tire do
     mapping do
@@ -302,7 +302,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.live
-    public
+    publyc
   end
 
   def self.last_7days
@@ -571,7 +571,7 @@ class BaseArticle < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      is_public: public?,
+      is_public: publyc?,
       project_id: id,
       project_name: name,
       product_tags_count: product_tags_count,
@@ -671,6 +671,10 @@ class BaseArticle < ActiveRecord::Base
     end
   end
 
+  def slug_hid
+    [slug, hid].join('-')
+  end
+
   private
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
@@ -714,10 +718,6 @@ class BaseArticle < ActiveRecord::Base
         exists = BaseArticle.exists?(hid: hid)
       end
       self.hid = hid
-    end
-
-    def slug_hid
-      [slug, hid].join('-')
     end
 
     def remove_whitespaces_from_html text

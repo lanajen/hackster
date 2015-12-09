@@ -56,24 +56,48 @@ class ProjectsController < ApplicationController
 
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
+    # we load parts and widgets all at once and then split them into their own
+    # categories. That way we limit the number of db queries
+    @parts = @project.part_joins.includes(part: [:image, :platform])
 
-    @hardware_parts = @project.part_joins.hardware.includes(part: :image)
-    @software_parts = @project.part_joins.software.includes(part: :image)
-    @tool_parts = @project.part_joins.tool.includes(part: :image)
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
+
+    @widgets = @project.widgets.order(:position, :id)
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
+      @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+      @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+    end
+
+    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-cad"])
+    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-schematics"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-schematics"])
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-code"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-code"])
+      @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
+      @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
+      @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
+    end
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
 
+    # call with already loaded widgets and images
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+      @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+      @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+      @description = @project.description(nil, widgets: @widgets, images: @images)
+    end
+
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     @other_projects = @other_projects.with_group current_platform if is_whitelabel?
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
-    if @project.public?
-      @respecting_users = @project.respecting_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
-      @replicating_users = @project.replicated_users.public.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+    if @project.publyc?
+      @respecting_users = @project.respecting_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @replicating_users = @project.replicated_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
       if is_whitelabel?
         @respecting_users = @respecting_users.where(users: { enable_sharing: true })
         @replicating_users = @replicating_users.where(users: { enable_sharing: true })
@@ -164,7 +188,7 @@ class ProjectsController < ApplicationController
       event = 'Submitted link'
     else
       # @project.approve!
-      @project.private = true
+      @project.pryvate = true
       event = 'Created project'
     end
 
@@ -210,11 +234,11 @@ class ProjectsController < ApplicationController
 
     respond_with @project do |format|
       format.html do
-        private_was = @project.private
+        private_was = @project.pryvate
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
-          if private_was != @project.private
-            if @project.private == false
+          if private_was != @project.pryvate
+            if @project.pryvate == false
               notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
               session[:share_modal] = 'published_share_prompt'
               session[:share_modal_model] = 'project'
@@ -222,14 +246,14 @@ class ProjectsController < ApplicationController
               session[:share_modal_time] = 'after_redirect'
 
               track_event 'Made project public', @project.to_tracker
-            elsif @project.private == false
+            elsif @project.pryvate == false
               notice = "#{@project.name} is now private again."
             end
           end
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project
@@ -299,7 +323,7 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_slug_route
-    if @project.public?
+    if @project.publyc?
       redirect_to url_for(@project), status: 301
     else
       redirect_to polymorphic_path(@project, auth_token: params[:auth_token])
@@ -366,7 +390,7 @@ class ProjectsController < ApplicationController
         @results = case params[:ref]
         when 'assignment'
           if assignment = Assignment.find_by_id(params[:ref_id])
-            assignment.projects.public.order(:created_at)
+            assignment.projects.publyc.order(:created_at)
           end
 
         when 'custom'
@@ -401,7 +425,7 @@ class ProjectsController < ApplicationController
 
         when 'event'
           if event = Event.find_by_id(params[:ref_id])
-            event.projects.public.order('projects.respects_count DESC')
+            event.projects.publyc.order('projects.respects_count DESC')
           end
 
         when 'list'
@@ -452,7 +476,7 @@ class ProjectsController < ApplicationController
 
         when 'part'
           if part = Part.find_by_id(params[:ref_id])
-            part.projects.public.magic_sort
+            part.projects.publyc.magic_sort
           end
 
         when 'tag'
@@ -463,7 +487,7 @@ class ProjectsController < ApplicationController
 
         when 'user'
           if user = User.find_by_id(params[:ref_id])
-            projects = user.projects.public.own.order(start_date: :desc, created_at: :desc)
+            projects = user.projects.publyc.own.order(start_date: :desc, created_at: :desc)
             projects = projects.with_group(current_platform) if is_whitelabel?
             projects
           end

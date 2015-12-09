@@ -7,6 +7,7 @@ json.projects @projects do |project|
     json.name user.name
     json.url user_url(user, subdomain: ENV['SUBDOMAIN'])
   end
+  json.created_at project.created_at.strftime('%Y-%m-%d')
   json.views project.impressions.where("impressions.created_at > ? AND impressions.created_at < ?", @range_start, @range_end).group("DATE(impressions.created_at)").order("date_impressions_created_at").count do |date, count|
     json.date date
     json.count count

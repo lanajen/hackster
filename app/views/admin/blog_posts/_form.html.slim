@@ -5,7 +5,7 @@
   span.input-group-addon hackster.io/blog/
   = f.input_field :slug
 = f.input :published_at, hint: 'Time is UTC'
-= f.input :public, label: 'Published', as: :boolean
+= f.input :publyc, label: 'Published', as: :boolean
 = f.input :blog_tags_string, label: 'Tags', hint: 'Enter a list of tags separated by commas'
 = f.input :user_id, label: 'Author user ID', hint: 'Find it from /admin/users'
 

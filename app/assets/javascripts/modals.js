@@ -16,16 +16,18 @@ function resizeModal(id) {
     .css('width', width)
     .css('margin-left', -(p.outerWidth() / 2))
 
-  m.fadeIn(200, function(){
-    $('body').addClass('modal-open');
-    m.addClass('open');
-    m.trigger('modal:open');
-    $(document).on('keyup.modal', function(e){
-      if (e.keyCode == 27) {
-        closeModal(id);
-      }
+  if (m.is(':hidden')) {
+    m.fadeIn(200, function(){
+      $('body').addClass('modal-open');
+      m.addClass('open');
+      m.trigger('modal:open');
+      $(document).on('keyup.modal', function(e){
+        if (e.keyCode == 27) {
+          closeModal(id);
+        }
+      });
     });
-  });
+  }
 
   var height = Math.max(-(p.outerHeight() / 2), -($(window).height() / 2 - 20));  // 20 for padding
   p.css('margin-top', height);

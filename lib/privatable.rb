@@ -1,24 +1,35 @@
 module Privatable
+  # we use pryvate and publyc so that as not to override the private and public
+  # calls in ruby. same methods used on instances for consistency.
+  # we keep the private instance method so we don't have to update the column names
   module ClassMethods
-    def private
+    def pryvate
       where private: true
     end
 
-    def public
+    def publyc
       where.not(private: true)
     end
   end
 
   module InstanceMethods
-    def private?
+    def pryvate
+      private
+    end
+
+    def pryvate=(val)
+      self.private = val
+    end
+
+    def pryvate?
       private == true
     end
 
-    def public?
+    def publyc?
       private == false
     end
 
-    def public=(val)
+    def publyc=(val)
       self.private = case val
       when String
         val.to_i.zero? ? true : false
@@ -27,21 +38,19 @@ module Privatable
       end
     end
 
-    def public
+    def publyc
       !private
     end
 
     def visible_to? user
       project = respond_to?(:project) ? self.project : self
-      public? or user.is_team_member? project
+      publyc? or user.is_team_member? project
     end
   end
 
   def self.included base
     base.send :include, InstanceMethods
     base.send :extend, ClassMethods
-    base.send :attr_accessible, :private, :public#, :privacy_rules_attributes
-    # base.send :has_many, :privacy_rules, as: :privatable, dependent: :destroy
-    # base.send :accepts_nested_attributes_for, :privacy_rules, allow_destroy: true
+    base.send :attr_accessible, :private, :publyc, :pryvate
   end
 end

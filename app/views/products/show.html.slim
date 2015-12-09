@@ -2,7 +2,7 @@
 
   #content.product-page class="product-#{@product.id}"
     .wrapper780.product-wrapper
-      - if @product.private?
+      - if @product.pryvate?
         .product-alert-container
           - who = %w(you)
           - who += ['team members'] if @product.users.size > 1
@@ -32,7 +32,7 @@
           .col-xs-6
             - @product.team_members.each do |member|
               = render partial: 'users/member_thumb_mini_for_product', locals: { user: member.user.decorate }
-          / # - if @product.public?
+          / # - if @product.publyc?
             .col-xs-6.pull-right= render partial: 'respects/count', locals: { count: @product.respects_count, product: @product }
 
       - cache [I18n.locale, @product, 'widgets'], tag: ["product-#{@product.id}-widgets", 'product-widgets'] do
@@ -46,7 +46,7 @@
                     = link_to 'Edit page', settings_project_path(@product), class: 'btn btn-primary btn-block'
                   .col-xs-6
                     = link_to 'Edit team', project_edit_team_path(@product), class: 'btn btn-primary btn-block'
-              - if @product.public?
+              - if @product.publyc?
                 .respects
                   / - if @can_respect
                     = render partial: 'respects/button', locals: { respectable: @product }
@@ -59,7 +59,7 @@
                       = pluralize_without_count @product.impressions_count, 'time'
 
               .share
-                - if @product.public?
+                - if @product.publyc?
                   / span.add-to-list-btn style='margin-right: 3px;'
                     a.btn.btn-default.toggle-lists-btn.popover-js href=""
                       i.fa.fa-bookmark-o

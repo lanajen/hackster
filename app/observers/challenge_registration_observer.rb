@@ -17,6 +17,6 @@ class ChallengeRegistrationObserver < ActiveRecord::Observer
   private
     def expire_cache record
       record.challenge.update_counters only: [:registrations]
-      record.challenge.purge
+      FastlyWorker.perform_async 'purge', record.challenge.record_key
     end
 end

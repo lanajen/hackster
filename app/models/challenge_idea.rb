@@ -6,6 +6,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   belongs_to :challenge, inverse_of: :ideas
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_one :image, as: :attachable, dependent: :destroy
 
   hstore_column :properties, :description, :text
@@ -32,7 +33,9 @@ class ChallengeIdea < ActiveRecord::Base
       event :mark_needs_approval, transitions_to: :new
       event :approve, transitions_to: :approved
     end
-    state :won
+    state :won do
+      event :undo_won, transitions_to: :approved
+    end
     state :lost
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{triggering_event}")

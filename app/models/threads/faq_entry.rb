@@ -2,7 +2,7 @@ class FaqEntry < Post
   sanitize_text :body
   register_sanitizer :trim_whitespace, :before_save, :body
 
-  private
+  protected
     def trim_whitespace text
       xml = Nokogiri::HTML::DocumentFragment.parse text
       first_text = -1

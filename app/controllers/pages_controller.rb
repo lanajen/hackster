@@ -19,6 +19,10 @@ class PagesController < ApplicationController
     @info_request = InfoRequest.new
   end
 
+  def conduct
+    title "Code of Conduct"
+  end
+
   def create_info_request
     @info_request = InfoRequest.new params[:info_request]
 
@@ -71,6 +75,8 @@ class PagesController < ApplicationController
   end
 
   def home
+    redirect_to projects_path(format: :atom) and return if request.format == :rss
+
     featured_lists = %w(home-automation lights wearables animals remote-control displays)
 
     if user_signed_in?
@@ -79,7 +85,7 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.public.active.ends_first
+      @challenges = Challenge.publyc.active.ends_first
 
       @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
@@ -92,14 +98,14 @@ class PagesController < ApplicationController
           @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit(12)
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
+          @platforms = Platform.publyc.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
         end
 
       else
         unless request.xhr?
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(24)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
+          @platforms = Platform.publyc.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
         @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit(12)
       end
@@ -110,11 +116,11 @@ class PagesController < ApplicationController
       set_surrogate_key_header 'home-visitor'
       @trending_projects = BaseArticle.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit 12
-      @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
+      @platforms = Platform.publyc.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.public.active.ends_first.limit(2)
+      @challenges = Challenge.publyc.active.ends_first.limit(2)
 
-      @typeahead_tags = Collection.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
+      @typeahead_tags = Collection.publyc.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
       end
       @suggestions = {
@@ -136,6 +142,10 @@ class PagesController < ApplicationController
   def infringement_policy
     meta_desc 'Read our infringement notice policy.'
     title 'Infringement notice policy'
+  end
+
+  def guidelines
+    title 'Content Guidelines'
   end
 
   def jobs

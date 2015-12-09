@@ -462,8 +462,7 @@ $select2target = null;
       cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
       cEditor.ace.selection.clearSelection();
       var lang = $(this).find('[data-field-type="language"]').val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
 
     $('#code-editor-popup').on('modal:open', function(){
@@ -472,9 +471,22 @@ $select2target = null;
 
     $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
       var lang = $(this).val();
-      if (lang == '') lang = 'text';
-      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      updateEditorMode(cEditor, lang);
     });
+
+    function updateEditorMode(editor, lang) {
+      switch (lang) {
+        // default if empty
+        case '':
+          lang = 'text';
+          break;
+        // ace doesn't have an arduino mode and C/C++ is good enough
+        case 'arduino':
+          lang = 'c_cpp';
+          break;
+      }
+      editor.ace.getSession().setMode("ace/mode/" + lang);
+    }
 
     $('#code-editor-popup').on('click', '.upload-code', function(e){
       e.preventDefault();
@@ -1063,15 +1075,19 @@ function formatPart(result) {
   return $(output);
 };
 
-function loadSlickSlider(target){
-  target = target || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
-  target.slick({
+function loadSlickSlider(opts){
+  opts = opts || {};
+  target = opts['target'] || $('.image-gallery:visible:not(.slick-initialized):not(.lazyload)');
+  delete opts['target'];
+  slickOpts = {
     accessibility: false,
     speed: 500,
     fade: true,
     dots: true,
     adaptiveHeight: true
-  });
+  };
+  for (var attrname in opts) { slickOpts[attrname] = opts[attrname]; }
+  target.slick(slickOpts);
   updatedScrollEventHandlers();
 }
 

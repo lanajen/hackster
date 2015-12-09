@@ -32,7 +32,9 @@ HackerIo::Application.configure do
 
   config.eager_load = false
 
-  unless ENV['USE_MANDRILL']
+  case ENV['MAIL_METHOD']
+  when 'mandrill'
+  when 'mailtrap'
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
       :user_name => '4213565d9ed7c2884',
@@ -42,6 +44,8 @@ HackerIo::Application.configure do
       :port => '2525',
       :authentication => :cram_md5
     }
+  else
+    config.action_mailer.delivery_method = :letter_opener
   end
 
   config.action_mailer.default_url_options = { :host => 'www.localhost.local:5000' }

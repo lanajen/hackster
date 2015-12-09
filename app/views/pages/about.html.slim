@@ -1,40 +1,53 @@
 = content_for :no_container do
-  #about
-    section#pitch
+
+  #about-us-page
+    section.section-pitch
       .container
         .row.header
           .col-md-10.col-md-offset-1
-            h2.text-center.mg-20 We help you build awesome hardware
-            p Hackster is the world's largest hardware creation community. From beginners to the advanced, Hackster empowers people everywhere to learn, build and showcase projects and products they created.
-            p We focus on open source hardware and everything that makes IoT sing, like sensors, radios and the cloud. For us it's all about hardware, software and empowering our members with expert knowledge.
+            h2.text-center.mg-20 Hackster Powers the Hardware Community
+            p We started in 2013 with a commitment to help people everywhere learn how to program, connect and create Internet-connected hardware. Today, our community has grown to 50,000 developers, makers and entrepreneurs who build projects as means for learning and discovery.
 
-        .row.pitch-line
-          .col-md-10.col-md-offset-1
-            .col-md-6.img
-              = image_tag 'home/icon2.png'
-            .col-md-6
-              h3 Your portfolio
-              p We know that building an online portfolio for hardware developers is no easy task and can be time-consuming. We've made it easy for you to showcase all the facets of their projects, from what it is and how it looks to what makes it work and how it can be replicated. Say as much or as little as you want, you're in control.
+            p We put people and learning ahead of commercial interests, and we’ve built an amazing network of partners who believe in our mission: if we do our job right, Hackster will accelerate the solving of really big problems. By equipping inventive people with the resources they need, we hope to help them create technologies that impact meaningful issues, such as a healthy environment, wildlife preservation, and our own welfare.
 
-        .row.pitch-line
-          .col-md-10.col-md-offset-1
-            .col-md-6.col-md-push-6.img
-              = image_tag 'home/icon4.png'
-            .col-md-6.col-md-pull-6
-              h3 Share, connect and collaborate
-              p Even the greatest minds need help to achieve the greatest goals. Share your work to inspire others and start snowball effects. Share your expertise and contribute to other hardware developers' projects. Find like-minded people and collaborate to build the next big thing!
+      .about-img-container= image_tag 'about/main.png'
 
-        .row.pitch-line
-          .col-md-10.col-md-offset-1
-            .col-md-6.img
-              = image_tag 'home/icon3.png'
-            .col-md-6
-              h3 Platforms and resources
-              p Why reinvent the wheel when a solution to your problem already exists? Discover platforms to accelerate prototyping and save time, money and efforts. Find resources that will help you make faster, from cheap custom parts to PCB manufacturing.
+    section.section-what
+      .container
+        .what-item
+          .img
+            = image_tag 'about/share.png'
+          .text
+            h3 Build Your portfolio
+            p We've made it easy for you to showcase rich projects, gain valuable feedback, and co-create using parts, sharing code, schematics and BOMs.
 
-    - if !user_signed_in?
-      section#signup-now-pretty-please
-        .container.text-center
-          h1 Are you ready to jump?
-          p Get inspired, learn new skills and contribute back to the community by sharing your own projects.
-          p= link_to 'Join the community', new_user_registration_path(source: 'about'), class: 'btn btn-primary btn-sm'
+        .what-item
+          .text
+            h3 Share and connect
+            p Your projects are beacons of inspiration. Share your expertise and contribute to other projects, meet like-minded people and collaborate to build powerful things together, participate in challenges and even join some of our events.
+          .img
+            = image_tag 'about/talk.png'
+
+        .what-item
+          .img
+            = image_tag 'about/platforms.png'
+          .text
+            h3 Platforms and resources
+            p Discover platforms to accelerate focused learning and rapid builds. Find resources that will help you learn and create faster.
+
+    section.section-partners
+      .container
+        .header
+          h2.text-center.mg-40 Some of the Great Companies We Work With
+        .layer
+          = link_to image_tag('hwweek/partners/autodesk.jpg'), 'http://www.autodesk.com'
+          = link_to image_tag('hwweek/partners/arduino.png'), 'https://www.arduino.cc'
+          = link_to image_tag('hwweek/partners/cypress.jpg'), 'https://www.cypress.com'
+          = link_to image_tag('hwweek/partners/mediatek.png'), 'http://labs.mediatek.com'
+          = link_to image_tag('hwweek/partners/ms.jpg'), 'https://www.windowsondevices.com'
+        .layer
+          = link_to image_tag('hwweek/partners/nxp.png'), 'http://www.nxp.com'
+          = link_to image_tag('hwweek/partners/particle.png'), 'https://particle.io'
+          = link_to image_tag('hwweek/partners/sparkfun.jpg'), 'https://www.sparkfun.com'
+          = link_to image_tag('hwweek/partners/seeed.png'), 'http://www.seeedstudio.com'
+          = link_to image_tag('hwweek/partners/udoo.png'), 'http://www.udoo.org'

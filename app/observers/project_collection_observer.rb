@@ -33,11 +33,13 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       Cashier.expire *keys
 
       # fastly
-      project.purge
+      fastly_keys = []
+      fastly_keys << project.record_key
       if record.collectable.class == Platform
-        FastlyRails.purge_by_key "#{record.collectable.user_name}/home"
-        record.collectable.purge
+        fastly_keys << "#{record.collectable.user_name}/home"
+        fastly_keys << record.collectable.record_key
       end
+      FastlyWorker.perform_async 'purge', *fastly_keys
     end
 
     def update_counters record

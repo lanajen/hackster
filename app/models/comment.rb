@@ -6,7 +6,9 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   has_many :likes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :receipts, as: :receivable, dependent: :destroy
+  has_many :reputation_events, as: :event_model, dependent: :delete_all
 
   attr_accessor :children, :depth
   attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
@@ -24,8 +26,16 @@ class Comment < ActiveRecord::Base
     joins("JOIN #{type.table_name} ON #{type.table_name}.id = #{self.table_name}.commentable_id AND #{self.table_name}.commentable_type = '#{type.to_s}'")
   end
 
+  def self.cache_key commentable_type, commentable_id
+    [commentable_type.underscore, commentable_id, 'comments'].join('/')
+  end
+
   def self.have_owner
     where.not(user_id: 0)
+  end
+
+  def self.live
+    where(deleted: false)
   end
 
   def self.sort_from_hierarchy comments
@@ -49,10 +59,29 @@ class Comment < ActiveRecord::Base
 
       sorted << child
     end
+
+    sorted
   end
 
   def association_name_for_notifications
     commentable_type
+  end
+
+  def children force=false
+    if force
+      @children = Comment.where(parent_id: id)
+    else
+      @children
+    end
+  end
+
+  # soft destroy
+  def destroy
+    if is_root? and children(true).exists?
+      update_attribute :deleted, true
+    else
+      super
+    end
   end
 
   def disable_notification!
@@ -63,10 +92,6 @@ class Comment < ActiveRecord::Base
     @disable_notification
   end
 
-  def is_root?
-    parent_id.nil?
-  end
-
   def has_parent?
     parent_id.present?
   end
@@ -75,6 +100,10 @@ class Comment < ActiveRecord::Base
     return unless body
 
     mentioned_users.any?
+  end
+
+  def is_root?
+    parent_id.nil?
   end
 
   def mentioned_users

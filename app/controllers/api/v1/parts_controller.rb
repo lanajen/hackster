@@ -8,7 +8,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     @parts = if current_platform
       current_platform.parts
     else
-      Part.approved
+      Part
     end
 
     if params[:q].present?
@@ -28,6 +28,10 @@ class Api::V1::PartsController < Api::V1::BaseController
 
     sort = params[:sort] || Part::DEFAULT_SORT
     @parts = @parts.send(Part::SORTING[sort])
+
+    if params[:approved]
+      @parts = @parts.approved
+    end
 
     @parts = @parts.includes(:image, platform: :avatar).paginate(page: safe_page_params)
   end

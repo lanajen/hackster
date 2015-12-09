@@ -31,7 +31,7 @@ class ArticlesController < ApplicationController
 
     @author = @project.users.includes(:avatar).first.try(:decorate)
 
-    # if @project.public?
+    # if @project.publyc?
     #   @respecting_users = @project.respecting_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
     #   if is_whitelabel?
     #     @respecting_users = @respecting_users.where(users: { enable_sharing: true })
@@ -54,12 +54,12 @@ class ArticlesController < ApplicationController
 
   def update
     authorize! :update, @project
-    private_was = @project.private
+    private_was = @project.pryvate
 
     if @project.update_attributes(params[:base_article])
       notice = "#{@project.name} was successfully updated."
-      if private_was != @project.private
-        if @project.private == false
+      if private_was != @project.pryvate
+        if @project.pryvate == false
           notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
           session[:share_modal] = 'published_share_prompt'
           session[:share_modal_model] = 'article'
@@ -67,7 +67,7 @@ class ArticlesController < ApplicationController
           session[:share_modal_time] = 'after_redirect'
 
           track_event 'Made project public', @project.to_tracker
-        elsif @project.private == false
+        elsif @project.pryvate == false
           notice = "#{@project.name} is now private again."
         end
       end
@@ -82,7 +82,7 @@ class ArticlesController < ApplicationController
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
       if params[:base_article].try(:[], 'private') == '0'
-        flash[:alert] = "Couldn't publish this article, please email us at hi@hackster.io to get help."
+        flash[:alert] = "Couldn't publish this article, please email us at help@hackster.io to get help."
       end
       redirect_to @project
     end

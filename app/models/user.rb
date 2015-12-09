@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
   has_many :challenge_ideas, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy
   has_many :challenges, through: :challenge_entries
-  has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
+  has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id
   has_many :comment_likes, class_name: 'Respect', through: :comments, source: :likes
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
@@ -158,7 +158,8 @@ class User < ActiveRecord::Base
   end
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
-  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
+  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification', dependent: :destroy
+  has_many :notification_inverses, as: :notifiable, dependent: :delete_all, class_name: 'Notification'
   has_many :orders, -> { order :placed_at }
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
@@ -238,13 +239,13 @@ class User < ActiveRecord::Base
   has_counter :hacker_spaces, 'hacker_spaces.count'
   has_counter :interest_tags, 'interest_tags.count'
   has_counter :invitations, 'invitations.count'
-  has_counter :lists, 'lists.public.count'
-  has_counter :live_projects, 'projects.public.own.count'
-  has_counter :live_hidden_projects, 'projects.public.where(hide: true).count'
+  has_counter :lists, 'lists.publyc.count'
+  has_counter :live_projects, 'projects.publyc.own.count'
+  has_counter :live_hidden_projects, 'projects.publyc.where(hide: true).count'
   has_counter :owned_parts, 'owned_parts.count'
   has_counter :platforms, 'followed_platforms.count'
   has_counter :project_platforms, 'project_platforms.count'
-  has_counter :popularity_points, 'projects.public.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum'
+  has_counter :popularity_points, 'projects.publyc.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum'
   has_counter :projects, 'projects.count'
   has_counter :project_respects, 'projects.includes(:respects).count(:respects)'
   has_counter :project_views, 'projects.sum(:impressions_count)'
@@ -584,7 +585,7 @@ class User < ActiveRecord::Base
   end
 
   def live_comments
-    comments.by_commentable_type(BaseArticle).where("projects.private = 'f'")
+    comments.live.by_commentable_type(BaseArticle).where("projects.private = 'f'")
   end
 
   def live_visible_projects_count
@@ -871,7 +872,6 @@ class User < ActiveRecord::Base
       end
     end
 
-  protected
     # overwrites devise
     def confirmation_required?
       false

@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : Platform::DEFAULT_SORT)
 
-    @platforms = Platform.public.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+    @platforms = Platform.publyc.featured.for_thumb_display.new_first
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
@@ -34,6 +34,15 @@ class PlatformsController < ApplicationController
     if params[:tag]
       @platforms = @platforms.joins(:product_tags).where("LOWER(tags.name) = ?", params[:tag].downcase)
     end
+
+    render "groups/platforms/#{self.action_name}"
+  end
+
+  def incubator
+    title "Explore all-new platforms"
+    meta_desc "Check out the platforms that were just added to Hackster."
+
+    @platforms = Platform.publyc.not_featured.for_thumb_display.order(created_at: :desc)
 
     render "groups/platforms/#{self.action_name}"
   end
@@ -151,8 +160,6 @@ class PlatformsController < ApplicationController
     set_cache_control_headers 3600
 
     title "Projects built with #{@platform.name}"
-    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-    @list_style = '_vertical' if @list_style == ''
 
     respond_to do |format|
       format.html { render "groups/platforms/embed", layout: 'embed' }
@@ -175,9 +182,9 @@ class PlatformsController < ApplicationController
 
     @new_projects = graph_with_dates_for @new_projects_sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', BaseArticle.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
 
-    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'BaseArticle views in the last 30 days', 'AreaChart'
+    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'Project views in the last 30 days', 'AreaChart'
 
-    @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Page views in the last 30 days', 'AreaChart'
+    @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Hub page views in the last 30 days', 'AreaChart'
 
     @new_respects = graph_with_dates_for @new_respects_sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'BaseArticle'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
 

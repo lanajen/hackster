@@ -1,5 +1,5 @@
-.image-gallery-container class=(options[:mode] == :normal ? 'lazyload' : '')
-  - ids = embed.widget.images.pluck(:id)
+.image-gallery-container
+  - ids = embed.images.map(&:id)
   select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
     - ids.each do |id|
       option  value=id selected='selected'
@@ -12,7 +12,7 @@
         / ' or
         / # = link_to 'enter the URL of an image on the web', '', class: 'url'
   .image-gallery
-    - embed.widget.images.each_with_index do |image, i|
+    - embed.images.each_with_index do |image, i|
       = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget, lazyload: options[:mode] == :normal }
 
 javascript:

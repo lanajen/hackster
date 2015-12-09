@@ -9,8 +9,6 @@ class ExternalProject < BaseProject
   validates :name, :website, :one_liner, :cover_image, presence: true
   before_save :ensure_is_hidden
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   before_save :set_content_type, if: proc{|p| p.content_type.blank? }
 
   def self.model_name
@@ -29,7 +27,7 @@ class ExternalProject < BaseProject
     'link'
   end
 
-  private
+  protected
     def set_content_type
       self.content_type = :external
     end

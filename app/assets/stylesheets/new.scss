@@ -186,9 +186,6 @@ h1 {
   }
   .project-thumb-img {
     z-index: 0;
-    &:not(.loaded) {
-      background: asset-url("spin.svg") center center no-repeat;
-    }
   }
   noscript {
     .project-thumb-img {

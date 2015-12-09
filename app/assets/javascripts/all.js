@@ -119,7 +119,7 @@ function showHelloWorld() {
   $('#hello-world').fadeIn(100, function(){
     updatedScrollEventHandlers();
     var content = $('#hello-world .content');
-    var height = 200 - content.height();
+    var height = 100 - content.height();
     $(this)
       .css('padding-top', height / 2)
       .find('.content').css('opacity', 1);
@@ -129,60 +129,41 @@ function showHelloWorld() {
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
   updatedScrollEventHandlers();
+  loadSlickSlider({lazyLoad: 'ondemand'});
 });
 
+// lazy image load functions
+// not exactly lazy anymore, but loads after the page is ready; lazy loading
+// wouldn't work quite properly, and it didn't seem to save much bandwidth either
+function loadImage (el) {
+  el = $(el);
+  if (el.hasClass('loaded')) return;
+
+  var img = new Image(),
+      src = el.data('async-src');
+
+  img.onload = function() {
+    el.attr('src', src);
+    el.removeClass('loading');
+    el.addClass('loaded');
+  }
+
+  el.addClass('loading');
+  img.src = src;
+  el.removeAttr('data-async-src');
+}
+
+var lazyLoadImages = function(){
+  var query = $('img[data-async-src]');
+
+  query.each(function(i, el){
+    loadImage(el);
+  });
+};
+// end - lazy image load functions
+
 $(function () {
-  // lazy image load functions
-  function loadImage (el) {
-    el = $(el);
-    if (el.hasClass('loaded')) return;
-
-    var img = new Image(),
-        src = el.data('async-src');
-
-    img.onload = function() {
-      el.attr('src', src);
-      el.addClass('loaded');
-      if (el.hasClass('load-slick')) {
-        loadSlickSlider(el.closest('.image-gallery'));
-      }
-    }
-
-    img.src = src;
-    el.removeAttr('data-async-src');
-  }
-
-  function elementInViewport(el) {
-    var rect = el.getBoundingClientRect();
-    var min = -20;
-
-    return ((rect.top >= min &&
-            (rect.top + min) <= (window.innerHeight || document.documentElement.clientHeight)) ||
-            (rect.bottom >= min &&
-            (rect.bottom - min) <= (window.innerHeight || document.documentElement.clientHeight)) &&
-           ((rect.left >= min && (rect.left - min) <= (window.innerWidth || document.documentElement.clientWidth)) ||
-            (rect.right >= min && (rect.right - min) <= (window.innerWidth || document.documentElement.clientWidth)))
-    );
-  }
-
-  var processScroll = function(){
-    var images = new Array();
-    var query = $('img[data-async-src]');
-
-    for (var i = 0; i < query.length; i++) {
-      if (images.indexOf(query[i]) == -1) images.push(query[i]);
-    };
-
-    for (var i = 0; i < images.length; i++) {
-      if (elementInViewport(images[i])) {
-        loadImage(images[i]);
-      }
-    };
-  };
-
-  processScroll();
-  $(window).on('scroll resize', _.debounce(processScroll, 10));
-  // end - lazy image load functions
+  lazyLoadImages();
 
   $('#project-side-nav')
     .on('affix-bottom-on', function(e){
@@ -314,6 +295,8 @@ $(function () {
           form.submit();
         }
       });
+    } else {
+      form.submit();
     }
   });
 
@@ -538,6 +521,10 @@ $(function () {
 
   $('.hljs-active :not(.highlight) > pre').each(function(i, block) {
     hljs.highlightBlock(block);
+  });
+
+  $('#signup-popup').on('modal:open', function(e){
+    $(this).find('input:visible').first().focus();
   });
 
   updateProjectThumbLinks();

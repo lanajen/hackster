@@ -4,7 +4,7 @@ class Post < ThreadPost
   belongs_to :threadable, polymorphic: true
   has_many :widgets, as: :widgetable
 
-  attr_accessible :private, :draft, :widget_attributes
+  attr_accessible :draft, :widget_attributes
 
   accepts_nested_attributes_for :widgets
 

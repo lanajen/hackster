@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has won a prize!</p>
+<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> has won a prize!</p>
 
 <% prizes = @context[:prizes].map do |prize|
   "<strong>#{prize.name}</strong> (prize: #{prize.description})"

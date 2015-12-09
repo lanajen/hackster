@@ -34,7 +34,7 @@ class GroupsController < ApplicationController
     authorize! :create, @group
 
     admin = @group.members.new(user_id: current_user.id)
-    @group.private = true
+    @group.pryvate = true
 
     if @group.save
       admin.update_attribute :permission_action, 'manage'

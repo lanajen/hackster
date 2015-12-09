@@ -18,8 +18,6 @@ class Project < BaseProject
   }.freeze
   DEFAULT_CONTENT_TYPE = :tutorial
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy

@@ -1,22 +1,67 @@
-#about {
-  padding-top: 100px;
-  #pitch {
-    // background: #fcfcfc;
-    .pitch-line {
-      margin: 50px 0 30px;
-      .img {
-        text-align: center;
-        margin-bottom: 20px;
+#about-us-page {
+  .section-pitch {
+    padding: 100px 0 325px;
+    background-color: #fff;
+    position: relative;
+    .about-img-container {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      bottom: -266px;
+      z-index: 10;
+      img {
+        max-width: none;
       }
     }
   }
-  h3 {
-    color: #1f262c;
-    margin-top: 0;
-    font-size: 18px;
+  .section-what {
+    padding: 325px 0 100px;
+    background-color: #1cacf7;
+    color: #fff;
+    .what-item {
+      @include flexbox((
+        display: flex,
+        align-items: center,
+        justify-content: center
+      ));
+      margin-bottom: 100px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      & > :first-child {
+        padding-right: 25px;
+      }
+      & > :last-child {
+        padding-left: 25px;
+      }
+      .img {
+        max-width: 350px;
+      }
+      .text {
+        max-width: 350px;
+      }
+      h3 {
+        font-weight: bold;
+        margin-top: 0;
+        font-size: 18px;
+      }
+    }
+  }
+  .section-partners {
+    padding: 100px 0;
+    background-color: #fff;
+    .layer {
+      @include flexbox((
+        display: flex,
+        align-items: center
+      ));
+      margin: 20px -20px;
+      a {
+        padding: 0 20px;
+      }
+    }
   }
   p {
-    color: #555;
     line-height: 1.6;
   }
 }

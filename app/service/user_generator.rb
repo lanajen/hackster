@@ -30,7 +30,7 @@ class UserGenerator
       u.save
     end
     groups = []
-    Platform.public.featured.each do |plat|
+    Platform.publyc.featured.each do |plat|
       (Math.log(plat.followers_count) * Math.log(plat.followers_count)).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
     end
     rand(1..5).times do

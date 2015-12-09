@@ -48,17 +48,6 @@ html(lang="en")
     meta name="theme-color" content="#1cacf7"
     - if ENV['ENABLE_ANALYTICS'] and !current_user.try(:is?, :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
-      <!-- Hotjar Tracking Code for www.hackster.io -->
-      javascript:
-        (function(h,o,t,j,a,r){
-          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-          h._hjSettings={hjid:81027,hjsv:5};
-          a=o.getElementsByTagName('head')[0];
-          r=o.createElement('script');r.async=1;
-          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-          a.appendChild(r);
-        })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-
 
   body class=yield(:body_class) data-user-signed-in=user_signed_in?
     - unless params[:blank_frame]
@@ -83,7 +72,7 @@ html(lang="en")
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
           .navbar-in  style='position:relative;'
             .navbar-header
-              = link_to image_tag('hackster_logo_mark_only.png', alt: "Hackster.io"), root_path, title: "Hackster.io", class: 'navbar-brand navbar-btn'
+              = link_to image_tag('hackster_logo_blue.png', alt: "Hackster.io"), root_path, title: "Hackster.io", class: 'navbar-brand navbar-btn'
             #nav-non-logo.show-on-desktop
               ul#nav-actions.top-menu-nav
                 li.dropdown

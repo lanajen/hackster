@@ -24,7 +24,7 @@ class Promotion < Community
       name: name,
       model: self.class.name,
       mini_resume: mini_resume,
-      private: private,
+      private: pryvate,
       created_at: created_at,
     }.to_json
   end

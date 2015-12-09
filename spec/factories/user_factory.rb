@@ -1,7 +1,9 @@
 FactoryGirl.define do
   factory :user do
-    email 'newuser@example.com'
-    email_confirmation 'newuser@example.com'
-    password 'newuser@example.com'
+    user_name { FFaker::Internet.user_name.gsub('.', '-') }
+    email { "#{user_name}@example.com" }
+    email_confirmation { email }
+    password { email }
+    confirmed_at { Time.now }
   end
 end

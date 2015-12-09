@@ -29,8 +29,8 @@ class CronTask < BaseWorker
   end
 
   def cleanup_buggy_unpublished
-    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
-    BaseArticle.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
+    BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
       project.update_attribute :workflow_state, :approved
     end
   end
@@ -63,7 +63,6 @@ class CronTask < BaseWorker
   end
 
   def launch_cron
-    CacheWorker.perform_async 'warm_cache'
     CronTask.perform_in 3.minutes, 'cleanup_buggy_unpublished'
     CronTask.perform_in 3.minutes, 'lock_assignment'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
@@ -75,11 +74,11 @@ class CronTask < BaseWorker
   end
 
   def launch_daily_cron
-    CronTask.perform_async 'generate_users'
     CronTask.perform_async 'update_mailchimp'
     CronTask.perform_async 'update_mailchimp_for_challenges'
     CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
+    CacheWorker.perform_in 30.minutes, 'warm_cache'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
     CronTask.perform_in 2.hours, 'send_daily_notifications'

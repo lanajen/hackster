@@ -14,6 +14,6 @@ class PrizeObserver < ActiveRecord::Observer
   private
     def expire_cache record
       Cashier.expire "challenge-#{record.challenge_id}-prizes", "challenge-#{record.challenge_id}-faq"
-      record.challenge.purge
+      FastlyWorker.perform_async 'purge', record.challenge.record_key
     end
 end

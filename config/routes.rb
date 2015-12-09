@@ -10,15 +10,20 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  # API (see if can be moved to its own subdomain)
+  # kept for compatibility, remove when fully migrated
   namespace :api do
     namespace :v1 do
       get 'embeds' => 'embeds#show'
       # post 'embeds' => 'embeds#create'
+      get 'me' => 'users#show'
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
-      resources :comments, only: [:create, :destroy]
+      resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+        collection do
+          delete '' => 'comments#destroy'
+        end
+      end
       resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
@@ -60,11 +65,16 @@ HackerIo::Application.routes.draw do
     scope module: :api, defaults: { format: :json } do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
+        get 'me' => 'users#show'
         # post 'embeds' => 'embeds#create'
         resources :announcements
         resources :build_logs
         resources :code_files, only: [:create]
-        resources :comments, only: [:create, :destroy]
+        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
+          collection do
+            delete '' => 'comments#destroy'
+          end
+        end
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index] do
           collection do
@@ -165,6 +175,7 @@ HackerIo::Application.routes.draw do
           patch 'update_workflow' => 'payments#update_workflow', on: :member
         end
         resources :projects, except: [:show]
+        resources :short_links, except: [:show]
         resources :users, except: [:show]
 
         get 'store' => 'pages#store'
@@ -262,6 +273,7 @@ HackerIo::Application.routes.draw do
 
       resources :platforms, except: [:show] do
         get 'create' => 'platforms#create', on: :collection, as: :create
+        get 'incubator' => 'platforms#incubator', on: :collection, as: :incubator
         get ':tag' => 'platforms#index', on: :collection, as: :tag, constraints: lambda{|req| req.params[:tag] != 'new' }
         resources :projects, only: [] do
           post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
@@ -397,6 +409,8 @@ HackerIo::Application.routes.draw do
         get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
+      get 's/:slug' => 'short_links#show'
+
       scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
         resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
       end
@@ -439,13 +453,22 @@ HackerIo::Application.routes.draw do
       get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
-      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
+      get 'windows10kit', to: redirect('/s/windows10kit')
 
-      get 'tinyduino', to: redirect('/tinycircuits')
+      # platform renamings
+      get 'intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/projects', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products', to: redirect('/intel/products/intel-edison')
+      get 'intel-edison/products/intel-edison', to: redirect('/intel/products/intel-edison')
+      get 'intel-galileo', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/projects', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products', to: redirect('/intel/products/intel-galileo-gen-2')
+      get 'intel-galileo/products/intel-galileo-gen-2', to: redirect('/intel/products/intel-galileo-gen-2')
       get 'spark', to: redirect('/particle')
       get 'spark/projects', to: redirect('/particle/projects')
       get 'spark/makes', to: redirect('/particle/components')
       get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
+      get 'tinyduino', to: redirect('/tinycircuits')
 
       get 'home' => 'pages#home'
       get 'about' => 'pages#about'
@@ -456,6 +479,7 @@ HackerIo::Application.routes.draw do
       get 'infringement_policy' => 'pages#infringement_policy'
       get 'privacy' => 'pages#privacy'
       get 'conduct' => 'pages#conduct'
+      get 'guidelines' => 'pages#guidelines'
       get 'terms' => 'pages#terms'
       get 'press' => 'pages#press'
       get 'jobs' => 'pages#jobs'

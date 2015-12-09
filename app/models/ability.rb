@@ -16,7 +16,7 @@ class Ability
       cannot :read, [BaseArticle, Group, SkillRequest]
       can :read, [BaseArticle, Group], private: false
       can :read, Assignment do |assignment|
-        assignment.promotion.private == false
+        assignment.promotion.pryvate == false
       end
       can :read, Page do |thread|
         @user.can? :read, thread.threadable
@@ -34,6 +34,7 @@ class Ability
         !@user.persisted? and group.access_level == 'anyone'
       end
       can :create, Group
+      can :read, Platform
 
       member if @user.persisted?
       @user.roles.each{ |role| send role }
@@ -140,11 +141,11 @@ class Ability
 
     can :create, [BaseArticle, Community]
     can [:manage, :enter_in_challenge], BaseArticle do |project|
-      @user.can? :manage, project.team
+      @user.can?(:manage, project.team) or UserRelationChecker.new(@user).is_platform_moderator?(project)
     end
     cannot :edit_locked, BaseArticle
     can :read, BaseArticle do |project|
-      project.private? and @user.is_staff? project
+      project.pryvate? and @user.is_staff? project
     end
     can [:update_team, :update_widgets, :comment], BaseArticle do |project|
       @user.can? :manage, project

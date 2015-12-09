@@ -12,14 +12,14 @@ class Hackathon < Community
   hstore_column :hproperties, :show_organizers, :boolean
   hstore_column :hproperties, :twitter_widget_id, :string
 
-  has_counter :events, 'events.public.count'
+  has_counter :events, 'events.publyc.count'
 
   def self.default_permission
     'manage'
   end
 
   def closest_event
-    events.public.where("groups.start_date > ?", Time.now).order(:start_date).first || events.public.where("groups.start_date < ?", Time.now).order(start_date: :desc).first
+    events.publyc.where("groups.start_date > ?", Time.now).order(:start_date).first || events.publyc.where("groups.start_date < ?", Time.now).order(start_date: :desc).first
   end
 
   def projects

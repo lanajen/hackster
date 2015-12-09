@@ -16,7 +16,7 @@ class List < Collection
     end
   end
 
-  private
+  protected
     def user_name_is_unique
       return unless new_user_name.present?
 

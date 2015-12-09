@@ -18,7 +18,7 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_project project_id, defaults={}
     project = BaseArticle.find project_id
-    project.update_counters
+    project.update_counters only: [:comments, :real_respects]
 
     count = ProjectPopularityCounter.new(project, defaults).adjusted_score
     project.update_column :popularity_counter, count
@@ -32,7 +32,7 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_user user_id
     user = User.find user_id
-    user.update_counters
+    user.update_counters only: [:live_projects, :live_hidden_projects, :followers]
     user.build_reputation unless user.reputation
     reputation = user.reputation
     reputation.compute
@@ -41,7 +41,7 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_platforms
     Platform.find_each do |platform|
-      platform.update_counters
+      platform.update_counters only: [:projects, :members, :parts]
     end
   end
 end

@@ -35,7 +35,7 @@ table.table.table-striped
         td= group.followers_count
         td= group.projects_count
         td
-          - if group.private?
+          - if group.pryvate?
             b Private
           - elsif group.hidden
             b Hidden

@@ -11,6 +11,7 @@ class ChallengeEntry < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   has_and_belongs_to_many :prizes
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 

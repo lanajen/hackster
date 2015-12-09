@@ -22,6 +22,8 @@ class PartsController < ApplicationController
   end
 
   def show
+    impressionist_async @part, "", unique: [:session_hash]
+
     title "#{@part.full_name} projects"
     @meta_desc = if @part.projects_count > 0
       "#{ActionController::Base.helpers.pluralize @part.projects_count, 'hardware project'} made with #{@part.name} from #{@platform.name}."
@@ -29,14 +31,14 @@ class PartsController < ApplicationController
       "Share your hardware projects made with #{@part.name} from #{@platform.name}."
     end
     meta_desc @meta_desc
-    @projects = @part.projects.public.magic_sort.paginate(page: safe_page_params)
+    @projects = @part.projects.publyc.magic_sort.paginate(page: safe_page_params)
     @part = @part.decorate
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
   end
 
   def embed
     per_page = begin; [Integer(params[:per_page]), BaseArticle.per_page].min; rescue; BaseArticle.per_page end;  # catches both no and invalid params
-    @projects = @part.projects.public.paginate(per_page: per_page, page: safe_page_params)
+    @projects = @part.projects.publyc.paginate(per_page: per_page, page: safe_page_params)
     render layout: 'embed'
   end
 

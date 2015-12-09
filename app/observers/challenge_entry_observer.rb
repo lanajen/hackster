@@ -47,6 +47,6 @@ class ChallengeEntryObserver < ActiveRecord::Observer
     def expire_cache record
       record.challenge.update_counters only: [:projects]
       Cashier.expire "project-#{record.project_id}-metadata", "challenge-#{record.challenge_id}-projects"
-      record.challenge.purge
+      FastlyWorker.perform_async 'purge', record.challenge.record_key
     end
 end

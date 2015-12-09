@@ -21,6 +21,12 @@ body {
 
 img {
   max-width: 100%;
+  @include opacity(1);
+  @include transition(opacity 200ms);
+  &.loading {
+    @include opacity(0);
+    // background: asset-url("spin.svg") center center no-repeat;
+  }
 }
 .media {
   img {
@@ -120,21 +126,15 @@ img {
   .navbar-brand {
     position: relative;
     display: block;
-    padding: 10px;
+    padding: 10px 20px;
     margin: 0;
     text-align: center;
     height: 60px;
-    background: #1cacf7;
-    border-bottom: 1px solid #1D95F7;
-    @include transition(all .3s ease);
     &:hover, &:focus {
-      background: #1fdba8;
-      border-bottom-color: #32C8A0;
       outline: 0;
     }
     img{
       height: 40px;
-      width: 48px;
       display: inline;
     }
   }
@@ -1007,11 +1007,11 @@ input.placeholder, textarea.placeholder {
 
 #hello-world {
   display: none;
-  padding: 50px 20px 20px;
+  padding: 12px 0 0;
   border-bottom: 1px solid #036394;
   background: #08C;
   color: white;
-  height: 200px;
+  height: 100px;
   text-shadow: #025782 1px 1px 1px;
   .content {
     opacity: 0;
@@ -1023,15 +1023,12 @@ input.placeholder, textarea.placeholder {
     width: 100%;
   }
   .header {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 5px;
+    font-size: 1.5em;
     font-weight: bold;
     letter-spacing: 0.5px;
   }
   .message {
-    text-align: center;
-    font-size: 1.2em;
+    font-size: 1em;
   }
   .close {
     color: white;
@@ -1208,9 +1205,38 @@ a.hidden-link {
     margin-bottom: 0;
   }
 }
+@media (min-width: 768px) {
+  .popup-overlay-inner {
+    &.has-columns {
+      @include flexbox((
+        display: flex
+      ));
+    }
+  }
+  .popup-left-column, .popup-right-column {
+    flex-basis: 50%
+  }
+  .popup-left-column {
+    padding-right: 25px;
+  }
+  .popup-right-column {
+    padding-left: 25px;
+  }
+}
 
 #signup-popup {
+  .popup-left-column, .popup-right-column {
+    padding: 50px;
+  }
+  .popup-left-column {
+    @include background-cover;
+    background-image: asset-url('signup-popup.png');
+    color: #fff;
+    padding: 50px 25px;
+    font-size: 1.1em;
+  }
   .popup-overlay-inner {
+    padding: 0;
     // height: 175px;
     width: 450px;
     // margin-top: -88px;

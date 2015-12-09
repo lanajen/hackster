@@ -10,7 +10,9 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    record.purge
+    FastlyWorker.perform_async 'purge', record.record_key
+
+    record.comments.update_all(user_id: -1)
   end
 
   def after_invitation_accepted record
@@ -42,7 +44,9 @@ class UserObserver < ActiveRecord::Observer
         team.update_attribute :user_name, record.user_name if team.user_name == record.user_name_was
       end
     end
-    record.purge
+
+    # the unless condition is a hack to not trigger a purge when we're just updating the last_sent_projects_email_at prop
+    FastlyWorker.perform_async 'purge', record.record_key unless record.changed == ['last_sent_projects_email_at', 'properties', 'updated_at']
   end
 
   def before_update record
