@@ -4,7 +4,7 @@
 
 <p>We will send you a separate email to arrange shipping.</p>
 
-<p>And don't forget, this was just the pre-contest. Here's what you can win in the next phase:</p>
+<p>And don't forget, this was just the <%= @context[:challenge].pre_contest_label.downcase %>. Here's what you can win in the next phase:</p>
 <ul>
   <% @context[:challenge].prizes.each do |prize| %>
     <li><%= prize.name %> will receive: <% if prize.description.present? %><%= prize.description %><% elsif prize.cash_value.present? %><%= number_to_currency prize.cash_value, precision: 0 %><% end %><% if prize.quantity > 1 %> (<%= prize.quantity %> are available)<% end %>.</li>

@@ -79,7 +79,11 @@ class BaseArticle < ActiveRecord::Base
       reorder("groups.full_name ASC").uniq
     end
   end
-  has_many :project_collections, dependent: :destroy, foreign_key: :project_id
+  has_many :project_collections, dependent: :destroy, foreign_key: :project_id do
+    def certified
+      where "CAST(project_collections.properties -> 'certified' AS BOOLEAN) = ?", true
+    end
+  end
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection', foreign_key: :project_id
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :images, as: :attachable, dependent: :destroy
@@ -393,6 +397,12 @@ class BaseArticle < ActiveRecord::Base
     next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot
     approve! *args
+  end
+
+  def certifier_names
+    Rails.cache.fetch ["project-#{id}-certified"], tag: ["project-#{id}-certified"] do
+      project_collections.certified.joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND project_collections.collectable_type = 'Group'").pluck("groups.full_name").sort
+    end
   end
 
   def content_type_to_human

@@ -1,31 +1,6 @@
 - content_for :html_class do
   = 'arduino-html'
 
-/ = stylesheet_link_tag 'whitelabel/arduino/all'
-
-javascript:
-   WebFontConfig = {
-    custom: {
-      families: [
-        'TyponineSans Light 17',
-        'TyponineSans Regular 18',
-        'TyponineSans Monospace Medium 3'
-      ],
-      urls: [
-        '//arduino.cc/fonts/fonts.css'
-      ]
-    }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
-
 css:
   .arduino-projects {
     background-color: #00979C;

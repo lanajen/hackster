@@ -18,7 +18,7 @@ p
 - if @challenge.activate_pre_contest?
   p
     strong>
-      | Pre-contest entries:
+      | #{@challenge.pre_contest_label} entries:
     strong>= @new_ideas_count
     ' awaiting moderation
     ' |
@@ -27,7 +27,7 @@ p
     ' |
     strong>= @rejected_ideas_count
     | rejected
-  p=> link_to 'Moderate pre-contest entries', challenge_admin_ideas_path(@challenge)
+  p=> link_to "Moderate #{@challenge.pre_contest_label.downcase} entries", challenge_admin_ideas_path(@challenge)
 
 
 p

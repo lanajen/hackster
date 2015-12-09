@@ -41,9 +41,9 @@ class NotificationDecorator < ApplicationDecorator
       when :completed
         "The challenge #{challenge_link} is now closed for submissions. Time to award prizes!"
       when :pre_contest_awarded
-        "Winners for the pre-contest of #{challenge_link} have been announced."
+        "Winners for the #{challenge.pre_contest_label.downcase} of #{challenge_link} have been announced."
       when :pre_contest_winners
-        "Your idea has been selected as a winner for the pre-contest of #{challenge_link}. Congrats!"
+        "Your idea has been selected as a winner for the #{challenge.pre_contest_label.downcase} of #{challenge_link}. Congrats!"
       end
     when ChallengeEntry
       entry = notifiable

@@ -27,7 +27,7 @@
               - if @current_entries[:contest].any?
                 hr
                 p
-                  strong.small Pre-contest entries:
+                  strong.small #{@challenge.pre_contest_label} entries:
               ul.entries-list.list-unstyled
                 - @current_entries[:pre_contest].each do |entry|
                   li.award
@@ -51,9 +51,9 @@
           - if @challenge.open_for_submissions?
             - if @challenge.pre_contest_in_progress?
               - if @challenge.idea_survey_link.present?
-                = link_to "Submit an idea for the pre-contest", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
+                = link_to "Submit an idea for the #{@challenge.pre_contest_label.downcase}", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
               - elsif @current_entries[:pre_contest].empty?
-                = link_to "Submit an idea for the pre-contest", new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
+                = link_to "Submit an idea for the #{@challenge.pre_contest_label.downcase}", new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
             - elsif @current_entries[:contest].empty?
               = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
@@ -77,7 +77,7 @@
             - if @challenge.pre_contest_in_progress?
               - date = @challenge.pre_contest_end_date
               p
-                strong Pre-contest
+                strong #{@challenge.pre_contest_label}
             - else
               - date = @challenge.end_date
             p
@@ -89,7 +89,7 @@
           - else
             - if @challenge.pre_contest_pending?
               - date = @challenge.pre_contest_start_date
-              - phrase = 'Pre-contest opens in'
+              - phrase = "#{@challenge.pre_contest_label} opens in"
             - else
               - date = @challenge.start_date
               - phrase = 'Project submissions open in'
@@ -112,7 +112,10 @@
             - if @challenge.judging? and @challenge.winners_announced_date
               p style='margin-bottom:0'
                 strong> Winners announced on:
-                = l @challenge.winners_announced_date, format: :short_date
+                - if @challenge.disable_projects_phase?
+                  = l @challenge.pre_winners_announced_date, format: :short_date
+                - else
+                  = l @challenge.winners_announced_date, format: :short_date
 
       - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
         section.section-thumbs
@@ -196,7 +199,7 @@
         section.section-container.section-collapsible#pre_contest_winners class=(params[:show_pre_contest_winners] ? '' : 'section-toggled')
           h2.section-title
             a.title.title-toggle href=''
-              ' Pre-contest winners
+              ' #{@challenge.pre_contest_label} winners
               i.fa.fa-chevron-down
               i.fa.fa-chevron-up
           .section-content

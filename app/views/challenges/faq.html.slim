@@ -12,7 +12,9 @@
           ul.list-unstyled
             - @general_faqs.each_with_index do |faq, i|
               - if faq['condition'].nil? or eval(faq['condition'])
-                = render 'faq_entries/question', question: faq['q'], anchor: "faq_g_#{i}"
+                - template = ERB.new faq['q']
+                - question = template.result(binding)
+                = render 'faq_entries/question', question: question, anchor: "faq_g_#{i}"
 
           - if @faq_entries.any?
             h3.faq-category Other questions
@@ -24,9 +26,11 @@
 
           - @general_faqs.each_with_index do |faq, i|
             - if faq['condition'].nil? or eval(faq['condition'])
+              - template = ERB.new faq['q']
+              - question = template.result(binding)
               - template = ERB.new faq['a']
               - answer = template.result(binding)
-              = render 'faq_entries/answer', question: faq['q'], answer: answer, anchor: "faq_g_#{i}"
+              = render 'faq_entries/answer', question: question, answer: answer, anchor: "faq_g_#{i}"
 
           - @faq_entries.each do |entry|
             = render 'faq_entries/answer', question: entry.title, answer: entry.body, anchor: dom_id(entry)

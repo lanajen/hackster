@@ -2,7 +2,7 @@ p
   = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
 
 h1
-  | #{@challenge.name}: pre-contest entries (ideas)
+  | #{@challenge.name}: #{@challenge.pre_contest_label.downcase} entries (ideas)
 
 p= link_to 'Download list as CSV', challenge_admin_ideas_path(@challenge, format: :csv)
 
@@ -14,7 +14,7 @@ p= link_to 'Download list as CSV', challenge_admin_ideas_path(@challenge, format
     p
       strong Winners announced.
   - else
-    p= link_to 'Announce pre-contest winners', challenge_path(@challenge, challenge: { pre_contest_awarded: 1 }), data: { method: :patch, confirm: "Are you sure? This will email all participants to let them know about the winners." }, class: 'btn btn-primary'
+    p= link_to "Announce #{@challenge.pre_contest_label.downcase} winners", challenge_path(@challenge, challenge: { pre_contest_awarded: 1 }), data: { method: :patch, confirm: "Are you sure? This will email all participants to let them know about the winners." }, class: 'btn btn-primary'
 
 .row
   .col-xs-12= will_paginate @ideas
@@ -43,9 +43,9 @@ table.table.table-striped
               = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_idea_path(@challenge, idea, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this idea?', container: 'body' }
             - if @challenge.current_state >= :pre_contest_ended
               - if idea.can_mark_won?
-                = link_to content_tag(:i, '', class: 'fa fa-trophy'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_won'), class: 'btn btn-xs btn-primary', rel: 'tooltip', title: 'Mark as a pre-contest winner', data: { method: :put, confirm: 'Are you sure you want to mark this idea as a pre-contest winner?', container: 'body' }
+                = link_to content_tag(:i, '', class: 'fa fa-trophy'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_won'), class: 'btn btn-xs btn-primary', rel: 'tooltip', title: "Mark as a #{@challenge.pre_contest_label.downcase} winner", data: { method: :put, confirm: "Are you sure you want to mark this idea as a #{@challenge.pre_contest_label.downcase} winner?", container: 'body' }
               - elsif idea.can_undo_won?
-                = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'undo_won'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Undo pre-contest winner', data: { method: :put, confirm: 'Are you sure you want to undo marking this idea as a pre-contest winner?', container: 'body' }
+                = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'undo_won'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: "Undo #{@challenge.pre_contest_label.downcase} winner", data: { method: :put, confirm: "Are you sure you want to undo marking this idea as a #{@challenge.pre_contest_label.downcase} winner?", container: 'body' }
             - if idea.can_reject?
               = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'reject'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Reject', data: { method: :put, confirm: 'Are you sure you want to reject this idea?', container: 'body' }
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge.slug, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }

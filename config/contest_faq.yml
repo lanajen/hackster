@@ -1,5 +1,5 @@
-- q: Do I need to participate in the pre-contest to submit a project?
-  a: "<p>No, you're welcome to submit an entry for the contest even if you haven't participated or won in the pre-contest.</p>"
+- q: Do I need to participate in the <%= @challenge.pre_contest_label.downcase %> to submit a project?
+  a: "<p>No, you're welcome to submit an entry for the contest even if you haven't participated or won in the <%= @challenge.pre_contest_label.downcase %>.</p>"
   condition: "@challenge.activate_pre_contest?"
 - q: Did I win the contest? When will I receive my prize?
   a: "<p>If you are a winner, we will contact you directly via email to arrange the shipment of your prize.</p>"
@@ -23,7 +23,7 @@
 - q: When will winners be announced? Where can I see the list?
   a: >
     <% if @challenge.pre_winners_announced_date.present? %>
-      <p>Pre-contest winners will be announced on <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+      <p><%= @challenge.pre_contest_label %> winners will be announced on <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
     <% end %>
     <% if @challenge.winners_announced_date.present? %>
       <p>Contest winners will be announced on <%= l @challenge.winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
