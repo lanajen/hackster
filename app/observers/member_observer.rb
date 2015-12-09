@@ -54,7 +54,7 @@ class MemberObserver < ActiveRecord::Observer
     elsif record.group.is? :platform
       if record.group_roles_mask_changed?
         permission = record.permission
-        permission.update_attribute :action, record.group.class.default_permission(record.group_roles)
+        permission.update_column :action, record.group.class.default_permission(record.group_roles)
       end
     end
   end
