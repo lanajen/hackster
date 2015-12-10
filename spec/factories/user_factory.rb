@@ -4,5 +4,6 @@ FactoryGirl.define do
     email { "#{user_name}@example.com" }
     email_confirmation { email }
     password { email }
+    confirmed_at { Time.now }
   end
 end

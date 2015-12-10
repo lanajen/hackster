@@ -1,4 +1,5 @@
 class Announcement < Post
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   attr_accessible :published_at, :display_until
 
   def self.current

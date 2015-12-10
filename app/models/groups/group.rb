@@ -27,14 +27,11 @@ class Group < ActiveRecord::Base
 
   editable_slug :user_name
 
-  is_impressionable counter_cache: true, unique: :session_hash
-
-  # has_many :impressions, dependent: :destroy, class_name: 'GroupImpression'
-
   has_and_belongs_to_many :challenges, dependent: :destroy
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :featured_projects, -> { where("project_collections.workflow_state = 'featured'") }, source: :project, through: :project_collections
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
+  has_many :impressions, dependent: :destroy, class_name: 'GroupImpression'
   has_many :members, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :project_collections, dependent: :destroy, as: :collectable

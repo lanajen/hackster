@@ -81,7 +81,7 @@ class Rack::Attack
   end
 
   # Block logins from a bad user agent
-  unless Rails.env.test?
+  unless Rails.env.test? or Rails.env.development?
     blacklist('block scraper access') do |req|
       req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
     end

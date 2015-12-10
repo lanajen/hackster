@@ -1,20 +1,32 @@
-#signup-popup.popup-overlay.modal-popup.modal-remove data-width=400
+#signup-popup.popup-overlay.modal-popup.modal-remove data-width=800
   .popup-overlay-bg
   .popup-overlay-outer
-    .popup-overlay-inner
-      button.close data-target='#signup-popup' &times;
-      p
-        strong
-          | New to Hackster.io? Join the community dedicated to learning hardware
+    .popup-overlay-inner.has-columns
+      .popup-left-column
+        p style='font-size: 1.3em'
+          strong Hackster is the community dedicated to learning hardware
+        p Join to:
+        ul.text-left
+          li Earn free hardware from the Free Store
+          li Win prizes by participating in contests
+          li Be notified of new projects that match your interests
+      .popup-right-column
+        button.close data-target='#signup-popup' &times;
+        / p
+          strong
+            | New to Hackster.io? Join the community dedicated to learning hardware
 
-      = simple_form_for User.new, url: user_registration_path, html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit user-form' }, method: :post, authenticity_token: !csrf_disabled? do |f|
-        input type='hidden' name='redirect_to' value=request.path
-        input type='hidden' name='source' value='popup'
-        = f.input :email, label: false, placeholder: 'Email', tabindex: 1
-        = f.input :password, label: false, placeholder: 'Password'
-        = f.button :submit, "Create my free account", class: 'btn btn-primary btn-block'
+        = simple_form_for User.new, url: user_registration_path, html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit user-form' }, method: :post, authenticity_token: !csrf_disabled? do |f|
+          input type='hidden' name='redirect_to' value=request.path
+          input type='hidden' name='source' value='popup'
+          = f.input :email, label: false, placeholder: 'Email', tabindex: 1
+          = f.input :password, label: false, placeholder: 'Password'
+          = f.button :submit, "Create my free account", class: 'btn btn-primary btn-block'
 
-      p.small= link_to 'Prefer connecting using your social account?', new_user_registration_path(highlight: 'connect', source: 'popup')
-      p.small style='margin-bottom:0'
-        ' Already have an account?
-        = link_to 'Sign in', new_user_session_path(redirect_to: request.path)
+        div style="position:relative; margin-bottom: 20px"
+          .hr or
+        = link_to 'Connect with Facebook', user_omniauth_authorize_url('facebook', host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: request.path), class: "zocial zocial-block facebook"
+        p.small= link_to 'Prefer connecting using another social account?', new_user_registration_path(highlight: 'connect', source: 'popup', redirect_to: request.path)
+        p.small style='margin-bottom:0'
+          ' Already have an account?
+          = link_to 'Sign in', new_user_session_path(redirect_to: request.path)

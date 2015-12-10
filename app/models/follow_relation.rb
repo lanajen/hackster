@@ -4,6 +4,7 @@ class FollowRelation < ActiveRecord::Base
 
   belongs_to :followable, polymorphic: true
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
 
   validates :user_id, uniqueness: { scope: [:followable_id, :followable_type] }
   validate :following_someone_else

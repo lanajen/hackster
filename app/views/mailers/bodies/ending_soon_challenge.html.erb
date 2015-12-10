@@ -2,7 +2,7 @@
 
 <p>Hello there,</p>
 
-<p>This is to remind you that <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> is ending in less than <%= days <= 1 ? 'a day' : "#{days} days" %>. Be sure to submit your entry as soon as possible!</p>
+<p>This is to remind you that <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> is ending in less than <%= days <= 1 ? 'a day' : "#{days} days" %>. Be sure to submit your entry as soon as possible!</p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

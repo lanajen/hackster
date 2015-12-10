@@ -43,7 +43,7 @@ h1.section-title Community-built projects, powered by #{@platform.name}
     - if @platform.accept_project_ideas
       = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
     - @projects.each_with_index do |col, i|
-      = render partial: 'projects/project_thumb', locals: { project: col.project, ref: 'platform', ref_id: [@platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
+      = render partial: 'projects/project_thumb', locals: { project: col.project, ref: 'platform', ref_id: [@platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page), certifier: (col.certified? ? @platform.name: nil) }
       - if can? :manage, @group
         = content_for :js do
           javascript:

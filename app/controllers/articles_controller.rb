@@ -82,7 +82,7 @@ class ArticlesController < ApplicationController
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
       if params[:base_article].try(:[], 'private') == '0'
-        flash[:alert] = "Couldn't publish this article, please email us at hi@hackster.io to get help."
+        flash[:alert] = "Couldn't publish this article, please email us at help@hackster.io to get help."
       end
       redirect_to @project
     end

@@ -30,7 +30,7 @@ class ChallengesController < ApplicationController
   def show
     title @challenge.name
 
-    if @challenge.judged? and !@challenge.disable_projects_tab
+    if @challenge.judged? and !@challenge.disable_projects_tab and !@challenge.disable_projects_phase?
       load_projects
       render 'challenges/projects'
     else
@@ -191,6 +191,9 @@ class ChallengesController < ApplicationController
 
     def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
+      @link_params = Rails.cache.fetch "challenge-#{@challenge.id}-link_params", tag: ["challenge-#{@challenge.id}-sponsors"] do
+        { base_article: {platform_tags_string: @sponsors.map(&:name).join(',') } }
+      end
       @prizes = @challenge.prizes.includes(:image)
     end
 

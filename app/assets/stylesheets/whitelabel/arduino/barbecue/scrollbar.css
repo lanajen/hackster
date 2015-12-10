@@ -1,0 +1,129 @@
+/*==============================================*/
+/*  SCROLLBAR                                   */
+/*==============================================*/
+
+
+
+/* LIGHT */
+.light ::-webkit-scrollbar {
+	width: 8px;
+	background-color: transparent;
+}
+.light ::-webkit-scrollbar:horizontal {
+	height: 8px;
+}
+.light ::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+	/*background-color: rgba(0,0,0,.02);*/
+}
+.light ::-webkit-scrollbar-thumb
+{
+	background-color: #7f8c8d;
+	border-radius: 5px;
+}
+.light ::-webkit-scrollbar-corner {
+	background-color: #ECF1F1;
+}
+
+
+/* DARK */
+.dark ::-webkit-scrollbar {
+	width: 8px;
+	background-color: transparent;
+}
+.dark ::-webkit-scrollbar:horizontal {
+	height: 8px;
+}
+.dark ::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+}
+.dark ::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+}
+.dark ::-webkit-scrollbar-thumb
+{
+	background-color: #7f8c8d;
+	border-radius: 5px;
+}
+.dark ::-webkit-scrollbar-corner {
+	background-color: #374146;
+}
+
+/* UPDATE PAGE */
+#update textarea ::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: #71C0C2;
+}
+#update textarea ::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #71C0C2;
+}
+#update textarea ::-webkit-scrollbar-thumb
+{
+	background-color: #1A868B;
+	border-radius: 5px;
+}
+
+/* NOTIFICATIONS DROPOVER */
+.dropover.notify .scrollable::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+}
+.dropover.notify .scrollable::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: transparent;
+}
+.dropover.notify .scrollable::-webkit-scrollbar-thumb
+{
+	background-color: #7f8c8d;
+	border-radius: 5px;
+}
+
+/* HOME FEED DROPOVER */
+.posts_cont.scrollable::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+}
+.posts_cont.scrollable::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: transparent;
+}
+.posts_cont.scrollable::-webkit-scrollbar-thumb
+{
+	background-color: #7f8c8d;
+	border-radius: 5px;
+}
+
+/* SELECT */
+.select ::-webkit-scrollbar {
+	width: 8px;
+	background-color: #F7F7F7;
+}
+
+/* Terms and conditions Textarea */
+#gettingStarted textarea::-webkit-scrollbar-track
+{
+	border: none;
+	background-color: transparent;
+}
+#gettingStarted textarea::-webkit-scrollbar
+{
+	width: 11px;
+}
+#gettingStarted textarea::-webkit-scrollbar-thumb
+{
+	background-color: #7f8c8d;
+	border-radius: 5px;
+}

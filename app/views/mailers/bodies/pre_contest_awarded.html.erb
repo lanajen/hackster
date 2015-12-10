@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that pre-contest winners for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> have been selected and can be found at the following address: <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif', anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %>"><%= u.challenge_url(@context[:challenge], anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %></a>.</p>
+<p>This is to let you know that <%= @context[:challenge].pre_contest_label.downcase %> winners for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> have been selected and can be found at the following address: <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template], anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %>"><%= u.challenge_url(@context[:challenge], anchor: 'pre_contest_winners', show_pre_contest_winners: 1) %></a>.</p>
 
 <p>Even though you haven't won this time, you are still welcome to participate in the second part for a chance to win even more prizes:</p>
 <ul>

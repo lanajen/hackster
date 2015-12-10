@@ -1,15 +1,15 @@
 <p>Hello there,</p>
 
-<p><a href="<%= u.platform_home_url(@context[:platform]) %>?ref=emailnotif"><%= @context[:platform].name %></a> just posted news on <a href="https://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
+<p><a href="<%= u.platform_home_url(@context[:platform]) %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>"><%= @context[:platform].name %></a> just posted news on <a href="https://www.hackster.io?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Hackster.io</a>:</p>
 
 <p class="quote">
-  <strong><a href="<%= u.platform_announcement_url(@context[:announcement]) %>?ref=emailnotif"><%= @context[:announcement].title %></a></strong>
+  <strong><a href="<%= u.platform_announcement_url(@context[:announcement]) %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>"><%= @context[:announcement].title %></a></strong>
   <br>
   <br>
   <%= strip_tags(@context[:announcement].body).truncate(300) %>
 </p>
 
-<p><a href="<%= u.platform_announcement_url(@context[:announcement]) %>?ref=emailnotif">Read the full announcement</a></p>
+<p><a href="<%= u.platform_announcement_url(@context[:announcement]) %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Read the full announcement</a></p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

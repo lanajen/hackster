@@ -12,6 +12,6 @@ class FaqEntryObserver < ActiveRecord::Observer
   private
     def expire_cache record
       Cashier.expire "challenge-#{record.threadable_id}-faq"
-      record.threadable.purge
+      FastlyWorker.perform_async 'purge', record.threadable.record_key
     end
 end

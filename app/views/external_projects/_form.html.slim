@@ -59,12 +59,11 @@
 
       .panel.panel-default
         .panel-heading
-          h4 Components and supplies
+          h4 Products
         .panel-body
           / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
         .box-content
-          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :hardware, human_type: 'component', options: { prompt: 'Select a component', label: 'Component', part_type: 'hardware', show_quantity: true, link_type: 'store_link' } }
-
+          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: nil, human_type: 'product', options: { prompt: 'Select a product', label: 'Product', part_type: nil, show_quantity: false, link_type: 'store_link', disable_comment: true } }
 
       .panel.panel-default
         .panel-heading

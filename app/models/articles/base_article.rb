@@ -49,10 +49,7 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
-  # this needs to be in every child model too; somehow they don't inherit the unique prop
-  is_impressionable counter_cache: true, unique: :session_hash
-
-  belongs_to :team
+  belongs_to :team, dependent: :destroy
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
@@ -63,6 +60,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :follow_relations, as: :followable
   has_many :grades, foreign_key: :project_id
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :impressions, dependent: :destroy, class_name: 'ProjectImpression', foreign_key: :project_id
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
@@ -81,12 +79,18 @@ class BaseArticle < ActiveRecord::Base
       reorder("groups.full_name ASC").uniq
     end
   end
-  has_many :project_collections, dependent: :destroy, foreign_key: :project_id
+  has_many :project_collections, dependent: :destroy, foreign_key: :project_id do
+    def certified
+      where "CAST(project_collections.properties -> 'certified' AS BOOLEAN) = ?", true
+    end
+  end
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection', foreign_key: :project_id
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :permissions, as: :permissible
+  has_many :reputation_events, as: :event_model, dependent: :delete_all
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
@@ -144,7 +148,7 @@ class BaseArticle < ActiveRecord::Base
   taggable :product_tags, :platform_tags
 
   counters_column :counters_cache, long_format: true
-  has_counter :comments, 'comments.count'
+  has_counter :comments, 'comments.live.count'
   has_counter :communities, 'groups.count'
   has_counter :platforms, 'platforms.count'
   has_counter :platform_tags, 'platform_tags_cached.count'
@@ -393,6 +397,12 @@ class BaseArticle < ActiveRecord::Base
     next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot
     approve! *args
+  end
+
+  def certifier_names
+    Rails.cache.fetch ["project-#{id}-certified"], tag: ["project-#{id}-certified"] do
+      project_collections.certified.joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND project_collections.collectable_type = 'Group'").pluck("groups.full_name").sort
+    end
   end
 
   def content_type_to_human

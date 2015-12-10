@@ -56,15 +56,39 @@ class ProjectsController < ApplicationController
 
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
+    # we load parts and widgets all at once and then split them into their own
+    # categories. That way we limit the number of db queries
+    @parts = @project.part_joins.includes(part: [:image, :platform])
 
-    @hardware_parts = @project.part_joins.hardware.includes(part: :image)
-    @software_parts = @project.part_joins.software.includes(part: :image)
-    @tool_parts = @project.part_joins.tool.includes(part: :image)
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
+
+    @widgets = @project.widgets.order(:position, :id)
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
+      @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+      @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+    end
+
+    @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-cad"])
+    @schematic_widgets = @widgets.select{|w| w.type.in? %w(SchematicWidget SchematicFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-schematics"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-schematics"])
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-code"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-code"])
+      @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget CodeRepoWidget) }
+      @code_file_widgets = @code_widgets.select{|w| w.type.in? %w(CodeWidget) }
+      @code_repo_widgets = @code_widgets.select{|w| w.type.in? %w(CodeRepoWidget) }
+    end
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
-    @project = @project.decorate
+    @project = ProjectDecorator.decorate(@project)
+
+    # call with already loaded widgets and images
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+      @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+      @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+      @description = @project.description(nil, widgets: @widgets, images: @images)
+    end
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     @other_projects = @other_projects.with_group current_platform if is_whitelabel?
@@ -229,7 +253,7 @@ class ProjectsController < ApplicationController
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project

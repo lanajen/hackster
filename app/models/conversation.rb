@@ -92,7 +92,7 @@ class Conversation < ActiveRecord::Base
 
       if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
 
-        errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at hi@hackster.io if you believe this is a mistake."
+        errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at help@hackster.io if you believe this is a mistake."
         self.is_spam = true
       end
     end

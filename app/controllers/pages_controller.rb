@@ -19,6 +19,10 @@ class PagesController < ApplicationController
     @info_request = InfoRequest.new
   end
 
+  def conduct
+    title "Code of Conduct"
+  end
+
   def create_info_request
     @info_request = InfoRequest.new params[:info_request]
 
@@ -138,6 +142,10 @@ class PagesController < ApplicationController
   def infringement_policy
     meta_desc 'Read our infringement notice policy.'
     title 'Infringement notice policy'
+  end
+
+  def guidelines
+    title 'Content Guidelines'
   end
 
   def jobs

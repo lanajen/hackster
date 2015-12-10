@@ -3,3 +3,4 @@ FactoryGirl.define do
     full_name { FFaker::Movie.title }
   end
 end
+

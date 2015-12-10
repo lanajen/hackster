@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has ended with <%= pluralize @context[:challenge].projects.count, 'submission' %>.</p>
+<p>This is to let you know that <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> has ended with <%= pluralize @context[:challenge].projects.count, 'submission' %>.</p>
 
 <p>Time to award prizes! You can go to <a href="<%= u.challenge_admin_entries_url(@context[:challenge]) %>">the judging dashboard</a> to do so.</p>
 

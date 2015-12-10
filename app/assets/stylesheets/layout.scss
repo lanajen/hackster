@@ -108,6 +108,9 @@ img {
       color: #999;
     }
   }
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
 }
 
 .navbar {
@@ -123,15 +126,15 @@ img {
   .navbar-brand {
     position: relative;
     display: block;
-    padding: 18px 20px;
+    padding: 10px 20px;
     margin: 0;
-    width: 250px;
     text-align: center;
     height: 60px;
-    @include transition(all .3s ease);
+    &:hover, &:focus {
+      outline: 0;
+    }
     img{
-      max-width: 118px;
-      width: 80%;
+      height: 40px;
       display: inline;
     }
   }
@@ -342,8 +345,11 @@ img {
   text-decoration: none;
 }
 #user-navigation-links{
-  margin-right: 28px;
-  margin-top: 13px;
+  padding-left: 22px;
+  .navbar-btn {
+    margin-right: 28px;
+    margin-top: 13px;
+  }
 }
 
 #user-nav-face {
@@ -1199,9 +1205,38 @@ a.hidden-link {
     margin-bottom: 0;
   }
 }
+@media (min-width: 768px) {
+  .popup-overlay-inner {
+    &.has-columns {
+      @include flexbox((
+        display: flex
+      ));
+    }
+  }
+  .popup-left-column, .popup-right-column {
+    flex-basis: 50%
+  }
+  .popup-left-column {
+    padding-right: 25px;
+  }
+  .popup-right-column {
+    padding-left: 25px;
+  }
+}
 
 #signup-popup {
+  .popup-left-column, .popup-right-column {
+    padding: 50px;
+  }
+  .popup-left-column {
+    @include background-cover;
+    background-image: asset-url('signup-popup.png');
+    color: #fff;
+    padding: 50px 25px;
+    font-size: 1.1em;
+  }
   .popup-overlay-inner {
+    padding: 0;
     // height: 175px;
     width: 450px;
     // margin-top: -88px;

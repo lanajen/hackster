@@ -4,11 +4,11 @@ microsoft:
   attributes:
     - !ruby/symbol chrome_footer
     - !ruby/symbol chrome_header
-    - !ruby/symbol nav
-    - !ruby/symbol nav_css
 cypress:
   prefix: 'cy_chrome'
   default_locale: 'en'
   attributes:
     - !ruby/symbol chrome_footer
     - !ruby/symbol chrome_header
+    - !ruby/symbol head
+    - !ruby/symbol js

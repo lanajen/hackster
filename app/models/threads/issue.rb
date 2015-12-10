@@ -1,5 +1,6 @@
 class Issue < Post
   include Workflow
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   has_one :assignee_issue
   has_one :assignee, through: :assignee_issue
   attr_accessible :assignee_id

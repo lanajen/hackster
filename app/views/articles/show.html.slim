@@ -1,7 +1,18 @@
-= content_for :head do
+c= content_for :head do
   = render 'meta_tags'
 
 = inserts_stats_for @project
+
+/ update counters via JS so we can cache the views longer
+- content_for :js do
+
+  javascript:
+    $(function(){
+      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span> #{pluralize_without_count @project.impressions_count, 'view'}";
+      $('.impression-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span> #{pluralize_without_count @project.respects_count, 'respect'}";
+      $('.respect-stats').html(s);
+    });
 
 = content_for :no_container do
 
@@ -53,10 +64,10 @@
                 - else
                   = link_to @author.name, @author
               ul.list-inline.project-stats
-                li
+                li.impression-stats
                   span.stat-figure> = number_with_delimiter @project.impressions_count
                   = pluralize_without_count @project.impressions_count, 'view'
-                li
+                li.respect-stats
                   span.stat-figure> = number_with_delimiter @project.respects_count
                   = pluralize_without_count @project.respects_count, 'respect'
 
@@ -165,7 +176,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Please be respectful and constructive.' }
+              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do

@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
   has_many :challenge_ideas, dependent: :destroy
   has_many :challenge_entries, dependent: :destroy
   has_many :challenges, through: :challenge_entries
-  has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
+  has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id
   has_many :comment_likes, class_name: 'Respect', through: :comments, source: :likes
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
@@ -158,7 +158,8 @@ class User < ActiveRecord::Base
   end
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
-  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
+  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification', dependent: :destroy
+  has_many :notification_inverses, as: :notifiable, dependent: :delete_all, class_name: 'Notification'
   has_many :orders, -> { order :placed_at }
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
@@ -203,18 +204,14 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? and !u.invited_to_sign_up? }
-  validates :user_name, :new_user_name, length: { in: 3..100 },
-    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
   validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
   with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
   end
+  validate :user_name_is_valid
   # validate :email_is_unique_for_registered_users, if: :being_invited?
-  validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
@@ -584,7 +581,7 @@ class User < ActiveRecord::Base
   end
 
   def live_comments
-    comments.by_commentable_type(BaseArticle).where("projects.private = 'f'")
+    comments.live.by_commentable_type(BaseArticle).where("projects.private = 'f'")
   end
 
   def live_visible_projects_count
@@ -861,14 +858,8 @@ class User < ActiveRecord::Base
       notify_observers(:after_invitation_accepted)
     end
 
-    def user_name_is_unique
-      return unless user_name.present?
-
-      slug = SlugHistory.where("LOWER(slug_histories.value) = ?", new_user_name.downcase).first
-      if slug and slug.sluggable != self
-        errors.add :new_user_name, 'is already taken'
-        errors.add :user_name, 'is already taken'
-      end
+    def user_name_is_valid
+      UserNameValidator.new(self).validate
     end
 
     # overwrites devise

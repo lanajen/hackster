@@ -132,60 +132,38 @@ $(window).load(function(){
   loadSlickSlider({lazyLoad: 'ondemand'});
 });
 
+// lazy image load functions
+// not exactly lazy anymore, but loads after the page is ready; lazy loading
+// wouldn't work quite properly, and it didn't seem to save much bandwidth either
+function loadImage (el) {
+  el = $(el);
+  if (el.hasClass('loaded')) return;
+
+  var img = new Image(),
+      src = el.data('async-src');
+
+  img.onload = function() {
+    el.attr('src', src);
+    el.removeClass('loading');
+    el.addClass('loaded');
+  }
+
+  el.addClass('loading');
+  img.src = src;
+  el.removeAttr('data-async-src');
+}
+
+var lazyLoadImages = function(){
+  var query = $('img[data-async-src]');
+
+  query.each(function(i, el){
+    loadImage(el);
+  });
+};
+// end - lazy image load functions
+
 $(function () {
-  // lazy image load functions
-  function loadImage (el) {
-    el = $(el);
-    if (el.hasClass('loaded')) return;
-
-    var img = new Image(),
-        src = el.data('async-src');
-
-    img.onload = function() {
-      el.attr('src', src);
-      el.removeClass('loading');
-      el.addClass('loaded');
-      // if (el.hasClass('load-slick')) {
-      //   loadSlickSlider(el.closest('.image-gallery'));
-      // }
-    }
-
-    el.addClass('loading');
-    img.src = src;
-    el.removeAttr('data-async-src');
-  }
-
-  function elementInViewport(el) {
-    var rect = el.getBoundingClientRect();
-    var min = -20;
-
-    return ((rect.top >= min &&
-            (rect.top + min) <= (window.innerHeight || document.documentElement.clientHeight)) ||
-            (rect.bottom >= min &&
-            (rect.bottom - min) <= (window.innerHeight || document.documentElement.clientHeight)) &&
-           ((rect.left >= min && (rect.left - min) <= (window.innerWidth || document.documentElement.clientWidth)) ||
-            (rect.right >= min && (rect.right - min) <= (window.innerWidth || document.documentElement.clientWidth)))
-    );
-  }
-
-  var processScroll = function(){
-    var images = new Array();
-    var query = $('img[data-async-src]');
-
-    for (var i = 0; i < query.length; i++) {
-      if (images.indexOf(query[i]) == -1) images.push(query[i]);
-    };
-
-    for (var i = 0; i < images.length; i++) {
-      if (elementInViewport(images[i])) {
-        loadImage(images[i]);
-      }
-    };
-  };
-
-  processScroll();
-  $(window).on('scroll resize', _.debounce(processScroll, 10));
-  // end - lazy image load functions
+  lazyLoadImages();
 
   $('#project-side-nav')
     .on('affix-bottom-on', function(e){

@@ -114,7 +114,7 @@
   - if @projects.any?
     .row.thumb-list
       - @projects.each_with_index do |project_collection, i|
-        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
+        = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page), certifier: (project_collection.certified? ? current_platform.name: nil) }
         = content_for :js do
           - if project_collection.featured?(I18n.short_locale)
             javascript:

@@ -21,11 +21,16 @@ class ProjectImportsController < ApplicationController
     def send_admin_message notif=false
       @message = Message.new(
         from_email: current_user.email,
-        message_type: 'generic'
+        message_type: 'generic',
+        to_email: 'ben@hackster.io'
       )
       @message.subject = "New import request"
       @message.subject = "[Notification] " + @message.subject if notif
-      @message.body = "<p>Hi</p><p>Please import this project for me: <a href='#{params[:urls]}'>#{params[:urls]}</a>.</p>"
+      @message.body = "<p>Hi</p><p>Please import this project for me:"
+      params[:urls].gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').each do |url|
+        @message.body += "<br><a href='#{url}'>#{url}</a>"
+      end
+      @message.body += "</p>"
       @message.body += "<p>Platform tag: #{params[:platform_tags_string]}</p>" if params[:platform_tags_string].present?
       @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:urls]}'>Start importing</a></p>"
@@ -41,7 +46,7 @@ class ProjectImportsController < ApplicationController
           if url !~ /^http/
             @errors << "'#{url}' doesn't start with http and is not a valid URL."
           elsif url =~ /hackster\.io/
-            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at hi@hackster.io."
+            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at help@hackster.io."
             break
           end
         end

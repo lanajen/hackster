@@ -7,7 +7,7 @@ class Platform < Collection
   MINIMUM_FOLLOWERS = 5
   MINIMUM_FOLLOWERS_STRICT = 25
   MODERATION_LEVELS = {
-    'Approve all automatically' => 'auto',
+    # 'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
     'Only projects approved by our team' => 'manual',
   }
@@ -66,7 +66,9 @@ class Platform < Collection
   hstore_column :hproperties, :cta_text, :string, default: "Buy %{h.indefinite_articlerize(name)}"
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :disclaimer, :string
+  hstore_column :hproperties, :enable_certification, :boolean
   hstore_column :hproperties, :enable_chat, :boolean
+  hstore_column :hproperties, :enable_moderators, :boolean
   hstore_column :hproperties, :enable_parts, :boolean
   hstore_column :hproperties, :enable_password, :boolean
   hstore_column :hproperties, :enable_products, :boolean
@@ -87,8 +89,6 @@ class Platform < Collection
   has_counter :sub_platforms, 'sub_platforms.count'
 
   taggable :platform_tags, :product_tags
-
-  is_impressionable counter_cache: true, unique: :session_hash
 
   add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@platform)', group: :get_started
   add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
@@ -126,6 +126,17 @@ class Platform < Collection
     }.to_json
   end
 
+  def self.default_permission roles=nil
+    roles ||= []
+    roles = [:admin] if roles.empty?
+    # we expect that there's always exactly one role set
+    {
+      admin: 'manage',
+      moderator: 'read',
+      member: 'read',
+    }[roles.first.try(:to_sym)]
+  end
+
   def self.index_all
     index.import publyc
   end
@@ -151,8 +162,16 @@ class Platform < Collection
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
+  def self.moderation_enabled
+    where("CAST(groups.hproperties -> 'enable_moderators' AS BOOLEAN) = ?", true)
+  end
+
   def self.new_first
     order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+  end
+
+  def self.not_featured
+    where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", true
   end
 
   def self.sub_platform_most_members

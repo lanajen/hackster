@@ -10,9 +10,20 @@ class ProjectCollectionObserver < ActiveRecord::Observer
 
   def after_update record
     update_project record.project if record.collectable_id_changed? and record.collectable_type == 'Assignment'
+
     if record.workflow_state_changed?
-      expire_cache record
       record.project.update_counters only: [:communities] if record.project_id and record.project
+      if record.certified_changed?
+        expire_cache record, ["project-#{record.project_id}-certified"]
+      else
+        expire_cache record
+      end
+    elsif record.certified_changed?
+      expire_cache record, ["project-#{record.project_id}-certified"]
+    end
+
+    if record.certified_changed? and record.certified?
+      NotificationCenter.perform_in 1.hour, 'notify_all', :certified, 'project_collection', record.id
     end
   end
 
@@ -24,20 +35,22 @@ class ProjectCollectionObserver < ActiveRecord::Observer
   end
 
   private
-    def expire_cache record
+    def expire_cache record, extra_keys=[]
       project = record.project
       return unless record.project
 
       # memcache
-      keys = ["project-#{project.id}"]
+      keys = extra_keys + ["project-#{project.id}"]
       Cashier.expire *keys
 
       # fastly
-      project.purge
+      fastly_keys = []
+      fastly_keys << project.record_key
       if record.collectable.class == Platform
-        FastlyRails.purge_by_key "#{record.collectable.user_name}/home"
-        record.collectable.purge
+        fastly_keys << "#{record.collectable.user_name}/home"
+        fastly_keys << record.collectable.record_key
       end
+      FastlyWorker.perform_async 'purge', *fastly_keys
     end
 
     def update_counters record

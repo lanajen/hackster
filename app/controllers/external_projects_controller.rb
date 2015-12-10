@@ -5,6 +5,7 @@ class ExternalProjectsController < ApplicationController
 
   def show
     impressionist_async @project, '', unique: [:session_hash]
+
     title @project.name
     meta_desc @project.one_liner
 

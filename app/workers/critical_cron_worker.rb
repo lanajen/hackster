@@ -9,7 +9,7 @@ class CriticalCronWorker < BaseWorker
       challenge.launch_pre_contest!
     end
     Challenge.where(workflow_state: :pre_contest_in_progress).where("CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) < ?", Time.now.to_i).each do |challenge|
-      challenge.end_pre_contest!
+      challenge.disable_projects_phase? ? challenge.end_pre_contest_fully! : challenge.end_pre_contest!
     end
     Challenge.ready.where(workflow_state: %w(new pre_registration pre_contest_ended)).where("challenges.start_date < ?", Time.now).each do |challenge|
       challenge.launch_contest!

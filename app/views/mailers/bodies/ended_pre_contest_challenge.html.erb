@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that the pre-contest for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a> has ended.</p>
+<p>This is to let you know that the <%= @context[:challenge].pre_contest_label.downcase %> for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> has ended.</p>
 
 <p>Time to award free hardware!</p>
 

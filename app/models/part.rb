@@ -59,6 +59,7 @@ class Part < ActiveRecord::Base
   has_counter :projects, 'projects.publyc.count'
 
   validates :name, :type, presence: true
+  validates :name, length: { maximum: 255 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
     format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true

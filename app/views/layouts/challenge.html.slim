@@ -3,38 +3,38 @@
 = inserts_stats_for @challenge
 
 = content_for :head do
-  - if url_for(@challenge) == request.path
-    / = render partial: "groups/#{@challenge.identifier.pluralize}/meta_tags"
-  meta name='group_id' content=@challenge.id
-  - sponsor = @sponsors.map(&:name).to_sentence.presence || @challenge.sponsor_name
-  - desc = @challenge.teaser.presence || @challenge.name
-  - if sponsor.present?
-    - desc += " Sponsored by #{sponsor}."
-  meta(name="description" content=desc)
-  meta(property="og:description" content=desc)
-  meta(property="og:image" content=@challenge.cover_image(:cover_thumb))
-  meta(property="og:image:width" content='400')
-  meta(property="og:image:height" content='300')
-  meta(property="og:url" content=url_for([@challenge, only_path: false]))
-  meta(property="og:site_name" content=site_name)
-  meta(property="twitter:card" content="product")
-  - if site_twitter.present?
-    meta(property="twitter:site" content=site_twitter)
-  meta(property="twitter:domain" content=site_domain)
-  meta(property="twitter:title" content=@challenge.name)
-  meta(property="twitter:description" content=@challenge.teaser)
-  - if sponsor.present?
-    meta(property="twitter:data2" content=sponsor)
-    meta(property="twitter:label2" content="SPONSORED BY")
-  - if platform = @sponsors.first and handle = platform.twitter_handle
-    meta(property="twitter:creator" content=handle)
-  - if prize = @prizes.first and prize_name = (prize.description.presence || number_to_currency(prize.cash_value, precision: 0)) and prize_name.present?
-    meta(property="twitter:data1" content=prize_name)
-    meta(property="twitter:label1" content="TOP PRIZE")
-  meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
-  meta(property="twitter:image:width" content='400')
-  meta(property="twitter:image:height" content='300')
-  link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false, locale: I18n.default_www_locale]))
+  - cache ["challenge-#{@challenge.id}-meta"], tag: ["challenge-#{@challenge.id}-meta", "challenge-#{@challenge.id}-sponsors", "challenge-#{@challenge.id}-prizes"], skip_digest: true do
+
+    meta name='group_id' content=@challenge.id
+    - sponsor = @sponsors.map(&:name).to_sentence.presence || @challenge.sponsor_name
+    - desc = @challenge.teaser.presence || @challenge.name
+    - if sponsor.present?
+      - desc += " Sponsored by #{sponsor}."
+    meta(name="description" content=desc)
+    meta(property="og:description" content=desc)
+    meta(property="og:image" content=@challenge.cover_image(:cover_thumb))
+    meta(property="og:image:width" content='400')
+    meta(property="og:image:height" content='300')
+    meta(property="og:url" content=url_for([@challenge, only_path: false]))
+    meta(property="og:site_name" content=site_name)
+    meta(property="twitter:card" content="product")
+    - if site_twitter.present?
+      meta(property="twitter:site" content=site_twitter)
+    meta(property="twitter:domain" content=site_domain)
+    meta(property="twitter:title" content=@challenge.name)
+    meta(property="twitter:description" content=@challenge.teaser)
+    - if sponsor.present?
+      meta(property="twitter:data2" content=sponsor)
+      meta(property="twitter:label2" content="SPONSORED BY")
+    - if platform = @sponsors.first and handle = platform.twitter_handle
+      meta(property="twitter:creator" content=handle)
+    - if prize = @prizes.first and prize_name = (prize.description.presence || number_to_currency(prize.cash_value, precision: 0)) and prize_name.present?
+      meta(property="twitter:data1" content=prize_name)
+      meta(property="twitter:label1" content="TOP PRIZE")
+    meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
+    meta(property="twitter:image:width" content='400')
+    meta(property="twitter:image:height" content='300')
+    link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false, locale: I18n.default_www_locale]))
 
   - if @challenge.custom_css.present?
     style
@@ -57,15 +57,44 @@
     });
 
 = content_for :no_container do
+
   #challenge
     section.top-banner
-      .top-banner-image style="background-image:url('#{@challenge.cover_image(:cover_wide)}');" class=@challenge.bg_class
-        .top-banner-image-inner
-          .container.hidden-xs
-            .media
+      - cache ["challenge-#{@challenge.id}-banner"], tag: ["challenge-#{@challenge.id}-banner", "challenge-#{@challenge.id}-sponsors"], skip_digest: true do
+
+        .top-banner-image style="background-image:url('#{@challenge.cover_image(:cover_wide)}');" class=@challenge.bg_class
+          .top-banner-image-inner
+            .container.hidden-xs
+              .media
+                h1= @challenge.name
+                p= @challenge.teaser
+
+                - if @sponsors.any?
+                  .sponsored.challenge-sponsors
+                    | Sponsored by
+                    ul.list-unstyled
+                      - @sponsors.each do |sponsor|
+                        li
+                          - if sponsor.avatar
+                            = image_tag sponsor.avatar(:mini), class: 'img-thumbnail'
+                          = link_to sponsor.name, sponsor
+                        - unless @sponsors[-1] == sponsor
+                          li and
+                - elsif @challenge.sponsor_name.present?
+                  p.sponsored
+                    | Sponsored by
+                    - if @challenge.avatar
+                      = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
+                    = link_to @challenge.sponsor_name, @challenge.sponsor_link
+
+                .button-content
+                  a.btn.btn-link.addthis_button_compact
+                    i.fa.fa-share-square-o
+
+            .container.visible-xs
+
               h1= @challenge.name
               p= @challenge.teaser
-
               - if @sponsors.any?
                 .sponsored.challenge-sponsors
                   | Sponsored by
@@ -83,32 +112,6 @@
                   - if @challenge.avatar
                     = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
                   = link_to @challenge.sponsor_name, @challenge.sponsor_link
-
-              .button-content
-                a.btn.btn-link.addthis_button_compact
-                  i.fa.fa-share-square-o
-
-          .container.visible-xs
-
-            h1= @challenge.name
-            p= @challenge.teaser
-            - if @sponsors.any?
-              .sponsored.challenge-sponsors
-                | Sponsored by
-                ul.list-unstyled
-                  - @sponsors.each do |sponsor|
-                    li
-                      - if sponsor.avatar
-                        = image_tag sponsor.avatar(:mini), class: 'img-thumbnail'
-                      = link_to sponsor.name, sponsor
-                    - unless @sponsors[-1] == sponsor
-                      li and
-            - elsif @challenge.sponsor_name.present?
-              p.sponsored
-                | Sponsored by
-                - if @challenge.avatar
-                  = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
-                = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
       - if !@challenge.locked?(session) or can? :manage, @challenge
         section.group-nav.affixable
@@ -185,7 +188,6 @@
   .popup-overlay-outer
     .popup-overlay-inner
       button.close data-target='#enter-popup' &times;
-      - link_params = { base_article: {platform_tags_string: @sponsors.map(&:name).join(',') } }
       - if user_signed_in?
         - if @user_projects.any?
           h2 Ready to submit your entry?
@@ -205,14 +207,14 @@
           p
             small
               ' or
-              = link_to "create a new project", new_project_path(link_params)
+              = link_to "create a new project", new_project_path(@link_params)
 
         - else
           p You need a project to enter!
-          p= link_to "Create a new project", new_project_path(link_params)
+          p= link_to "Create a new project", new_project_path(@link_params)
       - else
         p You need a project to enter!
         p
-          ==> link_to "Create a new project", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params), source: 'challenge')
+          ==> link_to "Create a new project", new_user_registration_path(reason: 'project', redirect_to: new_project_path(@link_params), source: 'challenge')
           ' or
           = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))

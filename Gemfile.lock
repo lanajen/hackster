@@ -434,6 +434,7 @@ GEM
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
+    oj (2.14.0)
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
@@ -781,6 +782,7 @@ DEPENDENCIES
   nested_form (= 0.3.2)
   newrelic_rpm (= 3.12.0.288)
   nokogiri (= 1.6.0)
+  oj (= 2.14.0)
   omniauth-arduino!
   omniauth-facebook (= 1.5.1)
   omniauth-github (= 1.1.2)

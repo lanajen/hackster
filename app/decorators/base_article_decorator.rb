@@ -15,8 +15,8 @@ class BaseArticleDecorator < ApplicationDecorator
     end
   end
 
-  def description mode=:normal
-    options = { mode: mode }
+  def description mode=:normal, options={}
+    options = { mode: (mode || :normal) }.merge(options)
     parse_medium model.description, options
   end
 

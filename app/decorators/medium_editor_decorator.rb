@@ -25,8 +25,13 @@ module MediumEditorDecorator
 
               Embed.new video_id: video_id
             when 'widget'
-              embed = Embed.new widget_id: el['data-widget-id']
-              raise "widget ID #{el['data-widget-id']} not found" if embed.widget.nil?
+              widget = if options[:widgets]
+                options[:widgets].select{|w| w.id.to_s == el['data-widget-id'] }.first
+              else
+                Widget.find_by_id el['data-widget-id']
+              end
+              embed = Embed.new widget: widget
+              raise "widget ID #{el['data-widget-id']} not found, widget: #{widget.inspect}" if embed.widget.nil?
 
               if options[:except]
                 if embed.widget.type.in? options[:except]
@@ -55,7 +60,7 @@ module MediumEditorDecorator
 
             el.add_child code if code
           rescue
-            # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to hi@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
+            # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to help@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
             el.remove
             next
           end

@@ -5,6 +5,7 @@ class Member < ActiveRecord::Base
   belongs_to :invited_by, polymorphic: true
   belongs_to :permission, dependent: :destroy
   belongs_to :user
+  has_many :notifications, as: :notifiable, dependent: :delete_all
   attr_protected #none
   before_create :set_default_role
 
@@ -46,7 +47,13 @@ class Member < ActiveRecord::Base
     perm = permission || build_permission
     perm.grantee = user unless perm.grantee
     perm.permissible = group unless perm.permissible
-    perm.action = group.class.default_permission if !request_pending? and group and !perm.action
+    if !request_pending? and group and !perm.action
+      perm.action = if group.class.method(:default_permission).parameters.size == 1
+        group.class.default_permission(group_roles)
+      else
+        group.class.default_permission
+      end
+    end
     perm.save if save
     self.permission = perm
   end

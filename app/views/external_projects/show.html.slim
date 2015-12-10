@@ -1,6 +1,18 @@
-/ - @project.known_platforms.each do |platform|
-  = content_for :js do
-    = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
+= content_for :head do
+  = render 'projects/meta_tags'
+
+/ update counters via JS so we can cache the views longer
+- content_for :js do
+
+  javascript:
+    $(function(){
+      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span> #{pluralize_without_count @project.impressions_count, 'view'}";
+      $('.impression-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.comments_count}</span> #{pluralize_without_count @project.comments_count, 'comment'}";
+      $('.comment-stats').html(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span> #{pluralize_without_count @project.respects_count, 'respect'}";
+      $('.respect-stats').html(s);
+    });
 
 = content_for :no_container do
 
@@ -10,7 +22,7 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
-          - cache [I18n.locale, @project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
+          - cache [I18n.locale, @project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 24.hours do
             .project-banner style="background-image: url(#{@project.cover_image})"
               .project-banner-inner
                 h1.project-title
@@ -28,13 +40,13 @@
                       li= link_to tag, tag_path(tag), class: 'tag'
 
                 ul.list-inline.project-stats
-                  li
+                  li.impression-stats
                     span.stat-figure> = number_with_delimiter @project.impressions_count
                     = pluralize_without_count @project.impressions_count, 'view'
-                  li
+                  li.comment-stats
                     span.stat-figure> = number_with_delimiter @project.comments_count
                     = pluralize_without_count @project.comments_count, 'comment'
-                  li
+                  li.respect-stats
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
@@ -54,6 +66,19 @@
               ==> link_to content_tag(:span, @project.website_host) + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
             ==> link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
 
+          - if @project.part_joins.exists?
+            section#components.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Products used in this project
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                table.sortable-table.table.table-hover.fields-container
+                  tbody
+                    - @project.part_joins.order(:position, :id).each do |part|
+                      = render partial: 'widgets/embeds/show/part', locals: { part: part }
+
           section#comments.section-container.section-collapsible
             h2.section-title
               a.title.title-toggle href=''
@@ -61,7 +86,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
+              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
         .col-md-4.right-column
           .container-mobile

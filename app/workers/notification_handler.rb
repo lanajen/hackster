@@ -27,7 +27,7 @@ class NotificationHandler
     @template = template
     if context = get_context_for('email')
       # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
-      BaseMailer.deliver_email(context, find_template, opts).deliver_now!
+      BaseMailer.deliver_email(context, find_template, opts).deliver_now! if context.present?
     end
   end
 
@@ -122,7 +122,16 @@ class NotificationHandler
           when BaseArticle
             comment.commentable
           end
-          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own') + comment.commentable.commenters.with_subscription(notification_type, 'new_comment_commented') - [author]
+          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own')
+          if comment.has_parent?
+            # finds the user who created the parent comment as well as everyone
+            # who replied to it
+            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children(true).pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
+          else
+            # finds all the first level comments for commentable
+            context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
+          end
+          context[:users] -= [author]
         when Thought
           thought = context[:thought] = commentable
           context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented').to_a  # to_a is so that uniq! doesn't fail later on
@@ -235,6 +244,15 @@ class NotificationHandler
         user = context[:user] = project.users.first
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
         return unless user.subscribed_to? 'other'
+      when :project_collection
+        collection = ProjectCollection.find(context_id)
+        if collection.certified?
+          context[:group] = collection.collectable
+          context[:project] = project = collection.project
+          context[:users] = project.users
+        else
+          context[:users] = []
+        end
       when :order
         order = context[:order] = Order.find context_id
         context[:user] = order.user
@@ -319,7 +337,7 @@ class NotificationHandler
       end
 
       # get projects newly attached to followed platform
-      platform_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').self_hosted.joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+      platform_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
       platform_projects.each do |project|
         platform = Platform.find(project.followable_id)
         relations[platform] = {} unless platform.in? relations.keys
@@ -327,7 +345,7 @@ class NotificationHandler
       end
 
       # get projects newly made public by followed users
-      user_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').self_hosted.joins(:users).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
+      user_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').joins(:users).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
       user_projects.each do |project|
         _user = User.find(project.followable_id)
         relations[_user] = {} unless _user.in? relations.keys
@@ -335,7 +353,7 @@ class NotificationHandler
       end
 
       # get projects newly added to lists
-      list_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').self_hosted.joins(:lists).where('project_collections.created_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+      list_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').joins(:lists).where('project_collections.created_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
       list_projects.each do |project|
         list = List.find(project.followable_id)
         relations[list] = {} unless list.in? relations.keys
@@ -343,7 +361,7 @@ class NotificationHandler
       end
 
       # get projects newly made public by owned parts
-      part_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').self_hosted.joins(:parts).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = parts.id AND follow_relations.followable_type = 'Part'").where.not(parts: { platform_id: nil }).where(follow_relations: { user_id: user.id }) : []
+      part_projects = user.subscribed_to?(notification_type, 'new_projects') ? BaseArticle.publyc.select('projects.*, follow_relations.followable_id').joins(:parts).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = parts.id AND follow_relations.followable_type = 'Part'").where.not(parts: { platform_id: nil }).where(follow_relations: { user_id: user.id }) : []
       part_projects.each do |project|
         part = Part.find(project.followable_id)
         relations[part] = {} unless part.in? relations.keys

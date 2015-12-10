@@ -11,6 +11,7 @@ class ProjectCollection < ActiveRecord::Base
 
   after_create :update_status
 
+  hstore_column :properties, :certified, :boolean
   hstore_column :properties, :featured_position, :integer
 
   # scope :visible, -> { where(workflow_state: VALID_STATES) }
