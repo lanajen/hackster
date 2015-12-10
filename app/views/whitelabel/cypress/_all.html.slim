@@ -2,6 +2,7 @@
 
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
+  = raw chrome_sync.head(I18n.locale)
 
 = content_for :header do
   - cache [I18n.locale, 'cy_chrome_header'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_header) do
@@ -109,3 +110,6 @@
 = content_for :footer do
   - cache [I18n.locale, 'cy_chrome_footer'], tag: %W(cy_chrome-#{I18n.short_locale}:chrome_footer) do
     = raw chrome_sync.chrome_footer(I18n.locale)
+
+= content_for :js do
+  = raw chrome_sync.head(I18n.locale)
