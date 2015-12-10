@@ -1,14 +1,11 @@
-//= require_self
-//= require react_ujs
-
-global.React = require('react');
-global.FollowButton = require('./follow_button/app');
-global.NotificationDropdown = require('./notification_dropdown/app');
-global.FlagButton = require('./flag_button/app');
-global.hljs = require('highlight.js');
-global.ListsDropdown = require('./lists_dropdown/app');
-global.FlagButton = require('./flag_button/app');
-global.ReputationUpdateButton = require('./reputation_update_button/app');
-global.TimeLeft = require('./time_left/app');
-global.ToolboxSelector = require('./toolbox_selector/containers/Root');
-global.Comments = require('./comments/app');
+require('expose?React!react');
+require('expose?ReactDOM!react-dom');
+require('expose?NotificationDropdown!./notification_dropdown/app.js');
+require('expose?FollowButton!./follow_button/app');
+require('expose?FlagButton!./flag_button/app');
+require('expose?hljs!highlight.js');
+require('expose?ListsDropdown!./lists_dropdown/app');
+require('expose?ReputationUpdateButton!./reputation_update_button/app');
+require('expose?TimeLeft!./time_left/app');
+require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
+require('expose?Comments!./comments/app');

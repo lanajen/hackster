@@ -33,6 +33,7 @@ export default class Comments extends Component {
   }
 
   render() {
+    console.log('go');
     let user = this.props.commentStore.user;
     const comments = this.props.commentStore.comments.length > 0
                    ? this.props.commentStore.comments.map((comment, index) => {
@@ -76,6 +77,7 @@ export default class Comments extends Component {
 }
 
 Comments.PropTypes = {
-  actions: React.PropTypes.object,
-  commentStore: React.PropTypes.object
+  actions: PropTypes.object,
+  commentStore: PropTypes.object,
+  placeholder: PropTypes.string
 };

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom'
 import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
 import smoothScroll from '../utils/SmoothScroll';
@@ -15,7 +16,7 @@ export default class Comment extends Component {
     if ( this.props.scrollTo.scroll
       && this.props.scrollTo.element.id === this.props.comment.id
       && window ) {
-      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
+      smoothScroll((ReactDOM.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
         this.props.toggleScrollTo(false, null);
       });
     }
@@ -123,6 +124,7 @@ Comment.PropTypes = {
   deleteComment: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   handlePost: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
   postComment: PropTypes.func.isRequired,
   replyBox: PropTypes.object.isRequired,
   scrollTo: PropTypes.object.isRequired,

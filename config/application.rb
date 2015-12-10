@@ -98,10 +98,6 @@ module HackerIo
 
     config.middleware.use Rack::Attack
 
-    # React Browserify Transform
-    config.react.addons = true
-    config.browserify_rails.commandline_options = "-t [babelify --stage 0  --optional runtime]"
-
     # cashier tag caching
     config.cashier.adapter = :redis_store
     config.cashier.adapter.redis = RedisConn.conn

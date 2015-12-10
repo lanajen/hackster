@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 
 export default class TextArea extends Component {
   constructor(props) {
@@ -6,11 +7,11 @@ export default class TextArea extends Component {
   }
 
   autoFocus() {
-    React.findDOMNode(this).focus();
+    ReactDOM.findDOMNode(this).focus();
   }
 
   clearTextArea() {
-    React.findDOMNode(this).value = '';
+    ReactDOM.findDOMNode(this).value = '';
   }
 
   render() {
@@ -21,3 +22,7 @@ export default class TextArea extends Component {
     );
   }
 }
+
+TextArea.PropTypes = {
+  placeholder: PropTypes.string
+};

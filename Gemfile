@@ -17,14 +17,11 @@ gem 'fog-aws', '0.1.2'
 gem 'font-awesome-rails', '4.1.0.0'
 gem 'jquery-rails', '4.0.4'
 gem 'jquery-ui-rails', '5.0.5'
-gem 'react-rails', '~> 1.0'
+gem 'react-rails', '~> 1.5'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
-
-# npm
-gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do

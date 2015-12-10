@@ -53,5 +53,4 @@ HackerIo::Application.configure do
   config.action_controller.perform_caching = false
   config.cache_store = :dalli_store
 
-  config.react.variant = :development
 end

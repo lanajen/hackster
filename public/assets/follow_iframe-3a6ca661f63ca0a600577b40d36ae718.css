@@ -1,0 +1,67 @@
+/* line 4, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+.branded a {
+  text-decoration: none;
+  font-size: 11px;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  font-weight: bold;
+  display: inline-block;
+  overflow: hidden;
+  padding: 3px 5px 3px 24px;
+  border: 1px solid #367DAE;
+  text-shadow: 1px 1px 1px #2A6086;
+  background: #3d8bc1;
+  color: #fff;
+  position: relative;
+}
+/* line 25, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+.branded a:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  opacity: 0.9;
+}
+/* line 28, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+.branded a img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+/* line 39, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+.text a {
+  text-decoration: none;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 12px;
+  line-height: 1.428571429;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  margin: 0;
+  text-align: center;
+  background: #FF7745;
+  padding: 9px 9px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  color: #fff;
+  font-weight: 200;
+}
+/* line 55, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/follow_iframe.scss */
+.text a:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  opacity: 0.9;
+  color: #fff;
+}

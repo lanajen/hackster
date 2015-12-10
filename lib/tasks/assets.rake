@@ -29,8 +29,14 @@ namespace :assets do
     end
   end
 
+  desc "Compile React components with webpack"
+  task :webpack do
+    sh "NODE_ENV=#{Rails.env} npm run build"
+  end
+
   # Hook into existing assets:precompile task
   Rake::Task["assets:precompile"].enhance do
     Rake::Task["assets:gzip"].invoke
+    Rake::Task["assets:webpack"].invoke
   end
 end

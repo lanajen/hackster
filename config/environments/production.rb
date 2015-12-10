@@ -52,8 +52,6 @@ HackerIo::Application.configure do
 
   # config.assets.initialize_on_precompile = false
 
-  config.react.variant = :production
-
   require File.expand_path('../../../lib/queue_time_logger', __FILE__)
   config.middleware.use QueueTimeLogger
 

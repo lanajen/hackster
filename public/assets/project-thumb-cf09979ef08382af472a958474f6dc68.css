@@ -1,0 +1,122 @@
+/* line 5, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 30px;
+}
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb a {
+  color: #337ab7;
+}
+/* line 14, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb p {
+  margin: 0 0 10px;
+}
+/* line 18, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb:hover .featured-logo {
+  display: block;
+}
+
+/* line 24, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-img {
+  position: relative;
+}
+/* line 26, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-img a {
+  display: block;
+}
+/* line 29, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-img img {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* line 35, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-details {
+  padding: 10px 20px 5px;
+  background: #fff;
+  height: 160px;
+}
+/* line 39, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-details h4 {
+  font-weight: bold;
+  margin: 0 0 5px;
+  font-size: 1.2em;
+}
+/* line 44, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-details .description {
+  margin-bottom: 0;
+}
+
+/* line 48, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-stats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  overflow: hidden;
+}
+/* line 54, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-stats li {
+  text-transform: uppercase;
+  color: #999;
+  font-size: 0.5em;
+  float: left;
+  width: 33%;
+  text-align: center;
+}
+
+/* line 63, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.stat-figure {
+  font-weight: bold;
+  font-size: 150%;
+  display: block;
+}
+
+/* line 69, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+a.featured-logo {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  text-align: center;
+  padding-top: 10px;
+  text-decoration: none;
+}
+/* line 82, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+a.featured-logo:hover {
+  color: #fff;
+  text-decoration: none;
+}
+/* line 86, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+a.featured-logo img {
+  height: 14px;
+  vertical-align: baseline;
+}
+
+/* line 91, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 20px 15px;
+  background: #fff;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjAiLz48c3RvcCBvZmZzZXQ9IjIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjkiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQpIiAvPjwvc3ZnPiA=');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(20%, rgba(255, 255, 255, 0.9)), color-stop(100%, #ffffff));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 20%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 20%, #ffffff 100%);
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 20%, #ffffff 100%);
+}
+
+/* line 100, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/project-thumb.scss */
+.project-thumb-bottom-inner {
+  position: relative;
+}
