@@ -392,7 +392,7 @@ div.dropdown-caret {
   outline: none;
 }
 button#burger-menu {
-  background-image: url("../../img/burger-icon.svg");
+  background-image: asset-url("whitelabel/arduino/burger-icon.svg");
   background-size: 18px;
   background-repeat: no-repeat;
   height: 24px;
@@ -457,7 +457,7 @@ div.navbar-header + div.pull-right {
 }
 .navbar-header {
   float: left;
-  background-image: url("../../img/CreateProjectsLogo.svg");
+  background-image: asset-url("whitelabel/arduino/CreateProjectsLogo.svg");
   background-size: 308px;
   background-repeat: no-repeat;
   height: 75px;
