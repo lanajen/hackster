@@ -45,12 +45,10 @@ const App = React.createClass({
   },
 
   onNotificationButtonClick() {
-    console.log('over!', this.state);
     if (this.state.csrfToken) {
       // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
       // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
       let isDropdownOpen = React.findDOMNode(this.refs.notifications).offsetParent !== null;
-      console.log('isDropdownOpen', isDropdownOpen);
 
       if (isDropdownOpen && !this.state.hasLoaded) {
         let promise = fetchNotifications(this.state.csrfToken);
