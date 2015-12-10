@@ -45,9 +45,9 @@ class ChallengeDecorator < ApplicationDecorator
         "Please mark the challenge as 'ready to launch' when ready."
       end
     when :pre_contest_in_progress
-      "Pre-contest in progress"
+      "#{model.pre_contest_label} in progress"
     when :pre_contest_ended
-      "Pre-contest ended"
+      "#{model.pre_contest_label} ended"
     when :in_progress
       "#{time_left} left to enter"
     when :judging

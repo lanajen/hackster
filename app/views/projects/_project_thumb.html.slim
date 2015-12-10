@@ -10,22 +10,27 @@
   - project_link = project_url(project, subdomain: subdomain, locale: locale)
 - else
   - project_link = url_for(project)
+- certifier = defined?(certifier) ? certifier : nil
 
 .col-sm-6.mobile-scroll-row-item.project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="col-md-#{col} #{'has-data' if ref and ref_id}"
-  - cache [I18n.locale, "project-#{project.id}-thumb", subdomain], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
+  - cache [I18n.locale, "project-#{project.id}-thumb", subdomain, certifier], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
     - project = project.decorate
     div class="project-#{project.id}"
       .thumb.project-thumb
         .thumb-image.has-link-overlay
-          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif')
+          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif') alt=project.name
           noscript
-            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb)
+            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
           = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (subdomain.present? ? '_blank' : nil)
           .thumb-image-inner-top
             .award-container
             p.description.show-on-hover
               = project.one_liner
           .thumb-image-inner
+            - if certifier
+              small.text-gold
+                i.fa.fa-certificate
+                span Certified by #{certifier}
             h4
               - if project.pryvate?
                 i.fa.fa-lock>

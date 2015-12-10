@@ -1,13 +1,14 @@
 - fields = @challenge.challenge_idea_fields
 - headers = ['Name', 'Description', 'Image URL']
 - headers += fields.map(&:label)
-- headers += ['Submitter name', 'Submission date', 'Submission status']
+- headers += ['Submitter name', 'Submission date', 'Submission status', 'Winner email']
 - rows = [headers]
 - @ideas.each do |idea|
   - user = idea.user
   - output = [idea.name, strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb)]
   - output += fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
   - output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state]
+  - output += [idea.won? ? user.email : '']
   - rows << output
 - rows.each do |row|
   = (row.map{|v| "\"#{v}\"" }.join(',') + "\r\n").html_safe

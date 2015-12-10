@@ -1,17 +1,19 @@
-.clearfix.mg-20
-  .pull-left= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), new_project_url(base_article: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm', target: '_blank'
-  p.pull-right.text-muted
-    small
-      ' Projects made with
-      ==> link_to @platform.name, platform_home_url(@platform), target: '_blank'
-      ' on
-      = link_to 'Hackster.io', root_url, target: '_blank'
+- unless params[:hide_header]
+  .clearfix.mg-20
+    .pull-left= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), new_project_url(base_article: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm', target: '_blank'
+    p.pull-right.text-muted
+      small
+        ' Projects made with
+        ==> link_to @platform.name, platform_home_url(@platform), target: '_blank'
+        ' on
+        = link_to 'Hackster.io', root_url, target: '_blank'
 
 - if @projects.any?
   .row
     - @projects.each_with_index do |col, i|
       = render partial: "projects/project_embed_thumb", locals: { project: col.project.decorate, ref: 'platform', ref_id: @platform.id }
-  .text-center= will_paginate(@projects)
+  - unless params[:hide_pagination]
+    .text-center= will_paginate(@projects)
 
 - else
   | All the projects made with #{@platform.name} will appear here.

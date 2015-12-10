@@ -56,11 +56,14 @@ export default class Comment extends Component {
                            : (<li className="default-hidden">
                                 <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
+    let replyButton = this.props.parentIsDeleted === false
+                ? (<li>
+                    <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
+                    </li>)
+                : (<li className="text-muted">(Discussion closed)</li>);
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
-                    <li>
-                      <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
-                    </li>
+                    {replyButton}
                     {deleteOrFlagButton}
                   </ul>)
                 : (null);
@@ -69,38 +72,42 @@ export default class Comment extends Component {
                  ? (<div className="reply-box">
                       <div className="reply-box-center-line">
                       </div>
-                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} />
+                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} placeholder={this.props.placeholder} />
                     </div>)
                  : (null);
 
     let comment = depth === 0 && deleted === true
-                ? (<div className={rootClass}>
-                    <div className="comment-title">
-                      <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
-                      <div className="profile-name">
-                        <h4>
-                          <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
-                        </h4>
-                        <span className="text-muted comment-date">{date}</span>
+                ? (<div>
+                    <div className={rootClass}>
+                      <div className="comment-title">
+                        <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                        <div className="profile-name">
+                          <h4>
+                            <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                          </h4>
+                          <span className="text-muted comment-date">{date}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="comment-body">
-                      This comment has been deleted.
+                      <div className="comment-body">
+                        This comment has been deleted.
+                      </div>
                     </div>
                     {this.props.children}
                   </div>)
-                : (<div className={rootClass}>
-                    <div className="comment-title">
-                      <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
-                      <div className="profile-name">
-                        <h4>
-                          <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
-                        </h4>
-                        <span className="text-muted comment-date">{date}</span>
+                : (<div>
+                    <div className={rootClass}>
+                      <div className="comment-title">
+                        <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                        <div className="profile-name">
+                          <h4>
+                            <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                          </h4>
+                          <span className="text-muted comment-date">{date}</span>
+                        </div>
                       </div>
+                      <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
+                      {actions}
                     </div>
-                    <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
-                    {actions}
                     {this.props.children}
                     {replyBox}
                   </div>);

@@ -39,6 +39,13 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Logo'
         Cashier.expire "platform-#{record.attachable_id}-client-nav"
       end
+    elsif record.attachable_type == 'User'
+      case record.type
+      when 'Avatar'
+        user = record.attachable
+        Cashier.expire "user-#{user.id}-sidebar", "user-#{user.id}-thumb"
+        FastlyWorker.perform_async 'purge', user.record_key
+      end
     elsif record.attachable_type == 'Prize'
       case record.type
       when 'Image'

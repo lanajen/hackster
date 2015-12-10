@@ -1,6 +1,6 @@
 class BaseMailer < ActionMailer::Base
   ADMIN_EMAIL = 'Ben<ben@hackster.io>'
-  DEFAULT_EMAIL = 'Hackster.io<hi@hackster.io>'
+  DEFAULT_EMAIL = 'Hackster.io<help@hackster.io>'
   add_template_helper ApplicationHelper
   add_template_helper UrlHelper
 

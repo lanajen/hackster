@@ -1,14 +1,18 @@
 class Api::V1::CommentsController < Api::V1::BaseController
   before_filter :authenticate_user!, :except => [:index]
   protect_from_forgery only: [:create, :destroy]
+  include WidgetsHelper
 
   def index
-    surrogate_keys = [Comment.cache_key(params[:type], params[:id])]
+    cache_key = Comment.cache_key(params[:type], params[:id])
+    surrogate_keys = [cache_key, 'comments']
     surrogate_keys << current_platform.user_name if is_whitelabel?
     set_surrogate_key_header *surrogate_keys
-    set_cache_control_headers
+    set_cache_control_headers 86400  # expires in 24 hours
 
     @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).order(created_at: :asc).includes(user: :avatar)
+
+    render json: CommentCollectionJsonDecorator.new(sort_comments(@comments)).node.to_json
   end
 
   def create

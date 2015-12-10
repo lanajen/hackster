@@ -5,7 +5,7 @@
 <p>If needed, you can edit it <a href="<%= u.edit_challenge_idea_url(@context[:challenge].slug, @context[:idea], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">here</a>. It will now be reviewed in order to determine whether it is qualified to enter. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> for more information.</p>
 
 <p>
-  Submissions to the pre-contest are open until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.
+  Submissions to the <%= @context[:challenge].pre_contest_label.downcase %> are open until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.
   <% if @context[:challenge].pre_winners_announced_date %>
     Winners will be announced on <%= l @context[:challenge].pre_winners_announced_date, format: :short_date %>.
   <% end %>

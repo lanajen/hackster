@@ -9,7 +9,7 @@
     .navbar-in.clearfix  style='position:relative;'
       .powered-by.pull-left
         | projects powered by
-        = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www', locale: I18n.default_www_locale)
+        = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www', locale: I18n.default_www_locale)
 
       - if user_signed_in?
         ul.navbar-nav.navbar-right

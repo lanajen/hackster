@@ -3,11 +3,6 @@
 
 = inserts_stats_for @group
 
-/ = content_for :before_main do
-  #about style='position: relative;z-index: 999;background: #F2F2F2;'
-    - if !user_signed_in?
-      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
-
 = content_for :head do
   = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
   meta name='group_id' content=@group.id
@@ -60,7 +55,7 @@
                     = link_to 'the platforms page', platforms_path
                     | ?
                   ' Please email us at
-                  => link_to 'platforms@hackster.io', 'mailto:platforms@hackster.io'
+                  => link_to 'help@hackster.io', 'mailto:help@hackster.io'
                   ' so we can assess if it's a good fit for our featured list.
               h2.section-title Take your platform to the next level:
               = render 'groups/platforms/checklist', model: @platform, group: :next_level, done: false
@@ -121,7 +116,7 @@
                 .col-md-2
               - @projects.each_with_index do |col, i|
                 - css = i == 2 ? '4 hidden-sm' : nil
-                = render partial: 'projects/project_thumb', locals: { project: col.project, col: css, ref: 'platform', ref_id: [@platform.id, 'trending', nil, nil, nil].join('_'), offset: i }
+                = render partial: 'projects/project_thumb', locals: { project: col.project, col: css, ref: 'platform', ref_id: [@platform.id, 'trending', nil, nil, nil].join('_'), offset: i, certifier: (col.certified? ? @platform.name: nil) }
             = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       - if @platform.enable_products and @platform.products_count > 0

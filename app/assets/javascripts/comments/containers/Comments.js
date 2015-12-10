@@ -24,11 +24,11 @@ class CommentsContainer extends Component {
 
   render() {
     let initialForm = this.props.commentStore.user.id !== null
-                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} />)
+                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} placeholder={this.props.placeholder} />)
                     : (null);
     let comments = this.props.commentStore.fetchedInitialComments
                  ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} />)
-                 : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-4x fa-spin"></i> loading</div>);
+                 : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-2x fa-spin"></i></div>);
     return (
       <div className="r-comments">
         {initialForm}

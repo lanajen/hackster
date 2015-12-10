@@ -126,7 +126,7 @@ class NotificationHandler
           if comment.has_parent?
             # finds the user who created the parent comment as well as everyone
             # who replied to it
-            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children.pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
+            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children(true).pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
           else
             # finds all the first level comments for commentable
             context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
@@ -244,6 +244,15 @@ class NotificationHandler
         user = context[:user] = project.users.first
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
         return unless user.subscribed_to? 'other'
+      when :project_collection
+        collection = ProjectCollection.find(context_id)
+        if collection.certified?
+          context[:group] = collection.collectable
+          context[:project] = project = collection.project
+          context[:users] = project.users
+        else
+          context[:users] = []
+        end
       when :order
         order = context[:order] = Order.find context_id
         context[:user] = order.user

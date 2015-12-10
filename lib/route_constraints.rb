@@ -67,3 +67,15 @@ class ArticlePage < BaseArticlePage
     article_is_type? 'Article', request
   end
 end
+
+class ShortLinkDomain
+  def self.matches?(request)
+    request.domain == ENV['SHORT_LINK_DOMAIN']
+  end
+end
+
+class NotShortLinkDomain
+  def self.matches?(request)
+    request.domain != ENV['SHORT_LINK_DOMAIN']
+  end
+end

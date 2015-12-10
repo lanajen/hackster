@@ -3,7 +3,6 @@ body.whitelabel {
     font-size: 11px;
     padding: 2px 15px;
     img {
-      margin-left: 3px;
       height: 11px;
       vertical-align: text-top;
     }
@@ -14,6 +13,8 @@ body.whitelabel {
       margin: 0;
       padding: 10px 20px;
       width: auto;
+      border: 0;
+      background: none;
       border: 0;
       img {
         max-height: 100%;

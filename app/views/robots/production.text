@@ -7,6 +7,3 @@ Disallow: /projects/*
 Disallow: /api/*
 Disallow: /groups/*
 Allow: /projects/e/*
-
-User-agent: Googlebot-Image
-Disallow: /

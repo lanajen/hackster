@@ -81,7 +81,7 @@ class ProjectsController < ApplicationController
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
-    @project = @project.decorate
+    @project = ProjectDecorator.decorate(@project)
 
     # call with already loaded widgets and images
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
@@ -253,7 +253,7 @@ class ProjectsController < ApplicationController
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project

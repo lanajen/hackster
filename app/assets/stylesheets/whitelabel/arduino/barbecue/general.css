@@ -1,0 +1,131 @@
+@font-face {
+		font-family: 'TypoNine';
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot');
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.woff') format('woff'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.ttf') format('truetype');
+		font-weight: bold;
+		font-style: normal;
+}
+@font-face {
+		font-family: 'TypoNine';
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot');
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.woff') format('woff'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+}
+@font-face {
+		font-family: 'TypoNine';
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot');
+		src: url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.woff') format('woff'),
+				 url('https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.ttf') format('truetype');
+		font-weight: 600;
+		font-style: normal;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+*, *:after, *:before{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html {
+		font-size: 80%;
+		-webkit-text-size-adjust: 100%;
+		-ms-text-size-adjust: 100%;
+		-webkit-font-smoothing: antialiased;
+		
+}
+
+html, body {
+	min-height: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.load-bold-font {
+	font-family: 'TypoNine';
+	font-weight: bold;
+	visibility: hidden;
+}
+
+.load-text-font {
+	font-family: 'TypoNine';
+	font-weight: 600;
+	visibility: hidden;
+}
+
+a{
+	color: #000;
+		text-decoration: none;
+}
+a:hover {
+		text-decoration: none;
+}
+
+::selection {
+	background: #c9d2d2; /* Safari */
+	}
+::-moz-selection {
+	background: #c9d2d2; /* Firefox */
+}
+
+html,button,input,select,textarea {
+		font-family: 'TypoNine';
+		font-weight: normal;
+		font-style: normal;
+}
+
+body{
+	background-color: #fff;
+	font-family: 'TypoNine';
+	font-weight: normal;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary {
+		display: block;
+}
+
+video {
+		display: inline-block;
+		*display: inline;
+		*zoom: 1;
+}
+
+video {
+		width: 100%;
+		height: auto;
+}
+
+img{
+	border: 0;
+	vertical-align: middle;
+	-ms-interpolation-mode: bicubic;
+}
+
+p{
+	margin-top: .5em;
+	margin-bottom: .5em;
+	line-height: 1.4em;
+}
+
+ul{
+	padding-left: 1.5em;
+	line-height: 1.5em;
+}
+
+h1, h2, h3, h4, h5, h6{
+	margin-top: .7em;
+	margin-bottom: .3em;
+}

@@ -1,8 +1,96 @@
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
+  / = stylesheet_link_tag 'whitelabel/arduino/application'
+  = stylesheet_link_tag 'whitelabel/arduino/style'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/normalize'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/home'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/utils'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/general'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/dropover'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/scrollbar'
+  = stylesheet_link_tag 'whitelabel/arduino/barbecue/buttons'
 
 = content_for :header do
 
+  div
+    /! class="white-icons" if background with same colors than icons
+    #ham.hamNoBack
+      svg#toggleNav xmlns:xlink="http://www.w3.org/2000/xlink"
+        use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Global-Menu_Home-BBCube')
+    #back.opacity_bg.hidden
+      #home.backUnsolid style=("transform: translate(0),0,0);")
+        /! class="backSolid" to have the full height
+        /! <img src=asset_url('whitelabel/arduino/barbecue/Global-Arduino.svg') class="logo-home-bottom"></img
+        svg.logo-home-bottom xmlns:xlink="http://www.w3.org/2000/xlink"
+          use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Global-WebApp_Compressed')
+        /! VIDEO BACKGROUND
+        video#bgvid handle-play="expanded" loop="" muted="" poster="" preload="metadata"
+          source#mp4 src="" type="video/mp4"
+            source#ogg src="" type="video/ogg"
+        .homeGradient
+        /! FEED
+        #feed_cont.visible
+          .feed
+            h2 Arduino News
+            .posts_cont.scrollable
+              #news_feed
+                /! content generated in barbecue.js
+        /! HOME GRID
+        #home_grid
+          .grid_row
+            a href="http://create-staging.arduino.cc/ide/#/editor" target="_blank"
+            .grid_square.by_col.editor
+              img src=asset_url('whitelabel/arduino/barbecue/Home-Grid-Editor.svg') /
+              p Arduino Web Editor
+            a href="http://create-staging.arduino.cc/ide/#/getting-started" target="_blank"
+            .grid_square.by_col.editor
+              img src=asset_url('whitelabel/arduino/barbecue/Home-Grid-Start.svg') /
+              p Getting Started
+            a href="http://blog.arduino.cc/category/projects/" target="_blank"
+            .grid_square.by_col.ideas
+              svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
+                use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new')
+              img.ideas src=asset_url('whitelabel/arduino/barbecue/Home-Grid-Ideas.svg') /
+              p Arduino Tutorials
+          .grid_row
+            a href="http://forum.arduino.cc/" target="_blank"
+            .grid_square.by_col.help
+              svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
+                use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new')
+              img.help src=asset_url('whitelabel/arduino/barbecue/Home-Grid-Help.svg') /
+              p Need Help? Go to Forum
+            a href="http://store.arduino.cc/" target="_blank"
+            .grid_square.by_col.store
+              svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
+                use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new')
+              img src=asset_url('whitelabel/arduino/barbecue/Home-Grid-Store.svg') /
+              p Arduino Store
+            a href="https://www.temboo.com/arduino" target="_blank"
+            .grid_square.by_col.products
+              svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
+                use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new')
+              img src=asset_url('whitelabel/arduino/barbecue/temboo-drop.svg') /
+              p Connect to Temboo
+      #closeArea
+    /!
+      | notifications button
+    .user-profile
+      /! replace the default avatar with user avatar if available
+      svg.default-usr-pic xmlns:xlink="http://www.w3.org/2000/xlink"
+        use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Global-user-profile')
+      .dropover.simple
+        svg xmlns:xlink="http://www.w3.org/2000/xlink"
+          use xlink:href=asset_url('whitelabel/arduino/barbecue/icons.svg#icon-Global-Triangle_Up')
+        ul
+          li
+            a href="https://id.arduino.cc/" target="_blank"
+              button Profile
+          /! <li><a><button>{{ usedSpaceString }}</button></a></li
+          li
+            a
+              button Sign Out
+    .load-bold-font
+      span.load-text-font Arduino Create
 
   .navbar.navbar-default.navbar-static-top#navigation
     .navbar-in  style='position:relative;'
@@ -11,7 +99,7 @@
           ==> link_to site_name, root_path, class: ''
       / .powered-by.pull-left
         | projects powered by
-        = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+        = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
 
       - if user_signed_in?
         ul.navbar-nav.navbar-right
@@ -45,6 +133,15 @@
       #navbar-search.pull-right.show-on-desktop
         = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 
+= content_for :js do
+  = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"
+  javascript:
+    WebFont.load({
+      custom: {
+        families: ['TypoNine']
+      }
+    });
+  = javascript_include_tag 'whitelabel/arduino/application'
+
 = content_for :footer do
-  div
   / = render "whitelabel/#{current_site.subdomain}/footer"

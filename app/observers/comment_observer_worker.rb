@@ -17,18 +17,8 @@ class CommentObserverWorker < BaseWorker
     end
   end
 
-  def after_update record
-    if record.commentable_type == 'BaseArticle'
-      update_counters record
-    end
-  end
-
-  def after_destroy record
-    if record.commentable_type == 'BaseArticle'
-      update_counters record
-      expire_cache record
-    end
-  end
+  alias_method :after_update, :after_create
+  alias_method :after_destroy, :after_create
 
   def perform method, record_id, *args
     with_logging method do

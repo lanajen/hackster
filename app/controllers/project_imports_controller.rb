@@ -21,7 +21,8 @@ class ProjectImportsController < ApplicationController
     def send_admin_message notif=false
       @message = Message.new(
         from_email: current_user.email,
-        message_type: 'generic'
+        message_type: 'generic',
+        to_email: 'ben@hackster.io'
       )
       @message.subject = "New import request"
       @message.subject = "[Notification] " + @message.subject if notif
@@ -41,7 +42,7 @@ class ProjectImportsController < ApplicationController
           if url !~ /^http/
             @errors << "'#{url}' doesn't start with http and is not a valid URL."
           elsif url =~ /hackster\.io/
-            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at hi@hackster.io."
+            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at help@hackster.io."
             break
           end
         end

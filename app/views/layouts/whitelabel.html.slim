@@ -29,6 +29,29 @@ html lang="en" class=content_for(:html_class)
 
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
+    - else
+      link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="60x60" href="#{ asset_path 'favicons/apple-touch-icon-60x60.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="76x76" href="#{ asset_path 'favicons/apple-touch-icon-76x76.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="120x120" href="#{ asset_path 'favicons/apple-touch-icon-120x120.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="144x144" href="#{ asset_path 'favicons/apple-touch-icon-144x144.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="152x152" href="#{ asset_path 'favicons/apple-touch-icon-152x152.png?v=zXX3Bm3lo3' }"
+      link rel="apple-touch-icon" sizes="180x180" href="#{ asset_path 'favicons/apple-touch-icon-180x180.png?v=zXX3Bm3lo3' }"
+      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-16x16.png?v=zXX3Bm3lo3" sizes="16x16' }"
+      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-32x32.png?v=zXX3Bm3lo3" sizes="32x32' }"
+      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-96x96.png?v=zXX3Bm3lo3" sizes="96x96' }"
+      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-160x160.png?v=zXX3Bm3lo3" sizes="160x160' }"
+      link rel="icon" type="image/png" href="#{ asset_path 'favicons/android-chrome-192x192.png?v=zXX3Bm3lo3" sizes="192x192' }"
+      link rel="manifest" href="#{ asset_path 'favicons/manifest.json?v=zXX3Bm3lo3' }"
+      link rel="mask-icon" href="#{ asset_path 'favicons/safari-pinned-tab.svg?v=zXX3Bm3lo3' }" color="#1cacf7"
+      link rel="shortcut icon" href="#{ asset_path 'favicons/favicon.ico?v=zXX3Bm3lo3' }"
+      meta name="msapplication-TileColor" content="#1cacf7"
+      meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png?v=zXX3Bm3lo3' }"
+      meta name="theme-color" content="#1cacf7"
+    meta name="apple-mobile-web-app-title" content=site_name
+    meta name="application-name" content=site_name
 
     - if ENV['ENABLE_ANALYTICS']
       = raw current_site.analytics_code
@@ -58,14 +81,12 @@ html lang="en" class=content_for(:html_class)
                 ==> link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
                 small  style='font-size:11px;'
                   ' powered by
-                  = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+                  = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
             #nav-non-logo.show-on-desktop
               - if user_signed_in?
-                ul.navbar-nav.navbar-right
-                  li.btn-group.navbar-btn#user-navigation-links
+                ul#user-navigation-links.navbar-nav.navbar-right
+                  li.btn-group.navbar-btn.dropdown
                     = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
-                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
-                      span.caret
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
                       li= link_to 'My projects', current_user

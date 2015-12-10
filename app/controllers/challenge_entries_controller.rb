@@ -6,11 +6,12 @@ class ChallengeEntriesController < ApplicationController
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at).paginate(page: safe_page_params, per_page: 100)
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
 
     respond_to do |format|
       format.html do
         @challenge = @challenge.decorate
+        @entries = @entries.paginate(page: safe_page_params, per_page: 100)
       end
       format.csv do
         file_name = FileNameGenerator.new(@challenge.name, 'entries')

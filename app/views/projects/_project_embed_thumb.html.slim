@@ -14,7 +14,7 @@
                 = project.one_liner
               - unless is_whitelabel?
                 .featured-logo.show-on-hover
-                  = link_to ("featured on " + image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)).html_safe, root_url(host: host), target: '_blank'
+                  = link_to ("featured on " + image_tag('hackster_logo_text_white.png', alt: 'Hackster.io', title: SLOGAN)).html_safe, root_url(host: host), target: '_blank'
             .thumb-image-inner
               h4
                 ==> link_to project.name, project_url(project, host: host), target: '_blank'

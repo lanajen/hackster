@@ -10,7 +10,7 @@ class OrderDecorator < ApplicationDecorator
       message += " Track it with code #{model.tracking_number}." if model.tracking_number.present?
       message
     when :rejected
-      "After review, we've determined that your reputation was gained in an invalid way. Therefore, your order was rejected. To appeal, please email us at store@hackster.io."
+      "After review, we've determined that your reputation was gained in an invalid way. Therefore, your order was rejected. To appeal, please email us at help@hackster.io."
     else
       'Unknown status'
     end

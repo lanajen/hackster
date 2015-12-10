@@ -10,6 +10,7 @@ const App = React.createClass({
       notifications: [],
       showDropdown: false,
       isLoading: false,
+      hasLoaded: false,
       hasNotifications: this.props.initialHasNotifications
     };
   },
@@ -44,15 +45,18 @@ const App = React.createClass({
   },
 
   onNotificationButtonClick() {
+    console.log('over!', this.state);
     if (this.state.csrfToken) {
       // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
       // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
-      let isDropdownOpen = React.findDOMNode(this.refs.dropdown).parentNode.className.split(' ').indexOf('open') > 0;
+      let isDropdownOpen = React.findDOMNode(this.refs.notifications).offsetParent !== null;
+      console.log('isDropdownOpen', isDropdownOpen);
 
-      if (isDropdownOpen) {
+      if (isDropdownOpen && !this.state.hasLoaded) {
         let promise = fetchNotifications(this.state.csrfToken);
         this.setState({
-          isLoading: true
+          isLoading: true,
+          hasLoaded: true
         });
 
         promise.then(function(response) {
@@ -71,12 +75,11 @@ const App = React.createClass({
   render: function() {
     let icon = this.state.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) :
                                              (<i className="fa fa-bell-o"></i>);
-    let toolTipTitle = this.state.hasNotifications ? 'You have unread notifications' : 'No new notifications';
 
     return (
       <div className="dropdown">
-        <span className="notification-button-wrapper dropdown-toggle" ref="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.onNotificationButtonClick}>
-          <a href="javascript:void(0)" className="notification-button" rel="tooltip" title={toolTipTitle} data-toggle="tooltip" data-placement='bottom' data-container='body'>
+        <span className="notification-button-wrapper dropdown-toggle" ref="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onMouseOver={this.onNotificationButtonClick}>
+          <a href="javascript:void(0)" className="notification-button">
             {icon}
           </a>
         </span>
