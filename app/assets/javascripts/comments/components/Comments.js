@@ -72,6 +72,6 @@ export default class Comments extends Component {
 }
 
 Comments.PropTypes = {
-  actions: React.PropTypes.object,
-  commentStore: React.PropTypes.object
+  actions: PropTypes.object,
+  commentStore: PropTypes.object
 };
