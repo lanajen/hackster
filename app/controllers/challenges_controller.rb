@@ -16,7 +16,7 @@ class ChallengesController < ApplicationController
     title 'Hardware contests'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
-    @active_challenges = Challenge.publyc.active.ends_first.includes(sponsors: :avatar)
+    @active_challenges = Challenge.publyc.active.ends_last.includes(sponsors: :avatar)
     @coming_challenges = Challenge.publyc.coming.starts_first.includes(sponsors: :avatar)
     @past_challenges = Challenge.publyc.past.ends_last.includes(sponsors: :avatar)
 
