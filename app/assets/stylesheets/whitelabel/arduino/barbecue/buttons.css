@@ -155,14 +155,14 @@ button.tools {
     padding: 7px 5px;
     background-repeat: no-repeat;
     background-position: 92% -5px;
-    font-family: 'TypoNine'; 
+    font-family: 'TypoNine';
     transition: none;
         background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjIyLjY2N3B4IiB2aWV3Qm94PSIwIDAgOCAyMi42NjciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMjIuNjY3IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMTguMTUzIDQsMjIuNDE3IDAsMTguMTUzICIvPg0KPC9zdmc+DQo=);
 }
 .input_container > button.base.primary:hover {
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjIyLjY2N3B4IiB2aWV3Qm94PSIwIDAgOCAyMi42NjciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMjIuNjY3IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMTguMTUzIDQsMjIuNDE3IDAsMTguMTUzICIvPg0KPC9zdmc+DQo=);
     background-position: 92% 12px;
-    transition-property: none; 
+    transition-property: none;
 }
 .input_container > button.base.primary:hover {
     top: 0;
@@ -273,14 +273,14 @@ button.notifications.full {
     width: 24px;
     height: 3px;
     background: #005C5F;
-    box-shadow: 
+    box-shadow:
     0 6px 0 0 #005C5F,
     0 12px 0 0 #005C5F;
     transition: all ease-out .3s;
 }
 .brand .hasSubmenu:hover > button.base.ham:before {
     background: #7FCBCD;
-    box-shadow: 
+    box-shadow:
     0 6px 0 0 #7FCBCD,
     0 12px 0 0 #7FCBCD;
     transition: all ease-out .3s;
@@ -315,12 +315,12 @@ button.notifications.full {
 .light .hasSubmenu button.base.primary.boards{
     background-color: #FFFFFF;
     color: #7f8c8d;
-    
+
 }
 .light .hasSubmenu button.base.primary.boards_trigger{
     background-color: #FFFFFF;
     color: #7f8c8d;
-    
+
 }
 .light button.base.tools {
     color: #BDC7C7;
@@ -353,7 +353,7 @@ button.notifications.full {
 .light .sidebar button.base.primary.new_sketch{
     background-color: #00979C;
     color: #ffffff;
-    box-shadow: 0 4px #005c5f;  
+    box-shadow: 0 4px #005c5f;
 }
 .light .sidebar button.base.primary.new_sketch:hover{
     box-shadow: 0 2px #005c5f;
@@ -392,7 +392,7 @@ button.notifications.full {
 .light .sidebar .resetBtn button.close.icon:hover,
 .light .sidebar .resetBtn button.close.icon:active {
     color: #94A5A6;
-} 
+}
 
 
 /* Buttons - Dark */
@@ -455,7 +455,7 @@ button.notifications.full {
     color: #7F8C8D;
     /*background-color: #2C353A;*/
     background-color: #171E21;
-    text-transform: none; 
+    text-transform: none;
 }
 .dark .sidebar .input_container > button.base.primary a {
     color: #7F8C8D;
@@ -463,7 +463,7 @@ button.notifications.full {
 .dark .sidebar button.base.primary.new_sketch{
     background-color: #00979C;
     color: #ffffff;
-    box-shadow: 0 4px #005c5f;  
+    box-shadow: 0 4px #005c5f;
 }
 .dark .sidebar button.base.primary.new_sketch:hover{
     box-shadow: 0 2px #005c5f;
