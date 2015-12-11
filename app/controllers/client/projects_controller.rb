@@ -39,10 +39,13 @@ class Client::ProjectsController < Client::BaseController
 
     load_projects platform: current_platform
 
+    subdomain = current_site.subdomain
+    subdomain << ".#{ENV['SUBDOMAIN']}" if ENV['SUBDOMAIN'] != 'www'
+
     respond_to do |format|
       format.js do
         @projects = @projects.map do |project|
-          project.project.to_js(subdomain: current_site.subdomain)
+          project.project.to_js(subdomain: subdomain)
         end.to_json
         render "shared/embed"
       end

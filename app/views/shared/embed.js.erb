@@ -45,7 +45,7 @@ hacksterEmbed.ready(function(){
       %>
       var css = '<%= css_url %>';
       if (!document.querySelectorAll("link[href='"+ css + "']").length)
-        document.getElementsByTagName("head")[0].innerHTML += '<link href="' + css + '" rel="stylesheet">';
+        document.getElementsByTagName("head")[0].innerHTML = '<link href="' + css + '" rel="stylesheet">' + document.getElementsByTagName("head")[0].innerHTML;
       var conf = window.hckstr;
       if (conf.thumbContainerClass) {
         conf.thumbContainerClass += ' thumb-container';
