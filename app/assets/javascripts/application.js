@@ -22,6 +22,7 @@
 //= require rangy-cssclassapplier
 //= require moment
 //= require placeholders
+//= require medium-editor
 //= require medium-editor-ext
 //= require gist-embed
 //= require chats
