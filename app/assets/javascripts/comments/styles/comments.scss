@@ -1,3 +1,9 @@
+@mixin tablet {
+  @media (max-width: 768px) {
+    @content
+  }
+}
+
 .r-comments {
 
   .comments-form {
@@ -6,6 +12,12 @@
     ));
     margin-bottom: 70px;
     min-height: 72px;
+
+    @include tablet {
+      @include flexbox((
+        flex-direction: column
+      ));
+    }
 
     .comments-textarea {
       @include flexbox((
@@ -35,6 +47,15 @@
       ));
       border: 1px solid #eeedf2;
       border-radius: 0 3px 3px 0;
+
+      @include tablet {
+        @include flexbox((
+          align-items: flex-start,
+          justify-content: flex-start
+        ));
+        border: none;
+        padding-top: 0.5em;
+      }
     }
   }
 
