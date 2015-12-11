@@ -9,7 +9,7 @@
     "babelify": "^6.1.2",
     "browserify": "^11.1.0",
     "browserify-incremental": "^3.0.1",
-    "classnames": "^1.2.0",
+    "classnames": "^1.2.2",
     "detect-browser": "^1.1.1",
     "domhandler": "^2.3.0",
     "hashids": "^1.0.2",
