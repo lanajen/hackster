@@ -1354,6 +1354,8 @@ const Utils = {
   },
 
   createCarousel(images) {
+    if(!images.length) { return null; }
+
     images[0].show = true;
     return {
       type: 'Carousel',
