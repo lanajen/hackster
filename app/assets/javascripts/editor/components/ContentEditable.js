@@ -279,7 +279,7 @@ const ContentEditable = React.createClass({
         this.props.actions.createBlockElementWithChildren(children, tag, depth, setCursorToNextLine, storeIndex);
         this.props.actions.forceUpdate(true);
       })
-      .catch(err => { console.log(err); });
+      .catch(err => { console.log('createBlockElementWithChildren Error', err); });
   },
 
   handleEnterKey(e) {
@@ -647,7 +647,7 @@ const ContentEditable = React.createClass({
         this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       })
-      .catch(err => { console.log('ERR0R', err); });
+      .catch(err => { console.log('Paste Error', err); });
   },
 
   render() {

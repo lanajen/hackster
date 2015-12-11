@@ -5,7 +5,7 @@ import Button from './ToolbarButton';
 var ImageBucket = React.createClass({
 
   onDrop(e) {
-    console.log(e);
+    // console.log(e);
   },
 
   onCloseContainerButton() {
@@ -26,7 +26,7 @@ var ImageBucket = React.createClass({
           <div className="image-bucket-content">
             <div className="testeroo"></div>
             <div className="testeroo"></div>
-              
+
           </div>
 
           <div className="image-bucket-footer">

@@ -31,7 +31,7 @@ export function fetchInitialDOM(projectId, csrfToken) {
       .then(result => {
         dispatch(setInitialDOM(result));
       }).catch(err => {
-        console.log(err);
+        console.log('Fetch Initial Dom Error', err);
         dispatch(toggleErrorMessenger(true, 'We had an issue getting your story!'));
       });
   }
@@ -325,7 +325,7 @@ export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, 
         })
         .catch(err => {
           if(err) {
-            console.log('ERR', err);
+            console.log('Upload Image Error', err);
             dispatch(removeImageFromList(file, storeIndex, mediaHash));
             dispatch(toggleErrorMessenger(true, 'Problem uploading image:' + file.name));
           }

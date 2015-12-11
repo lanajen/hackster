@@ -102,7 +102,7 @@ const Editable = React.createClass({
       .then(parsedHTML => {
         this.props.actions.setDOM(parsedHTML, depth, storeIndex);
       })
-      .catch(err => { console.log('Parse Error: ' + err); });
+      .catch(err => { console.log('Editable.js Parse Error: ' + err); });
   },
 
   handleFilesDrop(storeIndex, files) {
