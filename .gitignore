@@ -26,3 +26,4 @@ log/
 /notes
 
 /app/assets/javascript/bundle.js
+npm-debug.log
