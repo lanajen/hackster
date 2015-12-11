@@ -46,7 +46,7 @@ export default class Comment extends Component {
   }
 
   render() {
-    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName } = this.props.comment;
+    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userSlug } = this.props.comment;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
     let date = window ? window.moment(createdAt).fromNow() : createdAt;
 
@@ -57,6 +57,7 @@ export default class Comment extends Component {
                            : (<li>
                                 <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
+
     let replyButton = this.props.parentIsDeleted === false
                 ? (<li>
                     <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
@@ -64,7 +65,7 @@ export default class Comment extends Component {
                 : (<li className="text-muted">(Discussion closed)</li>);
 
     let counter = likingUsers.length > 0
-                ? (<li className="r-comments-counter fa fa-thumbs-o-up">{likingUsers.length}</li>)
+                ? (<li className="r-comments-counter"><i className="fa fa-thumbs-o-up"></i><span>{likingUsers.length}</span></li>)
                 : (null);
 
     let trailingMiddot = counter ? (<li className="middot">•</li>) : (null);
@@ -93,10 +94,16 @@ export default class Comment extends Component {
                 ? (<div>
                     <div className={rootClass}>
                       <div className="comment-title">
-                        <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                        <div className="avatar">
+                          <a href={`/${userSlug}`}>
+                            <img src={avatarLink} alt={userName} />
+                          </a>
+                        </div>
                         <div className="profile-name">
                           <h4>
-                            <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                            <strong>
+                              <a href={`/${userSlug}`}>{userName}</a>
+                            </strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
@@ -110,15 +117,21 @@ export default class Comment extends Component {
                 : (<div>
                     <div className={rootClass}>
                       <div className="comment-title">
-                        <div className="avatar" dangerouslySetInnerHTML={{__html: avatarLink}}></div>
+                        <div className="avatar">
+                          <a href={`/${userSlug}`}>
+                            <img src={avatarLink} alt={userName} />
+                          </a>
+                        </div>
                         <div className="profile-name">
                           <h4>
-                            <strong dangerouslySetInnerHTML={{__html: userName}}></strong>
+                            <strong>
+                              <a href={`/${userSlug}`}>{userName}</a>
+                            </strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
                       </div>
-                      <div className="comment-body" dangerouslySetInnerHTML={{__html: body}}></div>
+                      <div className="comment-body" dangerouslySetInnerHTML={{ __html: body }}></div>
                       {actions}
                     </div>
                     {this.props.children}
