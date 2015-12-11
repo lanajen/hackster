@@ -714,6 +714,7 @@ HackerIo::Application.routes.draw do
       constraints(ClientSite) do
         scope module: :client, as: :client do
           get '' => 'projects#index'
+          get 'embed' => 'projects#embed'
           root to: 'projects#index'
         end
       end

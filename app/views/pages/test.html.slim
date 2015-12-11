@@ -1,20 +1,17 @@
-= content_for :js do
+javascript:
+  window.hckstr = (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0],
+      h = window.hckstr || {};
+    if (d.getElementById(id)) return h;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//cypress.localhost.local:5000/embed.js?per_page=3";
+    fjs.parentNode.appendChild(js, fjs);
 
-  javascript:
-    var username = 'OI1B0WGzHaZthtED2YuLrA';
-    var password = 'a6aad7e6cc81f98b90a747fa20e815a85f29981a';
-    $.ajax({
-      url: 'https://api.hackster.io/v1/parts/13251',
-      dataType: 'json',
-      type: 'PATCH',
-      data: {
-        'part[name]': 'test v2',
-        'part[private]': true,
-      },
-      beforeSend: function(xhr) {
-        var reqHeader = "Basic " + btoa(username + ":" + password);
-        xhr.setRequestHeader("Authorization", reqHeader);
-      }
-    }).done(function(response){
-      console.log(response);
-    });
+    h._e = [];
+    h.ready = function(f) {
+      h._e.push(f);
+    };
+
+    return h;
+  }(document, "script", "hckstr-ejs"));

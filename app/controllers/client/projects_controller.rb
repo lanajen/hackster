@@ -4,6 +4,7 @@ class Client::ProjectsController < Client::BaseController
   load_and_authorize_resource only: [:index]
   skip_before_filter :track_visitor, only: [:index]
   skip_after_filter :track_landing_page, only: [:index]
+  protect_from_forgery except: :embed
   respond_to :html
 
   def index
@@ -29,6 +30,22 @@ class Client::ProjectsController < Client::BaseController
       format.html { render layout: 'whitelabel' }
       format.atom { render layout: false }
       format.rss { redirect_to projects_path(params.merge(format: :atom)), status: :moved_permanently }
+    end
+  end
+
+  def embed
+    set_surrogate_key_header "#{current_platform.user_name}/embed"
+    set_cache_control_headers 3600
+
+    load_projects platform: current_platform
+
+    respond_to do |format|
+      format.js do
+        @projects = @projects.map do |project|
+          project.project.to_js(subdomain: current_site.subdomain)
+        end.to_json
+        render "shared/embed"
+      end
     end
   end
 end
