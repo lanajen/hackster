@@ -68,7 +68,11 @@ class NotificationDecorator < ApplicationDecorator
     when Comment
       comment = notifiable
       commentable = comment.commentable
-      author_link = h.link_to comment.user.name, comment.user
+      if user = comment.user
+        author_link = h.link_to user.name, user
+      else
+        author_link = 'Someone'
+      end
       case event
       when :new
         case commentable
