@@ -37,7 +37,13 @@ hacksterEmbed.ready(function(){
   hacksterEmbed.getScript("//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js",
     function(){
       var source = '<%= j(render("projects/project_thumb_template")) %>';
-      var css = '<%= request.protocol + request.host + ":" + request.port.to_s + asset_path("project-thumb.css") %>';
+      <%
+        css_url = APP_CONFIG["use_ssl"] ? "https" : "http" + "://"
+        css_url << request.host
+        css_url << ":" + APP_CONFIG["default_port"].to_s if APP_CONFIG["port_required"]
+        css_url << asset_path("project-thumb.css")
+      %>
+      var css = '<%= css_url %>';
       if (!document.querySelectorAll("link[href='"+ css + "']").length)
         document.getElementsByTagName("head")[0].innerHTML += '<link href="' + css + '" rel="stylesheet">';
       var conf = window.hckstr;
