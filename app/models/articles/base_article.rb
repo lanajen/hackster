@@ -166,6 +166,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :review_comment, :string
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string
+  hstore_column :hproperties, :story_json, :json_object
   hstore_column :hproperties, :tweeted_at, :datetime
 
   self.per_page = 18

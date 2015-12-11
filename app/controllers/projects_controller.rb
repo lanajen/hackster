@@ -347,11 +347,11 @@ class ProjectsController < ApplicationController
     authorize! :edit, @project
     msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    if @project.assignment.past_due? or !(deadline = @project.assignment.submit_by_date)
+    if @project.assignment.past_due?
       @project.locked = true
       msg += 'The project will be locked for modifications until grades are sent out.'
     else
-      msg += "You can still make modifications to the project until the submission deadline on #{l deadline.in_time_zone(PDT_TIME_ZONE)} PT."
+      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
     end
     @project.save
     redirect_to @project, notice: msg
@@ -620,7 +620,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
+        if (current_platform.platform_tags.map{|t| t.name.downcase } & @project.platform_tags_cached.map{|t| t.downcase }).empty? or @project.users.reject{|u| u.enable_sharing }.any?
           raise ActiveRecord::RecordNotFound
         end
       end

@@ -28,7 +28,7 @@ RSpec.describe 'challenges show view' do
           find_link('Register as a participant').click
         end
 
-        within '#new_user' do
+        within '#login-form' do
           fill_in "user_full_name", with: new_user.user_name
           fill_in "user_email", with: new_user.email
           click_on('Continue')

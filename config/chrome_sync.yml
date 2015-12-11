@@ -10,3 +10,5 @@ cypress:
   attributes:
     - !ruby/symbol chrome_footer
     - !ruby/symbol chrome_header
+    - !ruby/symbol head
+    - !ruby/symbol js

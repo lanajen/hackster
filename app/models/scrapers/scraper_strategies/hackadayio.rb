@@ -46,7 +46,7 @@ module ScraperStrategies
           @parsed
         end
 
-        logs = parsed_logs.css('.buillogs-list > li')
+        logs = parsed_logs.css('.buildlogs-list > li')
         return unless logs.any?
 
         logs.each do |log|

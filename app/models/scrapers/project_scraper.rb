@@ -25,6 +25,8 @@ class ProjectScraper
     project.build_team
     project.team.members.new user_id: user_id
     project.save
+    project.build_logs.each{|p| p.draft = false; p.save }
+    project.update_counters
     project
   end
 

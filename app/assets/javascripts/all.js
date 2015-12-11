@@ -281,10 +281,10 @@ $(function () {
     }
   });
 
-  $('#signup-popup-email input[type="submit"]').on('click', function(e){
-    e.preventDefault();
-    var form = $(this).closest('form');
+  $('#login-form, #signup-popup-email').on('submit', function(e){
+    var form = $(this);
     if (!form.find('[name="authenticity_token"]').length) {
+      e.preventDefault();
       $.ajax({
         url: '/csrf',
         dataType: 'text',
@@ -295,8 +295,6 @@ $(function () {
           form.submit();
         }
       });
-    } else {
-      form.submit();
     }
   });
 

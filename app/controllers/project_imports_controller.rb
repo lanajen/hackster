@@ -26,7 +26,11 @@ class ProjectImportsController < ApplicationController
       )
       @message.subject = "New import request"
       @message.subject = "[Notification] " + @message.subject if notif
-      @message.body = "<p>Hi</p><p>Please import this project for me: <a href='#{params[:urls]}'>#{params[:urls]}</a>.</p>"
+      @message.body = "<p>Hi</p><p>Please import this project for me:"
+      params[:urls].gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').each do |url|
+        @message.body += "<br><a href='#{url}'>#{url}</a>"
+      end
+      @message.body += "</p>"
       @message.body += "<p>Platform tag: #{params[:platform_tags_string]}</p>" if params[:platform_tags_string].present?
       @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:urls]}'>Start importing</a></p>"

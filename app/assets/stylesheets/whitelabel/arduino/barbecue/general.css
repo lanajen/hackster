@@ -43,7 +43,7 @@ html {
 		-webkit-text-size-adjust: 100%;
 		-ms-text-size-adjust: 100%;
 		-webkit-font-smoothing: antialiased;
-		
+
 }
 
 html, body {
@@ -51,7 +51,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 .load-bold-font {
@@ -88,7 +88,7 @@ html,button,input,select,textarea {
 }
 
 body{
-	background-color: #fff;
+	/*background-color: #fff;*/
 	font-family: 'TypoNine';
 	font-weight: normal;
 }

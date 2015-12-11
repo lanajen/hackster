@@ -42,7 +42,9 @@ HackerIo::Application.routes.draw do
         scope 'mandrill/webhooks' do
           post 'unsub' => 'mandrill_webhooks#unsub'
         end
-        resources :projects
+        resources :projects do
+          get 'description' => 'projects#description'
+        end
         resources :parts, except: [:new, :edit], defaults: { format: :json }
         scope 'platforms' do
           get ':user_name' => 'platforms#show', defaults: { format: :json }
@@ -93,7 +95,9 @@ HackerIo::Application.routes.draw do
           scope 'mandrill/webhooks' do
             post 'unsub' => 'mandrill_webhooks#unsub'
           end
-          resources :projects
+          resources :projects do
+            get 'description' => 'projects#description'
+          end
           resources :parts, except: [:new, :edit]
           scope :platforms do
             scope :analytics do
@@ -137,9 +141,7 @@ HackerIo::Application.routes.draw do
         # get 'validate_step' => 'split#validate_step'
 
         post 'info_requests' => 'pages#create_info_request'
-
         post 'pusher/auth' => 'users/pusher_authentications#create'
-
         get 'hello_world' => 'hello_world#show'
 
         namespace :admin do
