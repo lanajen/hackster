@@ -21,6 +21,9 @@ class RespectObserver < ActiveRecord::Observer
         Cashier.expire "project-#{record.respectable_id}-respects", "project-#{record.respectable_id}"
         FastlyWorker.perform_async 'purge', record.respectable.record_key
         record.user.update_counters only: [:respects]
+      when Comment
+        cache_key = Comment.cache_key 'BaseArticle', record.respectable.commentable_id
+        FastlyWorker.perform_async 'purge', cache_key
       end
     end
 end
