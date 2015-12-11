@@ -24,3 +24,5 @@
 .DS_Store
 log/
 /notes
+
+/app/assets/javascript/bundle.js
