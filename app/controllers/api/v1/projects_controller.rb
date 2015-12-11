@@ -51,7 +51,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def show
-    @project = BaseArticle.where(id: params[:id]).public.first!
+    @project = BaseArticle.where(id: params[:id]).publyc.first!
   end
 
   def create
@@ -92,7 +92,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
         elsif c['type'] == 'File'
           c['data']['url'] = Attachment.find(c['data']['id']).file_url
           c
-        else 
+        else
           c
         end
       end
