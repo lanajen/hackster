@@ -80,7 +80,6 @@
     }
 
     .comment-actions {
-      font-size: 16px;
       list-style: none;
       padding: 0;
       margin: 0 -10px;
@@ -91,8 +90,21 @@
         padding-right: 10px;
       }
 
-      .default-hidden {
-        display: none;
+      .middot {
+        padding: 0;
+        color: #999;
+      }
+
+      .r-comment-like-button {
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .r-comments-counter {
+        color: #1cacf7;
       }
     }
 

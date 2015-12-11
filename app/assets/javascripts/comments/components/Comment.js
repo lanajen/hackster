@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
+import LikeButton from './LikeButton';
 import smoothScroll from '../utils/SmoothScroll';
 
 export default class Comment extends Component {
@@ -45,15 +46,15 @@ export default class Comment extends Component {
   }
 
   render() {
-    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, parent_id, user_id, userName } = this.props.comment;
+    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName } = this.props.comment;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
     let date = window ? window.moment(createdAt).fromNow() : createdAt;
 
     let deleteOrFlagButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
-                           ? (<li className="default-hidden">
+                           ? (<li>
                                 <a href="javascript:void(0);" onClick={this.handleDeleteClick.bind(this, id)}>Delete</a>
                               </li>)
-                           : (<li className="default-hidden">
+                           : (<li>
                                 <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
     let replyButton = this.props.parentIsDeleted === false
@@ -61,9 +62,21 @@ export default class Comment extends Component {
                     <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
                     </li>)
                 : (<li className="text-muted">(Discussion closed)</li>);
+
+    let counter = likingUsers.length > 0
+                ? (<li className="r-comments-counter fa fa-thumbs-o-up">{likingUsers.length}</li>)
+                : (null);
+
+    let trailingMiddot = counter ? (<li className="middot">•</li>) : (null);
+
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
+                    <LikeButton commentId={id} currentUserId={this.props.currentUser.id} parentId={parent_id} likingUsers={likingUsers} deleteLike={this.props.deleteLike} postLike={this.props.postLike} />
+                    <li className="middot">•</li>
                     {replyButton}
+                    <li className="middot">•</li>
+                    {counter}
+                    {trailingMiddot}
                     {deleteOrFlagButton}
                   </ul>)
                 : (null);
@@ -121,9 +134,12 @@ Comment.PropTypes = {
   children: PropTypes.array,
   currentUser: PropTypes.object.isRequired,
   deleteComment: PropTypes.func.isRequired,
+  deleteLike: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   handlePost: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
   postComment: PropTypes.func.isRequired,
+  postLike: PropTypes.func.isRequired,
   replyBox: PropTypes.object.isRequired,
   scrollTo: PropTypes.object.isRequired,
   toggleScrollTo: PropTypes.func.isRequired,

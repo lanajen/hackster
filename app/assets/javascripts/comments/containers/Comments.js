@@ -39,7 +39,8 @@ class CommentsContainer extends Component {
 }
 
 CommentsContainer.PropTypes = {
-  commentable: PropTypes.object.isRequired
+  commentable: PropTypes.object.isRequired,
+  placeholder: PropTypes.string.isRequired
 };
 
 function mapStateToProps(state) {

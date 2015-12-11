@@ -5,8 +5,10 @@ import Comment from './Comment';
 export default class Comments extends Component {
   constructor(props) {
     super(props);
-    this.postComment = this.postComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
+    this.deleteLike = this.deleteLike.bind(this);
+    this.postComment = this.postComment.bind(this);
+    this.postLike = this.postLike.bind(this);
     this.triggerReplyBox = this.triggerReplyBox.bind(this);
   }
 
@@ -19,13 +21,21 @@ export default class Comments extends Component {
     }
   }
 
+  deleteComment(id) {
+    this.props.actions.deleteComment(id, this.props.commentStore.user.csrfToken);
+  }
+
   postComment(comment) {
     this.props.actions.postComment(comment, true, this.props.commentStore.user.csrfToken);
     this.props.actions.toggleFormData(true, null);
   }
 
-  deleteComment(id) {
-    this.props.actions.deleteComment({ id: id, csrfToken: this.props.commentStore.user.csrfToken });
+  deleteLike(commentId, parentId) {
+    this.props.actions.deleteLike(commentId, parentId, this.props.commentStore.user.csrfToken);
+  }
+
+  postLike(commentId, parentId) {
+    this.props.actions.postLike(commentId, parentId, this.props.commentStore.user.csrfToken);
   }
 
   triggerReplyBox(show, id) {
@@ -41,9 +51,11 @@ export default class Comments extends Component {
                         comment={child}
                         children={null}
                         currentUser={user}
+                        deleteLike={this.deleteLike}
                         formData={this.props.commentStore.formData}
                         deleteComment={this.deleteComment}
                         postComment={this.postComment}
+                        postLike={this.postLike}
                         replyBox={this.props.commentStore.replyBox}
                         scrollTo={this.props.commentStore.scrollTo}
                         toggleScrollTo={this.props.actions.toggleScrollTo}
@@ -55,9 +67,11 @@ export default class Comments extends Component {
                       comment={comment.root}
                       children={children}
                       currentUser={user}
+                      deleteLike={this.deleteLike}
                       formData={this.props.commentStore.formData}
                       deleteComment={this.deleteComment}
                       postComment={this.postComment}
+                      postLike={this.postLike}
                       replyBox={this.props.commentStore.replyBox}
                       scrollTo={this.props.commentStore.scrollTo}
                       toggleScrollTo={this.props.actions.toggleScrollTo}
@@ -77,5 +91,6 @@ export default class Comments extends Component {
 
 Comments.PropTypes = {
   actions: PropTypes.object,
-  commentStore: PropTypes.object
+  commentStore: PropTypes.object,
+  placeholder: PropTypes.string
 };

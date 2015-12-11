@@ -53,4 +53,5 @@ CommentForm.PropTypes = {
   commentable: PropTypes.object.isRequired,
   formData: PropTypes.object.isRequired,
   onPost: PropTypes.func.isRequired,
+  placeholder: PropTypes.string
 };

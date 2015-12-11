@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class TextArea extends Component {
   constructor(props) {
@@ -21,3 +21,7 @@ export default class TextArea extends Component {
     );
   }
 }
+
+TextArea.PropTypes = {
+  placeholder: PropTypes.string
+};
