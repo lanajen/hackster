@@ -24,7 +24,7 @@ class Api::V1::CommentsController < Api::V1::BaseController
     if comment.save
       render json: { comment: CommentJsonDecorator.new(comment).node }
     else
-      render json: { errors: @comment.errors }, status: :unprocessable_entity
+      render json: { errors: comment.errors }, status: :unprocessable_entity
     end
   end
 

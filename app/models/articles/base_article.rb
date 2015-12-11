@@ -623,12 +623,13 @@ class BaseArticle < ActiveRecord::Base
     domain = APP_CONFIG['default_domain']
     domain += ':' + APP_CONFIG['default_port'].to_s if APP_CONFIG['port_required']
     host = subdomain + '.' + domain
-    url = "#{protocol}://#{host}/#{uri}"
+    base_url = "#{protocol}://#{host}"
+    url = base_url + "/#{uri}"
     url += "?auth_token=#{security_token}" if opts[:private_url]
     {
       author: {
         name: users.first.try(:name),
-        url: "#{protocol}://#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
+        url: base_url + "/#{users.first.try(:user_name)}",
       },
       name: name,
       one_liner: one_liner,

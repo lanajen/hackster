@@ -32,10 +32,9 @@ var hacksterEmbed = {
 }
 
 hacksterEmbed.ready(function(){
-  var script = document.getElementById('hckstr-ejs');
-
   hacksterEmbed.getScript("//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js",
     function(){
+      var script = document.getElementById('hckstr-ejs');
       var source = '<%= j(render("projects/project_thumb_template")) %>';
       <%
         css_url = APP_CONFIG["use_ssl"] ? "https" : "http" + "://"
@@ -74,6 +73,7 @@ hacksterEmbed.ready(function(){
         superContainer.className += ' hackster-embed ' + conf.containerClass;
       }
 
+      superContainer.innerHTML = '';  // cleanup the container
       hacksterEmbed.forEach(data, function(context, i){
         var container = '<div class="' + conf.thumbContainerClass + ' ">' + template(context) + '</div>';
         superContainer.innerHTML += container;
