@@ -12,3 +12,4 @@ global.ReputationUpdateButton = require('./reputation_update_button/app');
 global.TimeLeft = require('./time_left/app');
 global.ToolboxSelector = require('./toolbox_selector/containers/Root');
 global.Comments = require('./comments/app');
+global.ReactEditor = require('./editor/app');

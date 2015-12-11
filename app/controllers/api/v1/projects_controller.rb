@@ -76,6 +76,32 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     render status: :ok, nothing: true
   end
 
+  def description
+    project = BaseArticle.find params[:id]
+
+    if project.story_json.nil? && !project.description.nil?
+      render json: { description: project.decorate.description, story: nil }
+    elsif !project.story_json.nil?
+      story = project.story_json.map do |c|
+        if c['type'] == 'Carousel'
+          c['images'] = c['images'].map do |i|
+            i['url'] = Image.find(i['id']).decorate.file_url
+            i
+          end
+          c
+        elsif c['type'] == 'File'
+          c['data']['url'] = Attachment.find(c['data']['id']).file_url
+          c
+        else 
+          c
+        end
+      end
+      render json: { description: nil, story: story.to_json }
+    else
+      render json: { description: '', story: nil }
+    end
+  end
+
   private
     def load_and_authorize_resource
       @project = BaseArticle.find params[:project_id] || params[:id]
