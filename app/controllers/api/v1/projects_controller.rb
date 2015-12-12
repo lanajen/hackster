@@ -79,35 +79,10 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   def description
     project = BaseArticle.find params[:id]
 
-    if project.story_json.nil? && !project.description.nil?
+    if project.story_json.nil? and project.description.present?
       render json: { description: project.decorate.description, story: nil }
-    elsif !project.story_json.nil?
-      story = project.story_json.map do |c|
-        if c['type'] == 'Carousel'
-          ids = c['images'].map{|i| i['id']}
-          images = Image.where(:id => ids)
-
-          images.each do |image|
-            c['images'] = c['images'].each_with_index do |img, i|
-              if image[:id].to_s == img[:id]
-                c['images'][i]['url'] = image.decorate.file_url
-              end
-            end
-          end
-
-          c['images'].select! do |i|
-            i['url'].present?
-          end
-
-          c
-        elsif c['type'] == 'File'
-          c['data']['url'] = Attachment.find(c['data']['id']).file_url
-          c
-        else
-          c
-        end
-      end
-      render json: { description: nil, story: story.to_json }
+    elsif project.story_json.present?
+      render json: { description: nil, story: StoryJsonJsonDecorator.new(project.story_json).to_json }
     else
       render json: { description: '', story: nil }
     end

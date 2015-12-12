@@ -27,7 +27,7 @@ export default {
             }
 
           } else if(res.body && res.body.story !== null) {
-            resolve(JSON.parse(res.body.story));
+            resolve(res.body.story);
           } else {
             reject('Error Fetching Story!');
           }
