@@ -13,9 +13,9 @@ export default class Comment extends Component {
   }
 
   componentDidMount() {
-    if ( this.props.scrollTo.scroll
+    if (this.props.scrollTo.scroll
       && this.props.scrollTo.element.id === this.props.comment.id
-      && window ) {
+      && window) {
       smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
         this.props.toggleScrollTo(false, null);
       });
@@ -23,9 +23,9 @@ export default class Comment extends Component {
   }
 
   handleDeleteClick(commentId, e) {
-    if(window) {
+    if (window) {
       let confirm = window.confirm('Are you sure you want to delete this comment?');
-      if(confirm) {
+      if (confirm) {
         this.props.deleteComment(commentId);
       } else {
         return;
@@ -92,7 +92,7 @@ export default class Comment extends Component {
 
     let comment = depth === 0 && deleted === true
                 ? (<div>
-                    <div className={rootClass}>
+                    <div className={rootClass} id={id}>
                       <div className="comment-title">
                         <div className="avatar">
                           <a href={`/${userSlug}`}>
@@ -115,7 +115,7 @@ export default class Comment extends Component {
                     {this.props.children}
                   </div>)
                 : (<div>
-                    <div className={rootClass}>
+                    <div className={rootClass} id={id}>
                       <div className="comment-title">
                         <div className="avatar">
                           <a href={`/${userSlug}`}>
