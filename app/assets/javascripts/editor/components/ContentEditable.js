@@ -112,7 +112,9 @@ const ContentEditable = React.createClass({
 
     let node = cursorPosition.node.hasAttribute('data-hash') ? cursorPosition.node : Utils.getRootParentElement(cursorPosition.node);
     let liveNode = document.querySelector(`[data-hash="${node.getAttribute('data-hash')}"]`);
-    let el = (this.props.editor.setCursorToNextLine && liveNode.nextSibling !== null) ? liveNode.nextSibling : liveNode;
+    liveNode = liveNode ? liveNode : document.querySelector(`[data-hash="${cursorPosition.rootHash}"]`).firstChild;
+
+    let el = (this.props.editor.setCursorToNextLine && liveNode && liveNode.nextSibling !== null) ? liveNode.nextSibling : liveNode;
     if(el === undefined || el === null) { return; }
 
     /** If we're moving to a new line, set the cursor at index 0. */

@@ -84,10 +84,21 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     elsif !project.story_json.nil?
       story = project.story_json.map do |c|
         if c['type'] == 'Carousel'
-          c['images'] = c['images'].map do |i|
-            i['url'] = Image.find(i['id']).decorate.file_url
-            i
+          ids = c['images'].map{|i| i['id']}
+          images = Image.where(:id => ids)
+
+          images.each do |image|
+            c['images'] = c['images'].each_with_index do |img, i|
+              if image[:id].to_s == img[:id]
+                c['images'][i]['url'] = image.decorate.file_url
+              end
+            end
           end
+
+          c['images'].select! do |i|
+            i['url'].present?
+          end
+
           c
         elsif c['type'] == 'File'
           c['data']['url'] = Attachment.find(c['data']['id']).file_url
@@ -108,3 +119,4 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       authorize! self.action_name, @project
     end
 end
+#

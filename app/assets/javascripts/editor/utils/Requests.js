@@ -11,7 +11,7 @@ export default {
         .end((err, res) => {
           if(err) reject(err);
 
-          if(res.body.description !== null) {
+          if(res.body && res.body.description !== null) {
             let description = res.body.description;
 
             if(!description.length) {
@@ -26,7 +26,7 @@ export default {
               });
             }
 
-          } else if(res.body.story !== null) {
+          } else if(res.body && res.body.story !== null) {
             resolve(JSON.parse(res.body.story));
           } else {
             reject('Error Fetching Story!');

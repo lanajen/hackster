@@ -576,6 +576,11 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.datetime "updated_at",      null: false
   end
 
+  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
+  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"

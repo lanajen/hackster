@@ -39,6 +39,9 @@ const Editable = React.createClass({
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
 
+    /** Prevents browser backspace when body is targeted. */
+    window.addEventListener('keydown', this.preventBackspace);
+
     /** Binds our callback when submit button is pressed. */
     form.addEventListener('pe:submit', this.handleSubmit);
 
@@ -69,6 +72,7 @@ const Editable = React.createClass({
 
     form.removeEventListener('pe:submit', this.handleSubmit);
     window.removeEventListener('resize', this.debouncedResize);
+    window.removeEventListener('keydown', this.preventBackspace);
     this.props.actions.hasUnsavedChanges(false);
   },
 
@@ -95,6 +99,12 @@ const Editable = React.createClass({
   handleResize() {
     this.props.actions.toggleImageToolbar(false, {});
     this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+  },
+
+  preventBackspace(e) {
+    if(e.keyCode === 8 && e.target.nodeName === 'BODY') {
+      e.preventDefault();
+    }
   },
 
   handleContentEditableChange(html, depth, storeIndex) {
