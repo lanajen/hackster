@@ -80,6 +80,10 @@ export default class Comment extends Component {
                     {trailingMiddot}
                     {deleteOrFlagButton}
                   </ul>)
+                : likingUsers.length > 0
+                ? (<ul className="comment-actions">
+                    {counter}
+                  </ul>)
                 : (null);
 
     let replyBox = (this.props.replyBox.show && this.props.replyBox.id === id)

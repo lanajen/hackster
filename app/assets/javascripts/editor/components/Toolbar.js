@@ -396,6 +396,7 @@ const Toolbar = React.createClass({
     });
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
+    window.pe.resizePeContainer();
   },
 
   handleVideoButtonClick() {
