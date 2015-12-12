@@ -37,7 +37,10 @@ table.table.table-striped
             ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
             = link_to user.name, user
           td= l idea.created_at
-          td= idea.workflow_state
+          td
+            => idea.workflow_state
+            - if idea.address_id.present?
+              | (address in)
           td
             - unless @challenge.pre_contest_awarded?
               - if idea.can_approve?
