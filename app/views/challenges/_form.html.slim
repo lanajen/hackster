@@ -88,6 +88,7 @@
                           = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
                     tr.sortable-disabled
                       td colspan=4 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
+          = f.input :pre_contest_needs_shipping, as: :boolean, inline_label: "Collect mailing address from winners", hint: "If winners are to receive a physical prize, enable this option to automatically collect their mailing address."
           = f.input :after_submit_idea_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit an idea. Leave room for the URL! Default: '#{@challenge.default_after_submit_idea_tweet}'", label: "Tweet after idea submitted"
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do

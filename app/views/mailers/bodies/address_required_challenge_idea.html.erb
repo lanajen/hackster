@@ -1,0 +1,12 @@
+<p>Hello there,</p>
+
+<p>Your reward for the <%= @context[:challenge].pre_contest_label.downcase %> phase of <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> is awaiting!</p>
+
+<p>In order to claim it, <strong>please fill out your mailing address as soon as possible</strong> at the following link: <a href="<%= u.addresses_url(entry_id: @context[:idea].id, redirect_if_empty: true) %>"><%= u.addresses_url(entry_id: @context[:idea].id, redirect_if_empty: true) %></a></p>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

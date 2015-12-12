@@ -397,7 +397,7 @@ HackerIo::Application.routes.draw do
           end
         end
 
-        resources :challenge_ideas, only: [:destroy], as: :challenge_single_idea
+        resources :challenge_ideas, only: [:update, :destroy], as: :challenge_single_idea
 
         # resources :skill_requests, path: 'cupidon' do
         #   resources :comments, only: [:create]

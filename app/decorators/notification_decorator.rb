@@ -62,7 +62,7 @@ class NotificationDecorator < ApplicationDecorator
       case event
       when :approved
         "Your idea '#{idea.name}' for #{challenge_link} has been approved."
-      when :winner
+      when :winner, :awarded
         "Your idea '#{idea.name}' for #{challenge_link} has won!"
       end
     when Comment

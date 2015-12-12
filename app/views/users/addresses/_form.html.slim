@@ -12,8 +12,10 @@
   = f.input :default, inline_label: 'Make this my default address', label: false
   - if params[:order_id]
     input type='hidden' value=params[:order_id] name='order_id'
+  - if params[:entry_id]
+    input type='hidden' value=params[:entry_id] name='entry_id'
 
   .form-group
     .col-md-8.col-md-offset-4
       = f.button :submit, 'Save address', class: 'btn btn-primary'
-      = link_to 'Cancel', addresses_path(order_id: params[:order_id]), class: 'btn btn-link'
+      = link_to 'Cancel', addresses_path(order_id: params[:order_id], entry_id: params[:entry_id]), class: 'btn btn-link'
