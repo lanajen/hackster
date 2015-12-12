@@ -88,6 +88,7 @@ const Carousel = React.createClass({
     this.props.actions.updateShownImage(activeIndex, this.props.storeIndex, direction);
     this.props.actions.updateComponent(this.props.storeIndex);
     this.props.actions.toggleImageToolbar(false, {});
+    window.pe.resizePeContainer();
   },
 
   handleFigCaptionKeys(e, key) {
