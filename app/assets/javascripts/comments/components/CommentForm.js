@@ -23,14 +23,18 @@ export default class CommentForm extends Component {
 
   handlePostClick(e) {
     e.preventDefault();
-    let form = {
-      comment: {
-        'raw_body': React.findDOMNode(this.refs.textarea).value,
-        'parent_id': this.props.parentId
-      },
-      commentable: this.props.commentable
-    };
-    this.props.onPost(form);
+    let body = React.findDOMNode(this.refs.textarea).value;
+
+    if(body.length > 0) {
+      let form = {
+        comment: {
+          'raw_body': body,
+          'parent_id': this.props.parentId
+        },
+        commentable: this.props.commentable
+      };
+      this.props.onPost(form);
+    }
   }
 
   render() {
@@ -53,4 +57,5 @@ CommentForm.PropTypes = {
   commentable: PropTypes.object.isRequired,
   formData: PropTypes.object.isRequired,
   onPost: PropTypes.func.isRequired,
+  placeholder: PropTypes.string
 };

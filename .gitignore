@@ -24,3 +24,7 @@
 .DS_Store
 log/
 /notes
+
+/app/assets/javascripts/bundle.js
+/spec/javascripts/bundle.js
+npm-debug.log

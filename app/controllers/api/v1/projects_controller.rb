@@ -51,7 +51,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def show
-    @project = BaseArticle.where(id: params[:id]).public.first!
+    @project = BaseArticle.where(id: params[:id]).publyc.first!
   end
 
   def create
@@ -76,9 +76,22 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     render status: :ok, nothing: true
   end
 
+  def description
+    project = BaseArticle.find params[:id]
+
+    if project.story_json.nil? and project.description.present?
+      render json: { description: project.decorate.description, story: nil }
+    elsif project.story_json.present?
+      render json: { description: nil, story: StoryJsonJsonDecorator.new(project.story_json).to_json }
+    else
+      render json: { description: '', story: nil }
+    end
+  end
+
   private
     def load_and_authorize_resource
       @project = BaseArticle.find params[:project_id] || params[:id]
       authorize! self.action_name, @project
     end
 end
+#

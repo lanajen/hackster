@@ -1,11 +1,11 @@
-html, body, div{
+/*html, body, div{
   margin: 0;
   padding: 0;
 }
 html, body{
   width: 100%;
   height: 100%;
-}
+}*/
 
 
 /* BACKGROUND */
@@ -34,8 +34,6 @@ html, body{
   visibility: hidden!important;
   transition: all 0.5s ease;
 }
-
-
 #closeArea{
   width:100%;
   height: auto;
@@ -50,21 +48,13 @@ html, body{
 
 /* HAMBURGER BUTTON */
 #ham{
-  /*width: 38px;
-  height: 38px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;*/
-  width: 50px;
+  /*width: 50px;*/
   height: 50px;
   position: absolute;
   top: 0;
-  /*left: 10px;*/
   z-index: 12000;
-  /*transition: all ease-out .1s;
-  cursor: pointer;*/
   display: flex;
   flex-direction: row;
-  /*justify-content: center;*/
   padding-top: 15px;
   padding-left: 1em;
   width: 100%;
@@ -72,23 +62,12 @@ html, body{
 #ham.hamBack{
   background-color: rgba(0,0,0,.6);
 }
-/*#ham.hamBack:hover{
-  background-color: rgba(0,0,0,.4);
-  transition: all ease-out .3s;
-}*/
 #ham.hamNoBack{
   z-index: 0;
-  /*background-color: #006d70;*/
-  /*transition: all ease-out .3s;*/
 }
 #ham.hamNoBack > svg:hover {
-  /*fill: #7fcbcd;*/
   fill: #80CBCD;
   transition: all ease-out .3s;
-}
-#ham > svg{
-  width: 18px;
-  height: 18px;
 }
 
 svg.logo-home-bottom {
@@ -106,7 +85,9 @@ svg.logo-home-bottom {
 }
 
 #ham > svg {
-  fill: #ffffff;
+  width: 18px;
+  height: 18px;
+  fill: #879191;
   transition: all ease-out .3s;
   cursor: pointer;
 }
@@ -127,11 +108,11 @@ svg.logo-home-bottom {
 }
 
 /* USER PROFILE */
-.avatar {
+/*.avatar {
   border-radius: 50%;
   width: 25px;
   height: 25px;
-}
+}*/
 
 .user-profile {
   position: absolute;
@@ -239,7 +220,6 @@ svg.logo-home-bottom {
 /* HOME PAGE DROPDOWN */
 .arduino-bbq #home{
   width: 100%;
-  /*height: 500px;*/
   background-color: transparent;
   position: absolute;
   top: 0;
@@ -248,16 +228,13 @@ svg.logo-home-bottom {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-
   transform: translate3d(0,0,0);
 }
 
 .backSolid{
-  /*background-color: red;*/
   height: 100%;
 }
 .backUnsolid{
-  /*background-color: transparent;*/
   height: 580px;
 }
 
@@ -268,13 +245,7 @@ svg.logo-home-bottom {
   flex: 15% 0 0;
   align-items: center;
   justify-content: center;
-  /*background-color: rgba(0,0,0,.5);*/
   padding-left: 13px;
-/*  position: absolute;
-top: 27.5%;
-left: 0;
-height: 371px;
-width: 15%;*/
   visibility: hidden;
   opacity: 0;
   transition: all ease-out .3s;
@@ -290,12 +261,8 @@ width: 15%;*/
 .feed{
   display: block;
   width: 100%;
-  /*height: 100%;*/
   height: 371px!important;
   max-height: 371px!important;
-  /*background-color: rgba(255,255,255,.93);*/
-  /*background-color: rgba(12,161,166,.93);*/
-  /*background-color: rgba(0,109,112,.93);*/
   background-color: rgba(0,129,132,.93);
   overflow: hidden;
 }
@@ -324,7 +291,6 @@ width: 15%;*/
   left: 0;
   width: 16px;
   height: 4px;
-  /*background: #008184;*/
   background: #7fcbcd;
   transition: all ease-out .1s;
 }
@@ -332,7 +298,6 @@ width: 15%;*/
   color: #fff;
 }
 .feed a:hover p{
-  /*text-decoration: underline;*/
   color: #7fcbcd;
   transition: all ease-out .1s;
 }
@@ -372,7 +337,6 @@ width: 15%;*/
   display: flex;
   justify-content: center;
   align-items: center;
-  /*flex:1 0 0;*/
   width: 180px;
   height: 180px;
   background-color: rgba(255,255,255,.94);
@@ -448,8 +412,6 @@ width: 15%;*/
   animation-timing-function: ease-in-out;
 }
 .grid_square:hover{
-  /*background-color: #ecf1f1;*/
-  /*background-color: rgba(12,161,166,1);*/
   background-color: #dae3e3;
   color: #00979d;
 }
@@ -459,7 +421,6 @@ width: 15%;*/
   color: #ffffff;
 }
 .grid_square p{
-  /*margin-top: 65%;*/
   flex: 3 0 0;
   width: 60%;
   font-family: 'TypoNine';
@@ -467,7 +428,7 @@ width: 15%;*/
   font-style: normal;
   letter-spacing: .05em;
   text-align: center;
-  font-size: 1em;
+  font-size: 16.64px;
 }
 video#bgvid {
   position: absolute;
@@ -489,7 +450,6 @@ video#bgvid {
   top: 0;
   width: 100%;
   height: 100%;
-  /*background-color: red;*/
   display: block;
   z-index: -99;
 background: -moz-linear-gradient(top,  rgba(0,151,157,0.4) 0%, rgba(0,151,157,0.08) 34%, rgba(0,151,157,0.15) 62%, rgba(0,151,157,0.32) 85%, rgba(0,108,112,0.4) 96%, rgba(0,92,95,0.4) 100%); /* FF3.6+ */
@@ -536,8 +496,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
 /* HOME */
 .grid_square img{
   flex: 5 0 0;
-  max-width: 80px;
-  /* max-height: 70px; */
+  width: 80px;
   margin-top: 15%;
 }
 .grid_square img.help{

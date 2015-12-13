@@ -33,7 +33,7 @@ class Project < BaseProject
   hstore_column :hproperties, :private_issues, :boolean
   hstore_column :hproperties, :private_logs, :boolean
 
-  add_checklist :description, 'Story', 'Sanitize.clean(description).try(:strip).present?'
+  add_checklist :description, 'Story', 'Sanitize.clean(description).try(:strip).present? or story_json.present?'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
   add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'

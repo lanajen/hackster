@@ -10,7 +10,7 @@ class ChallengeWorker < BaseWorker
 
     NotificationCenter.notify_all :pre_contest_awarded, :challenge, id, 'pre_contest_awarded'
     challenge.ideas.won.each do |idea|
-      NotificationCenter.notify_all :winner, :challenge_idea, idea.id, 'awarded_challenge_idea'
+      NotificationCenter.notify_all :awarded, :challenge_idea, idea.id
     end
   end
 
@@ -23,6 +23,14 @@ class ChallengeWorker < BaseWorker
     expire_cache challenge
 
     NotificationCenter.notify_all :judged, :challenge, id
+  end
+
+  def send_address_reminder_to_idea_winners id
+    challenge = Challenge.find id
+
+    challenge.ideas.won.where(address_id: nil).each do |idea|
+      NotificationCenter.notify_via_email :address_required, :challenge_idea, idea.id
+    end
   end
 
   private

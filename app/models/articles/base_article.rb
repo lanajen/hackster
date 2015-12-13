@@ -166,6 +166,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :review_comment, :string
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string
+  hstore_column :hproperties, :story_json, :json_object
   hstore_column :hproperties, :tweeted_at, :datetime
 
   self.per_page = 18
@@ -617,12 +618,18 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def to_js opts={}
-    url = "http://#{APP_CONFIG['full_host']}/#{uri}"
+    protocol = APP_CONFIG['use_ssl'] ? 'https' : 'http'
+    subdomain = opts[:subdomain].presence || ENV['SUBDOMAIN']
+    domain = APP_CONFIG['default_domain']
+    domain += ':' + APP_CONFIG['default_port'].to_s if APP_CONFIG['port_required']
+    host = subdomain + '.' + domain
+    base_url = "#{protocol}://#{host}"
+    url = base_url + "/#{uri}"
     url += "?auth_token=#{security_token}" if opts[:private_url]
     {
       author: {
         name: users.first.try(:name),
-        url: "http://#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
+        url: base_url + "/#{users.first.try(:user_name)}",
       },
       name: name,
       one_liner: one_liner,

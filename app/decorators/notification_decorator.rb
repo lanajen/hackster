@@ -62,13 +62,17 @@ class NotificationDecorator < ApplicationDecorator
       case event
       when :approved
         "Your idea '#{idea.name}' for #{challenge_link} has been approved."
-      when :winner
+      when :winner, :awarded
         "Your idea '#{idea.name}' for #{challenge_link} has won!"
       end
     when Comment
       comment = notifiable
       commentable = comment.commentable
-      author_link = h.link_to comment.user.name, comment.user
+      if user = comment.user
+        author_link = h.link_to user.name, user
+      else
+        author_link = 'Someone'
+      end
       case event
       when :new
         case commentable

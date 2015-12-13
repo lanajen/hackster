@@ -17,14 +17,14 @@ class Api::V1::CommentsController < Api::V1::BaseController
 
   def create
     commentable = params[:commentable][:type].classify.constantize.find(params[:commentable][:id])
-    @comment = commentable.comments.build(params[:comment])
-    authorize! :create, @comment
-    @comment.user = current_user
+    comment = commentable.comments.build(params[:comment])
+    authorize! :create, comment
+    comment.user = current_user
 
-    if @comment.save
-      @comment
+    if comment.save
+      render json: { comment: CommentJsonDecorator.new(comment).node }
     else
-      render json: { errors: @comment.errors }, status: :unprocessable_entity
+      render json: { errors: comment.errors }, status: :unprocessable_entity
     end
   end
 

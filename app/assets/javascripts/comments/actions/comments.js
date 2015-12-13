@@ -60,6 +60,39 @@ export function postComment(comment, isReply, csrfToken) {
   }
 }
 
+export function toggleLikes(commentId, parentId, bool) {
+  return {
+    type: Comments.toggleLikes,
+    commentId: commentId,
+    parentId: parentId,
+    bool: bool
+  };
+}
+
+export function deleteLike(commentId, parentId, csrfToken) {
+  return function(dispatch) {
+    return Requests.deleteLike(commentId, csrfToken)
+      .then(response => {
+        dispatch(toggleLikes(commentId, parentId, response));
+      })
+      .catch(err => {
+        console.log('DEL ERROR', err);
+      });
+  }
+}
+
+export function postLike(commentId, parentId, csrfToken) {
+  return function(dispatch) {
+    return Requests.postLike(commentId, csrfToken)
+      .then(response => {
+        dispatch(toggleLikes(commentId, parentId, response));
+      })
+      .catch(err => {
+        console.log('POST ERROR', err);
+      });
+  }
+}
+
 export function removeComment(comment) {
   return {
     type: Comments.removeComment,
@@ -67,9 +100,9 @@ export function removeComment(comment) {
   };
 }
 
-export function deleteComment(data) {
+export function deleteComment(id, csrfToken) {
   return function(dispatch) {
-    return Requests.deleteComment(data.id, data.csrfToken)
+    return Requests.deleteComment(id, csrfToken)
       .then(response => {
         dispatch(removeComment(response));
       })

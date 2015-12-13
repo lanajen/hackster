@@ -94,6 +94,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :pre_contest_awarded, :boolean
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_label, :string, default: 'Pre-contest'
+  hstore_column :hproperties, :pre_contest_needs_shipping, :boolean
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
   hstore_column :hproperties, :pre_winners_announced_date, :datetime

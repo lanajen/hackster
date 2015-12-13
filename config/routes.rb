@@ -24,11 +24,7 @@ HackerIo::Application.routes.draw do
         resources :announcements
         resources :build_logs
         resources :code_files, only: [:create]
-        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
-          collection do
-            delete '' => 'comments#destroy'
-          end
-        end
+        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index], defaults: { format: :json } do
           collection do
@@ -42,7 +38,9 @@ HackerIo::Application.routes.draw do
         scope 'mandrill/webhooks' do
           post 'unsub' => 'mandrill_webhooks#unsub'
         end
-        resources :projects
+        resources :projects do
+          get 'description' => 'projects#description'
+        end
         resources :parts, except: [:new, :edit], defaults: { format: :json }
         scope 'platforms' do
           get ':user_name' => 'platforms#show', defaults: { format: :json }
@@ -75,11 +73,7 @@ HackerIo::Application.routes.draw do
           resources :announcements
           resources :build_logs
           resources :code_files, only: [:create]
-          resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
-            collection do
-              delete '' => 'comments#destroy'
-            end
-          end
+          resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
           resources :flags, only: [:create]
           resources :followers, only: [:create, :index] do
             collection do
@@ -93,7 +87,9 @@ HackerIo::Application.routes.draw do
           scope 'mandrill/webhooks' do
             post 'unsub' => 'mandrill_webhooks#unsub'
           end
-          resources :projects
+          resources :projects do
+            get 'description' => 'projects#description'
+          end
           resources :parts, except: [:new, :edit]
           scope :platforms do
             scope :analytics do
@@ -137,9 +133,7 @@ HackerIo::Application.routes.draw do
         # get 'validate_step' => 'split#validate_step'
 
         post 'info_requests' => 'pages#create_info_request'
-
         post 'pusher/auth' => 'users/pusher_authentications#create'
-
         get 'hello_world' => 'hello_world#show'
 
         namespace :admin do
@@ -403,7 +397,7 @@ HackerIo::Application.routes.draw do
           end
         end
 
-        resources :challenge_ideas, only: [:destroy], as: :challenge_single_idea
+        resources :challenge_ideas, only: [:update, :destroy], as: :challenge_single_idea
 
         # resources :skill_requests, path: 'cupidon' do
         #   resources :comments, only: [:create]
@@ -712,6 +706,7 @@ HackerIo::Application.routes.draw do
       constraints(ClientSite) do
         scope module: :client, as: :client do
           get '' => 'projects#index'
+          get 'embed' => 'projects#embed'
           root to: 'projects#index'
         end
       end

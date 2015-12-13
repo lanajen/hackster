@@ -53,7 +53,7 @@ class BaseArticleObserver < ActiveRecord::Observer
     #   Cashier.expire "project-#{record.id}-metadata"
     # end
 
-    if record.description_changed?
+    if record.description_changed? or record.story_json_changed?
       Cashier.expire "project-#{record.id}-widgets"
     end
 

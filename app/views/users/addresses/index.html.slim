@@ -6,9 +6,11 @@
           | Your addresses
       .box-content
         .mg-20
-          = link_to 'Add an address', new_address_path(order_id: params[:order_id]), class: 'btn btn-primary'
+          = link_to 'Add an address', new_address_path(order_id: params[:order_id], entry_id: params[:entry_id]), class: 'btn btn-primary'
           - if params[:order_id]
             = link_to 'Go back to cart', store_cart_index_path, class: 'btn btn-link'
+          - elsif params[:entry_id]
+            = link_to 'Go back to contest page', ChallengeIdea.find(params[:entry_id]).challenge, class: 'btn btn-link'
         - if @addresses.any?
           .row
             - @addresses.each do |address|
@@ -16,11 +18,13 @@
                 .address
                   - if params[:order_id]
                     .mg-10= link_to 'Ship to this address', store_order_path(params[:order_id], order: { address_id: address.id }), class: 'btn btn-sm btn-warning', data: { method: :patch }
+                  - elsif params[:entry_id]
+                    .mg-10= link_to 'Ship to this address', challenge_single_idea_path(params[:entry_id], challenge_idea: { address_id: address.id }), class: 'btn btn-sm btn-warning', data: { method: :patch }
                   = address.decorate.full.html_safe
                   br
                   - if address.default
                     small>
                       strong Default
                   - else
-                    = link_to 'Make default', address_path(address, address: { default: true }, order_id: params[:order_id]), class: 'btn btn-xs btn-link', data: { method: :patch }
-                  = link_to 'Remove', address_path(address, order_id: params[:order_id]), class: 'btn btn-xs btn-link', data: { method: :delete, confirm: 'Are you sure?' }
+                    = link_to 'Make default', address_path(address, address: { default: true }, order_id: params[:order_id], entry_id: params[:entry_id]), class: 'btn btn-xs btn-link', data: { method: :patch }
+                  = link_to 'Remove', address_path(address, order_id: params[:order_id], entry_id: params[:entry_id]), class: 'btn btn-xs btn-link', data: { method: :delete, confirm: 'Are you sure?' }

@@ -7,10 +7,14 @@ class ChallengeEntryDecorator < ApplicationDecorator
       'Approved'
     when :unqualified, :rejected
       'Rejected'
-    when :awarded, :won
+    when :awarded
       model.challenge.judged? ? 'Awarded a prize!' : 'Approved'
-    when :unawarded, :lost
+    when :unawarded
       model.challenge.judged? ? 'Did not win. Next time!' : 'Approved'
+    when :won
+      model.challenge.pre_contest_awarded? ? 'Won!' : 'Approved'
+    when :lost
+      model.challenge.pre_contest_awarded? ? 'Did not win. Next time!' : 'Approved'
     when :fulfilled
       'Prize sent'
     end
