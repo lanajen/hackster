@@ -13,6 +13,8 @@ class RackReverseProxyMod
   def proxy?(env)
     # do not alter env here, but return true if you want to proxy for this request.
     req = Rack::Request.new env
+    puts 'req.host: ' + req.host.to_s
+    puts "ENV['ARDUINO_INCOMING_HOST']: " + ENV['ARDUINO_INCOMING_HOST'].to_s
     req.host == ENV['ARDUINO_INCOMING_HOST']
   end
 
