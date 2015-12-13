@@ -640,7 +640,7 @@ HackerIo::Application.routes.draw do
       # get 'search' => 'search#search'
       get 'tags/:tag' => redirect('/projects/tags/%{tag}'), via: :get, as: :deprecated_tags
       get 'tags' => 'search#tags', as: :deprecated_tags2
-      get 'projects/tags/:tag' => 'search#tags', as: :tags
+      get 'projects/tags/:tag' => 'search#tags', as: :tag
       get 'projects/tags' => 'search#tags'
       get 'robots' => 'pages#robots'
 
