@@ -417,14 +417,6 @@ module UrlHelper
     output
   end
 
-  # def full_url_for options={}
-  #   raise ' full_url_for options!: ' + options.inspect
-  # end
-
-  # def path_for options={}
-  #   raise 'path_for options!: ' + options.inspect
-  # end
-
   def url_for_wiki_page_form group, page
     case group.type
     when 'Event'

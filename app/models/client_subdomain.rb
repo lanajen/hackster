@@ -63,10 +63,6 @@ class ClientSubdomain < Subdomain
     self.favicon = Favicon.find_by_id val
   end
 
-  def has_default_avatar?
-    default_avatar_url.present?
-  end
-
   def logo_id=(val)
     self.logo = Logo.find_by_id val
   end
