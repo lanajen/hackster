@@ -109,6 +109,6 @@ module HackerIo
     config.cashier.adapter = :redis_store
     config.cashier.adapter.redis = RedisConn.conn
 
-    config.middleware.insert_before(Rack::Lock, RackReverseProxyMod)
+    config.middleware.insert_before(Rack::Runtime, RackReverseProxyMod)
   end
 end
