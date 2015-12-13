@@ -150,7 +150,7 @@ const Editable = React.createClass({
     e.preventDefault();
     e.stopPropagation();
 
-    let dom = this.props.editor.dom;
+    let dom = JSON.parse(JSON.stringify(this.props.editor.dom));
     let stringifiedJSON, item, cleaned;
 
     let promised = dom.map(item => {
