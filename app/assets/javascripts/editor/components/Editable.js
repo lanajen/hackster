@@ -149,7 +149,6 @@ const Editable = React.createClass({
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
-
     let dom = JSON.parse(JSON.stringify(this.props.editor.dom));
     let stringifiedJSON, item, cleaned;
 

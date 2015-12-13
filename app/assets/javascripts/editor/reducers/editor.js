@@ -950,11 +950,6 @@ function _createPlaceholderComponent() {
 }
 
 function deleteComponent(dom, storeIndex) {
-  // let previousCE;
-  // dom.forEach(item => {
-
-  // });
-
   dom.splice(storeIndex, 1);
   return dom;
 }

@@ -185,9 +185,7 @@ export default {
 
   postCleanUp(json) {
     return json.map((child, index) => {
-      if(child.tag === 'br') {
-        return null;
-      } else if(child.content === 'Paste a link to Youtube, Vimeo or Vine and press Enter') {
+      if(child.content === 'Paste a link to Youtube, Vimeo or Vine and press Enter') {
         return null;
       } else {
         if(child.children.length) {
