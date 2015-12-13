@@ -99,20 +99,24 @@ export default class Comment extends Component {
                     </div>)
                  : (null);
 
+    let avatar = userSlug
+                ? (<a href={`/${userSlug}`}>
+                    <img src={avatarLink} alt={userName} />
+                  </a>)
+                : (<img src={avatarLink} alt={userName} />);
+
+    let name = userSlug
+              ? (<a href={`/${userSlug}`}>{userName}</a>)
+              : userName;
+
     let comment = depth === 0 && deleted === true
                 ? (<div>
                     <div className={rootClass} id={id}>
                       <div className="comment-title">
-                        <div className="avatar">
-                          <a href={`/${userSlug}`}>
-                            <img src={avatarLink} alt={userName} />
-                          </a>
-                        </div>
+                        <div className="avatar">{avatar}</div>
                         <div className="profile-name">
                           <h4>
-                            <strong>
-                              <a href={`/${userSlug}`}>{userName}</a>
-                            </strong>
+                            <strong>{name}</strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
@@ -126,16 +130,10 @@ export default class Comment extends Component {
                 : (<div>
                     <div className={rootClass} id={id}>
                       <div className="comment-title">
-                        <div className="avatar">
-                          <a href={`/${userSlug}`}>
-                            <img src={avatarLink} alt={userName} />
-                          </a>
-                        </div>
+                        <div className="avatar">{avatar}</div>
                         <div className="profile-name">
                           <h4>
-                            <strong>
-                              <a href={`/${userSlug}`}>{userName}</a>
-                            </strong>
+                            <strong>{name}</strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
