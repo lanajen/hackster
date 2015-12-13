@@ -451,7 +451,7 @@ function _unmergePreBlocks(json) {
   let newJson = [];
 
   json.forEach(item => {
-    if(item.tag === 'pre') {
+    if(item.tag === 'pre' && item.children.length > 0) {
       let children = item.children[0].tag === 'code' ? item.children[0].children : item.children;
       children.forEach(child => {
         /** Remove new lines at the end of each row. */
@@ -950,6 +950,11 @@ function _createPlaceholderComponent() {
 }
 
 function deleteComponent(dom, storeIndex) {
+  // let previousCE;
+  // dom.forEach(item => {
+
+  // });
+
   dom.splice(storeIndex, 1);
   return dom;
 }
