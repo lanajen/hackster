@@ -1,6 +1,6 @@
 class RespectObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type == 'BaseArticle'
+    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type.in? %w(BaseArticle Comment)
   end
 
   def after_create record
