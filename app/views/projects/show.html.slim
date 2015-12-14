@@ -33,7 +33,7 @@
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
             .col-md-8.left-column
-              - if @project.event
+              - if !is_whitelabel? and @project.event
                 .project-group
                   i.fa.fa-challenge>
                   ' This project is part of
@@ -46,31 +46,32 @@
                   = @project.certifier_names(current_platform.try(:full_name)).to_sentence
 
               - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
-                - if ProjectCollection.assignment_or_event_for_project?(@project.id)
-                  .project-group
-                    i.fa.fa-graduation-cap>
-                    ' This project is part of
-                    - if @project.assignment.present?
-                      - if @project.assignment.promotion.avatar
-                        ==> image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
-                      = link_to @project.assignment.to_label, assignment_path(@project.assignment)
-                    - elsif @project.event.present?
-                      - if @project.event.avatar
-                        ==> image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
-                      = link_to @project.event.name, event_path(@project.event)
-                      / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-                        span.project-award<
-                          i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+                - unless is_whitelabel?
+                  - if ProjectCollection.assignment_or_event_for_project?(@project.id)
+                    .project-group
+                      i.fa.fa-graduation-cap>
+                      ' This project is part of
+                      - if @project.assignment.present?
+                        - if @project.assignment.promotion.avatar
+                          ==> image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
+                        = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+                      - elsif @project.event.present?
+                        - if @project.event.avatar
+                          ==> image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
+                        = link_to @project.event.name, event_path(@project.event)
+                        / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+                          span.project-award<
+                            i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
 
-                - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
-                - if @winning_entry
-                  .project-group
-                    span.project-award>
-                      i.fa.fa-trophy
-                    ' This project won
-                    => @winning_entry.prizes.pluck(:name).to_sentence
-                    ' in
-                    = link_to @winning_entry.challenge.name, @winning_entry.challenge
+                  - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
+                  - if @winning_entry
+                    .project-group
+                      span.project-award>
+                        i.fa.fa-trophy
+                      ' This project won
+                      => @winning_entry.prizes.pluck(:name).to_sentence
+                      ' in
+                      = link_to @winning_entry.challenge.name, @winning_entry.challenge
 
                 #home.project-banner style="background-image: url('#{@project.cover_image(:large)}')"
                   .project-banner-inner
