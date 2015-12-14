@@ -165,32 +165,47 @@ body {
 
 
 /*  -- NOTIFICATIONS --  */
-span.placeholder-notification {
-  background-color: #7F8C8D;
-  color: #FFF;
-  border-radius: 3px;
-  padding: 6px 8px;
-  font-size: 11.5px;
-  line-height: 19px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 6px;
-  min-width: 250px;
-  display: inline-block;
+.close {
+  text-shadow: none;
+  color: white;
+  opacity: 1;
 }
-
-
-.alert-top.alert-success {
+.alert-top {
   background: #7F8C8D;
   border-color: transparent;
+  border-radius: 3px;
+  color: #FFF;
+  padding: 6px 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+  min-width: 250px;
+  width: auto;
+  margin-bottom: 6px;
 }
-
-
 /*  -- END NOTIFICATIONS --  */
 
+/*  -- CREATE TOOLBAR --  */
+div.arduino-bbq {
+  height: 50px;
+  background: white;
+  width: 100%;
+  z-index: 5;
+}
+div.arduino-bbq.bbq-overlap {
+  z-index: 11;
+}
+div.arduino-bbq.bbq-overlap #ham > svg,
+div.arduino-bbq.bbq-overlap div.user-profile svg {
+  fill: white;
+}
+/*  -- END CREATE TOOLBAR --  */
 
-
-
+#content {
+  padding: 80px 0 60px;
+}
 
 a {
   color: #879191;
@@ -352,7 +367,7 @@ body.whitelabel .navbar .navbar-brand {
 .navbar .navbar-in {
   max-width: 1170px;
   margin: 0 auto;
-  padding-left: 70px;
+  /*padding-left: 70px;*/
 }
 #navbar-right {
   padding-right: 0;
@@ -404,6 +419,12 @@ div.dropdown-caret {
   z-index: 3;
   top: -10px;
   left: 12px;
+}
+div.user-profile div.dropover.simple {
+  font-size: 12px;
+  line-height: 15px;
+  color: #434F54;
+  letter-spacing: 0.7px;
 }
 
 
@@ -474,7 +495,7 @@ div.dropdown-caret {
   color: #7f8c8d;
 }
 button#burger-menu {
-  background-image: asset-url("whitelabel/arduino/burger-icon.svg");
+  background-image: asset-url('whitelabel/arduino/burger-icon.svg');
   background-size: 18px;
   background-repeat: no-repeat;
   height: 24px;
@@ -489,7 +510,7 @@ button#burger-menu {
 button#burger-menu:focus {
   outline: none;
 }
-#sticky-top-bar .login-link {
+.arduino-bbq .login-link {
   background-color: transparent;
   color: #879191;
   box-shadow: none;
@@ -501,14 +522,14 @@ button#burger-menu:focus {
   margin: 0;
   padding: 0;
   position: fixed;
-  right: 19px;
-  top: 18px;
+  right: 13px;
+  top: 25px;
   z-index: 12;
 }
-#sticky-top-bar a.login-link:hover {
+.arduino-bbq a.login-link:hover {
   color: #00979C;
 }
-#sticky-top-bar .login-link {
+.arduino-bbq .login-link {
   min-width: 0;
 }
 
@@ -517,9 +538,7 @@ button#burger-menu:focus {
   padding-top: 0 !important;
   margin-top: 11px;
 }
-div.navbar-header + div.pull-right {
-  margin-right: 90px;
-}
+
 #navbar-search .form-control {
   font-size: 13px;
   line-height: 13px;
@@ -565,34 +584,68 @@ div.navbar-header + div.pull-right {
    padding-top: 2px;
 }
 
+/* Responsive Dropover Toolbar */
+div#feed_cont {
+  display: none;
+}
+.grid_row {
+  margin-left: 0;
+}
+/* End Responsive Dropover Toolbar */
+
+
 #navbar-search .input-group-addon {
   top: 12px;
   position: absolute;
   z-index: 3;
 }
-.navbar-header {
+.create-logo {
   float: left;
-  background-image: asset-url("whitelabel/arduino/CreateProjectsLogo.svg");
+  background-image: asset-url('whitelabel/arduino/CreateProjectsLogo.svg');
   background-size: 308px;
   background-repeat: no-repeat;
   height: 75px;
   width: 308px;
   margin-left: -8px;
   margin-top: 6px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+.arduino-bbq.affix #navigation{
+  height: 64px;
+  padding-top: 0;
+  padding-bottom: 0;
+  /*margin-top: -23px;*/
+  transition: all ease-out .1s;
+}
+
+.arduino-bbq.affix #navigation .create-logo {
+  background-image: asset-url('assets/whitelabel/arduino/CreateProjectsLogoMinified.svg');
+  margin-top: 16px;
+  height: 36px;
+  background-size: 237px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+a.create-logo:hover {
+  opacity: 0.7;
 }
 body.whitelabel .navbar .navbar-brand {
   display: none;
 }
-
-
-/*div#sticky-top-bar {
-  position: fixed;
+.arduino-bbq #filler-bg-toolbar {
+  background: white;
   width: 100%;
-  height: 50px;
-  background-color: rgba(255,255,255,1);
-  display: inline-block;
-  z-index: 12;
-}*/
+  height: 20px;
+  position: absolute;
+  height: 55px;
+  margin-top: -55px;
+}
+.arduino-bbq.affix #filler-bg-toolbar {
+  height: 15px;
+  margin-top: -15px;
+  transition: all ease-out .1s;
+}
 
 div#tob-bar-bg {
   position: fixed;
@@ -602,12 +655,23 @@ div#tob-bar-bg {
   display: inline-block;
   z-index: 10;
 }
+#ham {
+  padding-top: 20px;
+  height: 65px;
+}
+.user-profile {
+  top: 19px;
+}
 
 #navigation {
-  /*height: 90px;*/
-  height: 105px;
+  height: 93px;
   background: #fff;
-  padding: 8px 20px 15px 20px;
+  padding: 0 26px 15px 26px;
+  width: calc(100% - 100px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -23px;
+  transition: all ease-out .1s;
 }
 .navbar-default {
   background-color: #f8f8f8;
@@ -620,18 +684,46 @@ div#mini-footer {
   display: inline-block;
   text-align: center;
 }
-div#mini-footer img {
-  max-width: 92px;
-  margin: 20px 0;
+div#mini-footer a.logoArduinoGenuino {
+  background-image: asset-url('whitelabel/arduino/ArduinoGenuino.svg');
+  background-size: 225px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 80px;
+  width: 225px;
+  margin: 20px 0 12px;
+}
+div#mini-footer a.logoArduinoGenuino:hover {
+  opacity: 0.7;
 }
 div#mini-footer p {
   font-size: 13px;
   line-height: 19px;
   margin: 0 0 10px 0;
 }
+div#mini-footer a#hackster-logo {
+  background-image: asset-url('hackster_logo_text.png');
+  background-size: 107px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 25px;
+  width: 107px;
+  top: 8px;
+  margin-left: 4px;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+div#mini-footer a#hackster-logo:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
 
 #content.project-page {
-  padding: 55px 0 60px;
+  padding: 100px 0 60px;
 }
 div.project-type {
   display: none;
@@ -983,16 +1075,25 @@ div.thumb-image.has-link-overlay:hover + div.thumb-inner .project-stats {
   p.description.show-on-hover {
     font-weight: 500;
   }
-  .navbar-header {
+  .create-logo {
     float: left;
   }
 }
+@media (min-width: 980px) {
+  div#feed_cont {
+    display: flex;
+  }
+  .grid_row {
+    margin-left: -18%;
+  }
+}
+
 @media (min-width: 1350px) {
   .navbar .navbar-in {
     padding-left: 18px;
     padding-right: 15px;
   }
-  div.navbar-header + div.pull-right {
+  .create-logo + div.pull-right {
     margin-right: 0;
   }
 }
