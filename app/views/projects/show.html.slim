@@ -218,8 +218,9 @@
                                 | Project log ##{log.sub_id}
 
                               .subtitle
-                                ==> time_ago_in_words log.created_at
-                                ' ago -
+                                ' On
+                                => l log.created_at
+                                ' -
                                 = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
 
                           .section-content.medium-editor
@@ -254,8 +255,9 @@
                                   | Issue ##{issue.sub_id}
 
                                 .subtitle
-                                  ==> time_ago_in_words issue.created_at
-                                  ' ago -
+                                  ' On
+                                  => l issue.created_at
+                                  ' -
                                   = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
 
                             .section-content
