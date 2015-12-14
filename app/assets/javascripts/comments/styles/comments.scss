@@ -19,6 +19,10 @@
       ));
     }
 
+    &.reply {
+      padding-left: 20px;
+    }
+
     .comments-textarea {
       @include flexbox((
         flex: 6
@@ -54,7 +58,7 @@
           justify-content: flex-start
         ));
         border: none;
-        padding-top: 0.5em;
+        padding-top: 0.3em;
       }
     }
   }
