@@ -314,7 +314,7 @@ const ContentEditable = React.createClass({
            * Handles video parser when enter is pressed.
            */
           let url = parentNode.textContent.trim();
-          if(url.split(' ').length < 2 && Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
+          if(url.split(' ').length < 2 && Helpers.isUrlValid(url, 'video')) {
             let videoData = Helpers.getVideoData(url);
             if(!videoData) {
               // TODO: HANDLE VIDEO ERROR!
@@ -589,7 +589,7 @@ const ContentEditable = React.createClass({
 
   onClick(e) {
     let node = React.findDOMNode(e.target);
-    let { sel, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
+    let { sel, range, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
 
     if(sel === null) { return; }
 
@@ -605,6 +605,13 @@ const ContentEditable = React.createClass({
 
     /** Mostly for anchor popups. */
     this.trackCursor(e);
+
+    /** Handles Triple Click. Forces the selection to wrap the startContainers element. */
+    if(e.detail >= 3) {
+      e.preventDefault();
+      range.selectNode(range.startContainer);
+      sel.setSingleRange(range);
+    }
   },
 
   handleDoubleClick(e) {

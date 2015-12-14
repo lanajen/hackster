@@ -44,8 +44,8 @@ module.exports = {
     return isValid;
   },
 
-  isUrlValid(url) {
-    let validExtensions = Object.keys(this.URL_EXTENSIONS);
+  isUrlValid(url, type) {
+    let validExtensions = type === 'video' ? this.VIDEO_SERVICES : Object.keys(this.URL_EXTENSIONS);
     let key = validExtensions.filter(function(item) {
       url = url.replace(/youtu\.be/, 'youtube');
       return url.match(item);
@@ -185,13 +185,30 @@ module.exports = {
     'image/tiff': true
   },
 
+  VIDEO_SERVICES: [
+    'autodesk360',
+    'circuits',
+    'channel9',
+    'codebender',
+    'instagram',
+    'kickstarter',
+    'mp4',
+    'sketchfab',
+    'snip2code',
+    'vimeo',
+    'vine',
+    'upverter',
+    'ustream',
+    'youtube'
+  ],
+
   URL_EXTENSIONS: {
     autodesk360: /myhub\.autodesk360\.com\/([a-z0-9]+\/shares\/public\/[a-zA-Z0-9]+)/,
     bitbucket: /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/, // TODO
     circuits: /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/,
     channel9: /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/,
     codebender: /codebender\.cc\/sketch:([0-9]+)/,
-    fritzing: /fritzing\.org\/projects\/([0-9a-z-]+)/, 
+    fritzing: /fritzing\.org\/projects\/([0-9a-z-]+)/,
     gist: /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/,
     github: /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/, // TODO
     instagram: /instagram\.com\/p\/([a-zA-Z\-0-9]+)/,
@@ -205,7 +222,7 @@ module.exports = {
     vine: /vine\.co\/v\/([a-zA-Z0-9]+)/,
     youtube: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
     youmagine: /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/,
-    mp4: /(.+\.(?:mp4)(?:\?.*)?)$/i 
+    mp4: /(.+\.(?:mp4)(?:\?.*)?)$/i
   },
 
   LANGUAGES: [
