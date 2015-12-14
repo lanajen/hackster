@@ -49,6 +49,8 @@ $(function(){
 				$('#closeArea').removeClass('hidden').addClass('visible').attr('style', 'height:'+ h +'px');
 				$('#ham').addClass('hamBack');
 	  			$('#ham').removeClass('hamNoBack');
+	  			$('.arduino-bbq').addClass('bbq-overlap');
+
 			}
 	 	});
 
@@ -69,6 +71,7 @@ $(function(){
 				$('#ham').removeClass('hamBack');
 	  			$('#ham').addClass('hamNoBack');
 	  			$('#back').hide();
+	  			$('.arduino-bbq').removeClass('bbq-overlap');
 			}
 	  	});
 
