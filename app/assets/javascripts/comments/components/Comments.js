@@ -54,6 +54,7 @@ export default class Comments extends Component {
                         deleteLike={this.deleteLike}
                         formData={this.props.commentStore.formData}
                         deleteComment={this.deleteComment}
+                        placeholder={this.props.placeholder}
                         postComment={this.postComment}
                         postLike={this.postLike}
                         replyBox={this.props.commentStore.replyBox}
@@ -70,6 +71,7 @@ export default class Comments extends Component {
                       deleteLike={this.deleteLike}
                       formData={this.props.commentStore.formData}
                       deleteComment={this.deleteComment}
+                      placeholder={this.props.placeholder}
                       postComment={this.postComment}
                       postLike={this.postLike}
                       replyBox={this.props.commentStore.replyBox}

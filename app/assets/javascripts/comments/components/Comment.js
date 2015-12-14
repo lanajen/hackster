@@ -90,24 +90,33 @@ export default class Comment extends Component {
                  ? (<div className="reply-box">
                       <div className="reply-box-center-line">
                       </div>
-                      <CommentForm parentId={parent_id || id} commentable={{ id: commentable_id, type: commentable_type }} onPost={this.handlePost} formData={this.props.formData} placeholder={this.props.placeholder} />
+                      <CommentForm commentable={{ id: commentable_id, type: commentable_type }}
+                                   formData={this.props.formData}
+                                   isReply={true}
+                                   onPost={this.handlePost}
+                                   parentId={parent_id || id}
+                                   placeholder={this.props.placeholder} />
                     </div>)
                  : (null);
+
+    let avatar = userSlug
+                ? (<a href={`/${userSlug}`}>
+                    <img src={avatarLink} alt={userName} />
+                  </a>)
+                : (<img src={avatarLink} alt={userName} />);
+
+    let name = userSlug
+              ? (<a href={`/${userSlug}`}>{userName}</a>)
+              : userName;
 
     let comment = depth === 0 && deleted === true
                 ? (<div>
                     <div className={rootClass} id={id}>
                       <div className="comment-title">
-                        <div className="avatar">
-                          <a href={`/${userSlug}`}>
-                            <img src={avatarLink} alt={userName} />
-                          </a>
-                        </div>
+                        <div className="avatar">{avatar}</div>
                         <div className="profile-name">
                           <h4>
-                            <strong>
-                              <a href={`/${userSlug}`}>{userName}</a>
-                            </strong>
+                            <strong>{name}</strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
@@ -121,16 +130,10 @@ export default class Comment extends Component {
                 : (<div>
                     <div className={rootClass} id={id}>
                       <div className="comment-title">
-                        <div className="avatar">
-                          <a href={`/${userSlug}`}>
-                            <img src={avatarLink} alt={userName} />
-                          </a>
-                        </div>
+                        <div className="avatar">{avatar}</div>
                         <div className="profile-name">
                           <h4>
-                            <strong>
-                              <a href={`/${userSlug}`}>{userName}</a>
-                            </strong>
+                            <strong>{name}</strong>
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>

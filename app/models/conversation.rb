@@ -88,7 +88,7 @@ class Conversation < ActiveRecord::Base
     end
 
     def sender_is_not_spamming
-      return if sender.is? :trusted
+      return if sender.is? :admin, :trusted
 
       if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
 
@@ -98,7 +98,7 @@ class Conversation < ActiveRecord::Base
     end
 
     def subject_is_unique
-      return if sender.is? :trusted
+      return if sender.is? :admin, :trusted
 
       if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
         errors.add :subject, 'has already been used recently. No spam please!'

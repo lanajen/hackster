@@ -173,7 +173,7 @@
 
         .section-content.medium-editor
           - if @challenge.video
-            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video }; rescue; end;
+            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video, options: {} }; rescue; end;
           = raw @challenge.description
 
       .section-interlude

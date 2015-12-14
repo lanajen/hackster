@@ -11,7 +11,7 @@
   .col-md-8.col-md-pull-4
     .section-container
       .section-content
-        #model-editor*{ data: { 'model-id' => @log.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'build_log', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => "/api/v1/build_logs/#{@log.id}" } }
+        #model-editor*{ data: { 'model-id' => @log.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'build_log', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => "/api/v1/build_logs" } }
 
           h3.mg-20
             span.editable-attribute*{ 'data-model' => "build_log", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @log.title_not_default }

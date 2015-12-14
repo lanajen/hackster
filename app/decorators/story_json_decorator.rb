@@ -43,11 +43,15 @@ module StoryJsonDecorator
         json
       else
         json.map { |item|
-          href = item['tag'] === 'a' ? " href='#{item['attribs']['href']}'" : ''
-          tag = '<' + item['tag'] + href + '>'
-          innards = item['content']
-          children = item['children'].length < 1 ? '' : build_html(item['children'])
-          "#{tag}#{innards}#{children}</#{item['tag']}>"
+          if item['tag'] === 'br'
+            "<br/>"
+          else
+            href = item['tag'] === 'a' ? " href='#{item['attribs']['href']}'" : ''
+            tag = '<' + item['tag'] + href + '>'
+            innards = item['content']
+            children = item['children'].length < 1 ? '' : build_html(item['children'])
+            "#{tag}#{innards}#{children}</#{item['tag']}>"
+          end
         }.join('')
       end
     end

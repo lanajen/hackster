@@ -28,6 +28,14 @@ var hacksterEmbed = {
       }
     };
     document.querySelector('head').appendChild(s);
+  },
+
+  getCss: function(src) {
+    var link = document.createElement('link');
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = src;
+    document.querySelector('head').appendChild(link);
   }
 }
 
@@ -43,8 +51,7 @@ hacksterEmbed.ready(function(){
         css_url << asset_path("project-thumb.css")
       %>
       var css = '<%= css_url %>';
-      if (!document.querySelectorAll("link[href='"+ css + "']").length)
-        document.getElementsByTagName("head")[0].innerHTML = '<link href="' + css + '" rel="stylesheet">' + document.getElementsByTagName("head")[0].innerHTML;
+      hacksterEmbed.getCss(css);
       var conf = window.hckstr;
       if (conf.thumbContainerClass) {
         conf.thumbContainerClass += ' thumb-container';
