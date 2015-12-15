@@ -118,5 +118,15 @@ module.exports = {
           err ? reject(err) : resolve(res);
         });
     });
+  },
+
+  toggleProjectInList(requestType, listId, projectId) {
+    return new Promise((resolve, reject) => {
+      request(requestType, '/api/v1/lists/' + listId + '/projects')
+        .send({ project_id: projectId })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
   }
 };
