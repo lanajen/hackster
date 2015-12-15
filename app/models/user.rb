@@ -561,6 +561,7 @@ class User < ActiveRecord::Base
       name: data.name,
       provider: provider,
       uid: uid,
+      token: data.credentials.try(:token),
     }
 
     link = if data and data = data.info
