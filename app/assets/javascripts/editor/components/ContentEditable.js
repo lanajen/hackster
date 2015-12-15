@@ -316,7 +316,7 @@ const ContentEditable = React.createClass({
           let url = parentNode.textContent.trim();
           let text = range.startContainer.textContent.substring(0, range.startOffset).split(' ');
 
-          if(!Helpers.isUrlValid(url, 'video') && Utils.hasValidUrl(text[text.length-1]) && !Utils.isSelectionInAnchor(range.startContainer)) {
+          if(!Helpers.isUrlValid(text[text.length-1], 'video') && Utils.hasValidUrl(text[text.length-1]) && !Utils.isSelectionInAnchor(range.startContainer)) {
             Utils.transformTextToAnchorTag(sel, range, true);
             this.emitChange();
             setTimeout(() => {

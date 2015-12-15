@@ -45,7 +45,7 @@ module.exports = {
   },
 
   isUrlValid(url, type) {
-    let validExtensions = type === 'video' ? this.VIDEO_SERVICES : Object.keys(this.URL_EXTENSIONS);
+    let validExtensions = type === 'video' ? this.VIDEO_SERVICES : [];
     let key = validExtensions.filter(function(item) {
       url = url.replace(/youtu\.be/, 'youtube');
       return url.match(item);
@@ -54,7 +54,7 @@ module.exports = {
     // If key is empty, we have nothing to test and the url isn't valid.
     if(!key.length) { return false; }
 
-    let regex = new RegExp(validExtensions[key[0]]);
+    let regex = this.URL_EXTENSIONS[key[0]];
     return url.match(regex) ? true : false;
   },
 
@@ -66,24 +66,9 @@ module.exports = {
     if(!service) { return null; }
     let Exts = this.URL_EXTENSIONS;
     let regExps = {
-      'autodesk': {
-        regexp: Exts['autodesk360'],
-        embed: id => `https://myhub.autodesk360.com/${id}?mode=embed`,
-        index: 1
-      },
-      'circuits': {
-        regexp: Exts['circuits'],
-        embed: id => `https://123d.circuits.io/circuits/${id}/embed`,
-        index: 1
-      },
       'channel9': {
         regexp: Exts['channel9'],
         embed: id => `https://channel9.msdn.com/${id}/player`,
-        index: 1
-      },
-      'codebender': {
-        regexp: Exts['codebender'],
-        embed: id => `https://codebender.cc/embed/${id}`,
         index: 1
       },
       'instagram': {
@@ -101,31 +86,16 @@ module.exports = {
         embed: id => id,
         index: 0
       },
-      'sketchfab': {
-        regexp: Exts['sketchfab'],
-        embed: id => `https://sketchfab.com/models/${id}/embed`,
-        index: 1
-      },
-      'snip2code': {
-        regexp: Exts['snip2code'],
-        embed: id => `http://www.snip2code.com/Embed/${id}`,
-        index: 1
-      },
       'vimeo': {
         regexp: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,
         requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
         embed: id => `https://player.vimeo.com/video/${id}`,
-        index: 5
+        index: 1
       },
       'vine': {
         regexp: /vine\.co\/v\/([a-zA-Z0-9]+)/,
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
         embed: id => `https://vine.co/v/${id}/embed/simple`,
-        index: 1
-      },
-      'upverter': {
-        regexp: Exts['upverter'],
-        embed: id=> `https://upverter.com/eda/embed/#designId=${id},actionId=`,
         index: 1
       },
       'ustream': {
@@ -134,10 +104,10 @@ module.exports = {
         index: 1
       },
       'youtube': {
-        regexp: /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/,
+        regexp: Exts['youtube'],
         requestLink: id => `https://img.youtube.com/vi/${id}/0.jpg`,
         embed: id => `https://www.youtube.com/embed/${id}`,
-        index: 2
+        index: 1
       }
     };
 
@@ -186,18 +156,12 @@ module.exports = {
   },
 
   VIDEO_SERVICES: [
-    'autodesk360',
-    'circuits',
     'channel9',
-    'codebender',
     'instagram',
     'kickstarter',
     'mp4',
-    'sketchfab',
-    'snip2code',
     'vimeo',
     'vine',
-    'upverter',
     'ustream',
     'youtube'
   ],
@@ -218,7 +182,7 @@ module.exports = {
     snip2code: /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/,
     upverter: /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/,
     ustream: /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/,
-    vimeo: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
+    vimeo: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,
     vine: /vine\.co\/v\/([a-zA-Z0-9]+)/,
     youtube: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
     youmagine: /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/,
