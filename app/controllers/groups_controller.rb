@@ -84,6 +84,7 @@ class GroupsController < ApplicationController
 
   def destroy
     authorize! :destroy, @group
+    @group.destroy
     redirect_to root_path, notice: "Bye bye #{@group.name}!"
   end
 
