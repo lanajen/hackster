@@ -165,7 +165,7 @@
 
     section.main-section
       .container
-        - if !@challenge.locked?(session) or can? :manage, @challenge
+        - if !@challenge.locked?(session) or can? :manage, @challenge or can? :admin, @challenge
           = yield
         - else
           .row
