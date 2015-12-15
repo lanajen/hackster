@@ -314,6 +314,21 @@ const ContentEditable = React.createClass({
            * Handles video parser when enter is pressed.
            */
           let url = parentNode.textContent.trim();
+          let text = range.startContainer.textContent.substring(0, range.startOffset).split(' ');
+
+          if(!Helpers.isUrlValid(url, 'video') && Utils.hasValidUrl(text[text.length-1]) && !Utils.isSelectionInAnchor(range.startContainer)) {
+            Utils.transformTextToAnchorTag(sel, range, true);
+            this.emitChange();
+            setTimeout(() => {
+              if(hasTextAfterCursor) {
+                this.createBlockElementWithChildren(parentNode, range, 'p', depth, true, this.props.storeIndex);
+              } else {
+                this.createBlockElement('p', depth, true, this.props.storeIndex);
+              }
+              return;
+            }, 50);
+          }
+
           if(url.split(' ').length < 2 && Helpers.isUrlValid(url, 'video')) {
             let videoData = Helpers.getVideoData(url);
             if(!videoData) {
@@ -488,8 +503,12 @@ const ContentEditable = React.createClass({
   },
 
   handleSpacebar(e) {
-    let { sel, range } = Utils.getSelectionData();
-    Utils.transformTextToAnchorTag(sel, range, true);
+    let { sel, range, parentNode } = Utils.getSelectionData();
+    let text = range.startContainer.textContent.substring(0, range.startOffset).split(' ');
+
+    if(Utils.hasValidUrl(text[text.length-1])) {
+      Utils.transformTextToAnchorTag(sel, range, true);
+    }
   },
 
   onKeyDown(e) {

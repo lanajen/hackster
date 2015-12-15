@@ -822,6 +822,13 @@ const Utils = {
     return found;
   },
 
+  hasValidUrl(string) {
+    return string.split(' ').reduce((prev, curr) => {
+      prev = Validator.isURL(curr.trim());
+      return prev;
+    }, false);
+  },
+
   transformTextToAnchorTag(sel, range, setCursor) {
     /** Operate on current element's parent only, not the root parent. */
     let parentNode = range.startContainer.parentNode;
@@ -833,7 +840,7 @@ const Utils = {
         let words = child.textContent.split(' ');
         let url = words.filter(word => { return Validator.isURL(word.trim()); })[0];
 
-        if(url && !Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
+        if(url && !Helpers.isUrlValid(url, 'video')) {
           let href = url;
           let oldRange = range.cloneRange();
           let index = child.textContent.indexOf(url);
