@@ -10,8 +10,10 @@ export default {
   getTextContent(json) {
     let text = '';
 
-    treeWalk(json, child => {
-      if(child.content) {
+    treeWalk(json, (child, root, depth) => {
+      if(depth === 0 && root.content) {
+        text += root.content;
+      } else if(child.content) {
         text += child.content;
       }
     });

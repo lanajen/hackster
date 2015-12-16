@@ -30,6 +30,7 @@
                 ==> link_to platform.name, platform
                 - if platform.verified?
                   i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
+        = @user.job_availability
 
         .stats
           p

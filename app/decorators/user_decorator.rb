@@ -41,6 +41,17 @@ class UserDecorator < ApplicationDecorator
     "//gravatar.com/avatar/#{gravatar_id}.png?d=retro&s=#{width}"
   end
 
+  def job_availability
+    availability = []
+    availability << 'full time' if model.available_for_ft
+    availability << 'part time' if model.available_for_pt
+    availability << 'contract' if model.available_for_hire
+
+    if availability.any?
+      h.content_tag(:p, "Available for #{availability.to_sentence} jobs.")
+    end
+  end
+
   def location
     if model.city.present? and model.country.present?
       "#{model.city}, #{model.country}"

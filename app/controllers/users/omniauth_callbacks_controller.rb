@@ -51,7 +51,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
     session[:omniauth_login_locale] = I18n.locale
 
-    puts 'session setup: ' + session.inspect
+    # puts 'session setup: ' + session.inspect
 
     render text: 'Setup complete.', status: 404
   end

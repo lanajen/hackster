@@ -21,9 +21,9 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # Rails.logger.info 'data: ' + data.to_yaml
-    # Rails.logger.info 'provider: ' + provider.to_s
-    # Rails.logger.info 'user: ' + @user.to_yaml
+    # Rails.logger.debug 'data: ' + data.to_yaml
+    # Rails.logger.debug 'provider: ' + provider.to_s
+    # Rails.logger.debug 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
       @user.email_confirmation = @user.email

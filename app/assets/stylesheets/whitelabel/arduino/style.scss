@@ -147,7 +147,18 @@
 
 
 
-
+/* FOR LOCAL PREVIEW ONLY */
+/*.pe-container {
+  overflow: visible;
+}
+#outer-wrapper {
+  margin: 0 auto 70px;
+  overflow-x: visible;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+}*/
+/* END - FOR LOCAL PREVIEW ONLY */
 
 
 
@@ -185,6 +196,10 @@ body {
   width: auto;
   margin-bottom: 6px;
 }
+.alert-top.alert-success {
+  background: #7F8C8D;
+  border-color: transparent;
+}
 /*  -- END NOTIFICATIONS --  */
 
 /*  -- CREATE TOOLBAR --  */
@@ -205,6 +220,15 @@ div.arduino-bbq.bbq-overlap div.user-profile svg {
 
 #content {
   padding: 80px 0 60px;
+}
+
+.btn-info, .btn-info:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+.btn-sm {
+  padding: 0;
+  vertical-align: baseline;
 }
 
 a {
@@ -289,18 +313,51 @@ a.follow-button {
 }
 .btn-default {
   transition: all ease-out .1s;
-  border: none;
+  border: 1px solid #DADADA;
   color: #7F8C8D;
-  /*background-color: #DAE3E3;*/
   background-color: white;
+}
+#projects-list .btn-default,
+div.content.projects .btn-default,
+div.content.projects .btn-default:hover,
+div.content.projects .btn-default:active,
+div.content.projects .btn-default:focus {
+  border: none;
+}
+#projects-list .btn-group > .btn-default {
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: 1px solid #DADADA;
+}
+#projects-list .btn-group > .btn-default:last-child {
+  border-right: none !important;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-group.open .dropdown-toggle {
   transition: all ease-out .1s;
-  border: none;
+  border: 1px solid #DAE3E3;
   color: #434f54;
   background-color: #DAE3E3;
   box-shadow: none;
 }
+.btn-group > .btn-default {
+  border-left: 0;
+  border-right: 1px solid #DADADA;
+}
+.btn-group > .btn-default:first-child {
+  border-left: 1px solid #DADADA;
+}
+.btn-group > .btn-default:first-child:hover {
+  border-left: 1px solid #DAE3E3;
+}
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DADADA !important;
+}
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DAE3E3 !important;
+}
+
+
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
   color: #434F54;
   text-decoration: none;
@@ -440,7 +497,7 @@ div.user-profile div.dropover.simple {
 .btn .caret, .btn-follow .caret {
   margin-left: 7px;
 }
-.btn-primary, .btn-secondary {
+.btn-primary, .btn-secondary, .pe-nav li a {
   transition: all ease-out .1s;
   position: relative;
   background: #00979C;
@@ -455,7 +512,14 @@ div.user-profile div.dropover.simple {
   letter-spacing: 0.9px;
   max-height: 34px;
 }
-.btn-secondary {
+.pe-nav li a.btn-secondary {
+  border-radius: 0;
+  margin-right: 8px;
+}
+.pe-nav li:last-child a.btn-secondary {
+  margin-right: 0;
+}
+.btn-secondary, .pe-nav li a {
   background: #DAE3E3;
   box-shadow: 0 6px #BDC7C7;
   color: #7f8c8d;
@@ -466,7 +530,7 @@ div.user-profile div.dropover.simple {
   top: 2px;
   box-shadow: 0 4px #005c5f;
 }
-.btn-secondary:hover {
+.btn-secondary:hover, .pe-nav li a:hover {
   transition: all ease-out .1s;
   background: #DAE3E3;
   top: 2px;
@@ -479,7 +543,7 @@ div.user-profile div.dropover.simple {
   box-shadow: none;
   top: 6px;
 }
-.btn-secondary:active {
+.btn-secondary:active, .pe-nav li a:active {
   transition: all ease-out .1s;
   background: #DAE3E3;
   top: 6px;
@@ -489,7 +553,7 @@ div.user-profile div.dropover.simple {
   background: #00979C;
   outline: none;
 }
-.btn-secondary:focus {
+.btn-secondary:focus, .pe-nav li a:focus {
   background: #DAE3E3;
   outline: none;
   color: #7f8c8d;
@@ -551,6 +615,10 @@ button#burger-menu:focus {
   margin-right: 10px;
   border-radius: 0;
 }
+.select2-container--default .select2-selection--multiple {
+  border-radius: 0;
+  border: 1px solid #DADADA;
+}
 #navbar-search input[type=text] {
   text-transform: none;
   font-weight: 400;
@@ -583,6 +651,44 @@ button#burger-menu:focus {
    letter-spacing: 1px;
    padding-top: 2px;
 }
+div.pe-panel div.clearfix {
+  min-height: 55px;
+}
+div.pe-panel .btn-sm.btn-success {
+  padding: 10px 20px;
+  font-weight: 600;
+}
+.btn-success {
+  background: #39C19D;
+  border: 1px solid #39C19D;
+}
+.btn-success:hover, .btn-success:active, .btn-success:focus {
+  background: #38CAA3;
+  border: 1px solid #38CAA3;
+  box-shadow: none;
+}
+.btn-danger {
+  color: #fff;
+  background-color: #da5b4a;
+  border-color: #da5b4a;
+}
+.btn-danger:hover, .btn-danger:active, .btn-danger:focus {
+  background-color: #EA6D5C;
+  border-color: #EA6D5C;
+  box-shadow: none;
+}
+
+
+
+/* Responsive Dropover Toolbar */
+div#feed_cont {
+  display: none;
+}
+.grid_row {
+  margin-left: 0;
+}
+/* End Responsive Dropover Toolbar */
+
 
 /* Responsive Dropover Toolbar */
 div#feed_cont {
@@ -620,7 +726,7 @@ div#feed_cont {
 }
 
 .arduino-bbq.affix #navigation .create-logo {
-  background-image: asset-url('assets/whitelabel/arduino/CreateProjectsLogoMinified.svg');
+  background-image: asset-url('whitelabel/arduino/CreateProjectsLogoMinified.svg');
   margin-top: 16px;
   height: 36px;
   background-size: 237px;
@@ -683,6 +789,7 @@ div#mini-footer {
   width: 100%;
   display: inline-block;
   text-align: center;
+  position: relative;
 }
 div#mini-footer a.logoArduinoGenuino {
   background-image: asset-url('whitelabel/arduino/ArduinoGenuino.svg');
@@ -917,6 +1024,12 @@ div:focus,
 .btn-group > .btn {
   margin-left: 0 !important;
 }
+.btn {
+  margin-right: 5px;
+}
+.btn:last-child {
+  margin-right: 0;
+}
 div.btn-group a, div.btn-group a:hover {
   margin: 0 !important;
   border-right: 1px solid #C0CECE;
@@ -1033,7 +1146,10 @@ strong.text-muted {
   clear: both;
 }
 #projects-list p.smaller.text-muted {
-  margin-top: 16px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 15px;
+  color: #879191;
 }
 #platform-name {
   color: #666;

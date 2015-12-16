@@ -348,8 +348,10 @@ class ProjectsController < ApplicationController
     msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
     if @project.assignment.past_due?
-      @project.locked = true
-      msg += 'The project will be locked for modifications until grades are sent out.'
+      if @project.assignment.should_lock?
+        @project.locked = true
+        msg += 'The project will be locked for modifications until grades are sent out.'
+      end
     else
       msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
     end

@@ -315,7 +315,7 @@ $select2target = null;
     $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
     pe.serializeForm();
 
-    $('.pe-nav').on('click', 'a.tab', function(e){
+    $('.pe-nav').on('click', 'a', function(e){
       if (window.location.hash == $(this).attr('href')) {
         e.preventDefault();
       } else if (pe.unsavedChanges()) {
