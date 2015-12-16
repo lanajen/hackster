@@ -4,6 +4,11 @@
       h2 Share your work with the community
 
     .box-content
+      p.text-center
+        ' Before you get started, check our
+        = link_to 'content guidelines', guidelines_path
+        | .
+      br
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
 
