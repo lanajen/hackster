@@ -176,6 +176,12 @@ body {
 
 
 /*  -- NOTIFICATIONS --  */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 3px;
+}
 .close {
   text-shadow: none;
   color: white;
@@ -186,7 +192,7 @@ body {
   border-color: transparent;
   border-radius: 3px;
   color: #FFF;
-  padding: 6px 8px;
+  padding: 6px 30px 6px 8px;
   font-size: 14px;
   line-height: 20px;
   font-weight: 600;
@@ -200,7 +206,28 @@ body {
   background: #7F8C8D;
   border-color: transparent;
 }
+.alert-warning {
+  background-color: #7F8C8D;
+  border-color: transparent;
+  color: white;
+}
+.alert-warning .alert-link {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
+.alert-warning .alert-link:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
 /*  -- END NOTIFICATIONS --  */
+
+
+
 
 /*  -- CREATE TOOLBAR --  */
 div.arduino-bbq {
@@ -459,6 +486,8 @@ body.whitelabel .navbar .navbar-brand {
 .dropdown-menu > li > a {
   padding: 6px 14px;
   color: #434F54;
+  font-size: 13.5px;
+  line-height: 20px;
 }
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   color: #434F54;
@@ -491,7 +520,22 @@ div.user-profile div.dropover.simple {
   left: 0;
 }
 
-
+div.pe-panel#hardware .table > tbody > tr > td {
+  vertical-align: middle;
+}
+.parts-widget td {
+  background: #F4F7F7;
+}
+.parts-widget select {
+  border-right: 1px solid #ddd;
+}
+div.pe-panel#hardware ul.list-inline, div.pe-panel#software ul.list-inline {
+  margin: 0;
+}
+div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
 
 
 .btn .caret, .btn-follow .caret {
@@ -516,6 +560,10 @@ div.user-profile div.dropover.simple {
   border-radius: 0;
   margin-right: 8px;
 }
+.pe-nav li:last-child a {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
 .pe-nav li:last-child a.btn-secondary {
   margin-right: 0;
 }
@@ -523,6 +571,11 @@ div.user-profile div.dropover.simple {
   background: #DAE3E3;
   box-shadow: 0 6px #BDC7C7;
   color: #7f8c8d;
+}
+.pe-nav li a.active {
+  background: #BDC7C7;
+  color: #fff;
+  box-shadow: 0 6px #A2A2A2;
 }
 .btn-primary:hover {
   transition: all ease-out .1s;
@@ -603,6 +656,7 @@ button#burger-menu:focus {
   margin-top: 11px;
 }
 
+
 #navbar-search .form-control {
   font-size: 13px;
   line-height: 13px;
@@ -658,6 +712,57 @@ div.pe-panel .btn-sm.btn-success {
   padding: 10px 20px;
   font-weight: 600;
 }
+div.pe-panel#team textarea {
+  margin-right: 0;
+  width: 100%;
+  max-width: 185px;
+}
+a.btn.btn-sm.btn-danger.remove_nested_fields {
+  padding: 3px 6px 2px;
+}
+
+div.pe-panel#team a.btn-xs.btn-success.add_nested_fields,
+div.pe-panel#team a.btn-xs.btn-danger.remove_nested_fields,
+div.pe-panel#team a.btn-xs.btn-success.nested-field-table.add_nested_fields {
+  margin-left: 0 !important;
+  float: right;
+  position: relative;
+  margin-top: 10px;
+}
+tr.sortable-disabled td {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.table-condensed > tbody > tr > td {
+  padding: 15px 5px;
+}
+.form-horizontal .fields .form-group {
+  margin-bottom: 15px;
+}
+.box + .box {
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+.form-horizontal .checkbox {
+  margin-bottom: 20px;
+}
+.table > thead > tr > th {
+  border-bottom: 1px solid #C5C5C5;
+}
+.box-title.small-title .subheading {
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #879191;
+}
+.box-title h4 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 26px;
+  color: #879191;
+  margin-bottom: 10px;
+}
+
 .btn-success {
   background: #39C19D;
   border: 1px solid #39C19D;
@@ -680,14 +785,29 @@ div.pe-panel .btn-sm.btn-success {
 
 
 
-/* Responsive Dropover Toolbar */
-div#feed_cont {
-  display: none;
+/* Editor Project Story */
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar .toolbar-btn:hover {
+  color: #fff;
+  background-color: #00979C;
 }
-.grid_row {
-  margin-left: 0;
+.content-editable {
+  padding: 2% 0;
+  font-size: 1.5rem;
+  word-wrap: break-word;
+  font-family: 'Typonine Sans Pro';
+  font-size: 18px;
 }
-/* End Responsive Dropover Toolbar */
+.react-editor-carousel .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption,
+.react-editor-video .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption {
+  color: #879191;
+  font-family: 'Typonine Sans Pro';
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  font-style: italic;
+}
+/* End Editor Project Story */
+
 
 
 /* Responsive Dropover Toolbar */
@@ -790,6 +910,9 @@ div#mini-footer {
   display: inline-block;
   text-align: center;
   position: relative;
+  /* LOCAL PREVIEW ONLY */
+  /*display: none;*/
+  /* END LOCAL PREVIEW ONLY */
 }
 div#mini-footer a.logoArduinoGenuino {
   background-image: asset-url('whitelabel/arduino/ArduinoGenuino.svg');
@@ -949,7 +1072,7 @@ b, strong {
 }
 .box-title {
   padding: 40px 20px;
-  border-bottom: 3px solid #f4f4f4;
+  border-bottom: 3px solid #ecf1f1;
 }
 .box-title h2 {
   text-align: center;

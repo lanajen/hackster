@@ -1,7 +1,6 @@
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
   / = stylesheet_link_tag 'whitelabel/arduino/application'
-  = stylesheet_link_tag 'whitelabel/arduino/style'
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/normalize'
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/home'
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/utils'
@@ -9,6 +8,7 @@
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/dropover'
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/scrollbar'
   = stylesheet_link_tag 'whitelabel/arduino/barbecue/buttons'
+  = stylesheet_link_tag 'whitelabel/arduino/style'
 
 = content_for :header do
 
@@ -86,7 +86,7 @@
             li
               = link_to content_tag(:button, 'Sign Out'), destroy_user_session_path, method: :delete
     - else
-      a class="login-link" href=user_omniauth_authorize_url('arduino', host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)) Sign In
+      a class="login-link" href="//#{APP_CONFIG['full_host']}/users/auth/arduino?redirect_host=#{request.host}&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}" Sign In
 
     .load-bold-font
       span.load-text-font Arduino Create
