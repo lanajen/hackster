@@ -254,11 +254,16 @@ class User < ActiveRecord::Base
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   store :properties, accessors: []
+  hstore_column :properties, :available_for_ft, :boolean
+  hstore_column :properties, :available_for_pt, :boolean
+  hstore_column :properties, :available_for_hire, :boolean
   hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+  hstore_column :properties, :remote_ok, :boolean
   hstore_column :properties, :toolbox_shown, :boolean
+  hstore_column :properties, :willing_to_relocate, :boolean
 
   hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY

@@ -1,0 +1,12 @@
+= f.error_notification
+
+= f.input :employer_name, hint: "Either employer name or platform"
+= f.association :platform, hint: "Either employer name or platform", collection: Platform.order(:full_name)
+= f.input :title
+= f.input :url
+= f.input :location
+= f.input :workflow_state, collection: Job.workflow_spec.states
+
+.col-md-offset-4.col-md-8
+  ==> f.button :submit, :class => 'btn btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_jobs_path, :class => 'btn btn-default'

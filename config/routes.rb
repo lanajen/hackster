@@ -165,6 +165,7 @@ HackerIo::Application.routes.draw do
           resources :conversations, only: [:destroy]
           resources :groups, except: [:show]
           resources :invitations, only: [:new, :create]
+          resources :jobs, except: [:show]
           resources :parts, except: [:show] do
             get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
             get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -418,6 +419,7 @@ HackerIo::Application.routes.draw do
         resources :projects, only: [:index]
 
         resources :quotes, only: [:create]
+        resources :jobs, only: [:index, :show]
 
         # dragon
         # get 'partners' => 'partners#index'
@@ -482,7 +484,6 @@ HackerIo::Application.routes.draw do
         get 'guidelines' => 'pages#guidelines'
         get 'terms' => 'pages#terms'
         get 'press' => 'pages#press'
-        get 'jobs' => 'pages#jobs'
         get 'resources' => 'pages#resources'
 
         # updates counter for cached pages
