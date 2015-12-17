@@ -107,12 +107,11 @@ const ContentEditable = React.createClass({
   setCursorOnUpdate() {
     /** Don't do any operations if the cursor is not in this CE. */
     if(this.props.editor.cursorPosition.rootHash !== this.props.hash) { return; }
-
     const cursorPosition = this.props.editor.cursorPosition;
     React.findDOMNode(this).focus();
 
-    let node = cursorPosition.node.hasAttribute('data-hash') ? cursorPosition.node : Utils.getRootParentElement(cursorPosition.node);
-    let liveNode = document.querySelector(`[data-hash="${node.getAttribute('data-hash')}"]`);
+    let dataHash = Utils.getHashFromNode(cursorPosition.node);
+    let liveNode = document.querySelector(`[data-hash="${dataHash}"]`);
     liveNode = liveNode ? liveNode : document.querySelector(`[data-hash="${cursorPosition.rootHash}"]`).firstChild;
 
     let el = (this.props.editor.setCursorToNextLine && liveNode && liveNode.nextSibling !== null) ? liveNode.nextSibling : liveNode;
@@ -172,24 +171,24 @@ const ContentEditable = React.createClass({
       }
 
       /** On Backspace; Cleans up browser adds on specific line. */
-      if(e.keyCode === 8
-         && Utils.isImmediateChildOfContentEditable(parentNode, CE)
-         && !parentNode.classList.contains('react-editor-carousel')
-         && !parentNode.classList.contains('react-editor-video')
-         && parentNode.nodeName !== 'UL') {
-        let clone = range.cloneRange();
-        Utils.maintainImmediateNode(parentNode);
-        this.emitChange();
-        /** Chrome sets the cursor to 0, we need to reset it here at the correct position. */
-        sel = rangy.getSelection();
-        range = sel.getRangeAt(0);
-        let el = Utils.getFirstTextNode(range.startContainer);
-        if(clone.startOffset <= el.length) {
-          range.setStart(el, clone.startOffset);
-          range.collapse(true);
-          sel.setSingleRange(range);
-        }
-      }
+      // if(e.keyCode === 8
+      //    && Utils.isImmediateChildOfContentEditable(parentNode, CE)
+      //    && !parentNode.classList.contains('react-editor-carousel')
+      //    && !parentNode.classList.contains('react-editor-video')
+      //    && parentNode.nodeName !== 'UL') {
+      //   let clone = range.cloneRange();
+      //   Utils.maintainImmediateNode(parentNode);
+      //   this.emitChange();
+      //   * Chrome sets the cursor to 0, we need to reset it here at the correct position.
+      //   sel = rangy.getSelection();
+      //   range = sel.getRangeAt(0);
+      //   let el = Utils.getFirstTextNode(range.startContainer);
+      //   if(clone.startOffset <= el.length) {
+      //     range.setStart(el, clone.startOffset);
+      //     range.collapse(true);
+      //     sel.setSingleRange(range);
+      //   }
+      // }
 
       /** On Enter; Cleans up browser adds on specific line. */
       if(e.keyCode === 13 && parentNode.previousSibling && parentNode.nodeName !== 'UL') {
@@ -519,7 +518,7 @@ const ContentEditable = React.createClass({
     if(!range) { return; }
 
     /** Primarily for Firefox.  Sets the range from CE to the first P. */
-    if(CE.children.length === 1 && CE.firstChild.textContent < 1 && !CE.firstChild.childNodes[0]) {
+    if(CE.children.length === 1 && CE.firstChild.textContent.length < 1 && !CE.firstChild.childNodes[0]) {
       range.selectNodeContents(CE.firstChild);
       sel.setSingleRange(range);
     }
@@ -647,7 +646,6 @@ const ContentEditable = React.createClass({
     this.preventEvent(e);
     let pastedText, dataType;
     let { range, parentNode, depth } = Utils.getSelectionData();
-    let domParser = new DOMParser();
 
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
@@ -674,33 +672,18 @@ const ContentEditable = React.createClass({
       let currentNode = parentNode.cloneNode(true);
 
       let newHtml = domWalk(currentNode, (child, root, depth) => {
-        if(root.isEqualNode(range.startContainer) && depth === 0) {
+        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer) )) {
           let start = range.startContainer.textContent.substring(0, range.startOffset);
           let end = range.startContainer.textContent.substring(range.startOffset);
-          let doc = domParser.parseFromString(pastedText, "text/html");
+          let liveNode = Parser.toLiveHtml(pastedText);
 
           if(root.nodeName === 'UL') {
             child.textContent = start;
-            child.appendChild(doc.body.firstChild);
+            child.appendChild(liveNode);
             child.appendChild(document.createTextNode(end));
           } else {
             root.textContent = start;
-            root.appendChild(doc.body.firstChild);
-            root.appendChild(document.createTextNode(end));
-          }
-        }
-        else if(child.isEqualNode(range.startContainer)) {
-          let start = range.startContainer.textContent.substring(0, range.startOffset);
-          let end = range.startContainer.textContent.substring(range.startOffset);
-          let doc = domParser.parseFromString(pastedText, "text/html");
-
-          if(root.nodeName === 'UL') {
-            child.textContent = start;
-            child.appendChild(doc.body.firstChild);
-            child.appendChild(document.createTextNode(end));
-          } else {
-            root.textContent = start;
-            root.appendChild(doc.body.firstChild);
+            root.appendChild(liveNode);
             root.appendChild(document.createTextNode(end));
           }
         }
@@ -708,20 +691,20 @@ const ContentEditable = React.createClass({
       });
       pastedText = newHtml.outerHTML;
     } else if(pastedText.match(/(<table)/g)) {
-      let doc = domParser.parseFromString(pastedText, 'text/html');
+      let liveNode = Parser.toLiveHtml(pastedText, { body: true });
       let table;
-      domWalk(doc.body, (child, root, depth) => {
+      domWalk(liveNode, (child, root, depth) => {
         if(child.nodeName === 'TABLE') {
           table = child;
         } else if(child.nodeName === 'TR' && child.textContent.length) {
           let p = document.createElement('p');
           p.textContent = child.textContent;
-          doc.body.appendChild(p);
+          liveNode.appendChild(p);
         }
         return child;
       });
-      doc.body.contains(table) ? doc.body.removeChild(table) : true;
-      pastedText = doc.body.innerHTML;
+      liveNode.contains(table) ? liveNode.removeChild(table) : true;
+      pastedText = liveNode.innerHTML;
     }
 
     return Utils.parseDescription(pastedText)

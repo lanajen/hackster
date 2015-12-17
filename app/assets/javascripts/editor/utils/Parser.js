@@ -253,4 +253,19 @@ export default {
       return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${line}</${tag}>`;
     }).join('');
   },
+
+  /** A single node only. */
+  toLiveHtml(string, options) {
+    let html = document.createElement('html');
+    html.innerHTML = string;
+
+    let node;
+    if(options && options.body) {
+      node = html.children[1];
+    } else {
+      node = html.children[1].firstChild;
+    }
+
+    return node;
+  },
 }

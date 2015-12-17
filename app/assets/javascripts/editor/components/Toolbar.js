@@ -414,7 +414,19 @@ const Toolbar = React.createClass({
   },
 
   handleToolbarButtonError(tagType) {
-    this.props.actions.toggleErrorMessenger(true, `Sorry, cannot transform that into a ${tagType}`);
+    let defaultMessage = `Sorry, cannot transform that into a ${tagType}`;
+    let errors = {
+      'bold': defaultMessage,
+      'italic': defaultMessage,
+      'h3': defaultMessage,
+      'anchor': defaultMessage,
+      'blockquote': defaultMessage,
+      'pre': defaultMessage,
+      'ul': defaultMessage,
+      'carousel': 'Please place the cursor where you\'d like to upload the image',
+      'video': 'Paste the url where you\'d like to upload the video and press enter'
+    };
+    this.props.actions.toggleErrorMessenger(true, errors[tagType]);
   },
 
   handleUnsavedChanges() {

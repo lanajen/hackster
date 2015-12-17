@@ -91,7 +91,7 @@ const Editor = React.createClass({
         </div>
         <Editable {...this.props} />
         <Dialog ref="browserSupport" actions={dialogActions} actionFocus="closeDialog" modal={false}>{dialogBody}</Dialog>
-        <Snackbar style={{zIndex: 10001}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon} autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
+        <Snackbar style={{zIndex: 10001, maxWidth: '100%'}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon} autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
       </div>
     );
   }

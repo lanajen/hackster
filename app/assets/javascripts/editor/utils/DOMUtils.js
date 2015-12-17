@@ -341,6 +341,18 @@ const Utils = {
     sel.setSingleRange(range);
   },
 
+  getHashFromNode(node) {
+    let hash;
+    if(typeof node === 'string') {
+      let search = 'data-hash="';
+      let start = node.indexOf(search) + search.length;
+      hash = node.substring(start, start+4);
+    } else {
+      hash = node.getAttribute('data-hash');
+    }
+    return hash;
+  },
+
   isNodeInUL(node) {
     let isParentUL = false;
     let rootParent = this.getRootParentElement(node);

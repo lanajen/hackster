@@ -5,6 +5,7 @@ import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import { ErrorIcons, BlockElements } from '../utils/Constants';
 import BlockModel from '../models/Block';
+import Parser from '../utils/Parser';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
@@ -228,19 +229,17 @@ export default function(state = initialState, action) {
 
     case Editor.createMediaByType:
       dom = state.dom;
-      let { newDom, rootHash, mediaHash } = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
-      newDom = _mergeAdjacentCE(newDom);
+      data = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
+      newDom = _mergeAdjacentCE(data.newDom);
       newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom || state.dom,
-        cursorPosition: {
-          ...state.cursorPosition,
-          rootHash: rootHash
-        },
+        cursorPosition: data.cursorPosition,
         setCursorToNextLine: false,
         isDataLoading: false,
-        lastMediaHash: mediaHash
+        lastMediaHash: data.mediaHash,
+        forceUpdate: true
       };
 
     case Editor.addImagesToCarousel:
@@ -330,12 +329,13 @@ export default function(state = initialState, action) {
 
     case Editor.handlePastedHTML:
       dom = state.dom;
-      newDom = handlePastedHTML(dom, action.html, action.depth, action.storeIndex);
-      newDom = _mergeAdjacentCE(newDom);
+      data = handlePastedHTML(dom, action.html, action.depth, action.storeIndex);
+      newDom = _mergeAdjacentCE(data.newDom);
       newDom = _insertPlaceholder(newDom);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        cursorPosition: data.cursorPosition
       };
 
     case Editor.toggleIE:
@@ -756,6 +756,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
                 hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
               };
   let mediaHash = media.hash;
+  let cursorPosition = { pos: 0, node: null, offset: 0, anchorNode: null, rootHash: null };
+  let newNodeForCursor;
 
   /** Sets the first image to show. */
   if(media.images) {
@@ -784,6 +786,10 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, CE);
+
+    newNodeForCursor = Parser.toHtml([CE.json[0]]);
+    newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
+    cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: CE.hash };
   } else if(depth === 0 && json[depth+1] && json[depth+1].children) {
     /** Remove the line if it was a video url. */
     if(mediaType === 'Video') {
@@ -794,20 +800,28 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     /** This will place the media block above the component. */
     dom.splice(storeIndex, 1, media);
     dom.splice(storeIndex+1, 0, component);
+
+    newNodeForCursor = Parser.toHtml([component.json[0]]);
+    newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
+    cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: component.hash };
   } else {
     /** Remove the line if it was video url. */
-    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth;
+    let bottomDepthStart = mediaType === 'Video' ? depth+2 : depth+1;
     let top = json.slice(0, depth);
-    let bottom = json.slice(bottomDepthStart, json.length);
+    let bottom = json.slice(bottomDepthStart);
     let topCE = { type: 'CE', hash: component.hash, json: top };
     let bottomCE = { type: 'CE', hash: _createNewHash(), json: bottom };
 
     dom.splice(storeIndex, 1, topCE);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, bottomCE);
+
+    newNodeForCursor = Parser.toHtml([bottomCE.json[0]]);
+    newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
+    cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: bottomCE.hash };
   }
 
-  return { newDom: dom, rootHash: component.hash, mediaHash: mediaHash };
+  return { newDom: dom, cursorPosition: cursorPosition, mediaHash: mediaHash };
 }
 
 function addImagesToCarousel(dom, map, storeIndex) {
@@ -1033,13 +1047,27 @@ function createPlaceholderElement(dom, element, position, storeIndex) {
 }
 
 function handlePastedHTML(dom, html, depth, storeIndex) {
+  let cursorPosition = { pos: depth, node: null, offset: 0, anchorNode: null, rootHash: null };
   let component = dom[storeIndex];
   let json = component.json;
+
+  html.json = html.json.map(item => {
+    if(!item.attribs || !item.attribs['data-hash']) {
+      item.attribs = { 'data-hash': _createNewHash() };
+    }
+    return item;
+  });
+
 
   json = json.slice(0, depth).concat(html.json).concat(json.slice(depth+1));
   component.json = json;
   dom.splice(storeIndex, 1, component);
-  return dom;
+
+  let node = Parser.toHtml([html.json[html.json.length-1]]);
+  node = Parser.toLiveHtml(node);
+  let anchorNode = Utils.getLastTextNode(node);
+
+  return { newDom: dom, cursorPosition: { ...cursorPosition, node: node, anchorNode: anchorNode, offset: anchorNode.textContent.length, rootHash: component.hash } };
 }
 
 function randomizeErrorActionIcon() {
