@@ -365,6 +365,10 @@ module UrlHelper
     super CGI::escape(tag), opts
   end
 
+  def tag_url tag, opts={}
+    super CGI::escape(tag), opts
+  end
+
   def thought_path thought, opts={}
     "/talk#/posts/#{thought.id}"
   end
