@@ -204,7 +204,7 @@ const Editable = React.createClass({
           input.value = JSON.stringify(results);
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
-          input.value = '';
+          input.value = '[]';
           this.props.actions.hasUnsavedChanges(false);
         }
       })
@@ -222,7 +222,7 @@ const Editable = React.createClass({
   },
 
   render() {
-    let dom = this.props.editor.dom || [];
+    let dom = this.props.editor.dom || [{ type: 'CE', json: [] }];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {
         let html = Parser.toHtml(item.json);

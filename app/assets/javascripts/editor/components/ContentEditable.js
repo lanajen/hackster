@@ -713,7 +713,7 @@ const ContentEditable = React.createClass({
       domWalk(doc.body, (child, root, depth) => {
         if(child.nodeName === 'TABLE') {
           table = child;
-        } else if(child.nodeName === 'TR') {
+        } else if(child.nodeName === 'TR' && child.textContent.length) {
           let p = document.createElement('p');
           p.textContent = child.textContent;
           doc.body.appendChild(p);
@@ -721,7 +721,7 @@ const ContentEditable = React.createClass({
         return child;
       });
       doc.body.contains(table) ? doc.body.removeChild(table) : true;
-      pastedText = doc.body.outerHTML;
+      pastedText = doc.body.innerHTML;
     }
 
     return Utils.parseDescription(pastedText)
