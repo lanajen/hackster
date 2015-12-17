@@ -9,6 +9,7 @@ import ImageUtils from '../../utils/Images';
 import Request from '../utils/Requests';
 import { BlockElements } from '../utils/Constants';
 import Hashids from 'hashids';
+import { domWalk } from '../utils/Traversal';
 
 const hashids = new Hashids('hackster', 4);
 
@@ -645,7 +646,8 @@ const ContentEditable = React.createClass({
   handlePaste(e) {
     this.preventEvent(e);
     let pastedText, dataType;
-    let { parentNode, depth } = Utils.getSelectionData();
+    let { range, parentNode, depth } = Utils.getSelectionData();
+    let domParser = new DOMParser();
 
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
@@ -662,16 +664,76 @@ const ContentEditable = React.createClass({
       }
     }
 
+    if(pastedText.length < 1) { return; }
+
     if(dataType === 'text') {
       pastedText = Parser.stringifyLineBreaksToParagraphs(pastedText, parentNode.nodeName);
+    }
+
+    if(parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0) {
+      let currentNode = parentNode.cloneNode(true);
+
+      let newHtml = domWalk(currentNode, (child, root, depth) => {
+        if(root.isEqualNode(range.startContainer) && depth === 0) {
+          let start = range.startContainer.textContent.substring(0, range.startOffset);
+          let end = range.startContainer.textContent.substring(range.startOffset);
+          let doc = domParser.parseFromString(pastedText, "text/html");
+
+          if(root.nodeName === 'UL') {
+            child.textContent = start;
+            child.appendChild(doc.body.firstChild);
+            child.appendChild(document.createTextNode(end));
+          } else {
+            root.textContent = start;
+            root.appendChild(doc.body.firstChild);
+            root.appendChild(document.createTextNode(end));
+          }
+        }
+        else if(child.isEqualNode(range.startContainer)) {
+          let start = range.startContainer.textContent.substring(0, range.startOffset);
+          let end = range.startContainer.textContent.substring(range.startOffset);
+          let doc = domParser.parseFromString(pastedText, "text/html");
+
+          if(root.nodeName === 'UL') {
+            child.textContent = start;
+            child.appendChild(doc.body.firstChild);
+            child.appendChild(document.createTextNode(end));
+          } else {
+            root.textContent = start;
+            root.appendChild(doc.body.firstChild);
+            root.appendChild(document.createTextNode(end));
+          }
+        }
+        return child;
+      });
+      pastedText = newHtml.outerHTML;
+    } else if(pastedText.match(/(<table)/g)) {
+      let doc = domParser.parseFromString(pastedText, 'text/html');
+      let table;
+      domWalk(doc.body, (child, root, depth) => {
+        if(child.nodeName === 'TABLE') {
+          table = child;
+        } else if(child.nodeName === 'TR') {
+          let p = document.createElement('p');
+          p.textContent = child.textContent;
+          doc.body.appendChild(p);
+        }
+        return child;
+      });
+      doc.body.contains(table) ? doc.body.removeChild(table) : true;
+      pastedText = doc.body.outerHTML;
     }
 
     return Utils.parseDescription(pastedText)
       .then(results => {
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
         let clean = results.filter(item => {
-          return item.type === 'CE' ? true : false;
+          return item.type === 'CE';
+        }).reduce((acc, curr) => {
+          acc.json = acc.json.concat(curr.json);
+          return acc;
         });
+
         this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       })

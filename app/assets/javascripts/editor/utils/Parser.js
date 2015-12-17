@@ -166,7 +166,6 @@ export default {
       }
       return prev;
     }, []);
-
     return json;
   },
 
@@ -175,6 +174,7 @@ export default {
 
     if(node.children.length) {
       node = node.children[0].tag === 'code' ? node.children[0] : node;
+      if(node.content) { children.push(this._createSpan(node.content)); }
       children.push(this._flattenChildren(node.children));
     } else {
       children.push(this._createSpan(node.content));

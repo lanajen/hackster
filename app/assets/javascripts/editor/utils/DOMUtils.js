@@ -4,7 +4,7 @@ import async from 'async';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import Helpers from '../../utils/Helpers';
-import { BlockElements } from './Constants';
+import { BlockElements, ElementWhiteList } from './Constants';
 import Request from './Requests';
 import Validator from 'validator';
 import { domWalk } from './Traversal';
@@ -1081,7 +1081,7 @@ const Utils = {
           /** Handle Carousel */
           mediaData = this.getImages(data.el);
           newEl = this.createCarousel(mediaData);
-          return newEl;
+          return [newEl, { type: 'CE', json: [data.el], hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }];
         } else {
           return {
             type: 'CE',
@@ -1090,7 +1090,18 @@ const Utils = {
         }
       }
 
-    }).filter(item => { return item !== null; });
+    }).
+    filter(item => {
+      return item !== null;
+    }).
+    reduce((acc, curr) => {
+      if(Array.isArray(curr)) {
+        acc = acc.concat(curr);
+      } else {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
 
     return tree;
   },
@@ -1483,17 +1494,21 @@ const Utils = {
   },
 
   parseTree(html) {
-    function handler(html) {
+    function handler(html, depth) {
       return _.map(html, (item) => {
         let name;
 
         /** Remove these nodes immediately. */
-        if(item.name === 'br' || item.name === 'script' || item.name === 'comment' || item.name === 'meta') {
+        if(item.name === 'script' || item.name === 'comment' || item.name === 'meta') {
+          return null;
+        } else if(item.name === 'br' && depth > 1) {
           return null;
         }
 
-        if(item.name) {
-          name = this.transformTagNames(item);
+        /** Transform tags to whitelist. */
+        item.name = this.transformTagNames(item);
+        if(!ElementWhiteList[item.name]) {
+          item.name = depth > 0 ? 'span' : 'p';
         }
 
         /** Remove invalid anchors. */
@@ -1536,12 +1551,12 @@ const Utils = {
             tag: name || item.name,
             content: null,
             attribs: item.attribs,
-            children: handler.apply(this, [item.children || []])
+            children: handler.apply(this, [item.children || [], depth+1])
           }
         }
       }).filter(item => { return item !== null; });
     }
-    return handler.call(this, html);
+    return handler.call(this, html, 0);
   },
 
   transformTagNames(node) {

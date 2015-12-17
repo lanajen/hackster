@@ -222,7 +222,7 @@ const Editable = React.createClass({
   },
 
   render() {
-    let dom = this.props.editor.dom;
+    let dom = this.props.editor.dom || [];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {
         let html = Parser.toHtml(item.json);
