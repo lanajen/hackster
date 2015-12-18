@@ -10,6 +10,7 @@ export default class Comment extends Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleReplyClick = this.handleReplyClick.bind(this);
     this.handlePost = this.handlePost.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +24,7 @@ export default class Comment extends Component {
   }
 
   handleDeleteClick(commentId, e) {
+    e.preventDefault();
     if (window) {
       let confirm = window.confirm('Are you sure you want to delete this comment?');
       if (confirm) {
@@ -34,6 +36,7 @@ export default class Comment extends Component {
   }
 
   handleReplyClick(id, e) {
+    e.preventDefault();
     this.props.triggerReplyBox(true, id);
   }
 
@@ -41,7 +44,8 @@ export default class Comment extends Component {
     this.props.postComment(comment, true);
   }
 
-  handleExpandButtonClick() {
+  handleEditClick(e) {
+    e.preventDefault();
 
   }
 
@@ -70,6 +74,14 @@ export default class Comment extends Component {
 
     let trailingMiddot = counter ? (<li className="middot">•</li>) : (null);
 
+    let editButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
+             ? (<li>
+                  <a href="javascript:void(0);" onClick={this.handleEditClick.bind(this, )}>Edit</a>
+                </li>)
+             : (null);
+
+    let trailingMiddot2 = editButton ? (<li className="middot">•</li>) : (null);
+
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
                     <LikeButton commentId={id} currentUserId={this.props.currentUser.id} parentId={parent_id} likingUsers={likingUsers} deleteLike={this.props.deleteLike} postLike={this.props.postLike} />
@@ -79,6 +91,8 @@ export default class Comment extends Component {
                     {counter}
                     {trailingMiddot}
                     {deleteOrFlagButton}
+                    {trailingMiddot2}
+                    {editButton}
                   </ul>)
                 : likingUsers.length > 0
                 ? (<ul className="comment-actions">
