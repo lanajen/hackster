@@ -11,6 +11,10 @@ export default class Comment extends Component {
     this.handleReplyClick = this.handleReplyClick.bind(this);
     this.handlePost = this.handlePost.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
+    this.cancelEditing = this.cancelEditing.bind(this);
+    this.updateComment = this.updateComment.bind(this);
+
+    this.state = { isEditing: false };
   }
 
   componentDidMount() {
@@ -46,11 +50,22 @@ export default class Comment extends Component {
 
   handleEditClick(e) {
     e.preventDefault();
+    this.setState({ isEditing: true });
+  }
 
+  cancelEditing() {
+    this.setState({ isEditing: false });
+  }
+
+  updateComment(form) {
+    if(form.comment.raw_body !== this.props.comment.raw_body) {
+      this.props.updateComment({ comment: { id: this.props.comment.id, raw_body: form.comment.raw_body } });
+      this.cancelEditing();
+    }
   }
 
   render() {
-    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userSlug } = this.props.comment;
+    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, raw_body, user_id, userName, userSlug } = this.props.comment;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
     let date = window ? window.moment(createdAt).fromNow() : createdAt;
 
@@ -76,7 +91,7 @@ export default class Comment extends Component {
 
     let editButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
              ? (<li>
-                  <a href="javascript:void(0);" onClick={this.handleEditClick.bind(this, )}>Edit</a>
+                  <a href="javascript:void(0);" onClick={this.handleEditClick}>Edit</a>
                 </li>)
              : (null);
 
@@ -106,7 +121,7 @@ export default class Comment extends Component {
                       </div>
                       <CommentForm commentable={{ id: commentable_id, type: commentable_type }}
                                    formData={this.props.formData}
-                                   isReply={true}
+                                   isReply={parent_id !== null}
                                    onPost={this.handlePost}
                                    parentId={parent_id || id}
                                    placeholder={this.props.placeholder} />
@@ -159,7 +174,31 @@ export default class Comment extends Component {
                     {replyBox}
                   </div>);
 
-    return (comment);
+    let editForm = (<div>
+                      <div className={rootClass} id={id}>
+                        <div className="comment-title">
+                          <div className="avatar">{avatar}</div>
+                          <div className="profile-name">
+                            <h4>
+                              <strong>{name}</strong>
+                            </h4>
+                            <span className="text-muted comment-date">{date}</span>
+                          </div>
+                        </div>
+                        <CommentForm cancelEditing={this.cancelEditing}
+                                     commentable={{ id: commentable_id, type: commentable_type }}
+                                     formData={this.props.formData}
+                                     isEditing={true}
+                                     isReply={parent_id !== null}
+                                     onPost={this.updateComment}
+                                     parentId={parent_id || id}
+                                     placeholder={this.props.placeholder}
+                                     rawBody={raw_body} />
+                      </div>
+                    </div>);
+    let editableComment = this.state.isEditing ? (editForm) : (comment);
+
+    return (editableComment);
   }
 }
 
@@ -171,11 +210,13 @@ Comment.PropTypes = {
   deleteLike: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   handlePost: PropTypes.func.isRequired,
+  parentIsDeleted: PropTypes.bool.isRequired,
   placeholder: PropTypes.string,
   postComment: PropTypes.func.isRequired,
   postLike: PropTypes.func.isRequired,
   replyBox: PropTypes.object.isRequired,
   scrollTo: PropTypes.object.isRequired,
   toggleScrollTo: PropTypes.func.isRequired,
-  triggerReplyBox: PropTypes.func.isRequired
+  triggerReplyBox: PropTypes.func.isRequired,
+  updateComment: PropTypes.func.isRequired
 };

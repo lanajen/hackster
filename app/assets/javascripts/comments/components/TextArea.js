@@ -17,7 +17,7 @@ export default class TextArea extends Component {
     let placeholder = this.props.placeholder || 'Write a comment';
 
     return (
-      <textarea className="comments-textarea" placeholder={placeholder} rows={3}></textarea>
+      <textarea className="comments-textarea" placeholder={placeholder} rows={3} value={this.props.value}></textarea>
     );
   }
 }

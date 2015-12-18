@@ -78,6 +78,12 @@ export default function(state = initialState, action) {
         replyBox: { show: action.show, id: action.id }
       };
 
+    case Comments.updateComment:
+      return {
+        ...state,
+        comments: updateComment(state.comments, action.comment)
+      };
+
     default:
       return state;
   }
@@ -146,4 +152,18 @@ function _addToOrRemoveFromArray(array, bool, item) {
     array = array.filter((x) => { item !== x; });
   }
   return array;
+}
+
+function updateComment(comments, newComment) {
+  return comments.map(comment => {
+    if(newComment.parent_id) {
+      comment.children = comment.children.map(child => {
+        child = child.id === newComment.id ? newComment : child;
+        return child;
+      });
+    } else {
+      comment.root = comment.root.id === newComment.id ? newComment : comment.root;
+    }
+    return comment;
+  });
 }

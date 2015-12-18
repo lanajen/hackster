@@ -12,5 +12,6 @@ export default {
     toggleLikes: null,
     toggleScrollTo: null,
     triggerReplyBox: null,
+    updateComment: null,
   })
 }

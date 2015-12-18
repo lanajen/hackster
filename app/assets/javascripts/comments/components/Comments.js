@@ -10,6 +10,7 @@ export default class Comments extends Component {
     this.postComment = this.postComment.bind(this);
     this.postLike = this.postLike.bind(this);
     this.triggerReplyBox = this.triggerReplyBox.bind(this);
+    this.updateComment = this.updateComment.bind(this);
   }
 
   componentWillUpdate(nextProps) {
@@ -30,6 +31,10 @@ export default class Comments extends Component {
     this.props.actions.toggleFormData(true, null);
   }
 
+  updateComment(comment) {
+    this.props.actions.patchComment(comment, this.props.commentStore.user.csrfToken);
+  }
+
   deleteLike(commentId, parentId) {
     this.props.actions.deleteLike(commentId, parentId, this.props.commentStore.user.csrfToken);
   }
@@ -46,42 +51,44 @@ export default class Comments extends Component {
     let user = this.props.commentStore.user;
     const comments = this.props.commentStore.comments.length > 0
                    ? this.props.commentStore.comments.map((comment, index) => {
-      let children = comment.children.map((child, i) => {
-        return <Comment key={i}
-                        comment={child}
-                        children={null}
-                        currentUser={user}
-                        deleteLike={this.deleteLike}
-                        formData={this.props.commentStore.formData}
-                        deleteComment={this.deleteComment}
-                        placeholder={this.props.placeholder}
-                        postComment={this.postComment}
-                        postLike={this.postLike}
-                        replyBox={this.props.commentStore.replyBox}
-                        scrollTo={this.props.commentStore.scrollTo}
-                        toggleScrollTo={this.props.actions.toggleScrollTo}
-                        triggerReplyBox={this.triggerReplyBox}
-                        parentIsDeleted={comment.root.deleted}
-                        placeholder={this.props.placeholder} />
-      });
-      return <Comment key={index}
-                      comment={comment.root}
-                      children={children}
-                      currentUser={user}
-                      deleteLike={this.deleteLike}
-                      formData={this.props.commentStore.formData}
-                      deleteComment={this.deleteComment}
-                      placeholder={this.props.placeholder}
-                      postComment={this.postComment}
-                      postLike={this.postLike}
-                      replyBox={this.props.commentStore.replyBox}
-                      scrollTo={this.props.commentStore.scrollTo}
-                      toggleScrollTo={this.props.actions.toggleScrollTo}
-                      triggerReplyBox={this.triggerReplyBox}
-                      parentIsDeleted={false}
-                      placeholder={this.props.placeholder} />
-                    })
-                    : ( <div>Be the first to comment!</div> );
+                      let children = comment.children.map((child, i) => {
+                        return <Comment key={i}
+                                        comment={child}
+                                        children={null}
+                                        currentUser={user}
+                                        deleteLike={this.deleteLike}
+                                        formData={this.props.commentStore.formData}
+                                        deleteComment={this.deleteComment}
+                                        placeholder={this.props.placeholder}
+                                        postComment={this.postComment}
+                                        postLike={this.postLike}
+                                        replyBox={this.props.commentStore.replyBox}
+                                        scrollTo={this.props.commentStore.scrollTo}
+                                        toggleScrollTo={this.props.actions.toggleScrollTo}
+                                        triggerReplyBox={this.triggerReplyBox}
+                                        parentIsDeleted={comment.root.deleted}
+                                        placeholder={this.props.placeholder}
+                                        updateComment={this.updateComment} />
+                      });
+                     return <Comment key={index}
+                                     comment={comment.root}
+                                     children={children}
+                                     currentUser={user}
+                                     deleteLike={this.deleteLike}
+                                     formData={this.props.commentStore.formData}
+                                     deleteComment={this.deleteComment}
+                                     placeholder={this.props.placeholder}
+                                     postComment={this.postComment}
+                                     postLike={this.postLike}
+                                     replyBox={this.props.commentStore.replyBox}
+                                     scrollTo={this.props.commentStore.scrollTo}
+                                     toggleScrollTo={this.props.actions.toggleScrollTo}
+                                     triggerReplyBox={this.triggerReplyBox}
+                                     parentIsDeleted={false}
+                                     placeholder={this.props.placeholder}
+                                     updateComment={this.updateComment} />
+                     })
+                     : ( <div>Be the first to comment!</div> );
 
     return (
       <div>

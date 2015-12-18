@@ -13,6 +13,17 @@ export default {
     });
   },
 
+  deleteComment(id, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .del(`/api/v1/comments/${id}`)
+        .set('X-CSRF-Token', csrfToken)
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.comment);
+        });
+    });
+  },
+
   postComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
@@ -25,11 +36,12 @@ export default {
     });
   },
 
-  deleteComment(id, csrfToken) {
+  updateComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del(`/api/v1/comments/${id}`)
+        .put(`/api/v1/comments/${comment.comment.id}`)
         .set('X-CSRF-Token', csrfToken)
+        .send(comment)
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);
         });
