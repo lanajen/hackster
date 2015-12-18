@@ -152,7 +152,7 @@
   overflow: visible;
 }
 #outer-wrapper {
-  margin: 0 auto 70px;
+  margin: 0 auto;
   overflow-x: visible;
   min-height: 0;
   height: auto;
@@ -172,7 +172,12 @@ body {
   letter-spacing: 0.3px;
   color: #879191;
 }
-
+.wrapper {
+  width: 100%;
+  max-width: 1170px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
 
 /*  -- NOTIFICATIONS --  */
@@ -537,7 +542,9 @@ div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
   border-bottom: 1px solid #ddd;
 }
 
-
+.help-block {
+  text-align: center;
+}
 .btn .caret, .btn-follow .caret {
   margin-left: 7px;
 }
@@ -639,7 +646,7 @@ button#burger-menu:focus {
   margin: 0;
   padding: 0;
   position: fixed;
-  right: 13px;
+  right: 23px;
   top: 25px;
   z-index: 12;
 }
@@ -806,6 +813,40 @@ tr.sortable-disabled td {
   font-weight: 400;
   font-style: italic;
 }
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar {
+  z-index: 0;
+}
+.react-editor-toolbar-container .react-editor-toolbar-wrapper.fixed-toolbar {
+  top: 65px;
+}
+.react-editor-carousel button {
+  border-radius: 0! important;
+}
+.react-editor-carousel button.btn-danger {
+  max-height: 34px;
+  box-shadow: 0 6px #963E3E;
+  transition: all ease-out .1s;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger:hover {
+  transition: all ease-out .1s;
+  top: 2px;
+  box-shadow: 0 4px #963E3E;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger:active {
+  transition: all ease-out .1s;
+  top: 6px;
+  box-shadow: none;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger span.fa {
+  top: -8px;
+}
+.react-editor-carousel button span.fa {
+  position: relative !important;
+  top: -7px;
+}
 /* End Editor Project Story */
 
 
@@ -887,13 +928,14 @@ div#tob-bar-bg {
 }
 .user-profile {
   top: 19px;
+  right: 23px;
 }
 
 #navigation {
   height: 93px;
   background: #fff;
   padding: 0 26px 15px 26px;
-  width: calc(100% - 100px);
+  width: calc(100% - 140px);
   margin-left: auto;
   margin-right: auto;
   margin-top: -23px;

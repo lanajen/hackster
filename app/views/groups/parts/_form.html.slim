@@ -21,6 +21,8 @@
     .pull-left
       = f.submit 'Save changes', class: 'btn btn-primary'
       = link_to 'Cancel', group_products_path, class: 'btn btn-link'
+      - if @part.persisted? and current_user.is? :admin
+        = link_to 'Edit as admin', edit_admin_part_path(@part), class: 'btn btn-warning btn-sm'
     - if @part.persisted?
       .pull-right= link_to 'Delete product', group_product_path(@group, @part), class: 'btn btn-danger', data: { confirm: "Are you sure you want to delete this product? There's no way back!", method: :delete }
 
