@@ -1328,7 +1328,7 @@ const Utils = {
     return { id: id, caption: caption, url: url, content: content };
   },
 
-  getVideoData(el) {
+  getVideoData(element) {
     let src, figcaption;
 
     (function recurse(el) {

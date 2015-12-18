@@ -265,7 +265,6 @@ export default {
     } else {
       node = html.children[1].firstChild;
     }
-
     return node;
   },
 }
