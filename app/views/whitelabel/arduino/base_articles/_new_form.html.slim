@@ -1,0 +1,62 @@
+.col-md-8.col-md-offset-2
+  .box
+    .box-title
+      h2 Share your work with the community
+
+    .box-content
+      p.text-center
+        ' Before you get started, check our
+        = link_to 'content guidelines', guidelines_path
+        | .
+      br
+      = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
+        = f.error_notification
+
+        = f.input :type, as: :hidden
+        = f.input :product_tags_string, as: :hidden
+        = f.input :platform_tags_string, as: :hidden
+
+        .form-group
+          .col-xs-12
+            .template-chooser-container.clearfix
+              input type="radio" name="base_article[type]" value="Project" id="base_article_type_project" checked=(@project.type == 'Project')
+              label for="base_article_type_project"
+                span.option-title
+                  i.fa.fa-check.text-success
+                  span Project
+                span.option-description Describe a standalone device you made.
+              input type="radio" name="base_article[type]" value="Article" id="base_article_type_article" checked=(@project.type == 'Article')
+              label for="base_article_type_article"
+                span.option-title
+                  i.fa.fa-check.text-success
+                  span Article
+                span.option-description A more flexible, blog post-like format for everything else.
+            p.help-block
+              ' Not sure which one to choose?
+              = link_to 'Learn more about templates.', 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
+
+        .form-group
+          .col-xs-12
+            = f.button :submit, 'Continue', class: 'btn-block btn-primary'
+
+.col-md-8.col-md-offset-2
+  .hr or
+
+.col-md-8.col-md-offset-2.mg-40
+  .box
+    .box-content
+      p.text-center
+        strong> Is there an existing write-up?
+        | Enter the URL below and we'll import it.
+        br
+        strong> Note:
+        | We only import the URL you enter, not subsequent pages.
+        br
+        small= link_to 'Click here to import multiple pages at once.', new_project_import_path
+
+      = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
+        .form-group
+          = text_field_tag :urls, params[:urls], placeholder: 'Page URL', class: 'form-control'
+          = hidden_field_tag :platform_tags_string, params[:base_article].try(:[], :platform_tags_string)
+          = hidden_field_tag :product_tags_string, params[:base_article].try(:[], :product_tags_string)
+        = submit_tag 'Import page', class: 'btn btn-primary btn-block'

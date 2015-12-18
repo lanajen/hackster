@@ -331,12 +331,10 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    project = BaseArticle.last
+    project = is_whitelabel? ? current_platform.projects.last : BaseArticle.last
     url = case project
     when Product
       product_path(project)
-    when ExternalProject
-      project_path(project)
     else
       url_for(project)
     end
@@ -352,7 +350,7 @@ class ProjectsController < ApplicationController
         @project.locked = true
         msg += 'The project will be locked for modifications until grades are sent out.'
       end
-    else
+    elsif @project.assignment.submit_by_date.present?
       msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
     end
     @project.save
