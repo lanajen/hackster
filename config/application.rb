@@ -110,5 +110,15 @@ module HackerIo
     config.cashier.adapter.redis = RedisConn.conn
 
     config.middleware.insert_before(Rack::Runtime, RackReverseProxyMod)
+
+    default_host_regexp = Regexp.new(".+\.#{ENV['DEFAULT_HOST']}")
+    allowed_origins = [default_host_regexp]
+    allowed_origins += ENV['ASSET_ORIGINS'].split(/,/) if ENV['ASSET_ORIGINS']
+    config.middleware.insert_before ActionDispatch::Static, "Rack::Cors", debug: ENV['LOG_LEVEL'] == 'debug', logger: (-> { Rails.logger }) do
+      allow do
+        origins *allowed_origins
+        resource '/assets/*', headers: :any, methods: :get
+      end
+    end
   end
 end
