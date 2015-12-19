@@ -1,3 +1,7 @@
+function notuseful(){
+  console.log('you should delete me');
+}
+
 function setAffixableBottom() {
   if ($('#project-side-nav').length){
     var cont = $('#content .container');

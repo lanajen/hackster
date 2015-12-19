@@ -34,5 +34,3 @@
 //= require mobile
 //= require home
 //= require components
-
-(function(){});
