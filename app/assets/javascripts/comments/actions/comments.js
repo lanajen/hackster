@@ -119,11 +119,18 @@ export function removeIdFromDeleteList(id) {
   };
 }
 
-export function toggleFormData(isLoading, error) {
+export function toggleCommentUpdated() {
+  return {
+    type: Comments.toggleCommentUpdated
+  };
+}
+
+export function toggleFormData(isLoading, error, id) {
   return {
     type: Comments.toggleFormData,
     isLoading: isLoading,
-    error: error
+    error: error,
+    id: id
   };
 }
 

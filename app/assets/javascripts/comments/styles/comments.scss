@@ -66,6 +66,11 @@
       }
     }
 
+    .comments-preview {
+      @extend .comments-textarea;
+      min-height: 60px;
+    }
+
     .comments-form-button-container {
       @include flexbox((
         flex: 1,
@@ -85,16 +90,6 @@
         ));
         border: none;
         padding-top: 0.3em;
-      }
-
-      .comments-form-cancel-button {
-        color: red;
-        padding: 1%;
-        margin-right: 1%;
-
-        &:hover {
-          text-decoration: none;
-        }
       }
     }
   }

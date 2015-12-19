@@ -3,6 +3,7 @@ import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
 import LikeButton from './LikeButton';
 import smoothScroll from '../utils/SmoothScroll';
+import markdown from '../utils/Markdown'
 
 export default class Comment extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ export default class Comment extends Component {
     this.handleReplyClick = this.handleReplyClick.bind(this);
     this.handlePost = this.handlePost.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
-    this.cancelEditing = this.cancelEditing.bind(this);
+    this.dismissForm = this.dismissForm.bind(this);
     this.updateComment = this.updateComment.bind(this);
 
     this.state = { isEditing: false };
@@ -24,6 +25,13 @@ export default class Comment extends Component {
       smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
         this.props.toggleScrollTo(false, null);
       });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.commentUpdated.id === this.props.comment.id) {
+      this.dismissForm('Editing');
+      this.props.toggleCommentUpdated();
     }
   }
 
@@ -45,7 +53,7 @@ export default class Comment extends Component {
   }
 
   handlePost(comment) {
-    this.props.postComment(comment, true);
+    this.props.postComment(comment, this.props.comment.id);
   }
 
   handleEditClick(e) {
@@ -53,14 +61,18 @@ export default class Comment extends Component {
     this.setState({ isEditing: true });
   }
 
-  cancelEditing() {
-    this.setState({ isEditing: false });
+  dismissForm(type) {
+    if(type === 'Editing') {
+      this.setState({ isEditing: false });
+    } else {
+      this.props.triggerReplyBox(false, null);
+    }
   }
 
   updateComment(form) {
     if(form.comment.raw_body !== this.props.comment.raw_body) {
-      this.props.updateComment({ comment: { id: this.props.comment.id, raw_body: form.comment.raw_body } });
-      this.cancelEditing();
+      let id = this.props.comment.id
+      this.props.updateComment({ comment: { id: id, raw_body: form.comment.raw_body } }, id);
     }
   }
 
@@ -120,8 +132,11 @@ export default class Comment extends Component {
                       <div className="reply-box-center-line">
                       </div>
                       <CommentForm commentable={{ id: commentable_id, type: commentable_type }}
+                                   commentId={id}
+                                   dismiss={this.dismissForm.bind(this, 'Reply')}
+                                   dismissable={true}
                                    formData={this.props.formData}
-                                   isReply={parent_id !== null}
+                                   isReply={(parent_id !== null) || (parent_id === null && this.props.children.length > 0)}
                                    onPost={this.handlePost}
                                    parentId={parent_id || id}
                                    placeholder={this.props.placeholder} />
@@ -167,7 +182,7 @@ export default class Comment extends Component {
                           <span className="text-muted comment-date">{date}</span>
                         </div>
                       </div>
-                      <div className="comment-body" dangerouslySetInnerHTML={{ __html: body }}></div>
+                      <div className="comment-body" dangerouslySetInnerHTML={{ __html: markdown.renderInline(raw_body) }}></div>
                       {actions}
                     </div>
                     {this.props.children}
@@ -185,8 +200,10 @@ export default class Comment extends Component {
                             <span className="text-muted comment-date">{date}</span>
                           </div>
                         </div>
-                        <CommentForm cancelEditing={this.cancelEditing}
-                                     commentable={{ id: commentable_id, type: commentable_type }}
+                        <CommentForm commentable={{ id: commentable_id, type: commentable_type }}
+                                     commentId={id}
+                                     dismiss={this.dismissForm.bind(this, 'Editing')}
+                                     dismissable={true}
                                      formData={this.props.formData}
                                      isEditing={true}
                                      isReply={parent_id !== null}
@@ -195,7 +212,9 @@ export default class Comment extends Component {
                                      placeholder={this.props.placeholder}
                                      rawBody={raw_body} />
                       </div>
+                      {this.props.children}
                     </div>);
+
     let editableComment = this.state.isEditing ? (editForm) : (comment);
 
     return (editableComment);
@@ -204,6 +223,7 @@ export default class Comment extends Component {
 
 Comment.PropTypes = {
   comment: PropTypes.object.isRequired,
+  commentUpdated: PropTypes.object.isRequired,
   children: PropTypes.array,
   currentUser: PropTypes.object.isRequired,
   deleteComment: PropTypes.func.isRequired,

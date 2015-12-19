@@ -26,13 +26,14 @@ export default class Comments extends Component {
     this.props.actions.deleteComment(id, this.props.commentStore.user.csrfToken);
   }
 
-  postComment(comment) {
+  postComment(comment, id) {
     this.props.actions.postComment(comment, true, this.props.commentStore.user.csrfToken);
-    this.props.actions.toggleFormData(true, null);
+    this.props.actions.toggleFormData(true, null, id);
   }
 
-  updateComment(comment) {
+  updateComment(comment, id) {
     this.props.actions.patchComment(comment, this.props.commentStore.user.csrfToken);
+    this.props.actions.toggleFormData(true, null, id);
   }
 
   deleteLike(commentId, parentId) {
@@ -54,6 +55,7 @@ export default class Comments extends Component {
                       let children = comment.children.map((child, i) => {
                         return <Comment key={i}
                                         comment={child}
+                                        commentUpdated={this.props.commentStore.commentUpdated}
                                         children={null}
                                         currentUser={user}
                                         deleteLike={this.deleteLike}
@@ -64,6 +66,7 @@ export default class Comments extends Component {
                                         postLike={this.postLike}
                                         replyBox={this.props.commentStore.replyBox}
                                         scrollTo={this.props.commentStore.scrollTo}
+                                        toggleCommentUpdated={this.props.actions.toggleCommentUpdated}
                                         toggleScrollTo={this.props.actions.toggleScrollTo}
                                         triggerReplyBox={this.triggerReplyBox}
                                         parentIsDeleted={comment.root.deleted}
@@ -72,6 +75,7 @@ export default class Comments extends Component {
                       });
                      return <Comment key={index}
                                      comment={comment.root}
+                                     commentUpdated={this.props.commentStore.commentUpdated}
                                      children={children}
                                      currentUser={user}
                                      deleteLike={this.deleteLike}
@@ -82,6 +86,7 @@ export default class Comments extends Component {
                                      postLike={this.postLike}
                                      replyBox={this.props.commentStore.replyBox}
                                      scrollTo={this.props.commentStore.scrollTo}
+                                     toggleCommentUpdated={this.props.actions.toggleCommentUpdated}
                                      toggleScrollTo={this.props.actions.toggleScrollTo}
                                      triggerReplyBox={this.triggerReplyBox}
                                      parentIsDeleted={false}
