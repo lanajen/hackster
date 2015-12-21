@@ -669,10 +669,12 @@ const ContentEditable = React.createClass({
     }
 
     if(parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0) {
+      range.deleteContents();
+
       let currentNode = parentNode.cloneNode(true);
 
       let newHtml = domWalk(currentNode, (child, root, depth) => {
-        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer) )) {
+        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
           let start = range.startContainer.textContent.substring(0, range.startOffset);
           let end = range.startContainer.textContent.substring(range.startOffset);
           let liveNode = Parser.toLiveHtml(pastedText);
@@ -689,6 +691,7 @@ const ContentEditable = React.createClass({
         }
         return child;
       });
+
       pastedText = newHtml.outerHTML;
     } else if(pastedText.match(/(<table)/g)) {
       let liveNode = Parser.toLiveHtml(pastedText, { body: true });
