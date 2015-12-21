@@ -149,7 +149,7 @@ class ApplicationController < ActionController::Base
     # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
       session[request.host] ||= {}
-      session[request.host][cookie_name] = request.path
+      session[request.host][cookie_name] = request.fullpath
     end
     # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end
