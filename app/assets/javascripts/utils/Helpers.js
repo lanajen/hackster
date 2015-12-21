@@ -63,7 +63,7 @@ module.exports = {
     let type = url.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
-    if(!service) { return null; }
+    if (!service) { return null; }
     let Exts = this.URL_EXTENSIONS;
     let regExps = {
       'channel9': {
@@ -85,6 +85,11 @@ module.exports = {
         regexp: Exts['mp4'],
         embed: id => id,
         index: 0
+      },
+      'twitter': {
+        regexp: /twitter.com\/([a-zA-Z0-9_@]+\/status\/[0-9]+)/,
+        embed: id => `https://twitter.com/${id}`,
+        index: 1
       },
       'vimeo': {
         regexp: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,

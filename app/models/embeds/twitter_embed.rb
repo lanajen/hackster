@@ -1,0 +1,2 @@
+class TwitterEmbed < BaseEmbed
+end
