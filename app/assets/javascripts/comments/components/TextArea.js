@@ -43,7 +43,7 @@ export default class TextArea extends Component {
 
     if(e.keyCode === 8 && this.state.rows > 3) {
       let lines = textarea.value.split('\n');
-      console.log('changed', lines);
+
       if(!lines[lines.length-1].length) {
         this.setState({ rows: this.state.rows-1 });
       }
