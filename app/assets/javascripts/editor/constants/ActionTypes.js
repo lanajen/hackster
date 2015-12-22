@@ -49,7 +49,7 @@ export default {
     toggleIE: null,
     transformInlineToText: null,
     updateCarouselImages: null,
-    updateComponent: null
+    updateComponent: null,
   }),
 
   ImageBucket: keyMirror({
