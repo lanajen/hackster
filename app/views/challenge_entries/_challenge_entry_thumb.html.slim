@@ -1,6 +1,10 @@
 - project = entry.project
 li.award
-  h5= link_to project.name, project
+  h5
+    - if project
+      = link_to project.name, project
+    - else
+      .text-danger This project has been deleted
   p.clearfix.small
     span.pull-left
       strong> Status:
