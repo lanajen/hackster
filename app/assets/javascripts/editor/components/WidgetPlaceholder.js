@@ -65,8 +65,11 @@ const WidgetPlaceholder = React.createClass({
   },
 
   toggleHover(hovered) {
+    let styles = this.state.widgetType === 'twitter' ? this.getIFrameOverlayStyles(this.state.height) : this.getRootOverlayStyles();
     this.setState({
-      hovered: hovered
+      hovered: hovered,
+      height: styles.height,
+      overlayStyles: styles
     });
   },
 
@@ -88,8 +91,8 @@ const WidgetPlaceholder = React.createClass({
   getIFrameOverlayStyles(height) {
     let iframe = React.findDOMNode(this.refs.iframe);
     return {
-      height: height,
-      width: iframe.width,
+      height: height || iframe.offsetHeight,
+      width: iframe.offsetWidth,
       left: iframe.offsetLeft,
       position: 'absolute'
     };
@@ -121,7 +124,7 @@ const WidgetPlaceholder = React.createClass({
     let tweet = <span style={{ color: 'lightblue' }}>tweet</span>
 
     let placeholder = data.widgetType === 'twitter'
-                    ? (<iframe ref="iframe" id={data.id} border="0" frameBorder="0" height={this.state.height} width="550" src={`https://twitframe.com/show?${data.embed}`} onLoad={this.handleIFrameLoad}></iframe>)
+                    ? (<iframe ref="iframe" id={data.id} border="0" frameBorder="0" height={this.state.height} width="500" src={`https://twitframe.com/show?${data.embed}`} onLoad={this.handleIFrameLoad}></iframe>)
                     : (<h3>Apologies, {type} is now deprecated in the Story section.</h3>);
 
     let overlay = this.state.hovered
