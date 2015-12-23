@@ -54,6 +54,8 @@ body {
 .header {
   position: relative;
   font-family: Monda;
+  background: #fff;
+  padding-bottom: 10px;
 }
 .header .main-menu .rainbow-logo {
   height: 46px;
