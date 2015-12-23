@@ -502,17 +502,6 @@ $(function () {
     }
   });
 
-  $('a.toggle-footer').on('click', function(e){
-    e.preventDefault();
-    $(this).toggleClass('footer-affixed');
-    $('footer').toggleClass('affixed');
-    if ($(this).hasClass('footer-affixed')) {
-      $(this).css('bottom', $('footer').height());
-    } else {
-      $(this).css('bottom', 0);
-    }
-  });
-
   if ($('#signup-popup').length) {
     showSignupPopupOrNot();
   }

@@ -36,9 +36,8 @@ end
 %>
 
 <% if @next_page %>
-  $('#loader').html('<div class="text-center"><%= will_paginate @projects %></div>');
+  $('#loader').html('<a class="btn btn-default btn-block" href="/?page=<%= (safe_page_params || 1) + 1 %>">Load more projects</a>');
 <% else %>
-  $(window).off('scroll', $loadMore);
   $('#loader').html("<p>Hurray! You've reached the end of the internet.</p>");
 <% end %>
 
