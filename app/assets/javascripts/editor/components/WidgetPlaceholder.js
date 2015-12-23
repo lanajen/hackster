@@ -6,33 +6,60 @@ const WidgetPlaceholder = React.createClass({
     return {
       hovered: false,
       height: null,
-      overlayStyles: {}
+      overlayStyles: {},
+      widgetType: null,
+      id: null
     };
   },
 
   componentWillMount() {
-    if(this.props.widgetData.widgetType === 'twitter' && window) {
+    if(window) {
       window.addEventListener('message', this.handleMessage);
     }
   },
 
   componentDidMount() {
     if(this.props.widgetData.widgetType !== 'twitter') {
-      let height = React.findDOMNode(this).height;
-      this.setState({ height: height, overlayStyles: this.getOverlayStyles(height) });
+      let styles = this.getRootOverlayStyles();
+      this.setState({
+        height: styles.height,
+        overlayStyles: styles,
+        widgetType: this.props.widgetData.widgetType
+      });
+    } else {
+      this.setState({ widgetType: 'twitter', id: this.props.widgetData.id });
     }
   },
 
   componentWillUnmount() {
-    if(this.props.widgetData.widgetType === 'twitter' && window) {
+    if(window) {
       window.removeEventListener('message', this.handleMessage);
     }
   },
 
+  componentDidUpdate(nextProps) {
+    if(nextProps.widgetData.widgetType !== 'twitter' && this.state.widgetType === 'twitter') {
+      let styles = this.getRootOverlayStyles();
+      this.setState({ height: styles.height, overlayStyles: styles });
+    }
+
+    if(this.state.widgetType !== nextProps.widgetData.widgetType) {
+      this.setState({ widgetType: nextProps.widgetData.widgetType });
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if(this.state.id !== nextProps.widgetData.id) {
+      this.setState({ id: nextProps.widgetData.id, height: null });
+    }
+  },
+
   handleMessage(e) {
+    e.preventDefault();
     if(e.origin !== 'https://twitframe.com' || parseInt(e.data.element, 10) !== parseInt(this.props.widgetData.id, 10)) { return; }
 
-    this.setState({ height: parseInt(e.data.height, 10), overlayStyles: this.getOverlayStyles(e.data.height) });
+    let height = this.state.height === null ? parseInt(e.data.height, 10) : parseInt(e.data.height, 10) - 20;
+    this.setState({ height: height, overlayStyles: this.getIFrameOverlayStyles(height) });
 
     if(window && window.pe) { window.pe.resizePeContainer(); }
   },
@@ -43,8 +70,14 @@ const WidgetPlaceholder = React.createClass({
     });
   },
 
-  handleWidgetDeletion() {
+  handleWidgetDeletion(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     this.props.deleteWidget(this.props.storeIndex);
+    this.setState({
+      hovered: false
+    });
   },
 
   handleIFrameLoad() {
@@ -52,13 +85,23 @@ const WidgetPlaceholder = React.createClass({
     iframe.contentWindow.postMessage({ element: this.props.widgetData.id, query: 'height' }, 'https://twitframe.com');
   },
 
-  getOverlayStyles(height) {
-    let underlay = React.findDOMNode(this).firstChild;
-
+  getIFrameOverlayStyles(height) {
+    let iframe = React.findDOMNode(this.refs.iframe);
     return {
       height: height,
-      width: underlay.width,
-      left: underlay.offsetLeft,
+      width: iframe.width,
+      left: iframe.offsetLeft,
+      position: 'absolute'
+    };
+  },
+
+  getRootOverlayStyles() {
+    let el = React.findDOMNode(this);
+    return {
+      height: el.offsetHeight,
+      width: el.offsetWidth,
+      left: el.offsetLeft,
+      marginTop: '-10px', // H3 has a global style on them, this sets it back to normal.
       position: 'absolute'
     };
   },
