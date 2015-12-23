@@ -404,6 +404,21 @@ $desktop-width: 1024px;
     align-items: center,
     justify-content: center
   ));
+
+  &.twitter {
+    border: none;
+    padding-left: 5%;
+  }
+
+  .widget-placeholder-overlay {
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+      justify-content: center
+    ));
+    background: rgba(0,0,0,0.5);
+  }
 }
 
 /** Toolbar */

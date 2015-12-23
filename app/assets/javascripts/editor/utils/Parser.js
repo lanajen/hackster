@@ -1,6 +1,7 @@
 import Validator from 'validator';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
+import sanitizer from 'sanitizer';
 import _ from 'lodash';
 import { BlockElements, ElementWhiteList } from './Constants';
 import { treeWalk } from './Traversal';
@@ -64,7 +65,7 @@ export default {
           } else {
             return {
               tag: 'span',
-              content: item.data,
+              content: sanitizer.escape(item.data),
               attribs: {},
               children: []
             };
@@ -75,7 +76,7 @@ export default {
           }
           return {
             tag: item.name,
-            content: item.children[0].data,
+            content: sanitizer.escape(item.children[0].data),
             attribs: item.attribs,
             children: []
           };
