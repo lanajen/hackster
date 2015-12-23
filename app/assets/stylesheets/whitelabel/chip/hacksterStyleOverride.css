@@ -36,3 +36,11 @@
 .pagination>li>span {
   color: #EB008B;
 }
+
+#user-dropdown-toggle {
+  background: #EB008B;
+}
+
+#user-nav-face {
+  border-color: #EB008B !important;
+}
