@@ -1,0 +1,20 @@
+#login-popup.popup-overlay.modal-popup data-width='450'
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close data-target='#login-popup' &times;
+      h4 Welcome back!
+
+      = render 'devise/sessions/form'
+      hr
+      .social-icons.text-center
+        p.text-muted
+          small Or connect with your social account:
+        = render 'devise/shared/omniauth', css: 'icon'
+
+      hr
+
+      p
+        small
+          ' New here?
+          = link_to 'Create an account', new_user_registration_path
