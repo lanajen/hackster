@@ -35,16 +35,7 @@
           ul#navbar-right.clearfix
             li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-            li.dropdown
-              a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                | Log in
-              .dropdown-menu style=("padding: 15px; width: 250px;")
-                = render 'devise/sessions/form'
-                hr
-                .social-icons.text-center
-                  p.text-muted
-                    small Or connect with your social account:
-                  = render 'devise/shared/omniauth', css: 'icon'
+            li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
         .pull-right style='padding-top:11px'
           - if user_signed_in?

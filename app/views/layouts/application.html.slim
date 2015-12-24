@@ -146,8 +146,7 @@ html(lang="en")
                 ul#navbar-right.clearfix
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                  li
-                    a.btn.btn-primary.login-link#show-login-form href=new_user_session_path Log in
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
@@ -202,7 +201,8 @@ html(lang="en")
             li= link_to content_tag(:i, '', class: 'fa fa-facebook'), 'http://www.facebook.com/hacksterio'
             li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
             li Hackster #{Date.today.year}
-      = render 'shared/modals/login_popup'
+      - unless user_signed_in?
+        = render 'shared/modals/login_popup'
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
