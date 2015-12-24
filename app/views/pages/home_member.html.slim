@@ -129,7 +129,8 @@
                         var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
                         thumb.append(item);
 
-          #loader.text-center= link_to 'Load more projects', root_path(page: (safe_page_params || 1) + 1), class: 'btn btn-block btn-default'
+          - if @next_page
+            #loader.text-center= link_to 'Load more projects', root_path(page: @next_page), class: 'btn btn-block btn-default'
 
       #hide.hide
         - @followed.each do |rel|

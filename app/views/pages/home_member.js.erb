@@ -36,7 +36,7 @@ end
 %>
 
 <% if @next_page %>
-  $('#loader').html('<a class="btn btn-default btn-block" href="/?page=<%= (safe_page_params || 1) + 1 %>">Load more projects</a>');
+  $('#loader').html('<a class="btn btn-default btn-block" href="/?page=<%= @next_page %>">Load more projects</a>');
 <% else %>
   $('#loader').html("<p>Hurray! You've reached the end of the internet.</p>");
 <% end %>
