@@ -55,6 +55,10 @@ class BaseArticleObserverWorker < BaseWorker
     update_counters record, :approved_projects
   end
 
+  def after_pending_review record
+    NotificationCenter.notify_via_email :published, :base_article, record.id
+  end
+
   def after_rejected record
     record.update_column :hide, true
     update_counters record, :approved_projects

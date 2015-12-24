@@ -21,9 +21,9 @@ class SocialProfileBuilder
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # Rails.logger.info 'data: ' + data.to_yaml
-    # Rails.logger.info 'provider: ' + provider.to_s
-    # Rails.logger.info 'user: ' + @user.to_yaml
+    # Rails.logger.debug 'data: ' + data.to_yaml
+    # Rails.logger.debug 'provider: ' + provider.to_s
+    # Rails.logger.debug 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
       send provider, info, data
       @user.email_confirmation = @user.email
@@ -37,7 +37,7 @@ class SocialProfileBuilder
       )
     end
     # logger.info 'auth: ' + @user.authorizations.inspect
-    @user.generate_user_name if SlugHistory.where(value: @user.user_name).exists?
+    @user.generate_user_name unless UserNameValidator.new(@user).valid?
     @user.password = Devise.friendly_token[0,20]
     @user.logging_in_socially = true
     @user

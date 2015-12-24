@@ -1,3 +1,9 @@
+@mixin tablet {
+  @media (max-width: 768px) {
+    @content
+  }
+}
+
 .r-comments {
 
   .comments-form {
@@ -6,6 +12,16 @@
     ));
     margin-bottom: 70px;
     min-height: 72px;
+
+    @include tablet {
+      @include flexbox((
+        flex-direction: column
+      ));
+    }
+
+    &.reply {
+      padding-left: 20px;
+    }
 
     .comments-textarea {
       @include flexbox((
@@ -35,6 +51,15 @@
       ));
       border: 1px solid #eeedf2;
       border-radius: 0 3px 3px 0;
+
+      @include tablet {
+        @include flexbox((
+          align-items: flex-start,
+          justify-content: flex-start
+        ));
+        border: none;
+        padding-top: 0.3em;
+      }
     }
   }
 
@@ -42,6 +67,7 @@
     margin-top: 40px;
     padding-top: 40px;
     border-top: 1px solid #ddd;
+    font-size: 1em;
 
     &:hover .comment-actions .default-hidden {
       display: inline-block;
@@ -66,24 +92,22 @@
       .profile-name {
         h4 {
           margin: 0;
-          font-size: 18px;
+          font-size: 1em;
         }
         .comment-date {
-          font-size: 16px;
         }
       }
     }
 
     .comment-body {
       margin-bottom: 10px;
-      font-size: 18px;
     }
 
     .comment-actions {
-      font-size: 16px;
       list-style: none;
       padding: 0;
       margin: 0 -10px;
+      font-size: 0.8em;
 
       li {
         display: inline-block;
@@ -91,8 +115,21 @@
         padding-right: 10px;
       }
 
-      .default-hidden {
-        display: none;
+      .middot {
+        padding: 0;
+        color: #999;
+      }
+
+      .r-comment-like-button {
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .r-comments-counter {
+        color: #1cacf7;
       }
     }
 

@@ -272,8 +272,8 @@ class NotificationHandler
         case respect.respectable
         when Comment
           comment = context[:comment] = respect.respectable
-          context[:thought] = comment.commentable
-          if comment.user.subscribed_to? notification_type, 'new_like'
+          context[:commentable] = comment.commentable
+          if comment.user and comment.user.subscribed_to? notification_type, 'new_like'
             context[:user] = comment.user
           else
             context[:users] = []

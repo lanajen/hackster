@@ -76,7 +76,7 @@
                           - if current_user != member.user or current_user.is? :admin
                             = f_member.link_to_remove content_tag(:i, '', class: 'fa fa-times-circle-o'), class: 'btn btn-sm btn-danger'
                   tr.sortable-disabled
-                    td  colspan=4  = f_team.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
+                    td  colspan=5  = f_team.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
 
               = f_team.input :full_name, label: 'Team name'
               - if current_user.is? :beta_tester or current_user.is? :admin

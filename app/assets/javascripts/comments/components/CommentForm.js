@@ -24,6 +24,7 @@ export default class CommentForm extends Component {
 
   handlePostClick(e) {
     e.preventDefault();
+
     let form = {
       comment: {
         'raw_body': ReactDOM.findDOMNode(this.refs.textarea).value,
@@ -37,9 +38,11 @@ export default class CommentForm extends Component {
   render() {
     let buttonLabel = this.props.formData.isLoading
                     ? (<i className="fa fa-spinner fa-spin"></i>)
-                    : ('Post')
+                    : ('Post');
+    let rootClass = this.props.isReply ? 'comments-form reply' : 'comments-form';
+
     return (
-      <div className="comments-form">
+      <div className={rootClass}>
         <TextArea ref="textarea" placeholder={this.props.placeholder} />
         <div className="comments-form-button-container">
           <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonLabel}</button>
@@ -53,6 +56,7 @@ CommentForm.PropTypes = {
   parentId: PropTypes.number.isRequired,
   commentable: PropTypes.object.isRequired,
   formData: PropTypes.object.isRequired,
+  isReply: PropTypes.bool,
   onPost: PropTypes.func.isRequired,
   placeholder: PropTypes.string
 };

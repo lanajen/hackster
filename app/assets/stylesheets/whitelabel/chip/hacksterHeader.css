@@ -1,0 +1,114 @@
+@import url(https://fonts.googleapis.com/css?family=Monda);
+body {
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 1200px) {
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 520px) and (max-width: 767px) {
+  .menu-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    transition: all .35s;
+  }
+}
+@media (max-width: 519px) {
+  .main-menu .logo {
+    text-align: center;
+    margin-left: -30px;
+  }
+  .menu-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    transition: all .35s;
+  }
+}
+.header .main-menu .main-menu-items, .header .sub-menu .sub-menu-items {
+  text-align: center;
+  color: #bdc3c7;
+  letter-spacing: 1px;
+  line-height: 20px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.header {
+  position: relative;
+  font-family: Monda;
+  background: #fff;
+  padding-bottom: 10px;
+}
+.header .main-menu .rainbow-logo {
+  height: 46px;
+}
+.header .main-menu .main-menu-items .menu-item:hover {
+  color: #EB008B;
+  cursor: pointer;
+}
+.header .main-menu a {
+  color: #888;
+}
+.header .main-menu a:hover {
+  color: #EB008B;
+  text-decoration: none;
+}
+.header .sub-menu .sub-menu-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header .sub-menu .sub-menu-items .menu-item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: all .35s;
+}
+.header .sub-menu .sub-menu-items .menu-item.active {
+  color: #EB008B;
+}
+.header .sub-menu .sub-menu-items .menu-item:hover {
+  color: #EB008B;
+  cursor: pointer;
+}
+.header .sub-menu a {
+  color: #333;
+}
+.header .sub-menu a:hover {
+  color: #EB008B;
+  text-decoration: none;
+}
+.header .help-banner a {
+  color: #fff;
+  text-decoration: none;
+}
+.header .help-banner a:hover {
+  text-decoration: none;
+}
+.header .help-banner-msg {
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 5px;
+  color: #fff;
+  font-size: 14px;
+  background: #EB008B;
+  font-family: Noto Sans, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 1px;
+}

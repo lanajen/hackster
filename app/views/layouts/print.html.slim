@@ -20,7 +20,8 @@ html(lang="en")
     = javascript_include_tag "//use.typekit.net/okr0yzp.js"
     javascript:
       try{Typekit.load();}catch(e){}
-    link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
+    - cache ['favicons', '2015-12-20'] do
+      = render 'shared/favicons'
     = content_for :head
 
   body#print

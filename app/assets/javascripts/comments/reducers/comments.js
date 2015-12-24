@@ -60,6 +60,12 @@ export default function(state = initialState, action) {
         formData: { isLoading: action.isLoading, error: action.error }
       };
 
+    case Comments.toggleLikes:
+      return {
+        ...state,
+        comments: toggleLikes(state.comments, action.commentId, action.parentId, state.user.id, action.bool)
+      };
+
     case Comments.toggleScrollTo:
       return {
         ...state,
@@ -92,27 +98,52 @@ function addComment(comments, comment) {
 }
 
 function removeComment(comments, comment) {
-  return comments.reduce((prev, curr) => {
+  return comments.reduce((acc, curr) => {
     if(curr.root.id === comment.parent_id) {
       curr.children = curr.children.filter(child => {
         return child.id !== comment.id;
       });
-      prev.push(curr);
+      acc.push(curr);
     } else if(curr.root.id === comment.id && curr.children.length > 0) {
       curr.root = { ...curr.root, deleted: true };
-      prev.push(curr);
+      acc.push(curr);
     } else if(curr.root.id !== comment.id) {
-      prev.push(curr);
+      acc.push(curr);
     }
-    return prev;
+    return acc;
   }, []);
 }
 
 function createListOfIdsToDelete(comments) {
-  return comments.reduce((prev, curr) => {
+  return comments.reduce((acc, curr) => {
     if(curr.root.deleted && curr.children.length < 1) {
-      prev.push(curr.root.id);
+      acc.push(curr.root.id);
     }
-    return prev;
+    return acc;
   }, []);
+}
+
+function toggleLikes(comments, commentId, parentId, userId, bool) {
+  return comments.map(comment => {
+    if(parentId === null && comment.root.id === commentId) {
+      comment.root.likingUsers = _addToOrRemoveFromArray(comment.root.likingUsers, bool, userId);
+    } else {
+      comment.children = comment.children.map(child => {
+        if(child.id === commentId) {
+          child.likingUsers = _addToOrRemoveFromArray(child.likingUsers, bool, userId);
+        }
+        return child;
+      });
+    }
+    return comment;
+  });
+}
+
+function _addToOrRemoveFromArray(array, bool, item) {
+  if(bool) {
+    array.push(item);
+  } else {
+    array = array.filter((x) => { item !== x; });
+  }
+  return array;
 }

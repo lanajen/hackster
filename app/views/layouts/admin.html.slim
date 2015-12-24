@@ -5,7 +5,8 @@ html(lang="en")
     meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title
-    | <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    - cache ['favicons', '2015-12-20'] do
+      = render 'shared/favicons'
     = csrf_meta_tags
     /! Le HTML5 shim, for IE6-8 support of HTML elements
     /![if lt IE 9]
@@ -52,6 +53,7 @@ html(lang="en")
                 li= link_to 'Messages', admin_messages_path
                 li= link_to 'Parts', admin_parts_path
                 li= link_to 'Respects', admin_respects_path
+                li= link_to 'Jobs', admin_jobs_path
             li
               a.divider-vertical= "|"
             li= link_to 'Logs', admin_logs_path

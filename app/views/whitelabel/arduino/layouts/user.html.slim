@@ -1,0 +1,8 @@
+- @user = @user.decorate
+= content_for :no_container do
+  #platform-page.page-div.user
+
+    #content
+      = yield
+
+= render template: "layouts/#{current_layout}"

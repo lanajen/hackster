@@ -148,11 +148,6 @@ class PagesController < ApplicationController
     title 'Content Guidelines'
   end
 
-  def jobs
-    title 'Jobs at Hackster'
-    meta_desc "Join the Hackster team to help more hardware developers make things."
-  end
-
   def ping
     render text: 'pong!'
   end

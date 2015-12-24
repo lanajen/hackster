@@ -361,8 +361,12 @@ module UrlHelper
     super platform.user_name, opts
   end
 
-  def tag_path tag
-    "/projects/tags/#{CGI::escape(tag)}"
+  def tag_path tag, opts={}
+    super CGI::escape(tag), opts
+  end
+
+  def tag_url tag, opts={}
+    super CGI::escape(tag), opts
   end
 
   def thought_path thought, opts={}
@@ -396,7 +400,25 @@ module UrlHelper
         options = params_for_project options
       end
     end
-    super options
+
+    output = super options
+
+    # hack to give arduino its path prefix
+    # if is_whitelabel? and current_site.has_path_prefix?
+    #   if output == '/'
+    #     return current_site.path_prefix
+    #   elsif output =~ /\Ahttp/
+    #     unless current_site.path_prefix.in?(output)
+    #       u = URI.parse output
+    #       u.path = current_site.path_prefix + u.path
+    #       return u.to_s
+    #     end
+    #   elsif output.start_with?('/') and !output.start_with?(current_site.path_prefix)
+    #     return current_site.path_prefix + output
+    #   end
+    # end
+
+    output
   end
 
   def url_for_wiki_page_form group, page

@@ -1,0 +1,1395 @@
+/* TYPONINE SANS PRO */
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.svg") format("svg");
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.svg") format("svg");
+    font-weight: 100;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.svg") format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.svg") format("svg");
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.svg") format("svg");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.svg") format("svg");
+    font-weight: 500;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.svg") format("svg");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.svg") format("svg");
+    font-weight: 600;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.svg") format("svg");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Pro';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.svg") format("svg");
+    font-weight: 800;
+    font-style: italic;
+}
+
+/* TYPONINE MONO */
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.svg") format("svg");
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.svg") format("svg");
+    font-weight: 100;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.svg") format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.svg") format("svg");
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.svg") format("svg");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.svg") format("svg");
+    font-weight: 500;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.svg") format("svg");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.svg") format("svg");
+    font-weight: 600;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.svg") format("svg");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Typonine Sans Mono';
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.eot");
+    src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.svg") format("svg");
+    font-weight: 800;
+    font-style: italic;
+}
+
+
+
+
+
+
+/* FOR LOCAL PREVIEW ONLY */
+/*.pe-container {
+  overflow: visible;
+}
+#outer-wrapper {
+  margin: 0 auto;
+  overflow-x: visible;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+}*/
+/* END - FOR LOCAL PREVIEW ONLY */
+
+
+
+
+body {
+  font-family: 'Typonine Sans Pro';
+  background: #ecf1f1;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  line-height: 23px;
+  letter-spacing: 0.3px;
+  color: #879191;
+}
+.wrapper {
+  width: 100%;
+  max-width: 1170px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+/*  -- NOTIFICATIONS --  */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 3px;
+}
+.close {
+  text-shadow: none;
+  color: white;
+  opacity: 1;
+}
+.alert-top {
+  background: #7F8C8D;
+  border-color: transparent;
+  border-radius: 3px;
+  color: #FFF;
+  padding: 6px 30px 6px 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+  min-width: 250px;
+  width: auto;
+  margin-bottom: 6px;
+}
+.alert-top.alert-success {
+  background: #7F8C8D;
+  border-color: transparent;
+}
+.alert-warning {
+  background-color: #7F8C8D;
+  border-color: transparent;
+  color: white;
+}
+.alert-warning .alert-link {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
+.alert-warning .alert-link:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
+/*  -- END NOTIFICATIONS --  */
+
+
+
+
+/*  -- CREATE TOOLBAR --  */
+div.arduino-bbq {
+  height: 50px;
+  background: white;
+  width: 100%;
+  z-index: 5;
+}
+div.arduino-bbq.bbq-overlap {
+  z-index: 11;
+}
+div.arduino-bbq.bbq-overlap #ham > svg,
+div.arduino-bbq.bbq-overlap div.user-profile svg {
+  fill: white;
+}
+/*  -- END CREATE TOOLBAR --  */
+
+#content {
+  padding: 80px 0 60px;
+}
+
+.btn-info, .btn-info:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+.btn-sm {
+  padding: 0;
+  vertical-align: baseline;
+}
+
+a {
+  color: #879191;
+  text-decoration: none;
+}
+a:hover, a:focus {
+  color: #00979C;
+  text-decoration: none;
+}
+h4, .h4 {
+  font-size: 21px;
+  line-height: 23px;
+  letter-spacing: 0.5px;
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+.thumb-inner {
+  height: 138px !important;
+  padding: 17px 20px 10px 20px !important;
+}
+.thumb p {
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.6px;
+}
+.thumb .project-stats li {
+  letter-spacing: 0.6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  width: auto;
+  margin-right: 15px;
+}
+.thumb .project-stats li:last-child {
+  margin-right: 0;
+}
+.section-thumbs > h4 {
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0.6px;
+}
+.list-inline > li {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.user-name {
+  font-weight: 600;
+}
+.thumb-image-inner-top {
+  padding: 24px 24px;
+}
+.stat-figure {
+  font-weight: 600;
+}
+.project-stats {
+  color: #879191;
+}
+.wide-thumb-body-bottom {
+  position: relative;
+  bottom: 0;
+}
+a.follow-button {
+  /*width: 100%;*/
+  position: relative;
+  bottom: 0;
+}
+.btn, .btn-follow {
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+}
+.btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow, .btn-group-sm > .btn, .btn-group-sm > .btn-follow, .btn-group-sm > .btn-follow {
+  font-size: 15px;
+  line-height: 17px;
+}
+.btn-default {
+  transition: all ease-out .1s;
+  border: 1px solid #DADADA;
+  color: #7F8C8D;
+  background-color: white;
+}
+#projects-list .btn-default,
+div.content.projects .btn-default,
+div.content.projects .btn-default:hover,
+div.content.projects .btn-default:active,
+div.content.projects .btn-default:focus {
+  border: none;
+}
+#projects-list .btn-group > .btn-default {
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: 1px solid #DADADA;
+}
+#projects-list .btn-group > .btn-default:last-child {
+  border-right: none !important;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-group.open .dropdown-toggle {
+  transition: all ease-out .1s;
+  border: 1px solid #DAE3E3;
+  color: #434f54;
+  background-color: #DAE3E3;
+  box-shadow: none;
+}
+.btn-group > .btn-default {
+  border-left: 0;
+  border-right: 1px solid #DADADA;
+}
+.btn-group > .btn-default:first-child {
+  border-left: 1px solid #DADADA;
+}
+.btn-group > .btn-default:first-child:hover {
+  border-left: 1px solid #DAE3E3;
+}
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DADADA !important;
+}
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DAE3E3 !important;
+}
+
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+  color: #434F54;
+  text-decoration: none;
+  outline: 0;
+  background-color: #DAE3E3;
+}
+.pagination > li > a, .pagination > li > span {
+  transition: all ease-out .1s;
+  border: none;
+  background-color: #DAE3E3;
+  margin-right: 7px;
+  color: #7f8c8d;
+  box-shadow: 0 4px #BDC7C7;
+  top: 0;
+  font-size: 13px;
+  line-height: 13px;
+}
+.pagination > li > a:hover {
+  transition: all ease-out .1s;
+  top: 2px;
+  background-color: #DAE3E3;
+  box-shadow: 0 2px #BDC7C7;
+  color: #7f8c8d;
+}
+.pagination > li > a:active {
+  top: 4px;
+  box-shadow: none;
+}
+.pagination > li > a:focus {
+  outline: none;
+  background-color: #DAE3E3;
+}
+.pagination > .active > a {
+  background-color: #00979C;
+  box-shadow: 0 4px #005c5f;
+}
+.pagination > .active > a:hover {
+  background-color: #00979C;
+  box-shadow: 0 2px #005c5f;
+}
+.pagination > .active > a:focus {
+  background-color: #00979C;
+}
+.pagination > li:last-child > a, .pagination > li:first-child > a {
+  border-radius: 0;
+}
+.pagination > li.disabled > a, .pagination > li.disabled > a:hover, .pagination > li.disabled > a:focus {
+  background-color: #DAE3E3;
+  color: #A5A5A5;
+  cursor: default;
+}
+.pagination > li.disabled > a:hover {
+  top: 0;
+  box-shadow: 0 4px #BDC7C7;
+}
+
+.btn-default.btn-sm, .btn-group-sm > .btn-default.btn, .btn-group-sm > .btn-default.btn-follow {
+  padding: 10px 14px;
+  margin-right: 7px;
+}
+body.whitelabel .navbar .navbar-brand {
+  padding: 18px 0 0 0;
+}
+.navbar .navbar-in {
+  max-width: 1170px;
+  margin: 0 auto;
+  /*padding-left: 70px;*/
+}
+#navbar-right {
+  padding-right: 0;
+}
+.navbar-brand {
+  font-family: 'Typonine Sans Pro';
+  font-size: 30px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+.navbar-brand a {
+  color: #00979C;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+
+.dropdown-menu {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.1);
+  border-top: 3px solid #00979C;
+  margin: 15px 0 0 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 15px;
+  color: #434F54;
+  letter-spacing: 0.7px;
+}
+.dropdown-menu > li > a {
+  padding: 6px 14px;
+  color: #434F54;
+  font-size: 13.5px;
+  line-height: 20px;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+  color: #434F54;
+  text-decoration: none;
+  outline: 0;
+  background-color: #dae3e3;
+}
+div.dropdown-caret {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 7.5px 8.5px 7.5px;
+  border-color: transparent transparent #00979C transparent;
+  position: absolute;
+  z-index: 3;
+  top: -10px;
+  left: 12px;
+}
+div.user-profile div.dropover.simple {
+  font-size: 12px;
+  line-height: 15px;
+  color: #434F54;
+  letter-spacing: 0.7px;
+}
+
+
+
+.dropdown-menu.pull-right {
+  right: auto;
+  left: 0;
+}
+
+div.pe-panel#hardware .table > tbody > tr > td {
+  vertical-align: middle;
+}
+.parts-widget td {
+  background: #F4F7F7;
+}
+.parts-widget select {
+  border-right: 1px solid #ddd;
+}
+div.pe-panel#hardware ul.list-inline, div.pe-panel#software ul.list-inline {
+  margin: 0;
+}
+div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.help-block {
+  text-align: center;
+}
+.btn .caret, .btn-follow .caret {
+  margin-left: 7px;
+}
+.btn-primary, .btn-secondary {
+  transition: all ease-out .1s;
+  position: relative;
+  background: #00979C;
+  border: 0;
+  top: 0;
+  box-shadow: 0 6px #005c5f;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  padding: 12px 20px 9px 20px;
+  letter-spacing: 0.9px;
+  max-height: 34px;
+}
+
+.btn-secondary {
+  background: #DAE3E3;
+  box-shadow: 0 6px #BDC7C7;
+  color: #7f8c8d;
+}
+.pe-nav + .pe-nav {
+  margin-left: 65px;
+}
+.pe-nav li a.tab-create {
+  background: transparent;
+  box-shadow: none;
+  color: #95A5A6;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition-property: color;
+  transition-duration: 0.2s;
+  transition-delay: 0s;
+  padding: 5px 6px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  margin-right: 16px;
+}
+.pe-nav li:last-child a.tab-create {
+  margin-right: 0;
+}
+.pe-nav li a.tab-create:hover {
+  color: #566262;
+  transition-property: color;
+  transition-duration: 0.2s;
+  transition-delay: 0s;
+}
+.pe-nav li a.tab-create.active {
+  border: 1px solid #95A5A6;
+}
+.btn-primary:hover {
+  transition: all ease-out .1s;
+  background: #00979C;
+  top: 2px;
+  box-shadow: 0 4px #005c5f;
+}
+.btn-secondary:hover {
+  transition: all ease-out .1s;
+  background: #DAE3E3;
+  top: 2px;
+  box-shadow: 0 4px #BDC7C7;
+  color: #7f8c8d;
+}
+.btn-primary:active {
+  transition: all ease-out .1s;
+  background: #00979C;
+  box-shadow: none;
+  top: 6px;
+}
+.btn-secondary:active {
+  transition: all ease-out .1s;
+  background: #DAE3E3;
+  top: 6px;
+  box-shadow: none;
+}
+.btn-primary:focus {
+  background: #00979C;
+  outline: none;
+}
+.btn-secondary:focus {
+  background: #DAE3E3;
+  outline: none;
+  color: #7f8c8d;
+}
+button#burger-menu {
+  background-image: asset-url('whitelabel/arduino/burger-icon.svg');
+  background-size: 18px;
+  background-repeat: no-repeat;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  border: none;
+  position: fixed;
+  top: 16px;
+  left: 19px;
+  z-index: 12;
+}
+button#burger-menu:focus {
+  outline: none;
+}
+.arduino-bbq .login-link {
+  background-color: transparent;
+  color: #879191;
+  box-shadow: none;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  letter-spacing: 0.9px;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  right: 23px;
+  top: 25px;
+  z-index: 12;
+}
+.arduino-bbq a.login-link:hover {
+  color: #00979C;
+}
+.arduino-bbq .login-link {
+  min-width: 0;
+}
+
+
+.pull-right {
+  padding-top: 0 !important;
+  margin-top: 11px;
+}
+
+
+#navbar-search .form-control {
+  font-size: 13px;
+  line-height: 13px;
+  letter-spacing: 0.9px;
+  font-weight: 400;
+  background-color: #ecf1f1;
+  padding: 0 20px 0 45px;
+  height: 40px;
+  width: 300px;
+  margin-right: 10px;
+  border-radius: 0;
+}
+.select2-container--default .select2-selection--multiple {
+  border-radius: 0;
+  border: 1px solid #DADADA;
+}
+#navbar-search input[type=text] {
+  text-transform: none;
+  font-weight: 400;
+  color: #7f8c8d;
+  letter-spacing: 0.6px;
+}
+
+
+::-webkit-input-placeholder {
+   text-transform: uppercase;
+   font-weight: 500 !important;
+   letter-spacing: 1px;
+   padding-top: 2px;
+}
+:-moz-placeholder {
+   text-transform: uppercase;
+   font-weight: 500 !important;
+   letter-spacing: 1px;
+   padding-top: 2px;
+}
+::-moz-placeholder {
+   text-transform: uppercase;
+   font-weight: 500 !important;
+   letter-spacing: 1px;
+   padding-top: 2px;
+}
+:-ms-input-placeholder {
+   text-transform: uppercase;
+   font-weight: 500 !important;
+   letter-spacing: 1px;
+   padding-top: 2px;
+}
+div.pe-panel div.clearfix {
+  min-height: 55px;
+}
+div.pe-panel .btn-sm.btn-success {
+  padding: 10px 20px;
+  font-weight: 600;
+}
+div.pe-panel#team textarea {
+  margin-right: 0;
+  width: 100%;
+  max-width: 185px;
+}
+a.btn.btn-sm.btn-danger.remove_nested_fields {
+  padding: 3px 6px 2px;
+}
+
+div.pe-panel#team a.btn-xs.btn-success.add_nested_fields,
+div.pe-panel#team a.btn-xs.btn-danger.remove_nested_fields,
+div.pe-panel#team a.btn-xs.btn-success.nested-field-table.add_nested_fields {
+  margin-left: 0 !important;
+  float: right;
+  position: relative;
+  margin-top: 10px;
+}
+tr.sortable-disabled td {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.table-condensed > tbody > tr > td {
+  padding: 15px 5px;
+}
+.form-horizontal .fields .form-group {
+  margin-bottom: 15px;
+}
+.box + .box {
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+.form-horizontal .checkbox {
+  margin-bottom: 20px;
+}
+.table > thead > tr > th {
+  border-bottom: 1px solid #C5C5C5;
+}
+.box-title.small-title .subheading {
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #879191;
+}
+.box-title h4 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 26px;
+  color: #879191;
+  margin-bottom: 10px;
+}
+
+.btn-success {
+  background: #39C19D;
+  border: 1px solid #39C19D;
+}
+.btn-success:hover, .btn-success:active, .btn-success:focus {
+  background: #38CAA3;
+  border: 1px solid #38CAA3;
+  box-shadow: none;
+}
+.btn-danger {
+  color: #fff;
+  background-color: #da5b4a;
+  border-color: #da5b4a;
+}
+.btn-danger:hover, .btn-danger:active, .btn-danger:focus {
+  background-color: #EA6D5C;
+  border-color: #EA6D5C;
+  box-shadow: none;
+}
+
+
+
+/* Editor Project Story */
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar .toolbar-btn:hover {
+  color: #fff;
+  background-color: #00979C;
+}
+.content-editable {
+  padding: 2% 0;
+  font-size: 1.5rem;
+  word-wrap: break-word;
+  font-family: 'Typonine Sans Pro';
+  font-size: 18px;
+}
+.react-editor-carousel .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption,
+.react-editor-video .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption {
+  color: #879191;
+  font-family: 'Typonine Sans Pro';
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  font-style: italic;
+}
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar {
+  z-index: 0;
+}
+.react-editor-toolbar-container .react-editor-toolbar-wrapper.fixed-toolbar {
+  top: 65px;
+}
+.react-editor-carousel button {
+  border-radius: 0! important;
+}
+.react-editor-carousel button.btn-danger {
+  max-height: 34px;
+  box-shadow: 0 6px #963E3E;
+  transition: all ease-out .1s;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger:hover {
+  transition: all ease-out .1s;
+  top: 2px;
+  box-shadow: 0 4px #963E3E;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger:active {
+  transition: all ease-out .1s;
+  top: 6px;
+  box-shadow: none;
+  background-color: #da5b4a;
+}
+.react-editor-carousel button.btn-danger span.fa {
+  top: -8px;
+}
+.react-editor-carousel button span.fa {
+  position: relative !important;
+  top: -7px;
+}
+/* End Editor Project Story */
+
+
+
+/* Responsive Dropover Toolbar */
+div#feed_cont {
+  display: none;
+}
+.grid_row {
+  margin-left: 0;
+}
+/* End Responsive Dropover Toolbar */
+
+
+#navbar-search .input-group-addon {
+  top: 12px;
+  position: absolute;
+  z-index: 3;
+}
+.create-logo {
+  float: left;
+  background-image: asset-url('whitelabel/arduino/CreateProjectsLogo.svg');
+  background-size: 308px;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 308px;
+  margin-left: -8px;
+  margin-top: 6px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+.arduino-bbq.affix #navigation{
+  height: 64px;
+  padding-top: 0;
+  padding-bottom: 0;
+  /*margin-top: -23px;*/
+  transition: all ease-out .1s;
+}
+
+.arduino-bbq.affix #navigation .create-logo {
+  background-image: asset-url('whitelabel/arduino/CreateProjectsLogoMinified.svg');
+  margin-top: 16px;
+  height: 36px;
+  background-size: 237px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+a.create-logo:hover {
+  opacity: 0.7;
+}
+body.whitelabel .navbar .navbar-brand {
+  display: none;
+}
+.arduino-bbq #filler-bg-toolbar {
+  background: white;
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  height: 55px;
+  margin-top: -55px;
+}
+.arduino-bbq.affix #filler-bg-toolbar {
+  height: 15px;
+  margin-top: -15px;
+  transition: all ease-out .1s;
+}
+
+div#tob-bar-bg {
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  background-color: rgba(255,255,255,1);
+  display: inline-block;
+  z-index: 10;
+}
+#ham {
+  padding-top: 20px;
+  height: 65px;
+}
+.user-profile {
+  top: 19px;
+  right: 23px;
+}
+
+#navigation {
+  height: 93px;
+  background: #fff;
+  padding: 0 26px 15px 26px;
+  width: calc(100% - 140px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -23px;
+  transition: all ease-out .1s;
+}
+.navbar-default {
+  background-color: #f8f8f8;
+  border-color: transparent;
+}
+
+div#mini-footer {
+  background-color: white;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  /* LOCAL PREVIEW ONLY */
+  /*display: none;*/
+  /* END LOCAL PREVIEW ONLY */
+}
+div#mini-footer a.logoArduinoGenuino {
+  background-image: asset-url('whitelabel/arduino/ArduinoGenuino.svg');
+  background-size: 225px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 80px;
+  width: 225px;
+  margin: 20px 0 12px;
+}
+div#mini-footer a.logoArduinoGenuino:hover {
+  opacity: 0.7;
+}
+div#mini-footer p {
+  font-size: 13px;
+  line-height: 19px;
+  margin: 0 0 10px 0;
+}
+div#mini-footer a#hackster-logo {
+  background-image: asset-url('hackster_logo_text.png');
+  background-size: 107px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 25px;
+  width: 107px;
+  top: 8px;
+  margin-left: 4px;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+div#mini-footer a#hackster-logo:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+
+#content.project-page {
+  padding: 100px 0 60px;
+}
+div.project-type {
+  display: none;
+}
+.project-banner-inner {
+  background-image: none;
+  background: rgba(0,151,156,0.95);
+  padding: 10px 40px 20px;
+}
+.project-banner-inner .project-stats {
+  color: white;
+  letter-spacing: 0.6px;
+}
+.project-banner-inner h1 {
+  font-size: 30px;
+  line-height: 33px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+div.project-page h3, div.project-page .h3 {
+    font-size: 27px;
+    line-height: 31px;
+    margin: 40px 0 20px 0;
+}
+.project-thumb-mini {
+  height: 150px;
+}
+.project-thumb-mini-inner {
+  background-image: none;
+  background: rgba(0,151,156,0.95);
+  padding: 10px 15px 10px;
+}
+.project-thumb-mini-inner h4 {
+  font-weight: 500;
+  margin: 0 0 3px;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.5px;
+}
+.project-banner-inner p.project-one-liner {
+  letter-spacing: 0.5px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.copyright {
+  font-size: 70%;
+  color: white;
+}
+.tag {
+  transition: all ease-out .1s;
+  border-radius: 0;
+  font-weight: 500;
+  padding: 4px 6px 6px 6px;
+  font-size: 14px;
+}
+.tag:hover {
+  transition: all ease-out .1s;
+  color: #00979C;
+}
+.section-title .title-toggle {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 20px;
+  line-height: 22px;
+
+}
+.wide-thumb-body-bottom {
+  bottom: -18px;
+}
+.wide-thumb-body-bottom a.follow-button {
+  width: 100%;
+}
+b, strong {
+  font-weight: 600;
+}
+#scroll-nav li.active > a {
+  font-weight: 600;
+}
+.other-projects {
+  background: #ecf1f1;
+}
+.btn-link {
+  transition: all ease-out .1s;
+  color: #00979C;
+}
+.btn-link:hover {
+  transition: all ease-out .1s;
+  color: #006569;
+  text-decoration: none;
+}
+.btn-group, .btn-group-vertical {
+  margin-bottom: 5px;
+}
+.btn-group > .btn, .btn-group > .btn-follow, .btn-group-vertical > .btn, .btn-group-vertical > .btn-follow {
+  margin-left: 5px !important;
+}
+.project-switcher {
+  height: 70px;
+  margin-top: -35px;
+}
+.wide-thumb-body h5 {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 2px;
+}
+.box {
+  border: none;
+  border-radius: 0;
+}
+.box-content {
+  padding-bottom: 30px;
+}
+.box-title {
+  padding: 40px 20px;
+  border-bottom: 3px solid #ecf1f1;
+}
+.box-title h2 {
+  text-align: center;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  font-size: 32px;
+  line-height: 38.4px;
+  letter-spacing: 1.6px;
+}
+.help-block {
+  color: #879191;
+}
+.form-control {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #DADADA;
+}
+textarea.form-control {
+  max-width: 100%;
+}
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #909090;
+}
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
+  width: auto;
+  margin: 0 auto;
+}
+.text-success {
+  color: #209171;
+}
+.template-chooser-container label {
+  color: #879191;
+}
+.template-chooser-container .option-title {
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+  line-height: 19px;
+}
+.template-chooser-container label:hover,
+.template-chooser-container [type="radio"]:checked + label:hover {
+  background-color: #F4F7F7;
+}
+.template-chooser-container label:last-child {
+  border-radius: 0;
+}
+label {
+  font-weight: 600;
+}
+div:focus,
+.btn:focus,
+.btn-follow:focus,
+.btn.focus,
+.focus.btn-follow,
+.btn:active:focus,
+.btn-follow:active:focus,
+.btn:active.focus,
+.btn-follow:active.focus,
+.btn.active:focus,
+.active.btn-follow:focus,
+.btn.active.focus,
+.active.focus.btn-follow {
+  outline: none;
+}
+.btn-group > .btn {
+  margin-left: 0 !important;
+}
+.btn {
+  margin-right: 5px;
+}
+.btn:last-child {
+  margin-right: 0;
+}
+div.btn-group a, div.btn-group a:hover {
+  margin: 0 !important;
+  border-right: 1px solid #C0CECE;
+}
+div.btn-group .btn-primary,
+div.btn-group .btn-primary:hover,
+div.btn-group .btn-primary:active,
+div.btn-group .btn-primary:focus {
+  border-right: 1px solid #007579;
+}
+div.btn-group a:last-child {
+  border-right: none !important;
+}
+.btn-group .btn-default + .btn-default {
+  margin-left: 0 !important;
+}
+.align-right {
+  float: right;
+}
+.margin-bottom-fix {
+  margin-bottom: 30px !important;
+}
+#content-with-sidebar {
+  margin-top: 40px;
+  background-color: #ecf1f1;
+}
+#sidebar-container {
+  background: #ecf1f1;
+  border: none;
+  display: none;
+}
+#content-with-sidebar {
+  padding-left: 0;
+}
+#projects-list, div#main-content {
+  box-shadow: none;
+  /*margin-right: 20px;
+  margin-bottom: 40px;*/
+  /*background: white;*/
+  background: #ecf1f1;
+  margin: 0;
+}
+/*#projects-list .thumb-inner {
+  background: #f4f4f4;
+}*/
+#projects-list .thumb-list {
+  margin-top: 40px;
+}
+#platform-avatar-image {
+  top: 0;
+  bottom: 40px;
+  border-radius: 0;
+  border: none;
+}
+#platform-body {
+  border-bottom: 3px solid white;
+  box-shadow: none;
+}
+hr {
+  border-top-color: white;
+  border-top: 3px solid white;
+}
+.user #projects-list h2 {
+  /*font-size: 20px;
+  margin: 0 0 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 600;*/
+  font-size: 27px;
+  line-height: 31px;
+  margin: 40px 0 20px 0;
+  font-weight: normal;
+  color: #666;
+}
+.user #projects-list p a {
+  color: #00979C;
+}
+.user #projects-list p a:hover {
+  color: #006569;
+}
+.user #projects-list .btn-primary, .user #projects-list .btn-primary:hover {
+  color: white;
+}
+.user #projects-list .thumb-inner a {
+  color: #879191;
+}
+.user #projects-list .thumb-inner a:hover {
+  color: #00979C;
+}
+.badge {
+  vertical-align: middle;
+  padding: 4px 7px 3px 7px;
+  margin-top: -2px;
+  margin-left: 4px;
+}
+
+div#platform-websites .list-inline > li {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 23px;
+}
+#platform-page .display a:not(.label):hover {
+  color: #00979C;
+}
+#projects-list p .btn-primary {
+  margin: 10px 0 35px;
+  position: relative;
+  float: left;
+  margin-right: 15px;
+}
+strong.text-muted {
+  margin: 10px 0;
+  display: block;
+  clear: both;
+}
+#projects-list p.smaller.text-muted {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 15px;
+  color: #879191;
+}
+#platform-name {
+  color: #666;
+  font-weight: 500;
+}
+#projects-list .main-section-actions .btn-group.pull-right {
+  margin-top: 0;
+}
+div#main-content .header.clearfix .pull-right {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+div.thumb-image.has-link-overlay:hover + div.thumb-inner,
+div.thumb-image.has-link-overlay:hover + div.thumb-inner a,
+div.thumb-image.has-link-overlay:hover + div.thumb-inner .project-stats {
+  background-color: #DAE3E3;
+  color: #747B7B;
+}
+
+
+
+
+@media (min-width: 768px) {
+  .thumb-image:hover:before {
+    background: rgba(0,151,156,0.95);
+  }
+  p.description.show-on-hover {
+    font-weight: 500;
+  }
+  .create-logo {
+    float: left;
+  }
+}
+@media (min-width: 980px) {
+  div#feed_cont {
+    display: flex;
+  }
+  .grid_row {
+    margin-left: -18%;
+  }
+}
+
+@media (min-width: 1350px) {
+  .navbar .navbar-in {
+    padding-left: 18px;
+    padding-right: 15px;
+  }
+  .create-logo + div.pull-right {
+    margin-right: 0;
+  }
+}

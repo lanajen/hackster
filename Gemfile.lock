@@ -5,21 +5,21 @@ GIT
     will_paginate (3.0.4)
 
 GIT
-  remote: https://github.com/blarralde/fastly-rails.git
+  remote: https://github.com/hacksterio/fastly-rails.git
   revision: 6a661b04f21ff4024d0a271ef526d0ae1590896e
   specs:
     fastly-rails (0.3.2)
       rails
 
 GIT
-  remote: https://github.com/blarralde/mandrill_dm.git
+  remote: https://github.com/hacksterio/mandrill_dm.git
   revision: c71cd0ccde0c659d7d41e3727daa64f49b537db0
   specs:
     mandrill_dm (1.2.0)
       mandrill-api (~> 1.0.53)
 
 GIT
-  remote: https://github.com/blarralde/omniauth-saml.git
+  remote: https://github.com/hacksterio/omniauth-saml.git
   revision: 4d92b6997488be4a1ef276f77002db825d2482ec
   branch: patch-1
   specs:
@@ -28,7 +28,7 @@ GIT
       ruby-saml (~> 1.0)
 
 GIT
-  remote: https://github.com/blarralde/pygments.rb.git
+  remote: https://github.com/hacksterio/pygments.rb.git
   revision: 1e9a4144801d37ea7982de00efea8480c49dc721
   specs:
     pygments.rb (0.6.3)
@@ -57,7 +57,7 @@ GIT
       thin (~> 1.5.0)
 
 GIT
-  remote: https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git
+  remote: https://hackster-heroku:hackstergithub123@github.com/hacksterio/omniauth-arduino.git
   revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
   specs:
     omniauth-arduino (0.0.1)
@@ -479,6 +479,7 @@ GEM
     rack (1.6.4)
     rack-attack (4.1.0)
       rack
+    rack-cors (0.4.0)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -799,6 +800,7 @@ DEPENDENCIES
   quiet_assets
   rabl (= 0.11.6)
   rack-attack (= 4.1.0)
+  rack-cors (= 0.4.0)
   rack-timeout (= 0.3.2)
   rails (= 4.2.3)
   rails-assets-clipboard (= 1.5.3)!

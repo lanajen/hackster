@@ -32,6 +32,7 @@ class ClientSubdomain < Subdomain
   store :properties, accessor: []
   hstore_column :properties, :active_locales, :array, default: I18n.active_locales.map{|v| v.to_s }
   hstore_column :properties, :analytics_code, :string
+  hstore_column :properties, :default_avatar_url, :string
   hstore_column :properties, :default_locale, :string, default: I18n.default_locale
   hstore_column :properties, :disable_https, :boolean
   hstore_column :properties, :disable_onboarding_screens, :boolean, default: false
@@ -39,6 +40,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :force_explicit_locale, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
+  hstore_column :properties, :path_prefix, :string
 
   has_default :name, '%{platform.try(:name)} Projects' do |instance|
     instance.read_attribute :name
@@ -48,6 +50,14 @@ class ClientSubdomain < Subdomain
     remove_domain_from_heroku(domain) unless domain.blank?
   end
   after_save :update_domains_on_heroku
+
+  def has_default_avatar?
+    default_avatar_url.present?
+  end
+
+  def has_path_prefix?
+    path_prefix.present?
+  end
 
   def favicon_id=(val)
     self.favicon = Favicon.find_by_id val

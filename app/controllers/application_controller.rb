@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
 
     return @current_site if @current_site
 
-    redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_site = if request.domain == APP_CONFIG['default_domain']
       ClientSubdomain.find_by_subdomain(request.subdomains[0])
     else
       ClientSubdomain.find_by_domain(request.host)
@@ -97,7 +97,7 @@ class ApplicationController < ActionController::Base
 
     return @current_platform if @current_platform
 
-    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_platform = current_site.try(:platform)
   end
 
   def api_host
@@ -149,7 +149,7 @@ class ApplicationController < ActionController::Base
     # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
       session[request.host] ||= {}
-      session[request.host][cookie_name] = request.path
+      session[request.host][cookie_name] = request.fullpath
     end
     # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end

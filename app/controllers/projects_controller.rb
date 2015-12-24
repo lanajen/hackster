@@ -331,12 +331,10 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    project = BaseArticle.last
+    project = is_whitelabel? ? current_platform.projects.last : BaseArticle.last
     url = case project
     when Product
       product_path(project)
-    when ExternalProject
-      project_path(project)
     else
       url_for(project)
     end
@@ -347,11 +345,13 @@ class ProjectsController < ApplicationController
     authorize! :edit, @project
     msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    if @project.assignment.past_due? or !(deadline = @project.assignment.submit_by_date)
-      @project.locked = true
-      msg += 'The project will be locked for modifications until grades are sent out.'
-    else
-      msg += "You can still make modifications to the project until the submission deadline on #{l deadline.in_time_zone(PDT_TIME_ZONE)} PT."
+    if @project.assignment.past_due?
+      if @project.assignment.should_lock?
+        @project.locked = true
+        msg += 'The project will be locked for modifications until grades are sent out.'
+      end
+    elsif @project.assignment.submit_by_date.present?
+      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
     end
     @project.save
     redirect_to @project, notice: msg
@@ -620,7 +620,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
+        if !ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?
           raise ActiveRecord::RecordNotFound
         end
       end

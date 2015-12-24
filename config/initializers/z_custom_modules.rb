@@ -53,3 +53,5 @@ require File.join Rails.root, 'lib/active_record_extension'
 require File.join Rails.root, 'lib/has_ability'
 # AR destroy async
 require File.join Rails.root, 'lib/active_record_destroy_async'
+# url_for monkey patch to add prefix to arduino whitelabel
+require File.join Rails.root, 'lib/action_controller/metal/url_for'

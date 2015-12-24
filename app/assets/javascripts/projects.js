@@ -13,6 +13,20 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 $select2containers = {};
 $select2target = null;
 
+// Polyfill for IE.  https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+(function () {
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   }
+
+  CustomEvent.prototype = window.Event.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
+
 (function ($, window, document, undefined) {
   $(function() {
     $('.show-simplified-signup').on('click', function(e) {
@@ -266,12 +280,27 @@ $select2target = null;
         }
       },
 
-      saveChanges: function() {
+      showSavePanel: function() {
+        $('.pe-save2').hide();
+        $('.pe-save').slideDown(200);
+      },
+
+      saveChanges: function(e) {
+        var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {
-          // $('#project_description').html(editor.self.serialize()['element-0'].description);
-          editor.forceSaveModel();
+          // Custom Event passes the form to React, where call submit.
+          var event = new CustomEvent(
+            'pe:submit',
+            {
+              detail: { form: $form },
+              bubbles: true,
+              cancelable: true
+            }
+          );
+          $form[0].dispatchEvent(event);
+        } else {
+          $form.submit();
         }
-        $('.pe-panel:visible form.remote').submit();
       },
 
       reload: function() {
@@ -286,7 +315,7 @@ $select2target = null;
     $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
     pe.serializeForm();
 
-    $('.pe-nav').on('click', 'a.tab', function(e){
+    $('.pe-nav').on('click', 'a', function(e){
       if (window.location.hash == $(this).attr('href')) {
         e.preventDefault();
       } else if (pe.unsavedChanges()) {
@@ -327,7 +356,8 @@ $select2target = null;
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
         if ($('#story:visible').length) {
-          editor.unsavedChanges = false;
+          // REMOVE
+          // editor.unsavedChanges = false;
         }
         pe.serializeForm();
         $('.fields.added').removeClass('added');
@@ -336,7 +366,7 @@ $select2target = null;
 
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
-      pe.saveChanges();
+      pe.saveChanges(e);
     });
 
     $('.pe-panel').on('input change', 'form, input, textarea, select', function(e){

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151207192941) do
+ActiveRecord::Schema.define(version: 20151216011630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.string   "workflow_state"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.integer  "address_id"
   end
 
   create_table "challenge_projects", force: :cascade do |t|
@@ -350,6 +351,20 @@ ActiveRecord::Schema.define(version: 20151207192941) do
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
+  create_table "jobs", force: :cascade do |t|
+    t.string   "url"
+    t.string   "title"
+    t.string   "employer_name"
+    t.string   "location"
+    t.integer  "platform_id"
+    t.string   "workflow_state"
+    t.integer  "clicks_count",   default: 0
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "jobs", ["platform_id"], name: "index_jobs_on_platform_id", using: :btree
+
   create_table "link_data", force: :cascade do |t|
     t.string   "title"
     t.string   "website_name"
@@ -575,6 +590,11 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
+
+  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
+  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255

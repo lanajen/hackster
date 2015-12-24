@@ -265,7 +265,6 @@ $(function() {
             'insertCodeBlock': new InsertCodeBlock()
         }
       });
-
       _.element.addClass('editable-activated');
       $('#medium-editor, #model-editor').addClass('editor-active');
 
@@ -419,7 +418,7 @@ $(function() {
         _.showLoadingBar();
         _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-        $.ajax(_.modelUrl + '.js', {
+        $.ajax(_.modelUrl + '/' + _.modelId, {
           data: formData,
           // processData: false,
           // contentType: false,
@@ -459,6 +458,7 @@ $(function() {
         });
         _.lastSaved = new Date().getTime();
       } else if (_.saveMode == 'form') {
+        // console.log('saving modeldata', modelData.description);
         $('#base_article_description').val(modelData.description);
       }
     },
@@ -1890,15 +1890,6 @@ function goToPreviousP(node, e){
   if (prev.length) {
     smoothScrollToIfOutOfBounds(prev, -50, 200);
     focusAtEndOfRange(prev[0]);
-  }
-}
-
-function goToNextP(node, e){
-  e.preventDefault();
-  next = node.nextAll(elementTypes).first();
-  if (next.length) {
-    smoothScrollToIfOutOfBounds(next, -50, 200);
-    focusAtBeginningOfRange(next[0]);
   }
 }
 

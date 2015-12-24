@@ -183,7 +183,7 @@ class SitemapController < ApplicationController
     def product_tags_pages offset=0
       sitemap_scope(product_tags_query, offset).map do |tag|
         {
-          loc: "#{tags_url(CGI::escape(tag.name))}",
+          loc: "#{tag_url(tag.name)}",
           changefreq: 'weekly',
           lastmod: tag.updated_at.strftime("%F"),
         }

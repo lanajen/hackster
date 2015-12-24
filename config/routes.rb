@@ -24,11 +24,7 @@ HackerIo::Application.routes.draw do
         resources :announcements
         resources :build_logs
         resources :code_files, only: [:create]
-        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
-          collection do
-            delete '' => 'comments#destroy'
-          end
-        end
+        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index], defaults: { format: :json } do
           collection do
@@ -42,7 +38,9 @@ HackerIo::Application.routes.draw do
         scope 'mandrill/webhooks' do
           post 'unsub' => 'mandrill_webhooks#unsub'
         end
-        resources :projects
+        resources :projects do
+          get 'description' => 'projects#description'
+        end
         resources :parts, except: [:new, :edit], defaults: { format: :json }
         scope 'platforms' do
           get ':user_name' => 'platforms#show', defaults: { format: :json }
@@ -75,11 +73,7 @@ HackerIo::Application.routes.draw do
           resources :announcements
           resources :build_logs
           resources :code_files, only: [:create]
-          resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json } do
-            collection do
-              delete '' => 'comments#destroy'
-            end
-          end
+          resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
           resources :flags, only: [:create]
           resources :followers, only: [:create, :index] do
             collection do
@@ -93,7 +87,9 @@ HackerIo::Application.routes.draw do
           scope 'mandrill/webhooks' do
             post 'unsub' => 'mandrill_webhooks#unsub'
           end
-          resources :projects
+          resources :projects do
+            get 'description' => 'projects#description'
+          end
           resources :parts, except: [:new, :edit]
           scope :platforms do
             scope :analytics do
@@ -137,9 +133,7 @@ HackerIo::Application.routes.draw do
         # get 'validate_step' => 'split#validate_step'
 
         post 'info_requests' => 'pages#create_info_request'
-
         post 'pusher/auth' => 'users/pusher_authentications#create'
-
         get 'hello_world' => 'hello_world#show'
 
         namespace :admin do
@@ -171,6 +165,7 @@ HackerIo::Application.routes.draw do
           resources :conversations, only: [:destroy]
           resources :groups, except: [:show]
           resources :invitations, only: [:new, :create]
+          resources :jobs, except: [:show]
           resources :parts, except: [:show] do
             get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
             get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -403,7 +398,7 @@ HackerIo::Application.routes.draw do
           end
         end
 
-        resources :challenge_ideas, only: [:destroy], as: :challenge_single_idea
+        resources :challenge_ideas, only: [:update, :destroy], as: :challenge_single_idea
 
         # resources :skill_requests, path: 'cupidon' do
         #   resources :comments, only: [:create]
@@ -424,6 +419,7 @@ HackerIo::Application.routes.draw do
         resources :projects, only: [:index]
 
         resources :quotes, only: [:create]
+        resources :jobs, only: [:index, :show]
 
         # dragon
         # get 'partners' => 'partners#index'
@@ -488,7 +484,6 @@ HackerIo::Application.routes.draw do
         get 'guidelines' => 'pages#guidelines'
         get 'terms' => 'pages#terms'
         get 'press' => 'pages#press'
-        get 'jobs' => 'pages#jobs'
         get 'resources' => 'pages#resources'
 
         # updates counter for cached pages
@@ -640,7 +635,7 @@ HackerIo::Application.routes.draw do
       # get 'search' => 'search#search'
       get 'tags/:tag' => redirect('/projects/tags/%{tag}'), via: :get, as: :deprecated_tags
       get 'tags' => 'search#tags', as: :deprecated_tags2
-      get 'projects/tags/:tag' => 'search#tags', as: :tags
+      get 'projects/tags/:tag' => 'search#tags', as: :tag
       get 'projects/tags' => 'search#tags'
       get 'robots' => 'pages#robots'
 
@@ -712,6 +707,7 @@ HackerIo::Application.routes.draw do
       constraints(ClientSite) do
         scope module: :client, as: :client do
           get '' => 'projects#index'
+          get 'embed' => 'projects#embed'
           root to: 'projects#index'
         end
       end

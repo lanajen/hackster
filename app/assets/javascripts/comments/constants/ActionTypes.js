@@ -9,6 +9,7 @@ export default {
     setCurrentUser: null,
     setInitialComments: null,
     toggleFormData: null,
+    toggleLikes: null,
     toggleScrollTo: null,
     triggerReplyBox: null,
   })

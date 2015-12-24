@@ -1,6 +1,6 @@
 class RespectObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type == 'BaseArticle'
+    NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type.in? %w(BaseArticle Comment)
   end
 
   def after_create record
@@ -21,6 +21,9 @@ class RespectObserver < ActiveRecord::Observer
         Cashier.expire "project-#{record.respectable_id}-respects", "project-#{record.respectable_id}"
         FastlyWorker.perform_async 'purge', record.respectable.record_key
         record.user.update_counters only: [:respects]
+      when Comment
+        cache_key = Comment.cache_key 'BaseArticle', record.respectable.commentable_id
+        FastlyWorker.perform_async 'purge', cache_key
       end
     end
 end

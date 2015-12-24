@@ -1,0 +1,27 @@
+.page.section-container
+  .section-title
+    h1.title Looking for work?
+  .section-content
+    .jobs-list
+      - if @jobs.exists?
+        - @jobs.each do |job|
+          .job
+            h4
+              - if job.platform_id
+                = link_to job.platform.name, job.platform
+              - else
+                = job.employer_name
+            p
+              ' is hiring
+              => job.title
+              ' in
+              = job.location
+              ' .
+              small= link_to content_tag(:span, 'View offer') + content_tag(:i, '', class: 'fa fa-external-link'), job, target: '_blank'
+
+      - else
+        p We don't have any job offers right now, but check back soon!
+    p
+      ' Looking to hire?
+      = link_to 'Shoot us a note', 'mailto:help@hackster.io?subject=I would like to offer a job'
+      | , we'll list your job offer here.

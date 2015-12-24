@@ -43,6 +43,19 @@
       = f.input :website_link, label: 'Website link'
       = f.input :blog_link, label: 'Blog link'
 
+  .row
+    .col-md-6
+      .row
+        .col-sm-offset-4.col-sm-8
+          h4 Job settings
+          p.help-block Please make sure to enter where you live above!
+
+      = f.input :available_for_ft, inline_label: 'Available for full-time jobs', label: false, as: :boolean
+      = f.input :available_for_pt, inline_label: 'Available for part-time jobs', label: false, as: :boolean
+      = f.input :available_for_hire, inline_label: 'Available for contract jobs', label: false, as: :boolean
+      = f.input :willing_to_relocate, inline_label: 'Willing to relocate', label: false, as: :boolean
+      = f.input :remote_ok, inline_label: 'Remote work OK', label: false, as: :boolean
+
 = content_for :head do
   = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"
 

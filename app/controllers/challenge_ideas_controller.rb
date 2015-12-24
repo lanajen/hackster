@@ -14,6 +14,7 @@ class ChallengeIdeasController < ApplicationController
         @ideas = @ideas.paginate(page: safe_page_params, per_page: 100)
       end
       format.csv do
+        @ideas = @ideas.includes(:address)
         file_name = FileNameGenerator.new(@challenge.name, 'ideas')
         headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
         headers['Content-Type'] ||= 'text/csv'
@@ -101,6 +102,10 @@ class ChallengeIdeasController < ApplicationController
         'approved'
       when 'mark_won'
         'marked a winner'
+      when 'mark_as_shipped'
+        'marked as shipped'
+      when 'undo_won'
+        'unmarked as won'
       else
         "#{event}ed"
       end
@@ -114,7 +119,7 @@ class ChallengeIdeasController < ApplicationController
       @idea = ChallengeIdea.find params[:id]
       if params[:slug].present?
         raise ActiveRecord::RecordNotFound unless @idea.challenge.slug == params[:slug]
-      else
+      elsif params[:challenge_id].present?
         raise ActiveRecord::RecordNotFound unless @idea.challenge_id.to_s == params[:challenge_id]
       end
       authorize! self.action_name.to_sym, @idea

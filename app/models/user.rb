@@ -204,18 +204,14 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? and !u.invited_to_sign_up? }
-  validates :user_name, :new_user_name, length: { in: 3..100 },
-    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
   validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
   with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
   end
+  validate :user_name_is_valid
   # validate :email_is_unique_for_registered_users, if: :being_invited?
-  validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
@@ -258,11 +254,16 @@ class User < ActiveRecord::Base
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   store :properties, accessors: []
+  hstore_column :properties, :available_for_ft, :boolean
+  hstore_column :properties, :available_for_pt, :boolean
+  hstore_column :properties, :available_for_hire, :boolean
   hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+  hstore_column :properties, :remote_ok, :boolean
   hstore_column :properties, :toolbox_shown, :boolean
+  hstore_column :properties, :willing_to_relocate, :boolean
 
   hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
@@ -565,6 +566,7 @@ class User < ActiveRecord::Base
       name: data.name,
       provider: provider,
       uid: uid,
+      token: data.credentials.try(:token),
     }
 
     link = if data and data = data.info
@@ -862,14 +864,8 @@ class User < ActiveRecord::Base
       notify_observers(:after_invitation_accepted)
     end
 
-    def user_name_is_unique
-      return unless user_name.present?
-
-      slug = SlugHistory.where("LOWER(slug_histories.value) = ?", new_user_name.downcase).first
-      if slug and slug.sluggable != self
-        errors.add :new_user_name, 'is already taken'
-        errors.add :user_name, 'is already taken'
-      end
+    def user_name_is_valid
+      UserNameValidator.new(self).validate
     end
 
     # overwrites devise

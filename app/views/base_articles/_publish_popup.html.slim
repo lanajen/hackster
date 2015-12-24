@@ -4,7 +4,9 @@
       p
         i.fa.fa-clock-o>
         ' We're reviewing your #{@project.identifier} before it can appear on the home page.
-        = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+        => link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+        ' Also check the
+        = link_to 'content guidelines.', guidelines_path, class: 'alert-link'
 - else
   - who = %w(you)
   - who += ['team members'] if @project.team_members_count > 1
