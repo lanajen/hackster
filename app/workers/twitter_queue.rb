@@ -2,11 +2,13 @@ class TwitterQueue < BaseWorker
   INTERVAL_BETWEEN_UPDATES = 15
   sidekiq_options queue: :default, retry: 0
 
-  def update message
-    begin
-      ENV['ENABLE_TWEETS'] == 'true' ? twitter_client.update(message) : puts("Twitter message: #{message}")
-    rescue => e
-      LogLine.create(log_type: 'error', source: 'twitter', message: "Error: #{e.inspect} // Tweet: \"#{message}\"")
+  def schedule_project_tweet id, at=nil
+    project = BaseArticle.find_by_id id
+
+    if at
+      project.post_new_tweet_at! DateTime.parse(at)
+    else
+      project.post_new_tweet!
     end
   end
 
@@ -16,6 +18,14 @@ class TwitterQueue < BaseWorker
     else
       self.class.perform_at next_update, 'update', message
       set_next_update
+    end
+  end
+
+  def update message
+    begin
+      ENV['ENABLE_TWEETS'] == 'true' ? twitter_client.update(message) : puts("Twitter message: #{message}")
+    rescue => e
+      LogLine.create(log_type: 'error', source: 'twitter', message: "Error: #{e.inspect} // Tweet: \"#{message}\"")
     end
   end
 

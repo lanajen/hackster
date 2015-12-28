@@ -6,39 +6,10 @@
 = content_for :no_container do
 
   #home
-    a.toggle-footer
-      i.fa.fa-arrow-down.hide-on-footer-affixed
-      i.fa.fa-eye-slash.show-on-footer-affixed
     section#home-banner
       .home-slide#welcome-back.hero-header
         .container
           h1 Welcome to your dashboard!
-
-    section#live-challenges.showcase-section.section-short
-      .container
-        .row
-          .col-sm-6
-            strong> Get free hardware
-            ' from the
-            = link_to 'Free Store', store_path
-            | !
-          .col-sm-6.text-right
-            ul.list-inline
-              - if current_user.reputation
-                li
-                  a> href=users_stats_path
-                    strong>= number_with_delimiter current_user.reputation_count
-                    = pluralize_without_count current_user.reputation_count, 'point'
-                li
-                  strong>= number_with_delimiter current_user.reputation.redeemable_points
-                  | available
-              - else
-                li
-                  strong> 0
-                  | points
-              li
-                a rel="tooltip" title="How do I earn reputation points?" data-placement="bottom" href="http://hackster.uservoice.com/knowledgebase/articles/616629-how-do-i-earn-reputation"
-                  i.fa.fa-question-circle
 
     - if @projects.count.zero?
       section#intro.showcase-section
@@ -132,7 +103,8 @@
                         var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
                         thumb.append(item);
 
-          #loader.text-center= will_paginate @projects
+          - if @next_page
+            #loader.text-center= link_to 'Load more projects', root_path(page: @next_page), class: 'btn btn-block btn-default'
 
       #hide.hide
         - @followed.each do |rel|

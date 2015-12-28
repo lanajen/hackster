@@ -68,7 +68,7 @@ class PromotionsController < ApplicationController
     else
       @promotion.build_avatar unless @promotion.avatar
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render template: 'groups/shared/edit', layout: current_layout }
         format.js { render json: { group: @promotion.errors }, status: :unprocessable_entity }
       end
     end

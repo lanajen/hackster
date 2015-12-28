@@ -39,16 +39,18 @@ class BaseArticleObserverWorker < BaseWorker
   def after_approved record
     ProjectWorker.perform_async 'update_platforms', record.id
 
+    @notify = false
     if record.made_public_at.nil?
-      record.post_new_tweet! if record.should_tweet?
-      record.made_public_at = Time.now
+      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id if record.should_tweet?  # delay to give it time to run update_platforms
+      record.update_column :made_public_at, Time.now
+      @notify = true
     elsif record.made_public_at > Time.now
-      record.post_new_tweet_at! record.made_public_at if record.should_tweet?
+      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id, record.made_public_at if record.should_tweet?
+      @notify = true
     end
 
     # actions common to both statements above
-    if record.made_public_at.nil? or record.made_public_at > Time.now
-      record.save
+    if @notify
       NotificationCenter.notify_all :approved, :base_article, record.id
     end
 

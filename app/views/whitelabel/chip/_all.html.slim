@@ -23,7 +23,7 @@
             .col-xs-4.col-sm-2.menu-item
               a href="https://vimeo.com/nextthingco/videos" target="_blank"  Videos
             .col-xs-4.col-sm-2.menu-item
-              a href="https://nextthingco.zendesk.com/hc/en-us/sections/201948878-Just-the-FAQs-" target="_blank"  FAQ
+              a href="http://docs.getchip.com/#faqs" target="_blank"  FAQ
       .row.sub-menu
         .col-xs-12.col-sm-10.col-sm-offset-1
           .row.sub-menu-items
@@ -66,16 +66,7 @@
           ul#navbar-right.clearfix
             li= link_to 'Sign up for Hackster.io', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-            li.dropdown
-              a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                | Log in
-              .dropdown-menu style=("padding: 15px; width: 250px;")
-                = render 'devise/sessions/form'
-                hr
-                .social-icons.text-center
-                  p.text-muted
-                    small Or connect with your social account:
-                  = render 'devise/shared/omniauth', css: 'icon'
+            li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
         .pull-right style='padding-top:11px'
           - if user_signed_in?
