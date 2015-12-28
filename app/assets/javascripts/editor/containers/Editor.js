@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Toolbar from './Toolbar';

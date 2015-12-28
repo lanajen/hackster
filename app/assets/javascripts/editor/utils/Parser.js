@@ -24,7 +24,7 @@ export default {
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
       parser.write(html);
       parser.done();
-    }.bind(this));
+    });
   },
 
   parseTree(html) {
