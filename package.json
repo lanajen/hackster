@@ -54,8 +54,6 @@
     "rewire": "^2.3.3",
     "sinon": "^1.14.1",
     "webpack-dev-server": "^1.14.0",
-    "del": "^2.1.0",
-    "glob": "^6.0.1",
     "gulp-mocha-phantomjs": "^0.10.1",
     "mocha-jsdom": "^1.0.0",
     "mutationobserver-shim": "^0.3.1",
