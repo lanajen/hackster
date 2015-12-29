@@ -1,0 +1,207 @@
+@import url(https://fonts.googleapis.com/css?family=Monda);
+/* line 2, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 1200px) {
+  /* line 7, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* line 14, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 21, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .menu-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transition: all .35s;
+  }
+}
+@media (min-width: 520px) and (max-width: 767px) {
+  /* line 28, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .menu-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    transition: all .35s;
+  }
+}
+@media (max-width: 519px) {
+  /* line 35, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .main-menu .logo {
+    text-align: center;
+    margin-left: -30px;
+  }
+
+  /* line 39, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+  .menu-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    transition: all .35s;
+  }
+}
+/* line 45, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .main-menu .main-menu-items, .header .sub-menu .sub-menu-items {
+  text-align: center;
+  color: #bdc3c7;
+  letter-spacing: 1px;
+  line-height: 20px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* line 54, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header {
+  position: relative;
+  font-family: Monda;
+  background: #fff;
+  padding-bottom: 10px;
+  font-size: 16px;
+}
+
+/* line 61, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .main-menu .rainbow-logo {
+  height: 46px;
+}
+
+/* line 64, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .main-menu .main-menu-items .menu-item:hover {
+  color: #EB008B;
+  cursor: pointer;
+}
+
+/* line 68, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .main-menu a {
+  color: #888;
+}
+
+/* line 71, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .main-menu a:hover {
+  color: #EB008B;
+  text-decoration: none;
+}
+
+/* line 75, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu .sub-menu-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* line 80, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu .sub-menu-items .menu-item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: all .35s;
+}
+
+/* line 85, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu .sub-menu-items .menu-item.active {
+  color: #EB008B;
+}
+
+/* line 88, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu .sub-menu-items .menu-item:hover {
+  color: #EB008B;
+  cursor: pointer;
+}
+
+/* line 92, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu a {
+  color: #333;
+}
+
+/* line 95, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .sub-menu a:hover {
+  color: #EB008B;
+  text-decoration: none;
+}
+
+/* line 99, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .help-banner a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* line 103, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .help-banner a:hover {
+  text-decoration: none;
+}
+
+/* line 106, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterHeader.css */
+.header .help-banner-msg {
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 5px;
+  color: #fff;
+  font-size: 14px;
+  background: #EB008B;
+  font-family: Noto Sans, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 1px;
+}
+
+/* Hackster Overrides */
+/* Nav Bar */
+/* line 4, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+.navbar .navbar-in {
+  background: #F2F2F2;
+}
+
+/* Login button */
+/* line 9, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+#navbar-right .login-link.btn-primary, .login-link:active.btn-primary {
+  background: #EB008B;
+}
+
+/* General Buttons */
+/* line 14, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+.btn-primary,
+.btn-primary:hover {
+  background: #EB008B;
+}
+
+/* Featured badge */
+/* line 20, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+.project-award {
+  background: #EB008B;
+}
+
+/* Pagination */
+/* line 25, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+.pagination > .active > a,
+.pagination > .active > a:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span,
+.pagination > .active > span:hover,
+.pagination > .active > span:focus {
+  background-color: #EB008B;
+  border-color: #EB008B;
+}
+
+/* line 35, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+.pagination > li > a,
+.pagination > li > span {
+  color: #EB008B;
+}
+
+/* line 40, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+#user-dropdown-toggle {
+  background: #EB008B;
+}
+
+/* line 44, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/chip/hacksterStyleOverride.css */
+#user-nav-face {
+  border-color: #EB008B !important;
+}

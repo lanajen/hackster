@@ -1,0 +1,3782 @@
+/*!
+Pure v0.3.0
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+https://github.com/yui/pure/blob/master/LICENSE.md
+*/
+/*!
+normalize.css v1.1.2 | MIT License | git.io/normalize
+Copyright (c) Nicolas Gallagher and Jonathan Neal
+*/
+/*! normalize.css v1.1.2 | MIT License | git.io/normalize */
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
+  display: block;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+audio, canvas, video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+[hidden] {
+  display: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+html {
+  font-size: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+html, button, input, select, textarea {
+  font-family: sans-serif;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+body {
+  margin: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+a:focus {
+  outline: thin dotted;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+a:active, a:hover {
+  outline: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h1 {
+  font-size: 2em;
+  margin: .67em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h2 {
+  font-size: 1.5em;
+  margin: .83em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h4 {
+  font-size: 1em;
+  margin: 1.33em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h5 {
+  font-size: .83em;
+  margin: 1.67em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+h6 {
+  font-size: .67em;
+  margin: 2.33em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+b, strong {
+  font-weight: 700;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+blockquote {
+  margin: 1em 40px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+dfn {
+  font-style: italic;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+p, pre {
+  margin: 1em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+code, kbd, pre, samp {
+  font-family: monospace,serif;
+  _font-family: 'courier new',monospace;
+  font-size: 1em;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+q {
+  quotes: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+small {
+  font-size: 80%;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+sup {
+  top: -.5em;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+sub {
+  bottom: -.25em;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+dl, menu, ol, ul {
+  margin: 1em 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+dd {
+  margin: 0 0 0 40px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+menu, ol, ul {
+  padding: 0 0 0 40px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+nav ul, nav ol {
+  list-style: none;
+  list-style-image: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+figure {
+  margin: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+form {
+  margin: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+fieldset {
+  border: 1px solid silver;
+  margin: 0 2px;
+  padding: .35em .625em .75em;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+legend {
+  border: 0;
+  padding: 0;
+  white-space: normal;
+  *margin-left: -7px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button, input, select, textarea {
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+  *vertical-align: middle;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button, input {
+  line-height: normal;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button, select {
+  text-transform: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button, html input[type=button], input[type=reset], input[type=submit] {
+  -webkit-appearance: button;
+  cursor: pointer;
+  *overflow: visible;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button[disabled], html input[disabled] {
+  cursor: default;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+input[type=checkbox], input[type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+  *height: 13px;
+  *width: 13px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+input[type=search] {
+  -webkit-appearance: textfield;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+button::-moz-focus-inner, input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/normalize.css */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*html, body, div{
+  margin: 0;
+  padding: 0;
+}
+html, body{
+  width: 100%;
+  height: 100%;
+}*/
+/* BACKGROUND */
+/* line 12, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  background-color: #0ca1a6;
+  transition: all 0.5s ease;
+  display: none;
+}
+
+/* line 23, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#back.opacity_bg {
+  background-color: rgba(255, 255, 255, 0.6);
+  transition: all 0.5s ease;
+}
+
+/* line 27, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: all 0.5s ease;
+}
+
+/* line 32, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.hidden {
+  opacity: 0;
+  visibility: hidden !important;
+  transition: all 0.5s ease;
+}
+
+/* line 37, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#closeArea {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  bottom: 0;
+  z-index: 12000;
+  visibility: hidden;
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+}
+
+/* HAMBURGER BUTTON */
+/* line 50, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham {
+  /*width: 50px;*/
+  height: 50px;
+  position: absolute;
+  top: 0;
+  z-index: 12000;
+  display: flex;
+  flex-direction: row;
+  padding-top: 15px;
+  padding-left: 1em;
+  width: 100%;
+}
+
+/* line 62, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham.hamBack {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* line 65, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham.hamNoBack {
+  z-index: 0;
+}
+
+/* line 68, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham.hamNoBack > svg:hover {
+  fill: #80CBCD;
+  transition: all ease-out .3s;
+}
+
+/* line 73, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+svg.logo-home-bottom {
+  fill: #fff;
+  position: absolute;
+  bottom: 0;
+  right: 22px;
+  opacity: 0.5;
+  width: 150px;
+}
+
+/* line 82, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.backUnsolid svg.logo-home-bottom {
+  bottom: -35px;
+  opacity: 0.8;
+}
+
+/* line 87, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham > svg {
+  width: 18px;
+  height: 18px;
+  fill: #879191;
+  transition: all ease-out .3s;
+  cursor: pointer;
+}
+
+/* line 94, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham > svg:hover {
+  fill: #80CBCD;
+  transition: all ease-out .3s;
+}
+
+/* line 98, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#ham.getNotifications:after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 29px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f1c40f;
+  transition: all ease-out .3s;
+}
+
+/* USER PROFILE */
+/*.avatar {
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}*/
+/* line 117, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  cursor: pointer;
+  z-index: 12000;
+}
+
+/* line 125, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.animate-hide {
+  transition: all linear 1s;
+  opacity: 1;
+}
+
+/* line 130, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.animate-hide.ng-hide {
+  opacity: 0;
+}
+
+/* line 134, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple {
+  width: 134px;
+  left: -100px;
+}
+
+/* line 139, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple, .notification-button .dropover.simple {
+  position: absolute;
+  padding-top: 6px;
+  display: none;
+}
+
+/* line 145, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple {
+  left: -220px;
+  top: 25px;
+}
+
+/* line 150, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .notif-global-title button {
+  cursor: auto;
+}
+
+/* line 154, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .notif-global-title button:hover {
+  background-color: #F7F7F7;
+}
+
+/* line 158, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .notif-title {
+  color: #20A3A8;
+  margin-top: 4px;
+}
+
+/* line 163, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .no-notifications {
+  padding: 1em;
+  text-align: center;
+}
+
+/* line 168, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .forum-notifications {
+  padding: 1em;
+  letter-spacing: .05em;
+  color: #434F54;
+}
+
+/* line 174, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .forum-notifications a {
+  color: #00979C;
+}
+
+/* line 178, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .forum-notifications a:hover, .notification-button .dropover.simple .notif-title:hover {
+  color: #006D70;
+}
+
+/* line 182, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple .forum-notifications:hover {
+  background-color: #dae3e3;
+}
+
+/* line 186, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple svg, .notification-button .dropover.simple svg {
+  right: 13px !important;
+  left: auto;
+  fill: #20A3A8;
+}
+
+/* line 192, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple ul, .notification-button .dropover.simple ul {
+  border-top: 3px solid #20A3A8;
+  background-color: #F7F7F7;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* line 198, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple button, .notification-button .dropover.simple button {
+  background-color: #F7F7F7;
+  color: #434F54;
+  width: 100%;
+  text-align: left;
+  letter-spacing: .05em;
+}
+
+/* line 206, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple button.notif-title-button {
+  background-color: #ecf1f1;
+  padding: 20px 0;
+}
+
+/* line 211, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile .dropover.simple button:hover, .notification-button .dropover.simple button:hover {
+  background-color: #dae3e3;
+}
+
+/* line 215, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.user-profile:hover .dropover, .notification-button:hover .dropover {
+  display: block;
+  z-index: 13000;
+}
+
+/* HOME PAGE DROPDOWN */
+/* line 221, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.arduino-bbq #home {
+  width: 100%;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11000;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+/* line 234, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.backSolid {
+  height: 100%;
+}
+
+/* line 237, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.backUnsolid {
+  height: 580px;
+}
+
+/* FEED */
+/* line 242, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#feed_cont {
+  display: flex;
+  flex-direction: column;
+  flex: 15% 0 0;
+  align-items: center;
+  justify-content: center;
+  padding-left: 13px;
+  visibility: hidden;
+  opacity: 0;
+  transition: all ease-out .3s;
+}
+
+/* line 253, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feedVisible {
+  visibility: visible;
+  transition: all ease-out .3s;
+}
+
+/* line 257, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feedHidden {
+  visibility: hidden;
+  transition: all ease-out .3s;
+}
+
+/* line 261, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed {
+  display: block;
+  width: 100%;
+  height: 371px !important;
+  max-height: 371px !important;
+  background-color: rgba(0, 129, 132, 0.93);
+  overflow: hidden;
+}
+
+/* line 269, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.posts_cont {
+  height: 288px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0 15px;
+}
+
+/* line 275, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed h2 {
+  color: #fff;
+  font-size: 20px;
+  padding: 0px 0 0 15px;
+  width: 70%;
+}
+
+/* line 281, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed p {
+  font-size: 15px;
+  font-weight: 600;
+  position: relative;
+  margin: 36px 0 24px 0;
+}
+
+/* line 287, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed p:before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 0;
+  width: 16px;
+  height: 4px;
+  background: #7fcbcd;
+  transition: all ease-out .1s;
+}
+
+/* line 297, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed a {
+  color: #fff;
+}
+
+/* line 300, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed a:hover p {
+  color: #7fcbcd;
+  transition: all ease-out .1s;
+}
+
+/* line 304, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed a:hover p:before {
+  background: #7fcbcd;
+  transition: all ease-out .1s;
+}
+
+/* line 308, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.feed .preloader-container {
+  margin-left: calc(50% - 20px);
+  margin-top: calc(50% + 20px);
+}
+
+/* line 312, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.none {
+  display: none !important;
+}
+
+/* GRID */
+/* line 318, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#home_grid {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+/* line 330, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_row {
+  display: flex;
+  flex-direction: row;
+  margin-left: -18%;
+}
+
+/* line 335, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+  height: 180px;
+  background-color: rgba(255, 255, 255, 0.94);
+  margin: 5px;
+  /* copied from IDE style */
+  background-repeat: no-repeat;
+  background-position: center 30%;
+  cursor: pointer;
+  transition: all ease-out .15s;
+  color: #7F8C8D;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.94);
+    color: #7F8C8D;
+  }
+  100% {
+    background-color: #7fcbcd;
+    color: #ffffff;
+  }
+}
+@-moz-keyframes pulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.94);
+    color: #7F8C8D;
+  }
+  100% {
+    background-color: #7fcbcd;
+    color: #ffffff;
+  }
+}
+@-o-keyframes pulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.94);
+    color: #7F8C8D;
+  }
+  100% {
+    background-color: #7fcbcd;
+    color: #ffffff;
+  }
+}
+@keyframes pulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.94);
+    color: #7F8C8D;
+  }
+  100% {
+    background-color: #7fcbcd;
+    color: #ffffff;
+  }
+}
+/* line 392, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square.highlighted {
+  -webkit-animation-name: pulse;
+  -webkit-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-name: pulse;
+  -moz-animation-duration: 1.5s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-direction: alternate;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-name: pulse;
+  -o-animation-duration: 1.5s;
+  -o-animation-iteration-count: infinite;
+  -o-animation-direction: alternate;
+  -o-animation-timing-function: ease-in-out;
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+/* line 414, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square:hover {
+  background-color: #dae3e3;
+  color: #00979d;
+}
+
+/* line 418, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square.editor:hover,
+.grid_square.tools:hover {
+  background-color: #7fcbcd;
+  color: #ffffff;
+}
+
+/* line 423, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square p {
+  flex: 3 0 0;
+  width: 60%;
+  font-family: 'TypoNine';
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: .05em;
+  text-align: center;
+  font-size: 16.64px;
+}
+
+/* line 433, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+video#bgvid {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  width: auto;
+  height: auto;
+  min-height: 100%;
+  z-index: -100;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: #0ca1a6;
+}
+
+/* line 446, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.homeGradient {
+  content: " ";
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -99;
+  background: -moz-linear-gradient(top, rgba(0, 151, 157, 0.4) 0%, rgba(0, 151, 157, 0.08) 34%, rgba(0, 151, 157, 0.15) 62%, rgba(0, 151, 157, 0.32) 85%, rgba(0, 108, 112, 0.4) 96%, rgba(0, 92, 95, 0.4) 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 151, 157, 0.4)), color-stop(34%, rgba(0, 151, 157, 0.08)), color-stop(62%, rgba(0, 151, 157, 0.15)), color-stop(85%, rgba(0, 151, 157, 0.32)), color-stop(96%, rgba(0, 108, 112, 0.4)), color-stop(100%, rgba(0, 92, 95, 0.4)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0, 151, 157, 0.4) 0%, rgba(0, 151, 157, 0.08) 34%, rgba(0, 151, 157, 0.15) 62%, rgba(0, 151, 157, 0.32) 85%, rgba(0, 108, 112, 0.4) 96%, rgba(0, 92, 95, 0.4) 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0, 151, 157, 0.4) 0%, rgba(0, 151, 157, 0.08) 34%, rgba(0, 151, 157, 0.15) 62%, rgba(0, 151, 157, 0.32) 85%, rgba(0, 108, 112, 0.4) 96%, rgba(0, 92, 95, 0.4) 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0, 151, 157, 0.4) 0%, rgba(0, 151, 157, 0.08) 34%, rgba(0, 151, 157, 0.15) 62%, rgba(0, 151, 157, 0.32) 85%, rgba(0, 108, 112, 0.4) 96%, rgba(0, 92, 95, 0.4) 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0, 151, 157, 0.4) 0%, rgba(0, 151, 157, 0.08) 34%, rgba(0, 151, 157, 0.15) 62%, rgba(0, 151, 157, 0.32) 85%, rgba(0, 108, 112, 0.4) 96%, rgba(0, 92, 95, 0.4) 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', endColorstr='#66005c5f',GradientType=0 );
+  /* IE6-9 */
+}
+
+@-moz-document url-prefix() {
+  /* line 465, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+  .homeGradient {
+    background: none;
+  }
+}
+@media screen and (max-device-width: 800px) {
+  /* line 470, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+  html {
+    background: url(../images/home/movie_1.png) #000 no-repeat center center fixed;
+  }
+
+  /* line 471, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+  #bgvid {
+    display: none;
+  }
+}
+/* line 474, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.temboo {
+  width: 150px;
+  padding: 47px 0 18px;
+}
+
+/* line 479, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button {
+  position: absolute;
+  top: 14px;
+  right: 54px;
+  cursor: pointer;
+  z-index: 12000;
+}
+
+/* line 487, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.notification-button .dropover.simple svg.invitation-icon {
+  height: 40px;
+  min-width: 40px;
+  left: 0;
+  margin-right: 6px;
+  margin-left: 10px;
+  position: relative;
+}
+
+/* HOME */
+/* line 497, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square img {
+  flex: 5 0 0;
+  width: 80px;
+  margin-top: 15%;
+}
+
+/* line 502, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square img.help {
+  max-width: 100%;
+}
+
+/* line 505, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square img.ideas {
+  width: 42%;
+}
+
+/* line 508, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square svg.openNew {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  margin-top: 0;
+  fill: #00979d;
+  width: 18px;
+  height: 14.4px;
+  transition: all ease-out .2s;
+}
+
+/* line 520, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.grid_square:hover svg.openNew {
+  visibility: visible;
+  opacity: 1;
+  transition: all ease-out .2s;
+}
+
+/* Header */
+/* line 527, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.default-usr-pic {
+  width: 25px;
+  height: 25px;
+  fill: #7f8c8d;
+}
+
+/* line 533, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.white-icons .default-usr-pic {
+  fill: #fff;
+}
+
+/* DROPOVER */
+/* line 538, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.dropover.simple svg {
+  width: 13px;
+  height: 7px;
+  position: absolute;
+  left: 11px;
+}
+
+/* line 544, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+#powerOff + .dropover.simple svg {
+  right: 13px !important;
+  left: auto;
+}
+
+/* line 549, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/home.css */
+.networkModuleCont .right svg {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-height: 150px;
+}
+
+/* line 2, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.scrollable {
+  overflow-y: hidden;
+  margin-right: 8px;
+}
+
+/* line 6, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.scrollable:hover {
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-right: 0px;
+}
+
+/* line 11, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.by_row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* line 16, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.by_col {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+/* line 21, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.preloader-container {
+  display: block;
+  position: relative;
+  width: 40px;
+}
+
+/* line 26, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+.preloader-container .preloader {
+  display: block;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -20px;
+  margin-left: -20px;
+  border: solid 3px;
+  border-color: #555555 white;
+  -webkit-border-radius: 1000px;
+  border-radius: 1000px;
+  -webkit-animation-name: rotate;
+  -webkit-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: rotate;
+  -moz-animation-duration: 1.5s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -o-animation-name: rotate;
+  -o-animation-duration: 1.5s;
+  -o-animation-iteration-count: infinite;
+  -o-animation-timing-function: linear;
+  animation-name: rotate;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes rotate {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-o-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* line 96, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/utils.css */
+a:focus {
+  outline: none;
+}
+
+@font-face {
+  font-family: 'TypoNine';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TypoNine';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TypoNine';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+/* line 29, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 34, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 41, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+html {
+  font-size: 80%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* line 49, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+html, body {
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /*overflow: hidden;*/
+}
+
+/* line 57, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+.load-bold-font {
+  font-family: 'TypoNine';
+  font-weight: bold;
+  visibility: hidden;
+}
+
+/* line 63, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+.load-text-font {
+  font-family: 'TypoNine';
+  font-weight: 600;
+  visibility: hidden;
+}
+
+/* line 69, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+a {
+  color: #000;
+  text-decoration: none;
+}
+
+/* line 73, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+a:hover {
+  text-decoration: none;
+}
+
+/* line 77, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+::selection {
+  background: #c9d2d2;
+  /* Safari */
+}
+
+/* line 80, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+::-moz-selection {
+  background: #c9d2d2;
+  /* Firefox */
+}
+
+/* line 84, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+html, button, input, select, textarea {
+  font-family: 'TypoNine';
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 90, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+body {
+  /*background-color: #fff;*/
+  font-family: 'TypoNine';
+  font-weight: normal;
+}
+
+/* line 96, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, summary {
+  display: block;
+}
+
+/* line 100, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+/* line 106, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+video {
+  width: 100%;
+  height: auto;
+}
+
+/* line 111, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+img {
+  border: 0;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 117, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+p {
+  margin-top: .5em;
+  margin-bottom: .5em;
+  line-height: 1.4em;
+}
+
+/* line 123, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+ul {
+  padding-left: 1.5em;
+  line-height: 1.5em;
+}
+
+/* line 128, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/general.css */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: .7em;
+  margin-bottom: .3em;
+}
+
+/*==============================================*/
+/*  DROPOVERS                                   */
+/*==============================================*/
+/* Interaction */
+/* line 8, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover {
+  display: none;
+  z-index: 9999;
+}
+
+/* line 12, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.hasSubmenu:not(.disabled):hover .dropover {
+  display: block;
+}
+
+/* line 16, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.hasSubmenu.disabled button {
+  opacity: .5;
+}
+
+/* Dropover */
+/* line 22, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover {
+  position: absolute;
+  padding-top: 8px;
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+
+/* line 28, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover .scrollable {
+  flex: 1;
+  overflow: auto;
+}
+
+/* line 32, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover ul {
+  margin: 0;
+  margin-top: 6px;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 38, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover ul li.separator {
+  border-top: 1px solid #ddd;
+}
+
+/* line 41, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover ul li ul {
+  box-shadow: none;
+}
+
+/* line 45, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple {
+  fill: #0CA1A6;
+}
+
+/* line 49, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple ul li.parent_li button {
+  font-weight: bold;
+}
+
+/* line 52, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple.board_selector ul .scrollable li.parent_li button {
+  padding-left: 8px;
+}
+
+/* line 56, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple ul li.parent_li ul li button {
+  font-weight: normal;
+}
+
+/* line 59, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple ul li ul li button {
+  padding-left: 30px;
+}
+
+/* line 62, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple.board_selector ul .scrollable li.parent_li ul li button {
+  padding-left: 30px;
+}
+
+/* Dropover simple button item */
+/* line 69, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple button {
+  width: 100%;
+  text-align: left;
+  letter-spacing: .05em;
+}
+
+/* Dropover specific elements */
+/* line 77, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.simple, .dropover.simple.more {
+  width: 300px;
+  background-position: top 6px left 10px;
+}
+
+/* line 82, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover li button {
+  display: flex;
+  flex-direction: row;
+}
+
+/* line 86, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover li button span {
+  flex: auto;
+}
+
+/* line 90, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.notify {
+  width: 250px;
+  background-position: top 6px left 10px;
+}
+
+/* line 94, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/dropover.css */
+.dropover.notify .scrollable {
+  max-height: 336px;
+}
+
+/*==============================================*/
+/*  SCROLLBAR                                   */
+/*==============================================*/
+/* NOTIFICATIONS DROPOVER */
+/* line 8, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.dropover.notify .scrollable::-webkit-scrollbar-track {
+  border: none;
+  background-color: transparent;
+}
+
+/* line 13, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.dropover.notify .scrollable::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+
+/* line 18, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.dropover.notify .scrollable::-webkit-scrollbar-thumb {
+  background-color: #7f8c8d;
+  border-radius: 5px;
+}
+
+/* HOME FEED DROPOVER */
+/* line 25, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.posts_cont.scrollable::-webkit-scrollbar-track {
+  border: none;
+  background-color: transparent;
+}
+
+/* line 30, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.posts_cont.scrollable::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+
+/* line 35, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/scrollbar.css */
+.posts_cont.scrollable::-webkit-scrollbar-thumb {
+  background-color: #7f8c8d;
+  border-radius: 5px;
+}
+
+/*==============================================*/
+/*  BUTTONS                                     */
+/*==============================================*/
+/* line 6, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button {
+  outline: none;
+  border: 0;
+  padding: 8px;
+  transition: all ease-out .1s;
+}
+
+/* Buttons template */
+/* line 15, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base {
+  outline: none;
+  border: 0;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+  /*padding: 8px;*/
+  padding: 9px 8px;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  transition: all ease-out .1s;
+  /*vertical-align: top;*/
+  /*font-family: 'TypoNine';*/
+  top: 0;
+  text-transform: uppercase;
+}
+
+/* line 30, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base:hover {
+  top: 2px;
+}
+
+/* line 33, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base:active {
+  top: 4px;
+}
+
+/* line 36, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.sidebar button.base:last-of-type {
+  margin-right: -2px;
+}
+
+/*button.base:last-child{
+    margin:0;
+}*/
+/* line 43, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base[disabled] {
+  opacity: .55;
+}
+
+/* line 47, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base[disabled]:hover {
+  top: 0;
+}
+
+/* line 50, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base[disabled]:active {
+  top: 0;
+}
+
+/* line 53, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base:last-child {
+  margin-right: 0;
+}
+
+/* line 57, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base .triangle {
+  /*background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjhweCIgdmlld0JveD0iMCAwIDggOCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgOCA4IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwyIDQsNi4yNjQgMCwyICIvPg0KPC9zdmc+DQo=);
+  background-repeat: no-repeat;*/
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  margin-left: 6px;
+  fill: #7f8c8d;
+}
+
+/* line 67, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.sidebar button.base.primary.serial-switch, .sidebar button.base.primary.serial-switch-off {
+  height: 33px;
+  margin-top: 8px;
+  width: 100%;
+  margin-right: 0;
+  /*z-index: 3;*/
+}
+
+/* line 74, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.primary, .light .sidebar button.base.primary.serial-switch, .dark .sidebar button.base.primary.serial-switch {
+  background-color: #00979C;
+  color: #ffffff;
+  box-shadow: 0 4px #005c5f;
+  letter-spacing: .1em;
+}
+
+/* line 80, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.primary:hover, .light .sidebar button.base.primary.serial-switch:hover, .dark .sidebar button.base.primary.serial-switch:hover {
+  box-shadow: 0 2px #005c5f;
+}
+
+/* line 83, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.primary[disabled]:hover {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 86, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.primary:active {
+  box-shadow: 0 0px #005c5f;
+}
+
+/* line 89, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.primary[disabled]:active {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 93, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.hasSubmenu button.base.primary.boards {
+  box-shadow: none;
+  border-radius: 0;
+  text-align: left;
+  margin: 0;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjMxLjUyMXB4IiB2aWV3Qm94PSIwIDAgOCAzMS41MjEiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMzEuNTIxIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMjYuODQgNCwzMS4xMDUgMCwyNi44NCAiLz4NCjwvc3ZnPg0K);
+  background-repeat: no-repeat;
+  background-position: 97% -12px;
+  transition: none;
+  z-index: 10000;
+  text-transform: none;
+  padding: 10px;
+}
+
+/* line 108, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.hasSubmenu button.base.primary.boards:hover, .hasSubmenu button.base.primary.boards[disabled]:hover, .hasSubmenu button.base.primary.boards:active, .hasSubmenu button.base.primary.boards[disabled]:active {
+  top: 0;
+  box-shadow: none;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjMxLjUyMXB4IiB2aWV3Qm94PSIwIDAgOCAzMS41MjEiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMzEuNTIxIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMjYuODQgNCwzMS4xMDUgMCwyNi44NCAiLz4NCjwvc3ZnPg0K);
+  background-repeat: no-repeat;
+  background-position: 97% 14px;
+}
+
+/* line 118, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.secondary {
+  background-color: #eee;
+  color: #555;
+  box-shadow: 0 4px #ccc;
+  letter-spacing: .1em;
+}
+
+/* line 124, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.secondary:hover {
+  box-shadow: 0 2px #ccc;
+}
+
+/* line 127, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.secondary[disabled]:hover {
+  box-shadow: 0 4px #ccc;
+}
+
+/* line 130, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.secondary:active {
+  box-shadow: 0 0px #ccc;
+}
+
+/* line 133, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.secondary[disabled]:active {
+  box-shadow: 0 4px #ccc;
+}
+
+/* line 138, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.tools {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0 !important;
+  /*background-color: transparent !important;*/
+  background-color: transparent;
+  font-size: 2em;
+}
+
+/* line 150, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.input_container > button.base.primary {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+  padding: 7px 5px;
+  background-repeat: no-repeat;
+  background-position: 92% -5px;
+  font-family: 'TypoNine';
+  transition: none;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjIyLjY2N3B4IiB2aWV3Qm94PSIwIDAgOCAyMi42NjciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMjIuNjY3IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMTguMTUzIDQsMjIuNDE3IDAsMTguMTUzICIvPg0KPC9zdmc+DQo=);
+}
+
+/* line 162, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.input_container > button.base.primary:hover {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iOHB4IiBoZWlnaHQ9IjIyLjY2N3B4IiB2aWV3Qm94PSIwIDAgOCAyMi42NjciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDggMjIuNjY3IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwb2x5Z29uIGZpbGw9IiM3RjhDOEQiIHBvaW50cz0iOCwwLjM3NSA0LDQuNjM5IDAsMC4zNzUgIi8+DQo8cG9seWdvbiBmaWxsPSIjRDlFM0UzIiBwb2ludHM9IjgsMTguMTUzIDQsMjIuNDE3IDAsMTguMTUzICIvPg0KPC9zdmc+DQo=);
+  background-position: 92% 12px;
+  transition-property: none;
+}
+
+/* line 167, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.input_container > button.base.primary:hover {
+  top: 0;
+}
+
+/* line 170, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.input_container > button.base.primary:active {
+  top: 0;
+}
+
+/* line 174, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+#networkForm button.base {
+  width: auto;
+  font-family: 'TypoNine';
+  font-size: 1.1em;
+  letter-spacing: .1em;
+  vertical-align: top;
+  position: relative;
+  color: #7FCBCD;
+  background-color: #008184;
+  box-shadow: 0 6px #005C5F;
+  cursor: pointer;
+}
+
+/* line 186, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+#networkForm button.base:hover {
+  top: 2px;
+  box-shadow: 0 4px #005C5F;
+}
+
+/* line 190, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+#networkForm button.base:active {
+  top: 4px;
+  box-shadow: 0 2px #005C5F;
+}
+
+/* line 194, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.base.new_sketch {
+  /*padding: 9px 14px;*/
+  width: 175px;
+  background-color: #00979C;
+  color: #ffffff;
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 201, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.notifications {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyMy44cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDIzLjggMjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIzLjggMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiM5NEE0QTUiIGQ9Ik0xOS4zMTMsMTguNDc0VjkuMTg2YzAtMy42OTYtMi42OTEtNi45ODEtNi40MzktNy44VjAuMTc5SDkuMDJ2MS4yMzVjLTMuNTk1LDAuODQtNi4yNjcsMy44NjgtNi4yNjcsNy40Njh2OS42MjZsLTEuNjA4LDIuNDA1YzAuMDE1LDAuMDE0LDAuMDI0LDAuMDIyLDAuMDM5LDAuMDM2aDUuMjEyYzAuMDEzLDAuMDA5LDAuMDIyLDAuMDE1LDAuMDM1LDAuMDIzQzcuMDQ2LDIyLjYxNCw4LjcwNSwyMy44LDEwLjY4LDIzLjhjMS45NzQsMCwzLjYzNC0xLjE4Niw0LjI0OC0yLjgyN2MwLjAxMy0wLjAwOSwwLjAyMi0wLjAxNSwwLjAzNS0wLjAyM2g1Ljc0N2MwLjAxNS0wLjAxNCwwLjAyNC0wLjAyMiwwLjAzOS0wLjAzNkwxOS4zMTMsMTguNDc0eiBNMTcuNDQ1LDE4LjUyNEg0LjQ1VjguNzMxYzAtMy4yMDksMi45MTUtNS44MTksNi40OTgtNS44MTlzNi40OTgsMi42MSw2LjQ5OCw1LjgxOUwxNy40NDUsMTguNTI0TDE3LjQ0NSwxOC41MjR6Ii8+PC9zdmc+);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: left top;
+  margin: 0;
+  /*padding: 3px 10px 6px;*/
+  padding: 0;
+  width: 24px;
+  height: 26px;
+  line-height: .2em;
+}
+
+/* line 214, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.white-icons button.notifications {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyMy44cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDIzLjggMjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIzLjggMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOS4zMTMsMTguNDc0VjkuMTg2YzAtMy42OTYtMi42OTEtNi45ODEtNi40MzktNy44VjAuMTc5SDkuMDJ2MS4yMzVjLTMuNTk1LDAuODQtNi4yNjcsMy44NjgtNi4yNjcsNy40Njh2OS42MjZsLTEuNjA4LDIuNDA1YzAuMDE1LDAuMDE0LDAuMDI0LDAuMDIyLDAuMDM5LDAuMDM2aDUuMjEyYzAuMDEzLDAuMDA5LDAuMDIyLDAuMDE1LDAuMDM1LDAuMDIzQzcuMDQ2LDIyLjYxNCw4LjcwNSwyMy44LDEwLjY4LDIzLjhjMS45NzQsMCwzLjYzNC0xLjE4Niw0LjI0OC0yLjgyN2MwLjAxMy0wLjAwOSwwLjAyMi0wLjAxNSwwLjAzNS0wLjAyM2g1Ljc0N2MwLjAxNS0wLjAxNCwwLjAyNC0wLjAyMiwwLjAzOS0wLjAzNkwxOS4zMTMsMTguNDc0eiBNMTcuNDQ1LDE4LjUyNEg0LjQ1VjguNzMxYzAtMy4yMDksMi45MTUtNS44MTksNi40OTgtNS44MTlzNi40OTgsMi42MSw2LjQ5OCw1LjgxOUwxNy40NDUsMTguNTI0TDE3LjQ0NSwxOC41MjR6Ii8+PC9zdmc+);
+}
+
+/* line 218, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+button.notifications.full {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyMy44cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDIzLjggMjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIzLjggMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiMwRkExQTYiIGQ9Ik0xOS4zLDE4LjVWOS4yYzAtMy43LTIuNy03LTYuNC03LjhsMC0xLjJIOWwwLDEuMkM1LjQsMi4zLDIuOCw1LjMsMi44LDguOXY5LjZsLTEuNiwyLjRjMCwwLDAsMCwwLDBoNS4yYzAsMCwwLDAsMCwwYzAuNiwxLjYsMi4zLDIuOCw0LjIsMi44YzIsMCwzLjYtMS4yLDQuMi0yLjhjMCwwLDAsMCwwLDBoNS43YzAsMCwwLDAsMCwwTDE5LjMsMTguNXogTTE3LjQsMTguNWgtMTNWOC43YzAtMy4yLDIuOS01LjgsNi41LTUuOGMzLjYsMCw2LjUsMi42LDYuNSw1LjhWMTguNXoiLz48Y2lyY2xlIGZpbGw9IiNFRkMzMTkiIGN4PSIxNy45IiBjeT0iNy44IiByPSI0LjciLz48L3N2Zz4=);
+}
+
+/* line 222, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.white-icons button.notifications.full {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyMy44cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDIzLjggMjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIzLjggMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOS4zLDE4LjVWOS4yYzAtMy43LTIuNy03LTYuNC03LjhsMC0xLjJIOWwwLDEuMkM1LjQsMi4zLDIuOCw1LjMsMi44LDguOXY5LjZsLTEuNiwyLjRjMCwwLDAsMCwwLDBoNS4yYzAsMCwwLDAsMCwwYzAuNiwxLjYsMi4zLDIuOCw0LjIsMi44YzIsMCwzLjYtMS4yLDQuMi0yLjhjMCwwLDAsMCwwLDBoNS43YzAsMCwwLDAsMCwwTDE5LjMsMTguNXogTTE3LjQsMTguNWgtMTNWOC43YzAtMy4yLDIuOS01LjgsNi41LTUuOGMzLjYsMCw2LjUsMi42LDYuNSw1LjhWMTguNXoiLz48Y2lyY2xlIGZpbGw9IiNFRkMzMTkiIGN4PSIxNy45IiBjeT0iNy44IiByPSI0LjciLz48L3N2Zz4=);
+}
+
+/* Buttons - Brand */
+/* line 227, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.primary {
+  background-color: #008184;
+  color: #7FCBCD;
+  text-transform: uppercase;
+  /*margin-top: 20px;*/
+  margin-top: 15px;
+  margin-bottom: 20px;
+  margin-right: 1em;
+  letter-spacing: .1em;
+}
+
+/* line 237, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.terminal {
+  font-family: 'TypoNine';
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #7FCBCD;
+  /*background-color: #156F70;*/
+  background-color: #008184;
+  /*margin-top: 20px;*/
+  margin: 0;
+  padding: 15px 1em;
+  transition: none !important;
+  border-radius: 0;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+  text-transform: none;
+}
+
+/* line 253, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.terminal:hover {
+  top: 0;
+  /*background-color: #1B9094;*/
+  background-color: #0CA1A6;
+  color: #006D70;
+}
+
+/* line 260, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.ham {
+  background-color: transparent;
+  position: relative;
+  padding-left: 1.25em;
+}
+
+/* line 265, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.ham:hover {
+  top: 0;
+}
+
+/* line 268, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand button.base.ham:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0px;
+  width: 24px;
+  height: 3px;
+  background: #005C5F;
+  box-shadow: 0 6px 0 0 #005C5F, 0 12px 0 0 #005C5F;
+  transition: all ease-out .3s;
+}
+
+/* line 281, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.brand .hasSubmenu:hover > button.base.ham:before {
+  background: #7FCBCD;
+  box-shadow: 0 6px 0 0 #7FCBCD, 0 12px 0 0 #7FCBCD;
+  transition: all ease-out .3s;
+}
+
+/* Home Update Button */
+/* line 290, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+#updatesNotification button.base.primary {
+  max-height: 31px;
+  font-size: .85em;
+  padding: 9px 12px;
+}
+
+/* Buttons - Light */
+/* line 298, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.primary {
+  background-color: #DAE3E3;
+  color: #4e5b61;
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 303, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.primary:hover {
+  box-shadow: 0 2px #BDC7C7;
+}
+
+/* line 306, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.primary[disabled]:hover {
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 309, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.primary:active {
+  box-shadow: 0 0px #BDC7C7;
+}
+
+/* line 312, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.primary[disabled]:active {
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 315, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .hasSubmenu button.base.primary.boards {
+  background-color: #FFFFFF;
+  color: #7f8c8d;
+}
+
+/* line 320, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .hasSubmenu button.base.primary.boards_trigger {
+  background-color: #FFFFFF;
+  color: #7f8c8d;
+}
+
+/* line 325, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.tools {
+  color: #BDC7C7;
+}
+
+/* line 328, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light button.base.tools.active {
+  color: #00979D;
+}
+
+/* Buttons - Light Sidebar */
+/* line 335, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary {
+  background-color: #DAE3E3;
+  /*color:  #94A5A6;*/
+  color: #7f8c8d;
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 341, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary:hover {
+  box-shadow: 0 2px #BDC7C7;
+}
+
+/* line 344, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary[disabled]:hover {
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 347, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary:active {
+  box-shadow: 0 0px #BDC7C7;
+}
+
+/* line 350, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary[disabled]:active {
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 353, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary.new_sketch {
+  background-color: #00979C;
+  color: #ffffff;
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 358, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary.new_sketch:hover {
+  box-shadow: 0 2px #005c5f;
+}
+
+/* line 361, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary.new_sketch[disabled]:hover {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 364, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary.new_sketch:active {
+  box-shadow: 0 0px #005c5f;
+}
+
+/* line 367, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.primary.new_sketch[disabled]:active {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 371, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.close {
+  /*color: #C6CED0;*/
+  /*color: #BDC8C7;*/
+  color: #7f8c8d;
+}
+
+/* line 376, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar button.base.close:hover {
+  /*color: #A6B1B2;*/
+  color: #434f54;
+}
+
+/* line 380, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar .input_container > button.base.primary {
+  box-shadow: 0 4px #D9E3E3;
+  color: #7F8C8D;
+  background-color: #FFFFFF;
+  text-transform: none;
+}
+
+/* line 386, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar .input_container > button.base.primary a {
+  color: #7F8C8D;
+}
+
+/*.light .sidebar .hasDrop button.base.primary:hover {
+    outline: 2px solid #dcdcdc;
+}*/
+/* line 392, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.light .sidebar .resetBtn button.close.icon:hover,
+.light .sidebar .resetBtn button.close.icon:active {
+  color: #94A5A6;
+}
+
+/* Buttons - Dark */
+/* line 399, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.primary {
+  background-color: #374146;
+  color: #7F8C8D;
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 404, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.primary:hover {
+  box-shadow: 0 2px #171E21;
+}
+
+/* line 407, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.primary[disabled]:hover {
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 410, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.primary:active {
+  box-shadow: 0 0px #171E21;
+}
+
+/* line 413, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.primary[disabled]:active {
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 416, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .hasSubmenu button.base.primary.boards {
+  background-color: #171e21;
+  color: #7f8c8d;
+}
+
+/* line 420, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.tools {
+  color: #7F8C8D;
+}
+
+/* line 423, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark button.base.tools.active {
+  color: #171E21;
+}
+
+/* Buttons - Dark Sidebar */
+/* line 429, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary {
+  background-color: #374146;
+  color: #7F8C8D;
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 434, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary:hover {
+  box-shadow: 0 2px #171E21;
+}
+
+/* line 437, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary[disabled]:hover {
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 440, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary:active {
+  box-shadow: 0 0px #171E21;
+}
+
+/* line 443, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary[disabled]:active {
+  box-shadow: 0 4px #171E21;
+}
+
+/* line 446, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.close {
+  color: #7F8C8D;
+}
+
+/* line 449, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.close:hover {
+  color: #A6B1B2;
+}
+
+/* line 452, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar .input_container > button.base.primary {
+  /*box-shadow: 0 4px #171E21;*/
+  box-shadow: 0 4px #374146;
+  color: #7F8C8D;
+  /*background-color: #2C353A;*/
+  background-color: #171E21;
+  text-transform: none;
+}
+
+/* line 460, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar .input_container > button.base.primary a {
+  color: #7F8C8D;
+}
+
+/* line 463, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary.new_sketch {
+  background-color: #00979C;
+  color: #ffffff;
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 468, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary.new_sketch:hover {
+  box-shadow: 0 2px #005c5f;
+}
+
+/* line 471, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary.new_sketch[disabled]:hover {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 474, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary.new_sketch:active {
+  box-shadow: 0 0px #005c5f;
+}
+
+/* line 477, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/barbecue/buttons.css */
+.dark .sidebar button.base.primary.new_sketch[disabled]:active {
+  box-shadow: 0 4px #005c5f;
+}
+
+/* TYPONINE SANS PRO */
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-light-webfont.svg") format("svg");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-lightita-webfont.svg") format("svg");
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-regular-webfont.svg") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-italic-webfont.svg") format("svg");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-text-webfont.svg") format("svg");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-textita-webfont.svg") format("svg");
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-medium-webfont.svg") format("svg");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-mediumita-webfont.svg") format("svg");
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-bold-webfont.svg") format("svg");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Pro';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typoninesanspro-boldita-webfont.svg") format("svg");
+  font-weight: 800;
+  font-style: italic;
+}
+/* TYPONINE MONO */
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-light-webfont.svg") format("svg");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-lightita-webfont.svg") format("svg");
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regular-webfont.svg") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-regita-webfont.svg") format("svg");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-text-webfont.svg") format("svg");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-textita-webfont.svg") format("svg");
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-medium-webfont.svg") format("svg");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-mediumita-webfont.svg") format("svg");
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-bold-webfont.svg") format("svg");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Typonine Sans Mono';
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.eot");
+  src: url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.eot?#iefix") format("embedded-opentype"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.woff") format("woff"), url("https://www.arduino.cc/fonts/new_fonts/typsansmono-boldita-webfont.svg") format("svg");
+  font-weight: 800;
+  font-style: italic;
+}
+/* FOR LOCAL PREVIEW ONLY */
+/*.pe-container {
+  overflow: visible;
+}
+#outer-wrapper {
+  margin: 0 auto;
+  overflow-x: visible;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+}*/
+/* END - FOR LOCAL PREVIEW ONLY */
+/* line 166, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+body {
+  font-family: 'Typonine Sans Pro';
+  background: #ecf1f1;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  line-height: 23px;
+  letter-spacing: 0.3px;
+  color: #879191;
+}
+
+/* line 175, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.wrapper {
+  width: 100%;
+  max-width: 1170px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/*  -- NOTIFICATIONS --  */
+/* line 184, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 3px;
+}
+
+/* line 190, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.close {
+  text-shadow: none;
+  color: white;
+  opacity: 1;
+}
+
+/* line 195, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert-top {
+  background: #7F8C8D;
+  border-color: transparent;
+  border-radius: 3px;
+  color: #FFF;
+  padding: 6px 30px 6px 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
+  min-width: 250px;
+  width: auto;
+  margin-bottom: 6px;
+}
+
+/* line 210, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert-top.alert-success {
+  background: #7F8C8D;
+  border-color: transparent;
+}
+
+/* line 214, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert-warning {
+  background-color: #7F8C8D;
+  border-color: transparent;
+  color: white;
+}
+
+/* line 219, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert-warning .alert-link {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
+
+/* line 227, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.alert-warning .alert-link:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: .2s;
+}
+
+/*  -- END NOTIFICATIONS --  */
+/*  -- CREATE TOOLBAR --  */
+/* line 238, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.arduino-bbq {
+  height: 50px;
+  background: white;
+  width: 100%;
+  z-index: 5;
+}
+
+/* line 244, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.arduino-bbq.bbq-overlap {
+  z-index: 11;
+}
+
+/* line 247, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.arduino-bbq.bbq-overlap #ham > svg,
+div.arduino-bbq.bbq-overlap div.user-profile svg {
+  fill: white;
+}
+
+/*  -- END CREATE TOOLBAR --  */
+/* line 253, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#content {
+  padding: 80px 0 60px;
+}
+
+/* line 257, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-info, .btn-info:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* line 261, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-sm {
+  padding: 0;
+  vertical-align: baseline;
+}
+
+/* line 266, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+a {
+  color: #879191;
+  text-decoration: none;
+}
+
+/* line 270, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+a:hover, a:focus {
+  color: #00979C;
+  text-decoration: none;
+}
+
+/* line 274, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+h4, .h4 {
+  font-size: 21px;
+  line-height: 23px;
+  letter-spacing: 0.5px;
+}
+
+/* line 280, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.avatar {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+/* line 285, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.thumb-inner {
+  height: 138px !important;
+  padding: 17px 20px 10px 20px !important;
+}
+
+/* line 289, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.thumb p {
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.6px;
+}
+
+/* line 294, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.thumb .project-stats li {
+  letter-spacing: 0.6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  width: auto;
+  margin-right: 15px;
+}
+
+/* line 302, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.thumb .project-stats li:last-child {
+  margin-right: 0;
+}
+
+/* line 305, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.section-thumbs > h4 {
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0.6px;
+}
+
+/* line 310, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.list-inline > li {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* line 315, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user-name {
+  font-weight: 600;
+}
+
+/* line 318, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.thumb-image-inner-top {
+  padding: 24px 24px;
+}
+
+/* line 321, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.stat-figure {
+  font-weight: 600;
+}
+
+/* line 324, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-stats {
+  color: #879191;
+}
+
+/* line 327, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.wide-thumb-body-bottom {
+  position: relative;
+  bottom: 0;
+}
+
+/* line 331, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+a.follow-button {
+  /*width: 100%;*/
+  position: relative;
+  bottom: 0;
+}
+
+/* line 336, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn, .btn-follow {
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+}
+
+/* line 342, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow, .btn-group-sm > .btn, .btn-group-sm > .btn-follow, .btn-group-sm > .btn-follow {
+  font-size: 15px;
+  line-height: 17px;
+}
+
+/* line 346, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-default {
+  transition: all ease-out .1s;
+  border: 1px solid #DADADA;
+  color: #7F8C8D;
+  background-color: white;
+}
+
+/* line 352, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list .btn-default,
+div.content.projects .btn-default,
+div.content.projects .btn-default:hover,
+div.content.projects .btn-default:active,
+div.content.projects .btn-default:focus {
+  border: none;
+}
+
+/* line 359, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list .btn-group > .btn-default {
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: 1px solid #DADADA;
+}
+
+/* line 365, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list .btn-group > .btn-default:last-child {
+  border-right: none !important;
+}
+
+/* line 368, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-group.open .dropdown-toggle {
+  transition: all ease-out .1s;
+  border: 1px solid #DAE3E3;
+  color: #434f54;
+  background-color: #DAE3E3;
+  box-shadow: none;
+}
+
+/* line 375, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn-default {
+  border-left: 0;
+  border-right: 1px solid #DADADA;
+}
+
+/* line 379, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn-default:first-child {
+  border-left: 1px solid #DADADA;
+}
+
+/* line 382, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn-default:first-child:hover {
+  border-left: 1px solid #DAE3E3;
+}
+
+/* line 385, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DADADA !important;
+}
+
+/* line 388, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn-default:last-child {
+  border-right: 1px solid #DAE3E3 !important;
+}
+
+/* line 393, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+  color: #434F54;
+  text-decoration: none;
+  outline: 0;
+  background-color: #DAE3E3;
+}
+
+/* line 399, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li > a, .pagination > li > span {
+  transition: all ease-out .1s;
+  border: none;
+  background-color: #DAE3E3;
+  margin-right: 7px;
+  color: #7f8c8d;
+  box-shadow: 0 4px #BDC7C7;
+  top: 0;
+  font-size: 13px;
+  line-height: 13px;
+}
+
+/* line 410, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li > a:hover {
+  transition: all ease-out .1s;
+  top: 2px;
+  background-color: #DAE3E3;
+  box-shadow: 0 2px #BDC7C7;
+  color: #7f8c8d;
+}
+
+/* line 417, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li > a:active {
+  top: 4px;
+  box-shadow: none;
+}
+
+/* line 421, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li > a:focus {
+  outline: none;
+  background-color: #DAE3E3;
+}
+
+/* line 425, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > .active > a {
+  background-color: #00979C;
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 429, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > .active > a:hover {
+  background-color: #00979C;
+  box-shadow: 0 2px #005c5f;
+}
+
+/* line 433, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > .active > a:focus {
+  background-color: #00979C;
+}
+
+/* line 436, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li:last-child > a, .pagination > li:first-child > a {
+  border-radius: 0;
+}
+
+/* line 439, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li.disabled > a, .pagination > li.disabled > a:hover, .pagination > li.disabled > a:focus {
+  background-color: #DAE3E3;
+  color: #A5A5A5;
+  cursor: default;
+}
+
+/* line 444, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pagination > li.disabled > a:hover {
+  top: 0;
+  box-shadow: 0 4px #BDC7C7;
+}
+
+/* line 449, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-default.btn-sm, .btn-group-sm > .btn-default.btn, .btn-group-sm > .btn-default.btn-follow {
+  padding: 10px 14px;
+  margin-right: 7px;
+}
+
+/* line 453, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+body.whitelabel .navbar .navbar-brand {
+  padding: 18px 0 0 0;
+}
+
+/* line 456, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.navbar .navbar-in {
+  max-width: 1170px;
+  margin: 0 auto;
+  /*padding-left: 70px;*/
+}
+
+/* line 461, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#navbar-right {
+  padding-right: 0;
+}
+
+/* line 464, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.navbar-brand {
+  font-family: 'Typonine Sans Pro';
+  font-size: 30px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+/* line 470, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.navbar-brand a {
+  color: #00979C;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+/* line 477, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.dropdown-menu {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-top: 3px solid #00979C;
+  margin: 15px 0 0 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 15px;
+  color: #434F54;
+  letter-spacing: 0.7px;
+}
+
+/* line 491, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.dropdown-menu > li > a {
+  padding: 6px 14px;
+  color: #434F54;
+  font-size: 13.5px;
+  line-height: 20px;
+}
+
+/* line 497, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+  color: #434F54;
+  text-decoration: none;
+  outline: 0;
+  background-color: #dae3e3;
+}
+
+/* line 503, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.dropdown-caret {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 7.5px 8.5px 7.5px;
+  border-color: transparent transparent #00979C transparent;
+  position: absolute;
+  z-index: 3;
+  top: -10px;
+  left: 12px;
+}
+
+/* line 514, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.user-profile div.dropover.simple {
+  font-size: 12px;
+  line-height: 15px;
+  color: #434F54;
+  letter-spacing: 0.7px;
+}
+
+/* line 523, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.dropdown-menu.pull-right {
+  right: auto;
+  left: 0;
+}
+
+/* line 528, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel#hardware .table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+/* line 531, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.parts-widget td {
+  background: #F4F7F7;
+}
+
+/* line 534, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.parts-widget select {
+  border-right: 1px solid #ddd;
+}
+
+/* line 537, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel#hardware ul.list-inline, div.pe-panel#software ul.list-inline {
+  margin: 0;
+}
+
+/* line 540, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+/* line 545, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.help-block {
+  text-align: center;
+}
+
+/* line 548, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn .caret, .btn-follow .caret {
+  margin-left: 7px;
+}
+
+/* line 551, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-primary, .btn-secondary {
+  transition: all ease-out .1s;
+  position: relative;
+  background: #00979C;
+  border: 0;
+  top: 0;
+  box-shadow: 0 6px #005c5f;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  padding: 12px 20px 9px 20px;
+  letter-spacing: 0.9px;
+  max-height: 34px;
+}
+
+/* line 567, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-secondary {
+  background: #DAE3E3;
+  box-shadow: 0 6px #BDC7C7;
+  color: #7f8c8d;
+}
+
+/* line 572, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pe-nav + .pe-nav {
+  margin-left: 65px;
+}
+
+/* line 575, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pe-nav li a.tab-create {
+  background: transparent;
+  box-shadow: none;
+  color: #95A5A6;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition-property: color;
+  transition-duration: 0.2s;
+  transition-delay: 0s;
+  padding: 5px 6px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  margin-right: 16px;
+}
+
+/* line 590, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pe-nav li:last-child a.tab-create {
+  margin-right: 0;
+}
+
+/* line 593, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pe-nav li a.tab-create:hover {
+  color: #566262;
+  transition-property: color;
+  transition-duration: 0.2s;
+  transition-delay: 0s;
+}
+
+/* line 599, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pe-nav li a.tab-create.active {
+  border: 1px solid #95A5A6;
+}
+
+/* line 602, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-primary:hover {
+  transition: all ease-out .1s;
+  background: #00979C;
+  top: 2px;
+  box-shadow: 0 4px #005c5f;
+}
+
+/* line 608, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-secondary:hover {
+  transition: all ease-out .1s;
+  background: #DAE3E3;
+  top: 2px;
+  box-shadow: 0 4px #BDC7C7;
+  color: #7f8c8d;
+}
+
+/* line 615, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-primary:active {
+  transition: all ease-out .1s;
+  background: #00979C;
+  box-shadow: none;
+  top: 6px;
+}
+
+/* line 621, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-secondary:active {
+  transition: all ease-out .1s;
+  background: #DAE3E3;
+  top: 6px;
+  box-shadow: none;
+}
+
+/* line 627, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-primary:focus {
+  background: #00979C;
+  outline: none;
+}
+
+/* line 631, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-secondary:focus {
+  background: #DAE3E3;
+  outline: none;
+  color: #7f8c8d;
+}
+
+/* line 636, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+button#burger-menu {
+  background-image: url(/assets/whitelabel/arduino/burger-icon.svg);
+  background-size: 18px;
+  background-repeat: no-repeat;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  border: none;
+  position: fixed;
+  top: 16px;
+  left: 19px;
+  z-index: 12;
+}
+
+/* line 649, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+button#burger-menu:focus {
+  outline: none;
+}
+
+/* line 652, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq .login-link {
+  background-color: transparent;
+  color: #879191;
+  box-shadow: none;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  letter-spacing: 0.9px;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  right: 23px;
+  top: 25px;
+  z-index: 12;
+}
+
+/* line 668, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq a.login-link:hover {
+  color: #00979C;
+}
+
+/* line 671, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq .login-link {
+  min-width: 0;
+}
+
+/* line 676, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.pull-right {
+  padding-top: 0 !important;
+  margin-top: 11px;
+}
+
+/* line 682, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#navbar-search .form-control {
+  font-size: 13px;
+  line-height: 13px;
+  letter-spacing: 0.9px;
+  font-weight: 400;
+  background-color: #ecf1f1;
+  padding: 0 20px 0 45px;
+  height: 40px;
+  width: 300px;
+  margin-right: 10px;
+  border-radius: 0;
+}
+
+/* line 694, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.select2-container--default .select2-selection--multiple {
+  border-radius: 0;
+  border: 1px solid #DADADA;
+}
+
+/* line 698, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#navbar-search input[type=text] {
+  text-transform: none;
+  font-weight: 400;
+  color: #7f8c8d;
+  letter-spacing: 0.6px;
+}
+
+/* line 706, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+::-webkit-input-placeholder {
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+
+/* line 712, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+:-moz-placeholder {
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+
+/* line 718, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+::-moz-placeholder {
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+
+/* line 724, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+:-ms-input-placeholder {
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+
+/* line 730, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel div.clearfix {
+  min-height: 55px;
+}
+
+/* line 733, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel .btn-sm.btn-success {
+  padding: 10px 20px;
+  font-weight: 600;
+}
+
+/* line 737, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel#team textarea {
+  margin-right: 0;
+  width: 100%;
+  max-width: 185px;
+}
+
+/* line 742, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+a.btn.btn-sm.btn-danger.remove_nested_fields {
+  padding: 3px 6px 2px;
+}
+
+/* line 746, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.pe-panel#team a.btn-xs.btn-success.add_nested_fields,
+div.pe-panel#team a.btn-xs.btn-danger.remove_nested_fields,
+div.pe-panel#team a.btn-xs.btn-success.nested-field-table.add_nested_fields {
+  margin-left: 0 !important;
+  float: right;
+  position: relative;
+  margin-top: 10px;
+}
+
+/* line 754, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+tr.sortable-disabled td {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* line 758, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.table-condensed > tbody > tr > td {
+  padding: 15px 5px;
+}
+
+/* line 761, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.form-horizontal .fields .form-group {
+  margin-bottom: 15px;
+}
+
+/* line 764, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box + .box {
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* line 768, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.form-horizontal .checkbox {
+  margin-bottom: 20px;
+}
+
+/* line 771, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.table > thead > tr > th {
+  border-bottom: 1px solid #C5C5C5;
+}
+
+/* line 774, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box-title.small-title .subheading {
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #879191;
+}
+
+/* line 780, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box-title h4 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 26px;
+  color: #879191;
+  margin-bottom: 10px;
+}
+
+/* line 788, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-success {
+  background: #39C19D;
+  border: 1px solid #39C19D;
+}
+
+/* line 792, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-success:hover, .btn-success:active, .btn-success:focus {
+  background: #38CAA3;
+  border: 1px solid #38CAA3;
+  box-shadow: none;
+}
+
+/* line 797, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-danger {
+  color: #fff;
+  background-color: #da5b4a;
+  border-color: #da5b4a;
+}
+
+/* line 802, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-danger:hover, .btn-danger:active, .btn-danger:focus {
+  background-color: #EA6D5C;
+  border-color: #EA6D5C;
+  box-shadow: none;
+}
+
+/* Editor Project Story */
+/* line 811, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar .toolbar-btn:hover {
+  color: #fff;
+  background-color: #00979C;
+}
+
+/* line 815, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.content-editable {
+  padding: 2% 0;
+  font-size: 1.5rem;
+  word-wrap: break-word;
+  font-family: 'Typonine Sans Pro';
+  font-size: 18px;
+}
+
+/* line 822, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption,
+.react-editor-video .react-editor-carousel-inner .react-editor-figure .react-editor-image-wrapper .react-editor-figcaption {
+  color: #879191;
+  font-family: 'Typonine Sans Pro';
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* line 831, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar {
+  z-index: 0;
+}
+
+/* line 834, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-toolbar-container .react-editor-toolbar-wrapper.fixed-toolbar {
+  top: 65px;
+}
+
+/* line 837, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button {
+  border-radius: 0 !important;
+}
+
+/* line 840, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button.btn-danger {
+  max-height: 34px;
+  box-shadow: 0 6px #963E3E;
+  transition: all ease-out .1s;
+  background-color: #da5b4a;
+}
+
+/* line 846, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button.btn-danger:hover {
+  transition: all ease-out .1s;
+  top: 2px;
+  box-shadow: 0 4px #963E3E;
+  background-color: #da5b4a;
+}
+
+/* line 852, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button.btn-danger:active {
+  transition: all ease-out .1s;
+  top: 6px;
+  box-shadow: none;
+  background-color: #da5b4a;
+}
+
+/* line 858, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button.btn-danger span.fa {
+  top: -8px;
+}
+
+/* line 861, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.react-editor-carousel button span.fa {
+  position: relative !important;
+  top: -7px;
+}
+
+/* End Editor Project Story */
+/* Responsive Dropover Toolbar */
+/* line 870, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#feed_cont {
+  display: none;
+}
+
+/* line 873, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.grid_row {
+  margin-left: 0;
+}
+
+/* End Responsive Dropover Toolbar */
+/* line 879, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#navbar-search .input-group-addon {
+  top: 12px;
+  position: absolute;
+  z-index: 3;
+}
+
+/* line 884, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.create-logo {
+  float: left;
+  background-image: url(/assets/whitelabel/arduino/CreateProjectsLogo.svg);
+  background-size: 308px;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 308px;
+  margin-left: -8px;
+  margin-top: 6px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+
+/* line 896, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq.affix #navigation {
+  height: 64px;
+  padding-top: 0;
+  padding-bottom: 0;
+  /*margin-top: -23px;*/
+  transition: all ease-out .1s;
+}
+
+/* line 904, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq.affix #navigation .create-logo {
+  background-image: url(/assets/whitelabel/arduino/CreateProjectsLogoMinified.svg);
+  margin-top: 16px;
+  height: 36px;
+  background-size: 237px;
+  transition-property: height, background-size;
+  transition-duration: 0.2s, 0.1s;
+}
+
+/* line 912, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+a.create-logo:hover {
+  opacity: 0.7;
+}
+
+/* line 915, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+body.whitelabel .navbar .navbar-brand {
+  display: none;
+}
+
+/* line 918, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq #filler-bg-toolbar {
+  background: white;
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  height: 55px;
+  margin-top: -55px;
+}
+
+/* line 926, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.arduino-bbq.affix #filler-bg-toolbar {
+  height: 15px;
+  margin-top: -15px;
+  transition: all ease-out .1s;
+}
+
+/* line 932, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#tob-bar-bg {
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  display: inline-block;
+  z-index: 10;
+}
+
+/* line 940, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#ham {
+  padding-top: 20px;
+  height: 65px;
+}
+
+/* line 944, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user-profile {
+  top: 19px;
+  right: 23px;
+}
+
+/* line 949, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#navigation {
+  height: 93px;
+  background: #fff;
+  padding: 0 26px 15px 26px;
+  width: calc(100% - 140px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -23px;
+  transition: all ease-out .1s;
+}
+
+/* line 959, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.navbar-default {
+  background-color: #f8f8f8;
+  border-color: transparent;
+}
+
+/* line 964, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer {
+  background-color: white;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  /* LOCAL PREVIEW ONLY */
+  /*display: none;*/
+  /* END LOCAL PREVIEW ONLY */
+}
+
+/* line 974, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer a.logoArduinoGenuino {
+  background-image: url(/assets/whitelabel/arduino/ArduinoGenuino.svg);
+  background-size: 225px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 80px;
+  width: 225px;
+  margin: 20px 0 12px;
+}
+
+/* line 984, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer a.logoArduinoGenuino:hover {
+  opacity: 0.7;
+}
+
+/* line 987, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer p {
+  font-size: 13px;
+  line-height: 19px;
+  margin: 0 0 10px 0;
+}
+
+/* line 992, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer a#hackster-logo {
+  background-image: url(/assets/hackster_logo_text.png);
+  background-size: 107px;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  height: 25px;
+  width: 107px;
+  top: 8px;
+  margin-left: 4px;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+/* line 1005, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#mini-footer a#hackster-logo:hover {
+  opacity: 0.7;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+/* line 1012, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#content.project-page {
+  padding: 100px 0 60px;
+}
+
+/* line 1015, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.project-type {
+  display: none;
+}
+
+/* line 1018, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-banner-inner {
+  background-image: none;
+  background: rgba(0, 151, 156, 0.95);
+  padding: 10px 40px 20px;
+}
+
+/* line 1023, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-banner-inner .project-stats {
+  color: white;
+  letter-spacing: 0.6px;
+}
+
+/* line 1027, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-banner-inner h1 {
+  font-size: 30px;
+  line-height: 33px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* line 1033, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.project-page h3, div.project-page .h3 {
+  font-size: 27px;
+  line-height: 31px;
+  margin: 40px 0 20px 0;
+}
+
+/* line 1038, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-thumb-mini {
+  height: 150px;
+}
+
+/* line 1041, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-thumb-mini-inner {
+  background-image: none;
+  background: rgba(0, 151, 156, 0.95);
+  padding: 10px 15px 10px;
+}
+
+/* line 1046, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-thumb-mini-inner h4 {
+  font-weight: 500;
+  margin: 0 0 3px;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.5px;
+}
+
+/* line 1053, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-banner-inner p.project-one-liner {
+  letter-spacing: 0.5px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+/* line 1059, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.copyright {
+  font-size: 70%;
+  color: white;
+}
+
+/* line 1063, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.tag {
+  transition: all ease-out .1s;
+  border-radius: 0;
+  font-weight: 500;
+  padding: 4px 6px 6px 6px;
+  font-size: 14px;
+}
+
+/* line 1070, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.tag:hover {
+  transition: all ease-out .1s;
+  color: #00979C;
+}
+
+/* line 1074, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.section-title .title-toggle {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 20px;
+  line-height: 22px;
+}
+
+/* line 1082, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.wide-thumb-body-bottom {
+  bottom: -18px;
+}
+
+/* line 1085, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.wide-thumb-body-bottom a.follow-button {
+  width: 100%;
+}
+
+/* line 1088, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+b, strong {
+  font-weight: 600;
+}
+
+/* line 1091, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#scroll-nav li.active > a {
+  font-weight: 600;
+}
+
+/* line 1094, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.other-projects {
+  background: #ecf1f1;
+}
+
+/* line 1097, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-link {
+  transition: all ease-out .1s;
+  color: #00979C;
+}
+
+/* line 1101, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-link:hover {
+  transition: all ease-out .1s;
+  color: #006569;
+  text-decoration: none;
+}
+
+/* line 1106, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group, .btn-group-vertical {
+  margin-bottom: 5px;
+}
+
+/* line 1109, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn, .btn-group > .btn-follow, .btn-group-vertical > .btn, .btn-group-vertical > .btn-follow {
+  margin-left: 5px !important;
+}
+
+/* line 1112, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.project-switcher {
+  height: 70px;
+  margin-top: -35px;
+}
+
+/* line 1116, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.wide-thumb-body h5 {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 2px;
+}
+
+/* line 1123, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box {
+  border: none;
+  border-radius: 0;
+}
+
+/* line 1127, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box-content {
+  padding-bottom: 30px;
+}
+
+/* line 1130, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box-title {
+  padding: 40px 20px;
+  border-bottom: 3px solid #ecf1f1;
+}
+
+/* line 1134, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.box-title h2 {
+  text-align: center;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  font-size: 32px;
+  line-height: 38.4px;
+  letter-spacing: 1.6px;
+}
+
+/* line 1143, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.help-block {
+  color: #879191;
+}
+
+/* line 1146, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.form-control {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #DADADA;
+}
+
+/* line 1151, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+textarea.form-control {
+  max-width: 100%;
+}
+
+/* line 1154, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #909090;
+}
+
+/* line 1159, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
+  width: auto;
+  margin: 0 auto;
+}
+
+/* line 1165, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.text-success {
+  color: #209171;
+}
+
+/* line 1168, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.template-chooser-container label {
+  color: #879191;
+}
+
+/* line 1171, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.template-chooser-container .option-title {
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+  line-height: 19px;
+}
+
+/* line 1179, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.template-chooser-container label:hover,
+.template-chooser-container [type="radio"]:checked + label:hover {
+  background-color: #F4F7F7;
+}
+
+/* line 1183, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.template-chooser-container label:last-child {
+  border-radius: 0;
+}
+
+/* line 1186, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+label {
+  font-weight: 600;
+}
+
+/* line 1189, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div:focus,
+.btn:focus,
+.btn-follow:focus,
+.btn.focus,
+.focus.btn-follow,
+.btn:active:focus,
+.btn-follow:active:focus,
+.btn:active.focus,
+.btn-follow:active.focus,
+.btn.active:focus,
+.active.btn-follow:focus,
+.btn.active.focus,
+.active.focus.btn-follow {
+  outline: none;
+}
+
+/* line 1204, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group > .btn {
+  margin-left: 0 !important;
+}
+
+/* line 1207, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn {
+  margin-right: 5px;
+}
+
+/* line 1210, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn:last-child {
+  margin-right: 0;
+}
+
+/* line 1213, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.btn-group a, div.btn-group a:hover {
+  margin: 0 !important;
+  border-right: 1px solid #C0CECE;
+}
+
+/* line 1217, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.btn-group .btn-primary,
+div.btn-group .btn-primary:hover,
+div.btn-group .btn-primary:active,
+div.btn-group .btn-primary:focus {
+  border-right: 1px solid #007579;
+}
+
+/* line 1223, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.btn-group a:last-child {
+  border-right: none !important;
+}
+
+/* line 1226, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.btn-group .btn-default + .btn-default {
+  margin-left: 0 !important;
+}
+
+/* line 1229, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.align-right {
+  float: right;
+}
+
+/* line 1232, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.margin-bottom-fix {
+  margin-bottom: 30px !important;
+}
+
+/* line 1235, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#content-with-sidebar {
+  margin-top: 40px;
+  background-color: #ecf1f1;
+}
+
+/* line 1239, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#sidebar-container {
+  background: #ecf1f1;
+  border: none;
+  display: none;
+}
+
+/* line 1244, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#content-with-sidebar {
+  padding-left: 0;
+}
+
+/* line 1247, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list, div#main-content {
+  box-shadow: none;
+  /*margin-right: 20px;
+  margin-bottom: 40px;*/
+  /*background: white;*/
+  background: #ecf1f1;
+  margin: 0;
+}
+
+/*#projects-list .thumb-inner {
+  background: #f4f4f4;
+}*/
+/* line 1258, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list .thumb-list {
+  margin-top: 40px;
+}
+
+/* line 1261, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#platform-avatar-image {
+  top: 0;
+  bottom: 40px;
+  border-radius: 0;
+  border: none;
+}
+
+/* line 1267, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#platform-body {
+  border-bottom: 3px solid white;
+  box-shadow: none;
+}
+
+/* line 1271, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+hr {
+  border-top-color: white;
+  border-top: 3px solid white;
+}
+
+/* line 1275, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list h2 {
+  /*font-size: 20px;
+  margin: 0 0 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 600;*/
+  font-size: 27px;
+  line-height: 31px;
+  margin: 40px 0 20px 0;
+  font-weight: normal;
+  color: #666;
+}
+
+/* line 1287, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list p a {
+  color: #00979C;
+}
+
+/* line 1290, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list p a:hover {
+  color: #006569;
+}
+
+/* line 1293, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list .btn-primary, .user #projects-list .btn-primary:hover {
+  color: white;
+}
+
+/* line 1296, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list .thumb-inner a {
+  color: #879191;
+}
+
+/* line 1299, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.user #projects-list .thumb-inner a:hover {
+  color: #00979C;
+}
+
+/* line 1302, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+.badge {
+  vertical-align: middle;
+  padding: 4px 7px 3px 7px;
+  margin-top: -2px;
+  margin-left: 4px;
+}
+
+/* line 1309, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#platform-websites .list-inline > li {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 23px;
+}
+
+/* line 1314, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#platform-page .display a:not(.label):hover {
+  color: #00979C;
+}
+
+/* line 1317, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list p .btn-primary {
+  margin: 10px 0 35px;
+  position: relative;
+  float: left;
+  margin-right: 15px;
+}
+
+/* line 1323, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+strong.text-muted {
+  margin: 10px 0;
+  display: block;
+  clear: both;
+}
+
+/* line 1328, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list p.smaller.text-muted {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 15px;
+  color: #879191;
+}
+
+/* line 1334, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#platform-name {
+  color: #666;
+  font-weight: 500;
+}
+
+/* line 1338, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+#projects-list .main-section-actions .btn-group.pull-right {
+  margin-top: 0;
+}
+
+/* line 1341, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div#main-content .header.clearfix .pull-right {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* line 1357, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+div.thumb-image.has-link-overlay:hover + div.thumb-inner,
+div.thumb-image.has-link-overlay:hover + div.thumb-inner a,
+div.thumb-image.has-link-overlay:hover + div.thumb-inner .project-stats {
+  background-color: #DAE3E3;
+  color: #747B7B;
+}
+
+@media (min-width: 768px) {
+  /* line 1368, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  .thumb-image:hover:before {
+    background: rgba(0, 151, 156, 0.95);
+  }
+
+  /* line 1371, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  p.description.show-on-hover {
+    font-weight: 500;
+  }
+
+  /* line 1374, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  .create-logo {
+    float: left;
+  }
+}
+@media (min-width: 980px) {
+  /* line 1379, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  div#feed_cont {
+    display: flex;
+  }
+
+  /* line 1382, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  .grid_row {
+    margin-left: -18%;
+  }
+}
+@media (min-width: 1350px) {
+  /* line 1388, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  .navbar .navbar-in {
+    padding-left: 18px;
+    padding-right: 15px;
+  }
+
+  /* line 1392, /Users/Zenko/Sites/Hackster/hackster/app/assets/stylesheets/whitelabel/arduino/style.scss */
+  .create-logo + div.pull-right {
+    margin-right: 0;
+  }
+}
