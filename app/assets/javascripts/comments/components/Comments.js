@@ -43,7 +43,6 @@ export default class Comments extends Component {
   }
 
   render() {
-    console.log('go');
     let user = this.props.commentStore.user;
     const comments = this.props.commentStore.comments.length > 0
                    ? this.props.commentStore.comments.map((comment, index) => {
