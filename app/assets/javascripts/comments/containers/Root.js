@@ -11,6 +11,7 @@ export default class Root extends Component {
   }
 
   render() {
+    console.log('HEYO!');
     return (
       <Provider store={store}>
         <Comments { ...this.props } />
