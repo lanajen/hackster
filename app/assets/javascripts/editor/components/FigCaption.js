@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 const FigCaption = React.createClass({
 
@@ -16,7 +17,7 @@ const FigCaption = React.createClass({
   },
 
   handleInput(e) {
-    let html = React.findDOMNode(e.target).textContent;
+    let html = ReactDOM.findDOMNode(e.target).textContent;
     this.setState({
       html: html
     });
@@ -27,7 +28,7 @@ const FigCaption = React.createClass({
   },
 
   handleKeyDown(e) {
-    let node = React.findDOMNode(e.target);
+    let node = ReactDOM.findDOMNode(e.target);
     let arrowKeys = {
       '37': true,
       '38': true,
@@ -53,7 +54,7 @@ const FigCaption = React.createClass({
   handleKeyUp(e) {
     /** Input handler for IE. */
     if(this.props.isIE) {
-      let html = React.findDOMNode(e.target).textContent;
+      let html = ReactDOM.findDOMNode(e.target).textContent;
       this.setState({
         html: html
       });

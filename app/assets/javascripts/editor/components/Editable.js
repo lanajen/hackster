@@ -1,4 +1,5 @@
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import DropZone from '../../reusable_components/DropZone';
 import ContentEditable from './ContentEditable';
@@ -59,7 +60,7 @@ const Editable = React.createClass({
     }
 
     if(this.props.toolbar.CEWidth === null) {
-      this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+      this.props.actions.setCEWidth(ReactDOM.findDOMNode(this).offsetWidth);
     }
   },
 
@@ -76,7 +77,7 @@ const Editable = React.createClass({
   componentWillUpdate() {
     /** Sets initial CEWidth for the Toolbars. */
     if(this.props.toolbar.CEWidth === 0) {
-      this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+      this.props.actions.setCEWidth(ReactDOM.findDOMNode(this).offsetWidth);
     }
     window.pe.resizePeContainer();
   },
@@ -96,7 +97,7 @@ const Editable = React.createClass({
 
   handleResize() {
     this.props.actions.toggleImageToolbar(false, {});
-    this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+    this.props.actions.setCEWidth(ReactDOM.findDOMNode(this).offsetWidth);
   },
 
   preventBackspace(e) {

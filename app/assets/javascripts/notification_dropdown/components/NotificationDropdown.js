@@ -1,10 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
 
 var NotificationDropdown = React.createClass({
 
   render: function() {
-    let notifications = _.map(this.props.notifications, function(note, index) {
+    let notifications = this.props.notifications.map((note, index) => {
       if (note.message) {
         let classNames = ['notification-item'];
         if (!note.read) classNames.push('notification-unread');
@@ -17,7 +16,7 @@ var NotificationDropdown = React.createClass({
           </li>
         );
       }
-    }).filter(function(item) { return item !== undefined; });
+    }).filter((item) => item !== undefined );
 
     if(!notifications.length) {
       notifications = (<p className="notification-item">Notifications about other members' activity related to you will appear here.</p>);

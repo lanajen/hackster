@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -88,7 +89,7 @@ const FollowButton = React.createClass({
       }
 
       this.updateStore(id, type);
-      React.findDOMNode(this.refs.button).blur();
+      ReactDOM.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
       console.log('Request Error: ' + err);
     });

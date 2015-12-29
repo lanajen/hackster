@@ -50,11 +50,5 @@ export default {
     transformInlineToText: null,
     updateCarouselImages: null,
     updateComponent: null
-  }),
-
-  ImageBucket: keyMirror({
-    show: null,
-    hide: null
   })
-
 };

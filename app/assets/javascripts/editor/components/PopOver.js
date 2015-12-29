@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Utils from '../utils/DOMUtils';
 import Validator from 'validator';
 import _ from 'lodash';
@@ -22,14 +23,14 @@ const PopOver = React.createClass({
   },
 
   componentDidMount() {
-    let input = React.findDOMNode(this.refs.input);
+    let input = ReactDOM.findDOMNode(this.refs.input);
     input.focus();
   },
 
   onBodyClick(e) {
-    if( e.target === React.findDOMNode(this.refs.input) || e.target === React.findDOMNode(this.refs.input2) ) {
+    if( e.target === ReactDOM.findDOMNode(this.refs.input) || e.target === ReactDOM.findDOMNode(this.refs.input2) ) {
       return;
-    } else if(e.target !== React.findDOMNode(this)) {
+    } else if(e.target !== ReactDOM.findDOMNode(this)) {
       // this.props.unMountPopOver();
     }
   },
@@ -40,8 +41,8 @@ const PopOver = React.createClass({
 
   handleKeyPress(version, e) {
     if(e.key === 'Enter') {
-      let value = React.findDOMNode(this.refs.input).value;
-      let text = React.findDOMNode(this.refs.input2).value;
+      let value = ReactDOM.findDOMNode(this.refs.input).value;
+      let text = ReactDOM.findDOMNode(this.refs.input2).value;
 
       /** Make sure the url protocol is added. */
       if(Validator.isURL(value)) {

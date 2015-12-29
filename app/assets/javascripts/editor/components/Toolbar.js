@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Button from './ToolbarButton';
 import PopOver from './PopOver';
 import _ from 'lodash';
@@ -36,7 +37,7 @@ const Toolbar = React.createClass({
   },
 
   handleScroll(e) {
-    let el = React.findDOMNode(this.refs.toolbar);
+    let el = ReactDOM.findDOMNode(this.refs.toolbar);
     let parentTop = el.parentNode.getBoundingClientRect().top;
 
     if (parentTop < 0) {
@@ -352,7 +353,7 @@ const Toolbar = React.createClass({
   },
 
   handleImageButtonClick() {
-    React.findDOMNode(this.refs.imageUploadInput).click();
+    ReactDOM.findDOMNode(this.refs.imageUploadInput).click();
   },
 
   handleImages(e) {
@@ -395,7 +396,7 @@ const Toolbar = React.createClass({
       );
     });
 
-    React.findDOMNode(this.refs.imageUploadInput).value = '';
+    ReactDOM.findDOMNode(this.refs.imageUploadInput).value = '';
     window.pe.resizePeContainer();
   },
 

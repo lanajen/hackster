@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import Utils from '../utils/DOMUtils';
 import _ from 'lodash';
 import FigCaption from './FigCaption';
@@ -30,7 +31,7 @@ const Carousel = React.createClass({
   },
 
   handleKeyDown(e) {
-    let currentNode = React.findDOMNode(this);
+    let currentNode = ReactDOM.findDOMNode(this);
     let Editable = Utils.getParentOfCE(currentNode);
     let nodeToFocus, CE, lastChild, firstChild;
 
@@ -64,14 +65,14 @@ const Carousel = React.createClass({
       }
     }
     /** On Enter Key */
-    if(e.keyCode === 13 && React.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
+    if(e.keyCode === 13 && ReactDOM.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
       e.preventDefault();
       this.props.actions.prependCE(this.props.storeIndex);
     }
 
     /** On Backspace */
     if(e.keyCode === 8 || e.keyCode === 46) {
-      if(React.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
+      if(ReactDOM.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
         e.preventDefault();
       }
     }
@@ -79,7 +80,7 @@ const Carousel = React.createClass({
 
   handleNavigation(direction, e) {
     e.preventDefault();
-    let inner = React.findDOMNode(this.refs.inner);
+    let inner = ReactDOM.findDOMNode(this.refs.inner);
     let figures = inner.children;
     let activeIndex = _.findIndex(figures, function(fig) {
       return fig.classList.contains('show');
@@ -95,7 +96,7 @@ const Carousel = React.createClass({
     if(key === 'Enter') {
       e.preventDefault();
 
-      let Editable = Utils.getParentOfCE(React.findDOMNode(this));
+      let Editable = Utils.getParentOfCE(ReactDOM.findDOMNode(this));
       let nodeToFocus, CE, lastChild, firstChild;
 
       this.props.actions.toggleImageToolbar(false, {});
@@ -117,12 +118,12 @@ const Carousel = React.createClass({
   },
 
   handleMouseOver(e) {
-    let target = React.findDOMNode(e.target),
-        currentNode = React.findDOMNode(this),
+    let target = ReactDOM.findDOMNode(e.target),
+        currentNode = ReactDOM.findDOMNode(this),
         parent = Utils.getRootParentElement(currentNode),
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
-    if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
+    if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== ReactDOM.findDOMNode(this)) {
       this.props.actions.toggleImageToolbar(false, {});
       this.props.actions.updateComponent(this.props.editor.imageToolbarData.storeIndex);
     }
