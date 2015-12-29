@@ -67,6 +67,6 @@
     "build:dev": "webpack --config webpack/webpack.config.dev.js",
     "build": "npm run clean && npm run build:dev",
     "watch:js": "webpack --config webpack/webpack.config.dev.js --watch",
-    "postinstall": "npm run build"
+    "preinstall": "npm run build"
   }
 }

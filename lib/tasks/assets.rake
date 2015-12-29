@@ -1,4 +1,5 @@
 # Place this code in lib/tasks/assets.rake
+
 namespace :assets do
   desc "Create .gz versions of assets"
   task :gzip => :environment do
@@ -37,6 +38,5 @@ namespace :assets do
   # Hook into existing assets:precompile task
   Rake::Task["assets:precompile"].enhance do
     Rake::Task["assets:gzip"].invoke
-    Rake::Task["assets:webpack"].invoke
   end
 end

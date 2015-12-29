@@ -8,8 +8,7 @@ end
 
 run HackerIo::Application
 
-HackerIo::Application.load_tasks
-
 if Rails.env.development?
+  HackerIo::Application.load_tasks
   Rake::Task['assets:webpack'].invoke
 end
