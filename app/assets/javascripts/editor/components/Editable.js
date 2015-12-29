@@ -79,7 +79,8 @@ const Editable = React.createClass({
     if(this.props.toolbar.CEWidth === 0) {
       this.props.actions.setCEWidth(ReactDOM.findDOMNode(this).offsetWidth);
     }
-    window.pe.resizePeContainer();
+
+    if(window && window.pe) { window.pe.resizePeContainer(); }
   },
 
   componentWillReceiveProps(nextProps) {

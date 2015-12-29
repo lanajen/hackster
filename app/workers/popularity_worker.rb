@@ -32,7 +32,7 @@ class PopularityWorker < BaseWorker
 
   def compute_popularity_for_user user_id
     user = User.find user_id
-    user.update_counters only: [:live_projects, :live_hidden_projects, :followers]
+    user.update_counters only: [:live_projects, :live_hidden_projects, :followers, :project_respects, :project_views]
     user.build_reputation unless user.reputation
     reputation = user.reputation
     reputation.compute

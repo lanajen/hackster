@@ -1,6 +1,6 @@
 import React from 'react';
 
-var File = React.createClass({
+const File = React.createClass({
 
   getInitialState() {
     return {

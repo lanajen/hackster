@@ -395,9 +395,27 @@ $desktop-width: 1024px;
   border-radius: 3px;
   padding: 10px;
   margin: 20px;
+  min-height: 100px;
   @include flexbox((
-    display: flex
+    display: flex,
+    align-items: center,
+    justify-content: center
   ));
+
+  &.twitter {
+    border: none;
+    margin: 0;
+  }
+
+  .widget-placeholder-overlay {
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+      justify-content: center
+    ));
+    background: rgba(0,0,0,0.5);
+  }
 }
 
 /** Toolbar */
