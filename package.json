@@ -64,6 +64,7 @@
     "clean": "rimraf app/assets/javascripts/bundle.js",
     "webpack": "webpack --config webpack/webpack.config.dev.js",
     "build": "npm run clean && npm run webpack",
-    "watch:js": "webpack --config webpack/webpack.config.dev.js --watch"
+    "watch:js": "webpack --config webpack/webpack.config.dev.js --watch",
+    "postinstall": "webpack --config webpack/webpack.config.prod.js"
   }
 }
