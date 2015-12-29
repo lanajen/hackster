@@ -251,7 +251,7 @@ export default {
     let tag = nodeName === 'PRE' ? 'pre' : 'p';
     return lines.map(line => {
       line = !line.length ? '<br/>' : line;
-      return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${line}</${tag}>`;
+      return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${sanitizer.escape(line)}</${tag}>`;
     }).join('');
   },
 

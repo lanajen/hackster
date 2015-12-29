@@ -146,33 +146,23 @@ html(lang="en")
                 ul#navbar-right.clearfix
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle#show-login-form data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = render 'devise/shared/omniauth', css: 'icon'
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
-                  = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
-                  /
-                    - popup = capture do
-                      div style='text-align:center'
-                        ul.list-unstyled
-                          li= link_to 'New project', new_project_path
-                          li= link_to 'New article', new_project_path(base_article: { article: true })
-                        = link_to content_tag(:i, '', class: 'fa fa-question-circle'), '', title: 'Learn more about projects vs articles', rel: 'tooltip'
-                    li
-                      a.nav-link href="javascript:void(0)" data-toggle="popover" data-content=popup.gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
-                        = content_tag(:i, '', class: 'fa fa-plus')
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
+                  = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
+                  - if current_user.reputation
+                    li
+                      a> href=users_stats_path
+                        strong>= number_with_delimiter current_user.reputation_count
+                        = pluralize_without_count current_user.reputation_count, 'point'
+                  - else
+                    li
+                      strong> 0
+                      | points
 
               #navbar-search
                 = render 'shared/search_form'
@@ -210,7 +200,9 @@ html(lang="en")
             li= link_to content_tag(:i, '', class: 'fa fa-twitter'), 'http://www.twitter.com/hacksterio'
             li= link_to content_tag(:i, '', class: 'fa fa-facebook'), 'http://www.facebook.com/hacksterio'
             li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
-            li Hackster 2015
+            li Hackster #{Date.today.year}
+      - unless user_signed_in?
+        = render 'shared/modals/login_popup'
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
