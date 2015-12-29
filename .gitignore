@@ -6,7 +6,6 @@
 
 # Ignore bundler config
 /.bundle
-/app/assets/javascripts/bundle.js
 
 #npm
 /node_modules
