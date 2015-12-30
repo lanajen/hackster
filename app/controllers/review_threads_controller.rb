@@ -1,0 +1,24 @@
+class ReviewThreadsController < ApplicationController
+  include FilterHelper
+
+  def index
+    raise CanCan::AccessDenied unless current_user.is? :admin, :moderator, :hackster_moderator
+
+    title "Project review - #{safe_page_params}"
+    @fields = {
+      'created_at' => 'review_threads.created_at',
+      'status' => 'review_threads.workflow_state',
+    }
+
+    params[:sort_order] ||= 'DESC'
+
+    @threads = ReviewThread.joins(:project)
+    @threads = filter_for @threads, @fields
+  end
+
+  def show
+    @project = BaseArticle.find params[:id]
+    @thread = @project.review_thread
+    authorize! :read, @thread
+  end
+end

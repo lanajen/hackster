@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216011630) do
+ActiveRecord::Schema.define(version: 20151221170755) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -721,6 +721,29 @@ ActiveRecord::Schema.define(version: 20151216011630) do
 
   add_index "respects", ["respectable_id", "respectable_type"], name: "index_respects_on_respectable_id_and_respectable_type", using: :btree
   add_index "respects", ["user_id"], name: "index_respects_on_user_id", using: :btree
+
+  create_table "review_decisions", force: :cascade do |t|
+    t.integer  "user_id",          null: false
+    t.string   "decision"
+    t.hstore   "feedback"
+    t.boolean  "approved"
+    t.integer  "review_thread_id", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "review_decisions", ["review_thread_id"], name: "index_review_decisions_on_review_thread_id", using: :btree
+  add_index "review_decisions", ["user_id"], name: "index_review_decisions_on_user_id", using: :btree
+
+  create_table "review_threads", force: :cascade do |t|
+    t.integer  "project_id",                     null: false
+    t.string   "workflow_state"
+    t.boolean  "locked",         default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "review_threads", ["project_id"], name: "index_review_threads_on_project_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false

@@ -1,0 +1,17 @@
+= content_for :no_container do
+
+  #project-review
+    iframe.project-frame src=project_private_sharing_url(@project, blank_frame: true) frameborder="0"
+
+    .review-frame
+      h3 Review
+      = react_component 'ReviewTool', { projectId: @project.id }, {}
+      /
+        - if new
+          review form
+        - elsif user replied and same moderator
+          approve form
+        - elsif different moderator moderator
+          counter review form
+
+        comment form

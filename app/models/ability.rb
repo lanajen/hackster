@@ -202,11 +202,27 @@ class Ability
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
     end
+
+    can :read, ReviewThread do |thread|
+      @user.can? :manage, thread.project
+    end
+  end
+
+  def hackster_moderator
+    can :manage, BaseArticle
+    can :moderate, Group
   end
 
   def moderator
-    can :manage, BaseArticle
-    can :moderate, Group
+    can :review, BaseArticle do |project|
+      project.pending_review?
+    end
+    can :create, ReviewDecision do |decision|
+      @user.can? :review, decision.review_thread.project and decision.review_thread.locked == false
+    end
+    can :update, ReviewDecision do |decision|
+      decision.user_id == @user.id and decision.review_thread.locked == false
+    end
   end
 
   def platform

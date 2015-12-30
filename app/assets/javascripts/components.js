@@ -13,3 +13,4 @@ global.TimeLeft = require('./time_left/app');
 global.ReactEditor = require('./editor/app');
 global.ToolboxSelector = require('./toolbox_selector/containers/Root');
 global.Comments = require('./comments/app');
+global.ReviewTool = require('./review_tool/containers/Root');

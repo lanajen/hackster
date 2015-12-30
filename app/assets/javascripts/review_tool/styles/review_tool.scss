@@ -1,0 +1,10 @@
+.form-group {
+  &.expandable {
+    &.collapsed {
+      margin-bottom: 0;
+    }
+    .control-label {
+      cursor: pointer;
+    }
+  }
+}

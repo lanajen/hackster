@@ -101,6 +101,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :project_collection, class_name: 'ProjectCollection'
+  has_one :review_thread, foreign_key: :project_id
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description

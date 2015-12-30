@@ -561,3 +561,25 @@
     display: block;
   }
 }
+
+#project-review {
+  height: calc(100vh - 120px);
+  position: relative;
+  .project-frame {
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+  }
+  .review-frame {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    max-width: 90%;
+    border-left: 2px solid #ddd;
+    background: #fff;
+    padding: 20px 40px;
+    overflow: scroll;
+  }
+}

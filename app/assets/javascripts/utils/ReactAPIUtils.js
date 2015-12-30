@@ -82,6 +82,17 @@ module.exports = {
     });
   },
 
+  fetchReviewThread(projectId) {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/review_threads')
+        .query({ project_id: projectId })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   flagContent(flaggableType, flaggableId, userId) {
     return new Promise((resolve, reject) => {
       request
@@ -98,6 +109,17 @@ module.exports = {
       request
         .post('/api/v1/jobs')
         .send({ type: jobType, user_id: userId })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  postDecision(decision, projectId) {
+    return new Promise((resolve, reject) => {
+      request
+        .post('/api/v1/review_decisions')
+        .send({ review_decision: decision, project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

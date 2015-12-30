@@ -55,6 +55,12 @@ HackerIo::Application.routes.draw do
           patch '' => 'chrome_sync#update', on: :collection
         end
         resources :notifications, only: [:index], defaults: { format: :json }
+        scope :review_decisions, defaults: { format: :json } do
+          post '' => 'review_decisions#create'
+        end
+        scope :review_threads, defaults: { format: :json } do
+          get '' => 'review_threads#show'
+        end
         resources :thoughts
         resources :users, only: [] do
           get :autocomplete, on: :collection
@@ -586,6 +592,7 @@ HackerIo::Application.routes.draw do
         patch 'team' => 'members#update'
         patch 'guest_name' => 'members#update_guest_name'
         patch 'update_workflow' => 'projects#update_workflow', on: :member
+        get 'review' => 'review_threads#show', on: :member
         collection do
           resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
         end
@@ -598,6 +605,8 @@ HackerIo::Application.routes.draw do
           delete '' => 'respects#destroy', on: :collection
         end
       end
+
+      get 'projects/review' => 'review_threads#index'
 
       constraints(ProjectPage) do
         get 'projects/:id/edit' => 'projects#edit', as: :edit_project
