@@ -33,4 +33,5 @@
 //= require all
 //= require mobile
 //= require home
-//= require components
+//= require bundle
+//= require react_ujs

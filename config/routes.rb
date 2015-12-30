@@ -442,8 +442,6 @@ HackerIo::Application.routes.draw do
         get 'talk' => 'channels#show'
         get 'talk/*all' => 'channels#show'
 
-        get 'csrf' => 'pages#csrf'
-
         get 'hardwareweekend' => 'pages#hardwareweekend'
         get 'hhw', to: redirect('/hardwareweekend')
         get 'hww', to: redirect('/hardwareweekend')
@@ -647,6 +645,7 @@ HackerIo::Application.routes.draw do
       get 'projects/tags/:tag' => 'search#tags', as: :tag
       get 'projects/tags' => 'search#tags'
       get 'robots' => 'pages#robots'
+      get 'csrf' => 'pages#csrf'
 
       # get 'pdf_viewer' => 'pages#pdf_viewer'
 

@@ -1,11 +1,42 @@
-- ms_sync = ChromeSync::Base.new('microsoft')
-
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
+  = stylesheet_link_tag 'whitelabel/chip/application'
 
 = content_for :header do
-  - cache [I18n.locale, 'ms_chrome_header'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_header) do
-    = raw ms_sync.chrome_header(I18n.locale)
+
+  .header
+    .container
+      .row.main-menu
+        .col-xs-12.col-sm-2.logo
+          a href="http://getchip.com"
+            img.rainbow-logo src="http://d2rchup4fs07xx.cloudfront.net/images/logos/rainbowChipLogo.svg" /
+        .col-xs-12.col-sm-10
+          .row.main-menu-items
+            .col-xs-4.col-sm-2.menu-item
+              a href="http://getchip.com"  Store
+            .col-xs-4.col-sm-2.menu-item
+              a href="http://docs.getchip.com/" target="_blank"  Docs
+            .col-xs-4.col-sm-2.menu-item
+              a href="http://chip.hackster.io/"  Projects
+            .col-xs-4.col-sm-2.menu-item
+              a href="https://bbs.nextthing.co/" target="_blank"  Forum
+            .col-xs-4.col-sm-2.menu-item
+              a href="https://vimeo.com/nextthingco/videos" target="_blank"  Videos
+            .col-xs-4.col-sm-2.menu-item
+              a href="http://docs.getchip.com/#faqs" target="_blank"  FAQ
+      .row.sub-menu
+        .col-xs-12.col-sm-10.col-sm-offset-1
+          .row.sub-menu-items
+            .col-xs-3.menu-item
+              a href="http://getchip.com/pages/chip"  C.H.I.P.
+            .col-xs-3.menu-item
+              a href="http://getchip.com/pages/pocketchip"
+                | Pocket
+                wbr C.H.I.P.
+            .col-xs-3.menu-item
+              a href="http://getchip.com/pages/things"  Things
+            .col-xs-3.menu-item
+              a href="http://getchip.com/cart"  Cart
 
   .navbar.navbar-default.navbar-static-top#navigation
     .navbar-in  style='position:relative;'
@@ -33,7 +64,7 @@
 
         - else
           ul#navbar-right.clearfix
-            li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
+            li= link_to 'Sign up for Hackster.io', new_user_registration_path(source: 'nav'), class: 'login-link'
 
             li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
@@ -47,13 +78,3 @@
 
         #navbar-search.pull-right.show-on-desktop
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
-
-= content_for :footer do
-  - cache [I18n.locale, 'ms_chrome_footer'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
-    = raw ms_sync.chrome_footer(I18n.locale)
-    javascript:
-      var varAutoFirePV=1;
-      var varClickTracking=1;
-      var varCustomerTracking=1;
-      var Route="13201";
-      document.write("<script type='text/javascript' src='" + (window.location.protocol) + "//c.microsoft.com/ms.js'" + "'><\/script>");

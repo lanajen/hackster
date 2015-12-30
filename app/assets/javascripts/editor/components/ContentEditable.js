@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import rangy from 'rangy';
 import Validator from 'validator';
@@ -27,7 +28,7 @@ const ContentEditable = React.createClass({
     }
 
     /** Inits Mutation Observer. */
-    this.domObserver.observe(React.findDOMNode(this), {
+    this.domObserver.observe(ReactDOM.findDOMNode(this), {
       attributes: true,
       childList: true,
       characterData: true
@@ -59,7 +60,7 @@ const ContentEditable = React.createClass({
 
   componentDidUpdate() {
     /** Cleans up the top tree of this CE. */
-    Utils.maintainImmediateChildren(React.findDOMNode(this));
+    Utils.maintainImmediateChildren(ReactDOM.findDOMNode(this));
   },
 
   shouldComponentUpdate(){
@@ -108,7 +109,7 @@ const ContentEditable = React.createClass({
     /** Don't do any operations if the cursor is not in this CE. */
     if(this.props.editor.cursorPosition.rootHash !== this.props.hash) { return; }
     const cursorPosition = this.props.editor.cursorPosition;
-    React.findDOMNode(this).focus();
+    ReactDOM.findDOMNode(this).focus();
 
     let dataHash = Utils.getHashFromNode(cursorPosition.node);
     let liveNode = document.querySelector(`[data-hash="${dataHash}"]`);
@@ -141,7 +142,7 @@ const ContentEditable = React.createClass({
 
   trackCursor(e) {
     let { sel, range, parentNode, depth, startOffset, anchorNode } = Utils.getSelectionData();
-    let CE = React.findDOMNode(this);
+    let CE = ReactDOM.findDOMNode(this);
     let activeButtons = {
       'B': true,
       'STRONG': true,
@@ -245,7 +246,7 @@ const ContentEditable = React.createClass({
   },
 
   emitChange(){
-    let html = React.findDOMNode(this).innerHTML;
+    let html = ReactDOM.findDOMNode(this).innerHTML;
     let { depth } = Utils.getSelectionData();
 
     this.props.onChange(html, depth, this.props.storeIndex);
@@ -290,7 +291,7 @@ const ContentEditable = React.createClass({
     if(sel.rangeCount) {
       let hasTextAfterCursor = false;
       let cursorOffset = startOffset;
-      let CE = React.findDOMNode(this);
+      let CE = ReactDOM.findDOMNode(this);
       let hash;
 
       /** If theres text after the cursor. */
@@ -315,6 +316,13 @@ const ContentEditable = React.createClass({
            */
           let url = parentNode.textContent.trim();
           let text = range.startContainer.textContent.substring(0, range.startOffset).split(' ');
+
+          if(Helpers.isTwitterUrlValid(url)) {
+            let id = Helpers.getTwitterIdFromUrl(url);
+            this.props.actions.createMediaByType({ id: id, embed: url, type: 'twitter', widgetType: 'twitter' }, depth, this.props.storeIndex, 'WidgetPlaceholder');
+            this.props.actions.forceUpdate(true);
+            return;
+          }
 
           if(!Helpers.isUrlValid(text[text.length-1], 'video') && Utils.hasValidUrl(text[text.length-1]) && !Utils.isSelectionInAnchor(range.startContainer)) {
             Utils.transformTextToAnchorTag(sel, range, true);
@@ -408,7 +416,7 @@ const ContentEditable = React.createClass({
 
   handleBackspace(e) {
     let { sel, range, parentNode, depth, anchorNode } = Utils.getSelectionData();
-    let CE = React.findDOMNode(this);
+    let CE = ReactDOM.findDOMNode(this);
     if(sel.rangeCount) {
 
       /** Remove CE unless its the first or last. */
@@ -447,7 +455,7 @@ const ContentEditable = React.createClass({
 
   handleArrowKeys(e) {
     let { depth, parentNode, anchorNode } = Utils.getSelectionData();
-    let CE = React.findDOMNode(this);
+    let CE = ReactDOM.findDOMNode(this);
 
     /** Cursor is in a CE and moving up to a media element. */
     if(e.keyCode === 38 && depth === 0 && this.props.storeIndex > 0) {
@@ -513,7 +521,7 @@ const ContentEditable = React.createClass({
 
   onKeyDown(e) {
     let { sel, range, parentNode, anchorNode } = Utils.getSelectionData();
-    let CE = React.findDOMNode(this);
+    let CE = ReactDOM.findDOMNode(this);
 
     if(!range) { return; }
 
@@ -597,7 +605,7 @@ const ContentEditable = React.createClass({
   },
 
   onMouseOver(e) {
-    let node = React.findDOMNode(e.target),
+    let node = ReactDOM.findDOMNode(e.target),
         parent = Utils.getRootParentElement(node),
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
@@ -607,12 +615,12 @@ const ContentEditable = React.createClass({
   },
 
   onClick(e) {
-    let node = React.findDOMNode(e.target);
+    let node = ReactDOM.findDOMNode(e.target);
     let { sel, range, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
 
     if(sel === null) { return; }
 
-    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, React.findDOMNode(this).getAttribute('data-hash'));
+    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, ReactDOM.findDOMNode(this).getAttribute('data-hash'));
 
     /** Set current storeIndex */
     if(this.props.editor.currentStoreIndex !== this.props.storeIndex) {
@@ -669,10 +677,12 @@ const ContentEditable = React.createClass({
     }
 
     if(parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0) {
+      range.deleteContents();
+
       let currentNode = parentNode.cloneNode(true);
 
       let newHtml = domWalk(currentNode, (child, root, depth) => {
-        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer) )) {
+        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
           let start = range.startContainer.textContent.substring(0, range.startOffset);
           let end = range.startContainer.textContent.substring(range.startOffset);
           let liveNode = Parser.toLiveHtml(pastedText);
@@ -689,6 +699,7 @@ const ContentEditable = React.createClass({
         }
         return child;
       });
+
       pastedText = newHtml.outerHTML;
     } else if(pastedText.match(/(<table)/g)) {
       let liveNode = Parser.toLiveHtml(pastedText, { body: true });

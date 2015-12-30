@@ -748,13 +748,19 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
             ? {
                 type: mediaType,
                 images: map,
-                hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+                hash: _createNewHash()
               }
-            : {
+            : mediaType === 'Video'
+            ? {
                 type: mediaType,
                 video: map,
-                hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
-              };
+                hash: _createNewHash()
+              }
+            : {
+              type: mediaType,
+              data: map,
+              hash: _createNewHash()
+            };
   let mediaHash = media.hash;
   let cursorPosition = { pos: 0, node: null, offset: 0, anchorNode: null, rootHash: null };
   let newNodeForCursor;

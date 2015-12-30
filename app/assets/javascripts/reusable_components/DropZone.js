@@ -1,5 +1,5 @@
 import React from 'react';
-import Helpers from '../utils/Helpers'; 
+import Helpers from '../utils/Helpers';
 
 const Dropzone = React.createClass({
   getInitialState: function() {

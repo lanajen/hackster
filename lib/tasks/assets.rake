@@ -1,4 +1,5 @@
 # Place this code in lib/tasks/assets.rake
+
 namespace :assets do
   desc "Create .gz versions of assets"
   task :gzip => :environment do
@@ -27,6 +28,11 @@ namespace :assets do
 
       File.utime(mtime, mtime, gz_file)
     end
+  end
+
+  desc "Compile React components with webpack"
+  task :webpack do
+    sh "NODE_ENV=#{Rails.env} npm run build"
   end
 
   # Hook into existing assets:precompile task

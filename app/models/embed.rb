@@ -15,6 +15,7 @@ class Embed
     /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/ => :oshpark,
     /sketchfab\.com\/models\/([a-z0-9]+)/ => :sketchfab,
     /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/ => :snip2code,
+    /twitter.com\/([a-zA-Z0-9_@]+\/status\/[0-9]+)/ => :twitter,
     /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/ => :upverter,
     /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/ => :ustream,
     /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/ => :vimeo,
@@ -56,7 +57,7 @@ class Embed
   end
 
   def for_text_editor?
-    provider and provider_name.to_s.in? %w(instagram kickstarter ustream vimeo vine youtube image mp4 channel9)
+    provider and provider_name.to_s.in? %w(instagram kickstarter ustream vimeo vine youtube image mp4 channel9 twitter)
   end
 
   def schematic_repo?

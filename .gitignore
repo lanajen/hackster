@@ -9,6 +9,9 @@
 
 #npm
 /node_modules
+npm-debug.log
+/app/assets/javascripts/bundle.js
+/spec/javascripts/bundle.js
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -24,7 +27,3 @@
 .DS_Store
 log/
 /notes
-
-/app/assets/javascripts/bundle.js
-/spec/javascripts/bundle.js
-npm-debug.log

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import { IconButton } from 'material-ui';
 import Utils from '../utils/DOMUtils';
@@ -59,12 +60,12 @@ const ImageToolbar = React.createClass({
 
     }.bind(this));
 
-    React.findDOMNode(this.refs.imageToolbarInput).value = '';
+    ReactDOM.findDOMNode(this.refs.imageToolbarInput).value = '';
   },
 
   handleAddImageClick(e) {
     this.preventEvent(e);
-    React.findDOMNode(this.refs.imageToolbarInput).click();
+    ReactDOM.findDOMNode(this.refs.imageToolbarInput).click();
   },
 
   handleDeleteImage(e) {
@@ -99,7 +100,7 @@ const ImageToolbar = React.createClass({
   },
 
   handleMouseOut(e) {
-    let node = React.findDOMNode(e.target);
+    let node = ReactDOM.findDOMNode(e.target);
     /**
      * Handles releasing the ImageToolbar overlay component.
      * First we handle an edge case where the mouse was in a button then placed outside the CE.

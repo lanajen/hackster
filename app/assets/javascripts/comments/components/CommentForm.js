@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import TextArea from './TextArea';
 import smoothScroll from '../utils/SmoothScroll';
 
@@ -10,7 +11,7 @@ export default class CommentForm extends Component {
 
   componentDidMount() {
     if(this.props.parentId && window) {
-      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2));
+      smoothScroll((ReactDOM.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2));
       this.refs.textarea.autoFocus();
     }
   }
@@ -23,18 +24,15 @@ export default class CommentForm extends Component {
 
   handlePostClick(e) {
     e.preventDefault();
-    let body = React.findDOMNode(this.refs.textarea).value;
 
-    if(body.length > 0) {
-      let form = {
-        comment: {
-          'raw_body': body,
-          'parent_id': this.props.parentId
-        },
-        commentable: this.props.commentable
-      };
-      this.props.onPost(form);
-    }
+    let form = {
+      comment: {
+        'raw_body': ReactDOM.findDOMNode(this.refs.textarea).value,
+        'parent_id': this.props.parentId
+      },
+      commentable: this.props.commentable
+    };
+    this.props.onPost(form);
   }
 
   render() {

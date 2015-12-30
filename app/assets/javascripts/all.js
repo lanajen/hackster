@@ -267,6 +267,11 @@ $(function () {
 
   showAlerts();
 
+  $('#show-login-form').on('click', function(e){
+    e.preventDefault();
+    openModal('#login-popup');
+  });
+
   $('#show-login-form, .show-simplified-signup').on('click', function(e){
     if (!$('.user-form [name="authenticity_token"]').length) {
       $.ajax({
@@ -499,17 +504,6 @@ $(function () {
     if ($(target).length) {
       e.preventDefault();
       smoothScrollTo(target, offset);
-    }
-  });
-
-  $('a.toggle-footer').on('click', function(e){
-    e.preventDefault();
-    $(this).toggleClass('footer-affixed');
-    $('footer').toggleClass('affixed');
-    if ($(this).hasClass('footer-affixed')) {
-      $(this).css('bottom', $('footer').height());
-    } else {
-      $(this).css('bottom', 0);
     }
   });
 

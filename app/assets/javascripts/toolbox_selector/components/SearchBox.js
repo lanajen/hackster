@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 const SearchBox = React.createClass({
   componentWillMount: function() {
@@ -6,7 +7,7 @@ const SearchBox = React.createClass({
   },
 
   handleOnKeyUp: function(e) {
-    let value = React.findDOMNode(this.refs.search).value;
+    let value = ReactDOM.findDOMNode(this.refs.search).value;
     this.props.onSearch(value);
   },
 

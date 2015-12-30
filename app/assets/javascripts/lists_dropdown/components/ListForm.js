@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ListsStore from './../stores/ListsStore';
 import postal from 'postal';
 import _ from 'lodash';
@@ -20,7 +21,7 @@ const ListForm = React.createClass({
         canSubmit: false,
         isLoading: false
       });
-      React.findDOMNode(this.refs.name).value = '';
+      ReactDOM.findDOMNode(this.refs.name).value = '';
     }.bind(this));
   },
 
@@ -42,7 +43,7 @@ const ListForm = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
-    let name = React.findDOMNode(this.refs.name).value;
+    let name = ReactDOM.findDOMNode(this.refs.name).value;
     if (this.state.canSubmit) {
       ListsStore.addList(name);
       this.setState({
