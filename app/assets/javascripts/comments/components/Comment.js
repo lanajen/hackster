@@ -47,7 +47,8 @@ export default class Comment extends Component {
   }
 
   render() {
-    const { avatarLink, body, commentable_id, commentable_type, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userSlug } = this.props.comment;
+    const { avatarLink, body, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userSlug } = this.props.comment;
+    const { commentable } = this.props;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
     let date = window ? window.moment(createdAt).fromNow() : createdAt;
 
@@ -91,7 +92,7 @@ export default class Comment extends Component {
                  ? (<div className="reply-box">
                       <div className="reply-box-center-line">
                       </div>
-                      <CommentForm commentable={{ id: commentable_id, type: commentable_type }}
+                      <CommentForm commentable={commentable}
                                    formData={this.props.formData}
                                    isReply={true}
                                    onPost={this.handlePost}
@@ -152,6 +153,7 @@ export default class Comment extends Component {
 
 Comment.PropTypes = {
   comment: PropTypes.object.isRequired,
+  commentable: PropTypes.object.isRequired,
   children: PropTypes.array,
   currentUser: PropTypes.object.isRequired,
   deleteComment: PropTypes.func.isRequired,

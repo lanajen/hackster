@@ -22,7 +22,7 @@ class BaseArticleObserverWorker < BaseWorker
     FastlyWorker.perform_async 'purge', record.record_key
   end
 
-  def after_update record, private_changed
+  def after_update record, private_changed, changed
     fastly_keys = []
     if private_changed
       update_counters record, [:live_projects]

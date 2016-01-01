@@ -5,7 +5,7 @@
         user: {},
         fields: {},
         decision: decision,
-        timestamp: timestamp
+        createdAt: timestamp
       }
     ],
     comments: [
@@ -13,14 +13,15 @@
         id: id,
         body: body,
         user: { id: id, name: name, avatar: url, slug: slug },
-        timestamp: timestamp
+        createdAt: timestamp
       }
     ],
-    update: [
+    events: [
       {
         user: {},
         action: action,
-        meta: {}
+        meta: {},
+        createdAt: timestamp
       }
     ]
   }
@@ -28,129 +29,105 @@
 
 import { combineReducers } from 'redux';
 import {
-  REQUEST_THREAD, RECEIVE_THREAD, SUBMIT_DECISION
+  REQUEST_THREAD, RECEIVE_THREAD, SUBMIT_DECISION, SUBMIT_COMMENT,
+  SET_DECISION_SUBMITTED, SET_COMMENT_SUBMITTED
 } from './actions';
 
-// function selectedQueryKey(state = `:${SortFilters.MOST_FOLLOWED}:1`, action) {
-//   switch (action.type) {
-//   case SELECT_PARTS:
-//     return generateKey(action.request);
-//   default:
-//     return state;
-//   }
-// }
+function sortItems(thread) {
+  let items = [];
 
-// function parts(state = {
-//   isFetching: false,
-//   items: [],
-//   request: { query: '', sort: SortFilters.MOST_FOLLOWED, page: 1 }
-// }, action) {
-//   switch (action.type) {
-//   case REQUEST_PARTS:
-//     return Object.assign({}, state, {
-//       isFetching: true,
-//       request: action.request
-//     });
-//   case RECEIVE_PARTS:
-//     return Object.assign({}, state, {
-//       isFetching: false,
-//       items: action.parts.map((part, i) => part.id),
-//       nextPage: action.nextPage,
-//       currentPage: action.currentPage
-//     });
-//   default:
-//     return state;
-//   }
-// }
+  addToCollectionByDate(thread.decisions, items, 'decision');
+  addToCollectionByDate(thread.comments, items, 'comment');
+  addToCollectionByDate(thread.events, items, 'event');
 
-// function partsByQueryKey(state = {}, action) {
-//   switch (action.type) {
-//   case RECEIVE_PARTS:
-//   case REQUEST_PARTS:
-//     let key = generateKey(action.request);
-//     let partsHash = parts(state[key], action);
-//     return Object.assign({}, state, {
-//       [key]: partsHash
-//     });
-//   default:
-//     return state;
-//   }
-// }
+  return _.sortBy(items, 'createdAt');
+}
 
-// function partsById(state = {}, action) {
-//   let part;
-//   switch (action.type) {
-//   case RECEIVE_PARTS:
-//   case REQUEST_PARTS:
-//     return Object.assign({}, state, organizePartsById(action.parts));
-//   case UPDATING_FOLLOW:
-//     part = action.parts[action.partId];
-//     part.isLoading = true;
-//     action.parts[action.partId] = part;
-//     return Object.assign({}, state, action.parts);
-//   case FOLLOW_PART:
-//     part = action.parts[action.partId];
-//     part.isLoading = false;
-//     part.isFollowing = true;
-//     action.parts[action.partId] = part;
-//     return Object.assign({}, state, action.parts);
-//   case UNFOLLOW_PART:
-//     part = action.parts[action.partId];
-//     part.isLoading = false;
-//     part.isFollowing = false;
-//     action.parts[action.partId] = part;
-//     return Object.assign({}, state, action.parts);
-//   default:
-//     return state;
-//   }
-// }
+function addToCollectionByDate(inputCollection, outputCollection, type) {
+  _.forEach(inputCollection, function(el) {
+    el.type = type;
+    outputCollection.push(el);
+  });
 
-// function followedPartIds(state = [], action) {
-//   let newState = Object.assign([], state);
-//   switch (action.type) {
-//   case RECEIVE_FOLLOWING:
-//     return Object.assign([], action.following);
-//   case FOLLOW_PART:
-//     newState.push(action.partId);
-//     return newState;
-//   case UNFOLLOW_PART:
-//     let i = newState.indexOf(action.partId);
-//     newState.splice(i, 1);
-//     return newState;
-//   default:
-//     return state;
-//   }
-// }
-
-// function organizePartsById(parts = []) {
-//   let hash = {};
-//   for (let i = 0; i < parts.length; ++i) {
-//     let part = parts[i];
-//     hash[part.id] = part;
-//   }
-//   return hash;
-// }
+  return outputCollection;
+}
 
 function currentThread(state = {
-  decisions: [],
-  comments: [],
-  updates: []
+  items: []
 }, action) {
+  let newState = Object.assign([], state);
   switch (action.type) {
     case REQUEST_THREAD:
+      return state;
+
     case RECEIVE_THREAD:
-      return Object.assign({}, action.thread);
+      let items = sortItems(action.thread);
+      let thread = {
+        id: action.thread.id,
+        status: action.thread.workflow_state,
+        locked: action.thread.locked,
+        hasDecisions: !!action.thread.decisions.length,
+        isLoaded: true,
+        items: items
+      };
+      return Object.assign({}, thread);
+
+    case SET_DECISION_SUBMITTED:
+      let decision = Object.assign({}, action.decision);
+      decision.type = 'decision';
+      newState.items.push(decision);
+      newState.hasDecisions = true;
+      return newState;
+
+    case SET_COMMENT_SUBMITTED:
+      let comment = Object.assign({}, action.comment);
+      comment.type = 'comment';
+      newState.items.push(comment);
+      return newState;
+
     default:
       return state;
   }
 }
 
-function decisions(state = [], action) {
+function formStates(state = {
+  decision: {
+    isDisabled: false
+  },
+  comment: {
+    isDisabled: false,
+    textAreaValue: ''
+  }
+}, action) {
   switch (action.type) {
     case SUBMIT_DECISION:
-      let newState = Object.assign([], state);
-      newState.push(action.decision);
-      return newState;
+      return Object.assign({}, state, {
+        decision: {
+          isDisabled: true
+        }});
+
+    case SET_DECISION_SUBMITTED:
+      return Object.assign({}, state, {
+        decision: {
+          isDisabled: false
+        }});
+
+    case SUBMIT_COMMENT:
+      return Object.assign({}, state, {
+        comment: {
+          isDisabled: true,
+          textAreaValue: action.comment.body
+        }
+      });
+
+    case SET_COMMENT_SUBMITTED:
+      return Object.assign({}, state, {
+        comment: {
+          isDisabled: false,
+          textAreaValue: ''
+        }
+      });
+
     default:
       return state;
   }
@@ -158,11 +135,7 @@ function decisions(state = [], action) {
 
 const rootReducer = combineReducers({
   currentThread,
-  decisions
-//   partsByQueryKey,
-//   selectedQueryKey,
-//   partsById,
-//   followedPartIds
+  formStates
 });
 
 export default rootReducer;

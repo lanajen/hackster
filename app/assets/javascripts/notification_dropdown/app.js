@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import NotificationDropdown from './components/NotificationDropdown';
 import { fetchNotifications } from '../utils/ReactAPIUtils';
 
@@ -48,7 +49,7 @@ const App = React.createClass({
     if (this.state.csrfToken) {
       // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
       // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
-      let isDropdownOpen = React.findDOMNode(this.refs.notifications).offsetParent !== null;
+      let isDropdownOpen = ReactDOM.findDOMNode(this.refs.notifications).offsetParent !== null;
 
       if (isDropdownOpen && !this.state.hasLoaded) {
         let promise = fetchNotifications(this.state.csrfToken);

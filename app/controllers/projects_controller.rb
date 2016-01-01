@@ -238,6 +238,7 @@ class ProjectsController < ApplicationController
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
           if private_was != @project.pryvate
+            ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_privacy_update, privacy: @project.pryvate
             if @project.pryvate == false
               notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
               session[:share_modal] = 'published_share_prompt'
@@ -277,7 +278,12 @@ class ProjectsController < ApplicationController
         end
 
         begin
-          if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
+          @project.assign_attributes params[:base_article]
+          did_change = @project.changed?
+          changed = @project.changed
+
+          if (params[:save].present? and params[:save] == '0') or @project.save
+            ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_update, changed: changed if did_change
             if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
               render 'projects/forms/update'
             else
@@ -289,12 +295,12 @@ class ProjectsController < ApplicationController
             # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
             render json: { base_article: @project.errors }, status: :unprocessable_entity
           end
-        rescue => e
-          message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
-          log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
-          NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
-          render status: :internal_server_error, nothing: true
-          raise e if Rails.env.development?
+        # rescue => e
+        #   message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
+        #   log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
+        #   NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+        #   render status: :internal_server_error, nothing: true
+        #   raise e if Rails.env.development?
         end
       end
     end

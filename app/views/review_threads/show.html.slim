@@ -1,11 +1,9 @@
 = content_for :no_container do
 
   #project-review
-    iframe.project-frame src=project_private_sharing_url(@project, blank_frame: true) frameborder="0"
+    / iframe.project-frame src=project_private_sharing_url(@project, blank_frame: true) frameborder="0"
 
-    .review-frame
-      h3 Review
-      = react_component 'ReviewTool', { projectId: @project.id }, {}
+    .review-frame= react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: current_user.is?(:admin, :moderator) }, {}
       /
         - if new
           review form

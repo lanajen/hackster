@@ -311,7 +311,7 @@ class ApplicationController < ActionController::Base
 
       if hid and @project = BaseArticle.find_by_hid(hid[1])
         project_slug = "#{params[:user_name]}/#{params[:project_slug]}"
-        if @project.uri != project_slug
+        if @project.uri != project_slug and !request.xhr?
           redirect_to @project and return
         end
       else

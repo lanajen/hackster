@@ -231,9 +231,6 @@ html(lang="en")
 
     .loading-bar
 
-    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-    javascript:
-       try{Typekit.load({async: true});}catch(e){}
     = javascript_include_tag "application"
     - unless params[:blank_frame]
       - if show_hello_world?
@@ -243,3 +240,7 @@ html(lang="en")
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
+
+    / = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    / javascript:
+       try{Typekit.load({async: true});}catch(e){}

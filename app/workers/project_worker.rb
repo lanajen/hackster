@@ -1,6 +1,25 @@
 class ProjectWorker < BaseWorker
   sidekiq_options unique: :all, queue: :critical
 
+  def create_review_event project_id, user_id=0, event_type='', meta={}
+    thread = ReviewThread.where(project_id: project_id).first_or_create
+
+    event = thread.events.new
+    event.user_id = user_id
+    event.event = event_type
+    case event_type.to_sym
+    when :project_privacy_update
+      event.new_project_privacy = meta['privacy']
+    when :project_status_update
+      event.new_project_workflow_state = meta['workflow_state']
+    when :project_updated
+      event.project_changed_fields = meta['changed']
+      thread.update_column :workflow_state, :project_updated
+    when :thread_closed
+    end
+    event.save
+  end
+
   def update_platforms id
     return unless project = BaseArticle.find_by_id(id)
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 const WidgetPlaceholder = React.createClass({
 
@@ -84,12 +85,12 @@ const WidgetPlaceholder = React.createClass({
   },
 
   handleIFrameLoad() {
-    let iframe = React.findDOMNode(this.refs.iframe);
+    let iframe = ReactDOM.findDOMNode(this.refs.iframe);
     iframe.contentWindow.postMessage({ element: this.props.widgetData.id, query: 'height' }, 'https://twitframe.com');
   },
 
   getIFrameOverlayStyles(height) {
-    let iframe = React.findDOMNode(this.refs.iframe);
+    let iframe = ReactDOM.findDOMNode(this.refs.iframe);
     return {
       height: height || iframe.offsetHeight,
       width: iframe.offsetWidth,
@@ -99,7 +100,7 @@ const WidgetPlaceholder = React.createClass({
   },
 
   getRootOverlayStyles() {
-    let el = React.findDOMNode(this);
+    let el = ReactDOM.findDOMNode(this);
     return {
       height: el.offsetHeight,
       width: el.offsetWidth,

@@ -1,0 +1,2 @@
+class ReviewDecisionCollectionJsonDecorator < BaseCollectionJsonDecorator
+end

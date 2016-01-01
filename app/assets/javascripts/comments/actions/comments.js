@@ -1,5 +1,6 @@
 import { Comments } from '../constants/ActionTypes';
 import Requests from '../utils/Requests';
+import SharedRequests from '../../utils/ReactAPIUtils';
 import { fetchCurrentUser } from '../../utils/ReactAPIUtils';
 
 export function getCurrentUser() {
@@ -21,9 +22,9 @@ export function setCurrentUser(user) {
   }
 }
 
-export function getInitialComments(commentable, csrfToken) {
+export function getInitialComments(commentable) {
   return function(dispatch) {
-    return Requests.getComments(commentable, csrfToken)
+    return Requests.getComments(commentable)
       .then(comments => {
         dispatch(setInitialComments(comments));
       })
@@ -50,7 +51,7 @@ export function addComment(comment, isReply) {
 
 export function postComment(comment, isReply, csrfToken) {
   return function(dispatch) {
-    return Requests.postComment(comment, csrfToken)
+    return SharedRequests.postComment(comment, csrfToken)
       .then(response => {
         dispatch(addComment(response, isReply));
       })

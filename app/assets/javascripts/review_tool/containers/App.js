@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { initialFetch, doSubmitDecision } from '../actions';
-import Form from '../components/Form';
+import { initialFetch, doSubmitDecision, doSubmitComment } from '../actions';
+import ItemsContainer from '../components/ItemsContainer';
 
 const App = React.createClass({
 
@@ -10,55 +10,51 @@ const App = React.createClass({
     dispatch(initialFetch(projectId));
   },
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.selectedQueryKey !== this.props.selectedQueryKey) {
-  //     const { dispatch, selectedQueryKey } = nextProps;
-  //     dispatch(fetchPartsIfNeeded(selectedQueryKey));
-  //   }
-  // },
+  handleCommentFormSubmit: function(body) {
+    const { dispatch, currentThread, csrfToken } = this.props;
+    dispatch(doSubmitComment(body, currentThread.id, csrfToken));
+  },
 
-  handleFormSubmit: function(data) {
-    const { dispatch, projectId } = this.props;
-    dispatch(doSubmitDecision(data, projectId));
+  handleDecisionFormSubmit: function(data) {
+    const { dispatch, projectId, csrfToken } = this.props;
+    dispatch(doSubmitDecision(data, projectId, csrfToken));
   },
 
   render: function() {
-    // const { selectedQueryKey, parts, isFetching, nextPage, currentPage, request } = this.props;
-    const { currentThread, decisions, request } = this.props;
     return (
       <div className='review-tool'>
-        <Form onSubmit={this.handleFormSubmit} />
+        {this.renderItemsContainer()}
       </div>
     );
-  }
+  },
 
+  renderItemsContainer: function() {
+    const { currentThread, formStates, canAdmin, isEditable, showDecisionForm } = this.props;
+
+    if (this.props.currentThread.isLoaded) {
+      let permissions = {
+        canComment: isEditable && currentThread.hasDecisions,
+        canCreateDecision: showDecisionForm && canAdmin,
+        canUpdateDecision: isEditable && currentThread.hasDecisions && canAdmin
+      };
+
+      return (<ItemsContainer items={currentThread.items} formStates={formStates} onCommentFormSubmit={this.handleCommentFormSubmit} onDecisionFormSubmit={this.handleDecisionFormSubmit} permissions={permissions} showDecisionForm={showDecisionForm} />);
+    } else {
+      return (<div className="text-center"><i className="fa fa-spin fa-spinner" /></div>);
+    }
+  }
 });
 
 function mapStateToProps(state) {
-  const { currentThread, decisions } = state;
-  // const { selectedQueryKey, partsByQueryKey, partsById, followedPartIds } = state;
-  // const {
-  //   isFetching,
-  //   items: partIds,
-  //   nextPage,
-  //   currentPage,
-  //   request
-  // } = partsByQueryKey[selectedQueryKey] || {
-  //   isFetching: true,
-  //   items: [],
-  //   request: { filter: SortFilters.MOST_FOLLOWED }
-  // };
-  // let parts = getPartsFromIds(partsById, partIds, followedPartIds);
+  const { currentThread, formStates } = state;
+  let isEditable = !_.some(_.map(['new', 'closed'], function(v) { if (v == currentThread.status) return true; })) && !currentThread.locked;
+  let showDecisionForm = isEditable && !currentThread.hasDecisions;
 
   return {
     currentThread,
-    decisions
-    // selectedQueryKey,
-    // parts,
-    // isFetching,
-    // nextPage,
-    // currentPage,
-    // request
+    formStates,
+    isEditable,
+    showDecisionForm
   };
 }
 

@@ -27,7 +27,7 @@ class CommentsContainer extends Component {
                     ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} placeholder={this.props.placeholder} />)
                     : (null);
     let comments = this.props.commentStore.fetchedInitialComments
-                 ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} placeholder={this.props.placeholder} />)
+                 ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} placeholder={this.props.placeholder} commentable={this.props.commentable} />)
                  : (<div style={{ textAlign: 'center' }}><i className="fa fa-spinner fa-2x fa-spin"></i></div>);
     return (
       <div className="r-comments">

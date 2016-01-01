@@ -50,6 +50,7 @@ export default class Comments extends Component {
         return <Comment key={i}
                         comment={child}
                         children={null}
+                        commentable={this.props.commentable}
                         currentUser={user}
                         deleteLike={this.deleteLike}
                         formData={this.props.commentStore.formData}
@@ -66,6 +67,7 @@ export default class Comments extends Component {
       return <Comment key={index}
                       comment={comment.root}
                       children={children}
+                      commentable={this.props.commentable}
                       currentUser={user}
                       deleteLike={this.deleteLike}
                       formData={this.props.commentStore.formData}
@@ -91,6 +93,7 @@ export default class Comments extends Component {
 
 Comments.PropTypes = {
   actions: PropTypes.object,
+  commentable: PropTypes.object.isRequired,
   commentStore: PropTypes.object,
   placeholder: PropTypes.string
 };

@@ -12,7 +12,7 @@ class Api::V1::CommentsController < Api::V1::BaseController
 
     @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).order(created_at: :asc).includes(user: :avatar)
 
-    render json: CommentCollectionJsonDecorator.new(sort_comments(@comments)).node.to_json
+    render json: CommentCollectionJsonDecorator.new(sort_comments(@comments)).sorted_node.to_json
   end
 
   def create

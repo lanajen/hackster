@@ -63,7 +63,12 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def update
-    if @project.update_attributes(params[:base_article])
+    @project.assign_attributes(params[:base_article])
+    did_change = @project.changed?
+    changed = @project.changed
+
+    if @project.save
+      ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_update, changed: changed if did_change
       render status: :ok, nothing: true
     else
       render json: { base_article: @project.errors }, status: :unprocessable_entity

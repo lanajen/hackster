@@ -1,5 +1,5 @@
 class CommentCollectionJsonDecorator < BaseCollectionJsonDecorator
-  def node
+  def sorted_node
     node = {}
     node[:comments] = collection.map do |comment_id, comment|
       {

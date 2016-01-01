@@ -568,6 +568,10 @@ class BaseArticle < ActiveRecord::Base
     project_collections.new collectable_type: 'Group', collectable_id: val
   end
 
+  def needs_review?
+    publyc? and (pending_review? or needs_work?)
+  end
+
   def security_token
     Digest::MD5.hexdigest(id.to_s)
   end

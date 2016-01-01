@@ -91,7 +91,8 @@ class Ability
     end
 
     can :create, Comment do |comment|
-      @user.can? :read, comment.commentable
+      commentable = comment.commentable
+      @user.can? :read, commentable and (commentable.respond_to?(:locked) ? !commentable.locked : true)
     end
 
     can :manage, Thought do |thought|
@@ -215,14 +216,15 @@ class Ability
 
   def moderator
     can :review, BaseArticle do |project|
-      project.pending_review?
+      project.needs_review?
     end
-    can :create, ReviewDecision do |decision|
-      @user.can? :review, decision.review_thread.project and decision.review_thread.locked == false
+    can :read, ReviewThread
+    can :update, ReviewThread do |thread|
+      @user.can? :review, thread.project and thread.locked == false
     end
-    can :update, ReviewDecision do |decision|
-      decision.user_id == @user.id and decision.review_thread.locked == false
-    end
+    # can :update, ReviewDecision do |decision|
+    #   decision.user_id == @user.id and decision.review_thread.locked == false
+    # end
   end
 
   def platform

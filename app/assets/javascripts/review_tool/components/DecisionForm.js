@@ -1,32 +1,41 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import TextArea from './TextArea';
 
-const Form = React.createClass({
+const DecisionForm = React.createClass({
   getInitialState: function() {
     return {
       decision: null,
       errors: {},
-      isLoading: false
+      isDisabled: false
     };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (typeof(nextProps.formState.isDisabled) != 'undefined') {
+      this.setState({
+        isDisabled: nextProps.formState.isDisabled
+      })
+    }
   },
 
   handleDecisionChange: function(e) {
     this.setState({
-      decision: React.findDOMNode(e.target).value,
+      decision: ReactDOM.findDOMNode(e.target).value,
       errors: {}
     });
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    // this.setState({ isLoading: true });
+    this.setState({ isDisabled: true });
     let data = this.getFormData();
-    console.log('data', data);
 
     if (this.isValid(data)) {
       this.props.onSubmit(data);
     } else {
-      // this.setState({ isLoading: false });
+      this.setState({ isDisabled: false });
+      ReactDOM.findDOMNode(this.refs.button).blur();
     }
   },
 
@@ -35,37 +44,40 @@ const Form = React.createClass({
       'decision': this.state.decision
     }
 
+    if (this.refs.general)
+      data['general'] = ReactDOM.findDOMNode(this.refs.general.refs.textarea).value;
+
     switch (this.state.decision) {
       case 'needs_work':
         Object.assign(data, {
-          'type': React.findDOMNode(this.refs.type.refs.textarea).value,
-          'content_type': React.findDOMNode(this.refs.content_type.refs.textarea).value,
-          'name': React.findDOMNode(this.refs.name.refs.textarea).value,
-          'one_liner': React.findDOMNode(this.refs.one_liner.refs.textarea).value,
-          'cover_image_id': React.findDOMNode(this.refs.cover_image_id.refs.textarea).value,
-          'difficulty': React.findDOMNode(this.refs.difficulty.refs.textarea).value,
-          'product_tags_string': React.findDOMNode(this.refs.product_tags_string.refs.textarea).value,
-          'team': React.findDOMNode(this.refs.team.refs.textarea).value,
-          'communities': React.findDOMNode(this.refs.communities.refs.textarea).value,
-          'story_json': React.findDOMNode(this.refs.story_json.refs.textarea).value,
-          'hardware_parts': React.findDOMNode(this.refs.hardware_parts.refs.textarea).value,
-          'tool_parts': React.findDOMNode(this.refs.tool_parts.refs.textarea).value,
-          'schematics': React.findDOMNode(this.refs.schematics.refs.textarea).value,
-          'cad': React.findDOMNode(this.refs.cad.refs.textarea).value,
-          'code': React.findDOMNode(this.refs.code.refs.textarea).value,
-          'software_parts': React.findDOMNode(this.refs.software_parts.refs.textarea).value
+          'type': ReactDOM.findDOMNode(this.refs.type.refs.textarea).value,
+          'content_type': ReactDOM.findDOMNode(this.refs.content_type.refs.textarea).value,
+          'name': ReactDOM.findDOMNode(this.refs.name.refs.textarea).value,
+          'one_liner': ReactDOM.findDOMNode(this.refs.one_liner.refs.textarea).value,
+          'cover_image_id': ReactDOM.findDOMNode(this.refs.cover_image_id.refs.textarea).value,
+          'difficulty': ReactDOM.findDOMNode(this.refs.difficulty.refs.textarea).value,
+          'product_tags_string': ReactDOM.findDOMNode(this.refs.product_tags_string.refs.textarea).value,
+          'team': ReactDOM.findDOMNode(this.refs.team.refs.textarea).value,
+          'communities': ReactDOM.findDOMNode(this.refs.communities.refs.textarea).value,
+          'story_json': ReactDOM.findDOMNode(this.refs.story_json.refs.textarea).value,
+          'hardware_parts': ReactDOM.findDOMNode(this.refs.hardware_parts.refs.textarea).value,
+          'tool_parts': ReactDOM.findDOMNode(this.refs.tool_parts.refs.textarea).value,
+          'schematics': ReactDOM.findDOMNode(this.refs.schematics.refs.textarea).value,
+          'cad': ReactDOM.findDOMNode(this.refs.cad.refs.textarea).value,
+          'code': ReactDOM.findDOMNode(this.refs.code.refs.textarea).value,
+          'software_parts': ReactDOM.findDOMNode(this.refs.software_parts.refs.textarea).value
         });
         break;
 
       case 'approve':
         Object.assign(data, {
-          'no_changes_needed': React.findDOMNode(this.refs.no_changes_needed).checked
+          'no_changes_needed': ReactDOM.findDOMNode(this.refs.no_changes_needed).checked
         });
         break;
 
       case 'reject':
         Object.assign(data, {
-          'rejection_reason': React.findDOMNode(this.refs.rejection_reason).value
+          'rejection_reason': ReactDOM.findDOMNode(this.refs.rejection_reason).value
         });
         break;
     }
@@ -78,6 +90,7 @@ const Form = React.createClass({
 
     switch (this.state.decision) {
       case 'needs_work':
+        // TODO: check that *some* field has been entered
         break;
 
       case 'approve':
@@ -94,8 +107,6 @@ const Form = React.createClass({
         errors['decision'] = 'Please select a decision';
     }
 
-    console.log('errors', errors);
-
     this.setState({
       errors: errors
     })
@@ -111,12 +122,17 @@ const Form = React.createClass({
 
   render: function() {
     return (
-      <form action="" method="post" ref="form" onSubmit={this.handleSubmit}>
-        {this.renderDecisionRadios()}
-        {this.renderInputs()}
+      <div className="review-item review-item-decision">
+        <div className="review-item-body">
+          <form ref="form" onSubmit={this.handleSubmit}>
+            {this.renderDecisionRadios()}
+            {this.renderInputs()}
+            {this.renderGeneralComment()}
 
-        <input type="submit" name="commit" value="Send feedback" ref="button" className="btn btn-primary" disabled={this.state.isLoading} />
-      </form>
+            <input type="submit" name="commit" value="Send feedback" ref="button" className="btn btn-primary" disabled={this.state.isDisabled} />
+          </form>
+        </div>
+      </div>
     );
   },
 
@@ -160,6 +176,12 @@ const Form = React.createClass({
         </label>
       </div>
     );
+  },
+
+  renderGeneralComment: function() {
+    if (!this.state.decision) return;
+
+    return this.renderTextArea('General comment', 'general');
   },
 
   renderInputs: function() {
@@ -240,4 +262,4 @@ const Form = React.createClass({
   }
 });
 
-export default Form;
+export default DecisionForm;

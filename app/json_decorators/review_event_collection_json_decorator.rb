@@ -1,0 +1,2 @@
+class ReviewEventCollectionJsonDecorator < BaseCollectionJsonDecorator
+end

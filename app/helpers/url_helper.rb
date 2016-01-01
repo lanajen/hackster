@@ -361,6 +361,14 @@ module UrlHelper
     super platform.user_name, opts
   end
 
+  def review_thread_path thread, opts={}
+    review_project_path(thread.project, opts)
+  end
+
+  def review_thread_url thread, opts={}
+    review_project_url(thread.project, opts)
+  end
+
   def tag_path tag, opts={}
     super CGI::escape(tag), opts
   end

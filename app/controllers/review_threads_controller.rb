@@ -1,6 +1,8 @@
 class ReviewThreadsController < ApplicationController
   include FilterHelper
 
+  before_filter :authenticate_user!
+
   def index
     raise CanCan::AccessDenied unless current_user.is? :admin, :moderator, :hackster_moderator
 
@@ -13,6 +15,7 @@ class ReviewThreadsController < ApplicationController
     params[:sort_order] ||= 'DESC'
 
     @threads = ReviewThread.joins(:project)
+    @threads = @threads.active unless params[:filter].try(:[], :status)
     @threads = filter_for @threads, @fields
   end
 

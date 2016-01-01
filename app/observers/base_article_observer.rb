@@ -12,7 +12,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    BaseArticleObserverWorker.perform_async 'after_update', record.id, record.private_changed?
+    BaseArticleObserverWorker.perform_async 'after_update', record.id, record.private_changed?, record.changed
   end
 
   def after_approved record
@@ -40,13 +40,36 @@ class BaseArticleObserver < ActiveRecord::Observer
     if record.private_changed?
       record.private_changed = true
       if record.pryvate?
+        if !record.approved? and !record.rejected? and record.review_thread
+          record.review_thread.update_column :workflow_state, :new
+        end
       else
         if record.force_hide?
           record.reject! if record.can_reject?
         else
-          record.mark_needs_review! if record.can_mark_needs_review?
+          if record.can_mark_needs_review?
+            record.mark_needs_review!
+            record.create_review_thread unless record.review_thread
+          end
         end
       end
+    end
+
+    if record.workflow_state_changed? and record.review_thread
+      new_state = nil
+
+      case record.workflow_state
+      when :pending_review, :needs_work
+        if record.publyc?
+          new_state = :needs_review
+        else
+          new_state = :new
+        end
+      when :approved, :rejected
+        new_state = :closed
+      end
+
+      record.review_thread.update_column :workflow_state, new_state if record.review_thread and new_state
     end
 
     if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date respects_count comments_count)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?

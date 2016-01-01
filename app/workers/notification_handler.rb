@@ -140,6 +140,14 @@ class NotificationHandler
           end
           context[:users].uniq!
           context[:users] -= [author]
+        when ReviewThread
+          context[:thread] = commentable
+          # if comment was posted by a project author, mail everyone else, otherwise mail project authors
+          context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
+            commentable.participants - commentable.project.users
+          else
+            commentable.project.users
+          end
         end
       when :comment_mention
         context[:model] = comment = context[:comment] = Comment.find context_id
@@ -289,6 +297,12 @@ class NotificationHandler
             context[:users] = []
           end
         end
+      when :review_decision
+        context[:decision] = decision = ReviewDecision.find context_id
+        context[:thread] = thread = decision.review_thread
+        context[:project] = thread.project
+        context[:author] = decision.user
+        context[:users] = thread.participants - thread.project.users
       when :thought_mention
         context[:model] = thought = context[:thought] = Thought.find context_id
         context[:author] = thought.user
