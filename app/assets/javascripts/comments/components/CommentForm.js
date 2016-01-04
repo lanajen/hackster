@@ -21,7 +21,7 @@ export default class CommentForm extends Component {
 
   componentDidMount() {
     if(this.props.parentId && window && !this.props.isEditing) {
-      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2));
+      smoothScroll((ReactDOM.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2));
       this.refs.textarea.autoFocus();
     }
   }
@@ -41,6 +41,7 @@ export default class CommentForm extends Component {
   handlePostClick(e) {
     e.preventDefault();
 
+    let body = ReactDOM.findDOMNode(this.refs.textarea).value;
     if(body.length > 0) {
       let form = {
         comment: {
@@ -61,7 +62,7 @@ export default class CommentForm extends Component {
   }
 
   setActiveTab(name) {
-    let body = React.findDOMNode(this.refs.textarea).value;
+    let body = ReactDOM.findDOMNode(this.refs.textarea).value;
     if(name === this.state.activeTab) { return; }
 
     this.setState({

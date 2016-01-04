@@ -11,7 +11,7 @@ export default class TextArea extends Component {
   }
 
   componentDidMount() {
-    let textarea = React.findDOMNode(this.refs.textarea);
+    let textarea = ReactDOM.findDOMNode(this.refs.textarea);
 
     if(textarea.scrollHeight > textarea.clientHeight) {
       let rows = Math.floor( parseInt(textarea.scrollHeight, 10) / parseInt(20, 10) );
@@ -32,7 +32,7 @@ export default class TextArea extends Component {
   }
 
   handleOnChange(e) {
-    let textarea = React.findDOMNode(this.refs.textarea);
+    let textarea = ReactDOM.findDOMNode(this.refs.textarea);
 
     if(textarea.scrollHeight > textarea.clientHeight) {
       this.setState({ rows: this.state.rows+1 });
@@ -40,7 +40,7 @@ export default class TextArea extends Component {
   }
 
   handleKeyDown(e) {
-    let textarea = React.findDOMNode(this.refs.textarea);
+    let textarea = ReactDOM.findDOMNode(this.refs.textarea);
 
     if(e.keyCode === 8 && this.state.rows > 3) {
       let lines = textarea.value.split('\n');
