@@ -1,0 +1,48 @@
+= f.error_notification
+
+= f.input :event_type, collection: LiveEventSet::EVENT_TYPES
+= f.input :name
+= f.input :link
+= f.input :virtual, as: :boolean, label: false, inline_label: 'Virtual'
+= f.input :city, hint: "Include state if relevant. Leave blank if virtual"
+= f.input :country, hint: "Leave blank if virtual", input_html: { class: 'form-control' }
+= f.input :organizer_id, input_html: { class: 'select2' }, collection: @live_event_set.decorate.organizer_collection_for_form, prompt: 'Select a user (type in their name)'
+
+.col-md-offset-4.col-md-8
+  ==> f.button :submit, :class => 'btn btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_live_event_sets_path, :class => 'btn btn-default'
+
+= content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"
+
+= content_for :js do
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"
+
+  javascript:
+    $(function() {
+      var select2Options = {
+        placeholder: 'Select a user',
+        minimumInputLength: 3,
+        width: '100%',
+
+        ajax: {
+          url: "/api/v1/users/autocomplete",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              page: params.page
+            };
+          },
+          processResults: function (data, page) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+      };
+
+      $('form .select2').select2(select2Options);
+    });

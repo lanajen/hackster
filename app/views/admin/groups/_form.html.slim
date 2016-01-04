@@ -5,7 +5,7 @@
 = f.input :email
 = f.input :mini_resume
 = f.input :city
-= f.input :country, as: :select
+= f.input :country, input_html: { class: 'form-control' }
 = f.input :private, hint: 'Private groups are only visible to and accessible by admins.'
 = f.input :hidden, as: :boolean, hint: 'Hidden groups are not listed on pages like hackster.io/platforms.'
 = f.input :type, collection: %w(Community Course Event Hackathon HackerSpace List Promotion Platform University)

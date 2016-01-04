@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216011630) do
+ActiveRecord::Schema.define(version: 20160103235411) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
   enable_extension "hstore"
+  enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
 
   create_table "addresses", force: :cascade do |t|
@@ -100,6 +100,19 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   end
 
   add_index "awarded_badges", ["awardee_id", "awardee_type", "badge_code"], name: "awarded_badges_awardee_badge_index", unique: true, using: :btree
+
+  create_table "blobs", force: :cascade do |t|
+    t.text   "content"
+    t.string "path",    null: false
+    t.hstore "meta"
+  end
+
+  create_table "branches", force: :cascade do |t|
+    t.integer "branchable_id"
+    t.string  "branchable_type"
+    t.integer "commit_id"
+    t.string  "name"
+  end
 
   create_table "challenge_admins", force: :cascade do |t|
     t.integer "challenge_id"
@@ -218,6 +231,18 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["deleted"], name: "index_comments_on_deleted", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "commits", force: :cascade do |t|
+    t.integer  "committable_id",   null: false
+    t.string   "committable_type", null: false
+    t.integer  "tree_id",          null: false
+    t.integer  "author_id",        null: false
+    t.integer  "committer_id"
+    t.datetime "created_at",       null: false
+    t.text     "comment"
+    t.string   "workflow_state"
+    t.datetime "committed_at"
+  end
 
   create_table "conversations", force: :cascade do |t|
     t.string   "subject",    limit: 255
@@ -379,6 +404,20 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   end
 
   add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
+
+  create_table "live_event_sets", force: :cascade do |t|
+    t.string   "event_type"
+    t.string   "link"
+    t.integer  "organizer_id",                 null: false
+    t.string   "city"
+    t.string   "country"
+    t.boolean  "virtual",      default: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "name"
+  end
+
+  add_index "live_event_sets", ["organizer_id"], name: "index_live_event_sets_on_organizer_id", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255
@@ -694,6 +733,41 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   add_index "respects", ["respectable_id", "respectable_type"], name: "index_respects_on_respectable_id_and_respectable_type", using: :btree
   add_index "respects", ["user_id"], name: "index_respects_on_user_id", using: :btree
 
+  create_table "review_decisions", force: :cascade do |t|
+    t.integer  "user_id",          null: false
+    t.string   "decision"
+    t.hstore   "feedback"
+    t.boolean  "approved"
+    t.integer  "review_thread_id", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "review_decisions", ["review_thread_id"], name: "index_review_decisions_on_review_thread_id", using: :btree
+  add_index "review_decisions", ["user_id"], name: "index_review_decisions_on_user_id", using: :btree
+
+  create_table "review_events", force: :cascade do |t|
+    t.integer  "user_id",          default: 0, null: false
+    t.integer  "review_thread_id",             null: false
+    t.string   "event"
+    t.hstore   "meta"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "review_events", ["review_thread_id"], name: "index_review_events_on_review_thread_id", using: :btree
+  add_index "review_events", ["user_id"], name: "index_review_events_on_user_id", using: :btree
+
+  create_table "review_threads", force: :cascade do |t|
+    t.integer  "project_id",                     null: false
+    t.string   "workflow_state"
+    t.boolean  "locked",         default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "review_threads", ["project_id"], name: "index_review_threads_on_project_id", using: :btree
+
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
     t.integer  "user_id"
@@ -743,6 +817,15 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree
   add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
   add_index "store_products", ["unit_cost"], name: "index_store_products_on_unit_cost", using: :btree
+
+  create_table "stories", force: :cascade do |t|
+    t.integer  "project_id",      null: false
+    t.datetime "completion_date"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree
 
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255
@@ -801,6 +884,15 @@ ActiveRecord::Schema.define(version: 20151216011630) do
   add_index "threads", ["sub_id", "threadable_id", "threadable_type"], name: "threadable_sub_ids", using: :btree
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
+
+  create_table "tree_items", force: :cascade do |t|
+    t.integer "tree_id", null: false
+    t.integer "blob_id", null: false
+  end
+
+  create_table "trees", force: :cascade do |t|
+    t.hstore "meta"
+  end
 
   create_table "user_activities", force: :cascade do |t|
     t.integer  "user_id"
