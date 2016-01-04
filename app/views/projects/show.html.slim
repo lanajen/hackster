@@ -416,13 +416,14 @@
                   section.section-thumbs
                     h4 Challenges
                     - @challenge_entries.each do |entry|
-                      - if entry.awarded?
-                        ' Won
-                        ==> entry.prizes.pluck(:name).to_sentence
-                        ' in
-                      - else
-                        ' Participated in
-                      = link_to entry.challenge.name, entry.challenge
+                      p
+                        - if entry.awarded?
+                          ' Won
+                          ==> entry.prizes.pluck(:name).to_sentence
+                          ' in
+                        - else
+                          ' Participated in
+                        = link_to entry.challenge.name, entry.challenge
 
               - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other", skip_digest: true do
                 - if @other_projects.count > 0

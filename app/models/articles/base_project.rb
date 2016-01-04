@@ -7,6 +7,7 @@ class BaseProject < BaseArticle
     'Clocks',
     'Communication',
     'Data Collection',
+    'Debugging Tools',
     'Disability Reduction',
     'Drones',
     'Embedded',

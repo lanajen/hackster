@@ -10,7 +10,7 @@ module ScraperStrategies
       end
 
       def before_parse
-        @article.css('.lazy-img').each do |img|
+        @article.css('.photoset-link img').each do |img|
           img['src'] = img.parent['data-fancybox-href']
           img.parent.parent.add_child img
         end

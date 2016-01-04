@@ -1,0 +1,56 @@
+.events-list {
+  max-width: 90%;
+  width: 600px;
+  margin: 0 auto 50px;
+  h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0 0 20px;
+  }
+  .event {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    &:first-of-type {
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    h4 {
+      font-size: 1em;
+      margin: 0;
+    }
+  }
+}
+
+.event-description {
+  font-weight: bold;
+  display: inline;
+  margin-right: 4px;
+}
+
+.event-organizer {
+  display: inline;
+  font-size: 0.9em;
+  color: #777;
+  img {
+    margin-right: 5px;
+  }
+}
+
+.event-location {
+  font-size: 0.9em;
+}
+
+#live {
+  section {
+    padding: 100px 0;
+    &.section-header {
+      padding: 200px 0;
+      background-image: asset-url('live_phx.jpg');
+      padding: 250px 0;
+      background-image: asset-url('live_delorean.jpg');
+    }
+  }
+}

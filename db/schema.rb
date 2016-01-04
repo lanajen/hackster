@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151231003420) do
+ActiveRecord::Schema.define(version: 20160103235411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -404,6 +404,20 @@ ActiveRecord::Schema.define(version: 20151231003420) do
   end
 
   add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
+
+  create_table "live_event_sets", force: :cascade do |t|
+    t.string   "event_type"
+    t.string   "link"
+    t.integer  "organizer_id",                 null: false
+    t.string   "city"
+    t.string   "country"
+    t.boolean  "virtual",      default: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "name"
+  end
+
+  add_index "live_event_sets", ["organizer_id"], name: "index_live_event_sets_on_organizer_id", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255

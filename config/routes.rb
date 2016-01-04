@@ -172,6 +172,7 @@ HackerIo::Application.routes.draw do
           resources :groups, except: [:show]
           resources :invitations, only: [:new, :create]
           resources :jobs, except: [:show]
+          resources :live_event_sets, except: [:show]
           resources :parts, except: [:show] do
             get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
             get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -477,6 +478,7 @@ HackerIo::Application.routes.draw do
         get 'tinyduino', to: redirect('/tinycircuits')
 
         get 'home' => 'pages#home'
+        get 'live' => 'live_event_sets#index'
         get 'about' => 'pages#about'
         get 'business' => 'pages#business'
         # get 'help' => 'pages#help'

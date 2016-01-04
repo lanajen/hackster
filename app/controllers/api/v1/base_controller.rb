@@ -19,6 +19,7 @@ class Api::V1::BaseController < ApplicationController
     def authenticate_api_user
       if Rails.env == 'development'
         @current_platform = Platform.find_by_user_name('cypress')
+        @current_ability = @current_platform.ability
         return
       end
 
@@ -37,8 +38,8 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def current_ability
-      if current_platform
-        current_platform.ability
+      if @current_ability
+        @current_ability
       elsif current_user
         current_user.ability
       else
@@ -54,6 +55,7 @@ class Api::V1::BaseController < ApplicationController
 
     def load_platform username
       @current_platform = Platform.find_by_api_username username
+      @current_ability = @current_platform.ability
     end
 
     def public_api_methods
