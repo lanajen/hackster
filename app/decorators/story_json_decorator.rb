@@ -25,11 +25,11 @@ module StoryJsonDecorator
           end
         when 'WidgetPlaceholder'
           # URL Widgets with a type of 'repo' get transformed into WidgetPlaceholders.  'embed' is the url.
-          if item['data']['type'] == 'repo'
-            data = { url: item['data']['embed']}
+          if item['data']['type'] == 'repo' || item['data']['type'] == 'twitter'
+            data = { url: item['data']['embed'] }
             embed_html data, 'Url', options
           else
-            data = { id: item['data']['id']}
+            data = { id: item['data']['id'] }
             embed_html data, 'Widget', options
           end
         else

@@ -47,8 +47,8 @@ module.exports = {
   isUrlValid(url, type) {
     let validExtensions = type === 'video' ? this.VIDEO_SERVICES : [];
     let key = validExtensions.filter(function(item) {
-      url = url.replace(/youtu\.be/, 'youtube');
-      return url.match(item);
+      let urlToMatch = url.replace(/youtu\.be/, 'youtube');
+      return urlToMatch.match(item);
     });
 
     // If key is empty, we have nothing to test and the url isn't valid.
@@ -58,12 +58,22 @@ module.exports = {
     return url.match(regex) ? true : false;
   },
 
+  isTwitterUrlValid(url) {
+    let match = url.match(this.URL_EXTENSIONS['twitter']);
+
+    return match && match.length;
+  },
+
+  getTwitterIdFromUrl(url) {
+    return url.match(this.URL_EXTENSIONS['twitter'])[1].split('/')[2];
+  },
+
   getVideoData(url) {
-    url = url.replace(/youtu\.be/, 'youtube');
-    let type = url.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
+    let urlToMatch = url.replace(/youtu\.be/, 'youtube');
+    let type = urlToMatch.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
-    if(!service) { return null; }
+    if (!service) { return null; }
     let Exts = this.URL_EXTENSIONS;
     let regExps = {
       'channel9': {
@@ -87,13 +97,13 @@ module.exports = {
         index: 0
       },
       'vimeo': {
-        regexp: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,
+        regexp: Exts['vimeo'],
         requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
         embed: id => `https://player.vimeo.com/video/${id}`,
         index: 1
       },
       'vine': {
-        regexp: /vine\.co\/v\/([a-zA-Z0-9]+)/,
+        regexp: Exts['vine'],
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
         embed: id => `https://vine.co/v/${id}/embed/simple`,
         index: 1
@@ -137,10 +147,6 @@ module.exports = {
     return ID;
   },
 
-  getVimeoId(url) {
-
-  },
-
   createRandomNumber() {
     let random = uuid.v4();
     return random;
@@ -168,18 +174,19 @@ module.exports = {
 
   URL_EXTENSIONS: {
     autodesk360: /myhub\.autodesk360\.com\/([a-z0-9]+\/shares\/public\/[a-zA-Z0-9]+)/,
-    bitbucket: /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/, // TODO
+    bitbucket: /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/,
     circuits: /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/,
     channel9: /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/,
     codebender: /codebender\.cc\/sketch:([0-9]+)/,
     fritzing: /fritzing\.org\/projects\/([0-9a-z-]+)/,
     gist: /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/,
-    github: /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/, // TODO
+    github: /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/,
     instagram: /instagram\.com\/p\/([a-zA-Z\-0-9]+)/,
     kickstarter: /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/,
-    oshpark: /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/, // TODO
+    oshpark: /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/,
     sketchfab: /sketchfab\.com\/models\/([a-z0-9]+)/,
     snip2code: /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/,
+    twitter : /twitter.com\/([a-zA-Z0-9_@]+\/status\/[0-9]+)/,
     upverter: /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/,
     ustream: /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/,
     vimeo: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,

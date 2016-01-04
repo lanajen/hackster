@@ -30,7 +30,7 @@ html lang="en" class=content_for(:html_class)
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
     - else
-      - cache ['favicons', '2015-12-12'] do
+      - cache ['favicons', '2015-12-20'] do
         = render 'shared/favicons'
     meta name="apple-mobile-web-app-title" content=site_name
     meta name="application-name" content=site_name
@@ -84,16 +84,7 @@ html lang="en" class=content_for(:html_class)
                 ul#navbar-right.clearfix
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = render 'devise/shared/omniauth', css: 'icon'
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
@@ -119,19 +110,14 @@ html lang="en" class=content_for(:html_class)
     - else
       footer.clearfix
         .footer-nav.clearfix
-          ul.list-unstyled.list-inline.pull-left
-            li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
-            li= link_to 'Terms', terms_url(subdomain: 'www', locale: I18n.default_www_locale)
-            li= link_to 'Privacy', privacy_url(subdomain: 'www', locale: I18n.default_www_locale)
-            li
           ul.list-unstyled.list-inline.pull-right
             li
-              ==> link_to 'Community portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              ' for
-              ==> link_to 'hardware developers', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              ' by
+              ==> link_to 'Hardware projects portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              ' powered by
               ==> link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              | &copy; 2015
+              | &copy; #{Date.today.year}
+    - unless user_signed_in?
+      = render 'shared/modals/login_popup'
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times

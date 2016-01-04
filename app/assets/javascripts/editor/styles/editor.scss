@@ -95,6 +95,7 @@ $desktop-width: 1024px;
         border: none;
         padding-top: 10px;
         padding-bottom: 10px;
+        margin: 0;
         color: white;
         overflow: visible;
         // This is set to short circuit a previously set global pre style.  Tsk tsk.
@@ -111,10 +112,6 @@ $desktop-width: 1024px;
         margin-bottom: -10px;
         margin-top: -10px;
         padding-top: 0;
-      }
-
-      :not(pre) + pre {
-        padding-bottom: 0;
       }
 
       pre + :not(pre) {
@@ -398,9 +395,27 @@ $desktop-width: 1024px;
   border-radius: 3px;
   padding: 10px;
   margin: 20px;
+  min-height: 100px;
   @include flexbox((
-    display: flex
+    display: flex,
+    align-items: center,
+    justify-content: center
   ));
+
+  &.twitter {
+    border: none;
+    margin: 0;
+  }
+
+  .widget-placeholder-overlay {
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+      justify-content: center
+    ));
+    background: rgba(0,0,0,0.5);
+  }
 }
 
 /** Toolbar */

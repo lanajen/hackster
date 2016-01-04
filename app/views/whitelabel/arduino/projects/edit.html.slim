@@ -1,3 +1,5 @@
+- @hide_footer = true
+
 - if @show_admin_bar
   .admin-bar
     .row
@@ -65,17 +67,17 @@
         = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'
       hr
     ol.pe-nav
-      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active btn-secondary'
-      li= link_to 'Team', '#team', id: 'team-nav', class: 'btn-secondary'
+      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab-create'
+      li= link_to 'Team', '#team', id: 'team-nav', class: 'tab-create'
       - unless is_whitelabel?
-        li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'btn-secondary'
-      li= link_to 'Story', '#story', id: 'story-nav', class: 'btn-secondary'
-      li= link_to 'Hardware', '#hardware', id: 'hardware-nav', class: 'btn-secondary'
-      li= link_to 'Software', '#software', id: 'software-nav', class: 'btn-secondary'
+        li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab-create'
+      li= link_to 'Story', '#story', id: 'story-nav', class: 'tab-create'
+      li= link_to 'Hardware', '#hardware', id: 'hardware-nav', class: 'tab-create'
+      li= link_to 'Software', '#software', id: 'software-nav', class: 'tab-create'
 
     ol.pe-nav
-      li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'btn-secondary'
-      li= link_to 'Go to project', @project
+      li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab-create'
+      li= link_to 'Go to project', @project, class: 'tab-create'
 
   .pe-container
     .busy-overlay
@@ -102,7 +104,7 @@
           .clearfix
             .pe-error Error saving
             .pull-right
-              = link_to 'Discard changes', @project, class: 'btn btn-secondary pe-discard'
+              = link_to 'Discard changes', @project, class: 'btn tab-create pe-discard'
               = link_to 'Save changes', '', class: 'btn btn-primary pe-submit'
 
 = render 'projects/forms/part_form'

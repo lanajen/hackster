@@ -45,8 +45,8 @@ hacksterEmbed.ready(function(){
       var script = document.getElementById('hckstr-ejs');
       var source = '<%= j(render("projects/project_thumb_template")) %>';
       <%
-        css_url = APP_CONFIG["use_ssl"] ? "https" : "http" + "://"
-        css_url << request.host
+        css_url = APP_CONFIG["use_ssl"] ? "https" : "http"
+        css_url << "://" + request.host
         css_url << ":" + APP_CONFIG["default_port"].to_s if APP_CONFIG["port_required"]
         css_url << asset_path("project-thumb.css")
       %>

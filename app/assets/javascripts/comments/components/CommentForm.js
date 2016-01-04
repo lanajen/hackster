@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import TextArea from './TextArea';
 import smoothScroll from '../utils/SmoothScroll';
 import markdown from '../utils/Markdown'
@@ -39,7 +40,6 @@ export default class CommentForm extends Component {
 
   handlePostClick(e) {
     e.preventDefault();
-    let body = React.findDOMNode(this.refs.textarea).value;
 
     if(body.length > 0) {
       let form = {

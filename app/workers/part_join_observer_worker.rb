@@ -10,6 +10,7 @@ class PartJoinObserverWorker < BaseWorker
   def after_destroy record
     update_counters record if record.part_id.present?
     expire_cache record if record.partable_id.present?
+    update_project record
   end
 
   def after_update record, changed

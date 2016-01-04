@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom'
 import CommentForm from './CommentForm';
 import FlagButton from '../../flag_button/app';
 import LikeButton from './LikeButton';
@@ -21,8 +22,8 @@ export default class Comment extends Component {
   componentDidMount() {
     if (this.props.scrollTo.scroll
       && this.props.scrollTo.element.id === this.props.comment.id
-      && window) {
-      smoothScroll((React.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
+      && window ) {
+      smoothScroll((ReactDOM.findDOMNode(this).getBoundingClientRect().top + window.pageYOffset) - (window.innerHeight / 2), 500, () => {
         this.props.toggleScrollTo(false, null);
       });
     }

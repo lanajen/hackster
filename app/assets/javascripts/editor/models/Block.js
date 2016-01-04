@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { domWalk, treeWalk } from '../utils/Traversal';
 import Utils from '../utils/DOMUtils';
 import Hashids from 'hashids';

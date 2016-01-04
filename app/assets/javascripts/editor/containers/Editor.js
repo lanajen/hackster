@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Toolbar from './Toolbar';
@@ -9,16 +9,19 @@ import * as EditorActions from '../actions/editor';
 import { createRandomNumber } from '../../utils/Helpers';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { ThemeManager, LightRawTheme } from 'material-ui/lib/styles';
-import { Dialog, IconButton } from 'material-ui';
+import { Dialog, IconButton, FlatButton } from 'material-ui';
 import browser from 'detect-browser';
 
 /** This can be removed when React1.0 is released. */
 injectTapEventPlugin();
 
-const PureRenderMixin = React.addons.PureRenderMixin;
-
 const Editor = React.createClass({
-  mixins: [PureRenderMixin],
+
+  getInitialState() {
+    return {
+      openDialog: false
+    };
+  },
 
   childContextTypes: {
     muiTheme: React.PropTypes.object
@@ -38,7 +41,7 @@ const Editor = React.createClass({
 
   componentDidMount() {
     if(browser.name === 'ie' && parseInt(browser.version, 10) < 11) {
-      this.refs.browserSupport.show();
+      this.setState({ openDialog: true });
     }
   },
 
@@ -69,18 +72,28 @@ const Editor = React.createClass({
     }
   },
 
+  handleDialogClose() {
+    this.setState({ openDialog: false });
+  },
+
   render() {
     if(this.props.hashLocation !== '#story') {
       return null;
     }
 
-    let dialogActions = [{ text: 'Cool beans?', ref: "closeDialog" }];
+    let dialogActions = [
+      <FlatButton
+        key={0}
+        label="Cool Beans?"
+        primary={false}
+        onTouchTap={this.handleDialogClose} />
+    ];
     let dialogBody = (
       <div style={{ textAlign: 'center' }}>
         <h4>Woops, seems like your using an unsupported browser.  Please update to one of these:</h4>
         <IconButton iconClassName="fa fa-chrome" iconStyle={{ color: '#FDD835' }} tooltip="Chrome" onClick={this.handleIconClick.bind(this, 'chrome')}></IconButton>
         <IconButton iconClassName="fa fa-firefox" iconStyle={{ color: '#ef5350' }} tooltip="Firefox" onClick={this.handleIconClick.bind(this, 'firefox')}></IconButton>
-        <IconButton iconClassName="fa fa-windows" iconStyle={{ color: 'steelblue' }} tooltip="Edge" onClick={this.handleIconClick.bind(this, 'edge')}></IconButton>
+        <IconButton iconClassName="fa fa-edge" iconStyle={{ color: 'steelblue' }} tooltip="Edge" onClick={this.handleIconClick.bind(this, 'edge')}></IconButton>
       </div>
     );
 
@@ -90,7 +103,7 @@ const Editor = React.createClass({
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
         <Editable {...this.props} />
-        <Dialog ref="browserSupport" actions={dialogActions} actionFocus="closeDialog" modal={false}>{dialogBody}</Dialog>
+        <Dialog actions={dialogActions} actionFocus="closeDialog" open={this.state.openDialog}>{dialogBody}</Dialog>
         <Snackbar style={{zIndex: 10001, maxWidth: '100%'}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon} autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
       </div>
     );

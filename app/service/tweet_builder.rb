@@ -39,7 +39,7 @@ class TweetBuilder
     end
     if tags.any?
       tag_phrase = " with #{tags.to_sentence}"
-      message << tag_phrase if (size + tag_phrase.size) <= 140
+      message << tag_phrase if (size + tag_phrase.size) < 140
       size = message.size + 23
     end
 
@@ -50,7 +50,7 @@ class TweetBuilder
     if tags.any?
       tags.each do |tag|
         new_size = size + tag.size + 1
-        if new_size <= 140
+        if new_size < 140
           message << " #{tag}"
           size += " #{tag}".size
         else

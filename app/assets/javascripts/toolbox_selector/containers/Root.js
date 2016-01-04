@@ -9,7 +9,7 @@ export default class Root extends Component {
   render() {
     return (
       <Provider store={store}>
-        {() => <App {...this.props} />}
+        <App {...this.props} />
       </Provider>
     );
   }

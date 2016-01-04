@@ -14,17 +14,14 @@ gem 'compass-rails', '2.0.4'
 gem 'fog'
 gem 'fog-aws', '0.1.2'
 # gem 'font_assets'
-gem 'font-awesome-rails', '4.1.0.0'
+gem 'font-awesome-rails', '4.5.0.0'
 gem 'jquery-rails', '4.0.4'
 gem 'jquery-ui-rails', '5.0.5'
-gem 'react-rails', '~> 1.0'
+gem 'react-rails', '~> 1.5'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
-
-# npm
-gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do
@@ -99,6 +96,7 @@ gem 'pusher', '0.14.2'
 gem 'pygments.rb', git: 'https://github.com/hacksterio/pygments.rb.git'
 gem 'rabl', '0.11.6'
 gem 'rack-attack', '4.1.0'
+gem 'rack-cors', '0.4.0'
 gem 'rack-timeout', '0.3.2'
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'

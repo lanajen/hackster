@@ -45,6 +45,7 @@ class Challenge < ActiveRecord::Base
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
+  before_validation :cleanup_custom_registration_email
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
   attr_accessible :new_slug, :name, :prizes_attributes, :sponsor_ids,
@@ -366,6 +367,11 @@ class Challenge < ActiveRecord::Base
   end
 
   private
+    # cleanup Adam's autofill
+    def cleanup_custom_registration_email
+      self.custom_registration_email = nil if custom_registration_email.try(:strip) == 'adamtben@outlook.com'
+    end
+
     def end_date_is_valid?
       errors.add :end_date_dummy, 'is required' and return unless end_date
       errors.add :end_date_dummy, 'must be at least 5 days in the future' and return if end_date < 5.days.from_now

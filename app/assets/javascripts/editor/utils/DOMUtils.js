@@ -3,6 +3,7 @@ import _ from 'lodash';
 import async from 'async';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
+import sanitizer from 'sanitizer';
 import Helpers from '../../utils/Helpers';
 import { BlockElements, ElementWhiteList } from './Constants';
 import Request from './Requests';
@@ -1544,7 +1545,7 @@ const Utils = {
 
           return {
             tag: 'span',
-            content: item.data,
+            content: sanitizer.escape(item.data),
             attribs: {},
             children: []
           };
@@ -1554,7 +1555,7 @@ const Utils = {
           }
           return {
             tag: name || item.name,
-            content: item.children[0].data,
+            content: sanitizer.escape(item.children[0].data),
             attribs: item.attribs,
             children: []
           };
