@@ -43,17 +43,22 @@ class BaseArticleObserver < ActiveRecord::Observer
         if !record.approved? and !record.rejected? and record.review_thread
           record.review_thread.update_column :workflow_state, :new
         end
+        raise 'private'
       else
         if record.force_hide?
           record.reject! if record.can_reject?
         else
-          if record.can_mark_needs_review?
-            record.mark_needs_review!
-            record.create_review_thread unless record.review_thread
+          if record.can_mark_needs_review? or record.can_publish?
+            unless record.review_thread
+              record.create_review_thread
+              record.review_thread.update_column :workflow_state, :needs_review
+            end
           end
         end
       end
     end
+
+    # raise 'publyc: ' + record.publyc?.to_s + ' / pryvate: ' + record.pryvate?.to_s
 
     if record.workflow_state_changed? and record.review_thread
       new_state = nil
@@ -68,6 +73,8 @@ class BaseArticleObserver < ActiveRecord::Observer
       when :approved, :rejected
         new_state = :closed
       end
+
+      raise 'state: ' + new_state.to_s
 
       record.review_thread.update_column :workflow_state, new_state if record.review_thread and new_state
     end

@@ -101,7 +101,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :project_collection, class_name: 'ProjectCollection'
-  has_one :review_thread, foreign_key: :project_id
+  has_one :review_thread, foreign_key: :project_id, inverse_of: :project
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -145,6 +145,7 @@ class BaseArticle < ActiveRecord::Base
   before_create :generate_slug
   before_update :update_slug, if: proc {|p| p.name_changed? }
   after_update :publish!, if: proc {|p| p.private_changed? and p.publyc? and p.can_publish? }
+  after_update :mark_needs_review!, if: proc {|p| p.private_changed? and p.publyc? and p.can_mark_needs_review? }
 
   taggable :product_tags, :platform_tags
 

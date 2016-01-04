@@ -70,6 +70,11 @@ function currentThread(state = {
         isLoaded: true,
         items: items
       };
+      if (thread.status == 'closed')
+        items.push({
+          type: 'event',
+          message: 'This review thread is closed.'
+        });
       return Object.assign({}, thread);
 
     case SET_DECISION_SUBMITTED:

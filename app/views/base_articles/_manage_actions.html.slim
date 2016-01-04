@@ -23,6 +23,8 @@
       li= link_to 'Project logs', project_logs_path(@project)
       li= link_to 'Issue tracker', project_issues_path(@project)
       li.divider
+      li= link_to 'Moderator review', review_project_path(@project)
+      li.divider
     - if @project.pryvate?
       li= link_to 'Private sharing link', 'javascript:void(0)', class: 'modal-open', data: { target: '#project-private-share' }
       = content_for :js do

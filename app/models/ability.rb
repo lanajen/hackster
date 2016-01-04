@@ -227,6 +227,10 @@ class Ability
     # end
   end
 
+  def super_moderator
+    can :approve, ReviewDecision
+  end
+
   def platform
     can :manage, Part, platform_id: @platform.id
   end

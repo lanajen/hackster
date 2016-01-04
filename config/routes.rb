@@ -606,7 +606,7 @@ HackerIo::Application.routes.draw do
         end
       end
 
-      get 'projects/review' => 'review_threads#index'
+      get 'projects/review' => 'review_threads#index', as: :reviews
 
       constraints(ProjectPage) do
         get 'projects/:id/edit' => 'projects#edit', as: :edit_project

@@ -580,5 +580,9 @@
     border-left: 2px solid #ddd;
     background: #fff;
     overflow: scroll;
+    .frame-nav {
+      padding: 10px 20px;
+      font-size: 0.8em;
+    }
   }
 }

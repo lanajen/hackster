@@ -15,7 +15,7 @@ class ReviewThreadsController < ApplicationController
     params[:sort_order] ||= 'DESC'
 
     @threads = ReviewThread.joins(:project)
-    @threads = @threads.active unless params[:filter].try(:[], :status)
+    @threads = @threads.active unless params[:filters].try(:[], :status).present?
     @threads = filter_for @threads, @fields
   end
 

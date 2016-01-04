@@ -44,29 +44,7 @@ class ReviewDecision < ActiveRecord::Base
   hstore_column :feedback, :general, :string
   hstore_column :feedback, :rejection_reason, :string
 
-  after_create :update_thread_status
-  after_update :update_after_approved, if: proc{ |d| d.approved_changed? and d.approved }
-
-  # validate :has_at_least_one_field_selected
-
   private
-    def update_thread_status
-      review_thread.update_column :workflow_state, :feedback_given if decision == :needs_work
-
-      NotificationCenter.notify_all :new, :review_decision, id
-    end
-
-    def update_project_status
-      case decision
-      when 'approve'
-        project.update_attribute :workflow_state, :approved
-        review_thread.update_column :workflow_state, :closed
-      when 'reject'
-        project.update_attribute :workflow_state, :rejected
-        review_thread.update_column :workflow_state, :closed
-      end
-    end
-
     # def has_at_least_one_field_selected
     #   errors.add :base, 'at least one field needs to be selected' unless (FEEDBACK_FIELDS.keys + %i(no_changes_needed rejection_reason)).select{|f| send(f).present? }.any?
     # end

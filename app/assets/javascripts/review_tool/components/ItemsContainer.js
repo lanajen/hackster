@@ -79,7 +79,6 @@ const ItemsContainer = React.createClass({
 
   renderCommentForm: function() {
     const { permissions } = this.props;
-    console.log('permissions', permissions);
 
     if (!permissions.canComment) return;
 
