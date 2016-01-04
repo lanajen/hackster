@@ -59,6 +59,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   def image_id=(val)
     @image_id = val
+    attribute_will_change! :image
     self.image = Image.find_by_id(val)
   end
 

@@ -442,6 +442,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def cover_image_id=(val)
+    attribute_will_change! :cover_image
     self.cover_image = CoverImage.find_by_id(val)
   end
 

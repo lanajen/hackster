@@ -49,8 +49,10 @@ class BaseArticleObserver < ActiveRecord::Observer
       end
     end
 
+    cache_keys = []
+
     if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date respects_count comments_count)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
-      Cashier.expire "project-#{record.id}-teaser"
+      cache_keys << "project-#{record.id}-teaser"
     end
 
     # if (record.changed & %w(platform_tags)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
@@ -58,19 +60,26 @@ class BaseArticleObserver < ActiveRecord::Observer
     # end
 
     if record.description_changed? or record.story_json_changed?
-      Cashier.expire "project-#{record.id}-widgets"
+      cache_keys << "project-#{record.id}-widgets"
     end
 
     if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count workflow_state content_type)).any?
-      Cashier.expire "project-#{record.id}-thumb"
+      cache_keys << "project-#{record.id}-thumb"
     end
 
     if (record.changed & %w(name guest_name cover_image one_liner slug)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
-      Cashier.expire "project-#{record.id}-meta-tags"
+      cache_keys << "project-#{record.id}-meta-tags"
     end
 
     if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       record.last_edited_at = Time.now
     end
+
+    if (["project-#{record.id}-teaser", "project-#{record.id}-widgets"] & cache_keys).any?
+      cache_keys << "project-#{record.id}-left-column"
+      cache_keys << "project-#{record.id}"
+    end
+
+    Cashier.expire *cache_keys if cache_keys.any?
   end
 end
