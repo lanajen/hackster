@@ -11,7 +11,12 @@ class AttachmentObserver < ActiveRecord::Observer
         keys << "project-#{id}-thumb"
         Cashier.expire *keys
       when 'Image'
-        Cashier.expire "project-#{record.attachable_id}-widgets"
+        id = record.attachable_id
+        keys = []
+        keys << "project-#{id}-widgets"
+        keys << "project-#{id}-left-column"
+        keys << "project-#{id}"
+        Cashier.expire *keys
       end
     elsif record.attachable_type == 'Widget'
       case record.type

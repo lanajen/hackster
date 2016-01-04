@@ -1,0 +1,35 @@
+= content_for :body_class do
+  | white
+
+= content_for :no_container do
+
+  #live
+    section.section-header.hero-header
+      .container
+        h1 Hackster Live: Get Your Hands Dirty
+
+    section
+      .container
+        .events-list
+          h3 Find events near you
+          - @events.each do |event|
+            .event
+              h4
+                .event-description
+                  = link_to event.name, event.link, target: '_blank'
+                .event-organizer
+                  ' by
+                  = image_tag event.organizer.decorate.avatar(:tiny), class: 'img-circle'
+                  = link_to event.organizer.name, event.organizer
+              .event-location
+                i.fa.fa-map-marker
+                span= event.location
+
+        .text-center.mg-40
+          p Want Hackster Live to come to your city?
+          p= link_to 'Apply to become a Hackster Ambassador', 'https://docs.google.com/a/hackster.io/forms/d/1Gq0T2FIjMnjk6ZQB_HiKI2MattkSIDnn60ADvrwhmmU/edit', class: 'btn btn-primary btn-lg'
+
+        .text-center.small
+          p
+            ' Are you interested in sponsoring events?
+            = link_to 'Get in touch.', 'mailto:adam@hackster.io?subject=About Hackster Live Sponsorship'
