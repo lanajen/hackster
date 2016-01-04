@@ -47,8 +47,8 @@ module.exports = {
   isUrlValid(url, type) {
     let validExtensions = type === 'video' ? this.VIDEO_SERVICES : [];
     let key = validExtensions.filter(function(item) {
-      url = url.replace(/youtu\.be/, 'youtube');
-      return url.match(item);
+      let urlToMatch = url.replace(/youtu\.be/, 'youtube');
+      return urlToMatch.match(item);
     });
 
     // If key is empty, we have nothing to test and the url isn't valid.
@@ -69,8 +69,8 @@ module.exports = {
   },
 
   getVideoData(url) {
-    url = url.replace(/youtu\.be/, 'youtube');
-    let type = url.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
+    let urlToMatch = url.replace(/youtu\.be/, 'youtube');
+    let type = urlToMatch.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
     if (!service) { return null; }

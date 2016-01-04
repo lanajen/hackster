@@ -6,7 +6,7 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
 
   def after_update record
     custom = record.hstore_columns[:properties].select{|v| v =~ /cfield/ }
-    if (record.changed & (%w(name description image_id) + custom)).any?
+    if (record.changed & (%w(name description image) + custom)).any?
       expire_cache record
     end
   end

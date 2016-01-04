@@ -16,7 +16,7 @@ class PartObserverWorker < BaseWorker
         ProjectWorker.perform_async 'update_platforms', project.id
       end
     end
-    if (changed & %w(slug name store_link product_page_link)).any?
+    if (changed & %w(slug name store_link product_page_link image)).any?
       keys = []
       record.projects.pluck(:id).each do |id|
         keys += ["project-#{id}-#{record.identifier}-parts", "project-#{id}-left-column", "project-#{id}"]

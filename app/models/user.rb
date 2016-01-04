@@ -435,6 +435,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_id=(val)
+    attribute_will_change! :avatar
     self.avatar = Avatar.find_by_id(val)
   end
 
