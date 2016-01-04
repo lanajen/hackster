@@ -8,9 +8,9 @@ module TireInitialization
 
       after_commit on: [:create, :update] do
         if eval(no_index_condition)
-          IndexerQueue.perform_async :remove, self.class.name, self.id
+          IndexerQueue.perform_async :remove, self.model_name.name, self.id
         else
-          IndexerQueue.perform_async :store, self.class.name, self.id
+          IndexerQueue.perform_async :store, self.model_name.name, self.id
         end
       end
       after_destroy do
