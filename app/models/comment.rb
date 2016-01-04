@@ -67,6 +67,10 @@ class Comment < ActiveRecord::Base
     commentable_type
   end
 
+  def by_guest?
+    user_id.nil? or user_id == 0
+  end
+
   def children force=false
     if force
       @children = Comment.where(parent_id: id)
