@@ -108,19 +108,13 @@ export default class Comment extends Component {
                 </li>)
              : (null);
 
-    let trailingMiddot2 = editButton ? (<li className="middot">•</li>) : (null);
-
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
                     <LikeButton commentId={id} currentUserId={this.props.currentUser.id} parentId={parent_id} likingUsers={likingUsers} deleteLike={this.props.deleteLike} postLike={this.props.postLike} />
                     <li className="middot">•</li>
                     {replyButton}
-                    <li className="middot">•</li>
-                    {counter}
                     {trailingMiddot}
-                    {deleteOrFlagButton}
-                    {trailingMiddot2}
-                    {editButton}
+                    {counter}
                   </ul>)
                 : likingUsers.length > 0
                 ? (<ul className="comment-actions">
@@ -154,6 +148,16 @@ export default class Comment extends Component {
               ? (<a href={`/${userSlug}`}>{userName}</a>)
               : userName;
 
+    let manageDropdown = (<div className="dropdown comment-manage pull-right">
+                          <a className="dropdown-toggle btn btn-link btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="javascript:void(0)">
+                            <i className="fa fa-ellipsis-v" />
+                          </a>
+                          <ul className="dropdown-menu">
+                            {editButton}
+                            {deleteOrFlagButton}
+                          </ul>
+                        </div>);
+
     let comment = depth === 0 && deleted === true
                 ? (<div>
                     <div className={rootClass} id={id}>
@@ -165,6 +169,7 @@ export default class Comment extends Component {
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
+                        {manageDropdown}
                       </div>
                       <div className="comment-body">
                         This comment has been deleted.
@@ -182,8 +187,9 @@ export default class Comment extends Component {
                           </h4>
                           <span className="text-muted comment-date">{date}</span>
                         </div>
+                        {manageDropdown}
                       </div>
-                      <div className="comment-body" dangerouslySetInnerHTML={{ __html: markdown.renderInline(raw_body) }}></div>
+                      <div className="comment-body" dangerouslySetInnerHTML={{ __html: markdown.render(raw_body) }}></div>
                       {actions}
                     </div>
                     {this.props.children}

@@ -42,7 +42,7 @@ export default class CommentForm extends Component {
     e.preventDefault();
 
     let body = ReactDOM.findDOMNode(this.refs.textarea).value;
-    if(body.length > 0) {
+    if (body !== this.props.rawBody && body.length > 0) {
       let form = {
         comment: {
           'raw_body': body,
@@ -53,6 +53,8 @@ export default class CommentForm extends Component {
       this.props.onPost(form);
       this.setState({ isLoading: true });
       this.refs.textarea.resetForm();
+    } else if (body === this.props.rawBody) {
+      this.props.dismiss();
     }
   }
 
@@ -68,7 +70,7 @@ export default class CommentForm extends Component {
     this.setState({
       activeTab: name,
       textValue: name === 'preview' ? body : this.state.textValue,
-      markdown: name === 'preview' ? markdown.renderInline(body) : this.state.markdown
+      markdown: name === 'preview' ? markdown.render(body) : this.state.markdown
      });
   }
 
@@ -84,13 +86,11 @@ export default class CommentForm extends Component {
                     : (buttonLabel);
 
     let actions = this.props.dismissable
-                ? (<div className="comments-form-button-container">
+                ? (<div>
                      <a href="javascript:void(0);" className="btn-link btn" onClick={this.handleCancelClick}>Cancel</a>
                      <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonBody}</button>
                    </div>)
-                : (<div className="comments-form-button-container">
-                     <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonBody}</button>
-                   </div>);
+                : (<button className="btn btn-primary" onClick={this.handlePostClick}>{buttonBody}</button>);
 
     let textValue = this.state.activeTab === 'write' ? this.state.textValue : this.state.markdown;
 
@@ -98,10 +98,15 @@ export default class CommentForm extends Component {
       <div className={rootClass}>
         <nav className="comments-form-nav">
           <a href="javascript:void(0);" className={this._checkActiveButton('write')} onClick={this.setActiveTab.bind(this, 'write')}>Write</a>
-          <a href="javascript:void(0);" className={this._checkActiveButton('preview')} onClick={this.setActiveTab.bind(this, 'preview')}>Preview</a>
+          <a href="javascript:void(0);" className={this._checkActiveButton('preview')} onClick={this.setActiveTab.bind(this, 'preview')}>
+            <img src='/assets/markdown-mark.png' className="markdown-supported" />
+            Preview
+          </a>
         </nav>
         <TextArea ref="textarea" placeholder={this.props.placeholder} value={textValue} viewState={this.state.activeTab} />
-        {actions}
+        <div className="comments-form-button-container">
+          {actions}
+        </div>
       </div>
     );
 

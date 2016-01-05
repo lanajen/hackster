@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import emoji from 'markdown-it-emoji';
+import hljs from 'markdown-it-highlightjs';
 
 const markdown = new MarkdownIt({
     breaks: true,
@@ -7,6 +8,7 @@ const markdown = new MarkdownIt({
     xhtmlOut: true
   })
   .use(emoji)
-  .disable([ 'image', 'heading', 'code' ]);
+  .use(hljs)
+  .disable([ 'image', 'heading' ]);
 
 export default markdown

@@ -24,6 +24,11 @@
       padding-left: 20px;
     }
 
+    .markdown-supported {
+      height: 13px;
+      margin-right: 4px;
+    }
+
     .comments-form-nav {
       @include flexbox((
         display: flex
@@ -108,6 +113,7 @@
       @include flexbox((
         display: flex
       ));
+      position: relative;
       margin-bottom: 10px;
 
       .avatar {
@@ -128,6 +134,12 @@
         .comment-date {
         }
       }
+    }
+
+    .comment-manage {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
 
     .comment-body {
