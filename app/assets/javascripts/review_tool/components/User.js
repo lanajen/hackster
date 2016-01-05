@@ -2,28 +2,17 @@ import React from 'react';
 
 const User = React.createClass({
   render: function() {
+    const { userName, userSlug, avatarLink, user_id } = this.props;
+
+    if (user_id === 0)
+      return (<span />);
+
     return (
       <span className='user-name'>
-        {this.renderImg()}
-        {this.renderName()}
+        <img className="img-circle" src={avatarLink} />
+        <a href={`/${userSlug}`} target='_blank'>{userName}</a>
       </span>
     );
-  },
-
-  renderImg: function() {
-    const { avatarLink } = this.props;
-
-    if (!avatarLink) return;
-
-    return (<img className="img-circle" src={avatarLink} />);
-  },
-
-  renderName: function() {
-    const { userName, userSlug } = this.props;
-
-    if (!userName || !userSlug) return;
-
-    return (<a href={`/${userSlug}`} target='_blank'>{userName}</a>);
   }
 });
 

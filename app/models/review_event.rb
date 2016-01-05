@@ -12,4 +12,8 @@ class ReviewEvent < ActiveRecord::Base
   hstore_column :meta, :new_project_privacy, :boolean
   hstore_column :meta, :new_project_workflow_state, :string
   hstore_column :meta, :project_changed_fields, :array
+
+  def has_user?
+    !user_id.zero?
+  end
 end

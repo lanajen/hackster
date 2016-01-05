@@ -10,7 +10,11 @@ class ReviewEventDecorator < ApplicationDecorator
     when :project_update
       "updated the project"
     when :project_status_update
-      "marked the project as #{model.new_project_workflow_state}"
+      if model.has_user?
+        "marked the project as #{model.new_project_workflow_state}"
+      else
+        "The project was marked as #{model.new_project_workflow_state}"
+      end
     when :thread_closed
       "Review thread closed automatically after decision was made"
     else

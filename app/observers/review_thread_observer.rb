@@ -8,8 +8,8 @@ class ReviewThreadObserver < ActiveRecord::Observer
       event = record.events.new
       event.event = :project_status_update
       event.new_project_workflow_state = project.workflow_state
-      event.user_id = project.reviewer_id
-      event.created_at = project.review_time
+      event.user_id = project.reviewer_id if project.reviewer_id
+      event.created_at = project.review_time || project.made_public_at || project.created_at
 
       record.workflow_state = :closed
     end

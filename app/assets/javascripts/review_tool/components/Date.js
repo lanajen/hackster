@@ -2,18 +2,15 @@ import React from 'react';
 
 const Date = React.createClass({
   render: function() {
-
-    return (
-      <span className="review-item-date">{this.renderDate()}</span>
-    );
-  },
-
-  renderDate: function() {
     const { createdAt } = this.props;
 
-    if (!createdAt) return;
+    if (!createdAt) return (<span />);
 
-    return (window ? window.moment(createdAt).fromNow() : createdAt);
+    let date= (window ? window.moment(createdAt).fromNow() : createdAt);
+
+    return (
+      <span className="review-item-date">{date}</span>
+    );
   }
 });
 
