@@ -5,7 +5,9 @@
 
     .review-frame
       .frame-nav.clearfix
-        - if current_user.is?(:admin, :moderator)
-          .pull-left= link_to "&larr; Review dashboard".html_safe, reviews_path
+        ul.list-inline.pull-left
+          - if current_user.is?(:admin, :moderator)
+            li= link_to "&larr; Review dashboard".html_safe, reviews_path
+          li= link_to 'Content guidelines', guidelines_path
         .pull-right= link_to content_tag(:i, '', class: 'fa fa-times'), @project
       = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: current_user.is?(:admin, :moderator) }, {}
