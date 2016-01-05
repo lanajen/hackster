@@ -653,7 +653,7 @@ const ContentEditable = React.createClass({
   handlePaste(e) {
     this.preventEvent(e);
     let pastedText, dataType;
-    let { range, parentNode, depth } = Utils.getSelectionData();
+    let { sel, range, parentNode, depth } = Utils.getSelectionData();
 
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
@@ -676,17 +676,18 @@ const ContentEditable = React.createClass({
       pastedText = Parser.stringifyLineBreaksToParagraphs(pastedText, parentNode.nodeName);
     }
 
-    if(parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0) {
+    if( (parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0)
+       && sel.toString().length > 0) {
       range.deleteContents();
-
       let currentNode = parentNode.cloneNode(true);
+      let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
+      console.log('OP', liveNode);
 
       let newHtml = domWalk(currentNode, (child, root, depth) => {
         if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
           let start = range.startContainer.textContent.substring(0, range.startOffset);
           let end = range.startContainer.textContent.substring(range.startOffset);
-          let liveNode = Parser.toLiveHtml(pastedText);
-
+          console.log('GOT IT', 'S', start, 'E', end, 'L', liveNode);
           if(root.nodeName === 'UL') {
             child.textContent = start;
             child.appendChild(liveNode);
@@ -700,6 +701,7 @@ const ContentEditable = React.createClass({
         return child;
       });
 
+      console.log('true', newHtml);
       pastedText = newHtml.outerHTML;
     } else if(pastedText.match(/(<table)/g)) {
       let liveNode = Parser.toLiveHtml(pastedText, { body: true });
@@ -728,6 +730,7 @@ const ContentEditable = React.createClass({
           return acc;
         });
 
+        clean.json = Parser.removeAttributes(clean.json);
         this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       })

@@ -263,6 +263,12 @@ export default {
     let node;
     if(options && options.body) {
       node = html.children[1];
+    } else if(options && options.createWrapper) {
+      let wrapper = document.createElement('p');
+      [].slice.apply(html.children[1].childNodes).forEach((child) => {
+        wrapper.appendChild(child);
+      });
+      node = wrapper;
     } else {
       node = html.children[1].firstChild;
     }
