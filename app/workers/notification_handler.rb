@@ -301,8 +301,8 @@ class NotificationHandler
         context[:decision] = decision = ReviewDecision.find context_id
         context[:thread] = thread = decision.review_thread
         context[:project] = thread.project
-        context[:author] = decision.user
-        context[:users] = thread.participants - thread.project.users
+        context[:author] = author = decision.user
+        context[:users] = (thread.participants + thread.project.users).uniq - [author]
       when :thought_mention
         context[:model] = thought = context[:thought] = Thought.find context_id
         context[:author] = thought.user

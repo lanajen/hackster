@@ -55,6 +55,7 @@ class BaseArticleObserverWorker < BaseWorker
     end
 
     update_counters record, :approved_projects
+    log_state_change record
   end
 
   def after_pending_review record
@@ -64,6 +65,7 @@ class BaseArticleObserverWorker < BaseWorker
   def after_rejected record
     record.update_column :hide, true
     update_counters record, :approved_projects
+    log_state_change record
   end
 
   def perform method, record_id, *args
@@ -78,6 +80,10 @@ class BaseArticleObserverWorker < BaseWorker
   end
 
   private
+    def log_state_change record
+      ProjectWorker.perform_async 'create_review_event', record.id, record.reviewer_id, :project_status_update, workflow_state: record.workflow_state
+    end
+
     def update_counters record, type
       record.users.each{ |u| u.update_counters only: [type].flatten }
     end

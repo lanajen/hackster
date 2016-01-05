@@ -16,7 +16,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def after_approved record
-    BaseArticleObserverWorker.perform_async 'after_approved', record.id
+    BaseArticleObserverWorker.perform_in 1.second, 'after_approved', record.id
   end
 
   def after_pending_review record
@@ -24,7 +24,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def after_rejected record
-    BaseArticleObserverWorker.perform_async 'after_rejected', record.id
+    BaseArticleObserverWorker.perform_in 1.second, 'after_rejected', record.id
   end
 
   def before_create record

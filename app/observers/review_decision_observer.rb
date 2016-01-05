@@ -24,10 +24,10 @@ class ReviewDecisionObserver < ActiveRecord::Observer
     def finalize_decision record
       case record.decision
       when 'approve'
-        record.project.approve_later!
+        record.project.approve_later! reviewer_id: record.user_id
         record.review_thread.update_column :workflow_state, :closed
       when 'reject'
-        record.project.reject!
+        record.project.reject! reviewer_id: record.user_id
         record.review_thread.update_column :workflow_state, :closed
       end
     end

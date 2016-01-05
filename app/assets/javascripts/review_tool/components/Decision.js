@@ -33,7 +33,7 @@ const Decision = React.createClass({
         {this.renderWithLabel((
           <span>
             <i className='fa fa-exclamation-triangle text-warning'></i><span>Needs work</span>
-          </span>), 'Decision')}
+          </span>), 'Opinion')}
         {this.renderComment(feedback.type, 'Template')}
         {this.renderComment(feedback.content_type, 'Content type')}
         {this.renderComment(feedback.name, 'Name')}
@@ -57,8 +57,8 @@ const Decision = React.createClass({
   renderApproved: function() {
     return this.renderWithLabel((
       <span>
-        <i className='fa fa-check text-success'></i><span>Approved</span>
-      </span>), 'Decision');
+        <i className='fa fa-check text-success'></i><span>Ready for approval</span>
+      </span>), 'Opinion');
   },
 
   renderRejected: function() {
@@ -66,8 +66,8 @@ const Decision = React.createClass({
       <div>
         {this.renderWithLabel((
           <span>
-            <i className='fa fa-times text-danger'></i><span>Rejected</span>
-          </span>), 'Decision')}
+            <i className='fa fa-times text-danger'></i><span>Not a good fit</span>
+          </span>), 'Opinion')}
         {this.renderWithLabel(this.props.rejection_reason, 'Reason')}
       </div>
     );

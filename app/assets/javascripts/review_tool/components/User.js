@@ -4,7 +4,7 @@ const User = React.createClass({
   render: function() {
     const { userName, userSlug, avatarLink, user_id } = this.props;
 
-    if (user_id === 0)
+    if (!user_id || user_id === 0)
       return (<span />);
 
     return (
