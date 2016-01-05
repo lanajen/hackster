@@ -23,8 +23,6 @@
       li= link_to 'Project logs', project_logs_path(@project)
       li= link_to 'Issue tracker', project_issues_path(@project)
       li.divider
-      li= link_to 'Moderator review', review_project_path(@project)
-      li.divider
     - if @project.pryvate?
       li= link_to 'Private sharing link', 'javascript:void(0)', class: 'modal-open', data: { target: '#project-private-share' }
       = content_for :js do
@@ -37,5 +35,8 @@
               p You can share your #{@project.identifier} with others while keeping it public. For this, send them the following link:
               input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
 
+      li.divider
+    - else
+      li= link_to 'Moderator review', review_project_path(@project)
       li.divider
     li= link_to "Delete this #{@project.identifier}", @project, method: :delete, data: { confirm: "Are you sure you want to delete this #{@project.identifier}? There's no way to undo it!" }
