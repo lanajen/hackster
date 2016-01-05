@@ -32,7 +32,7 @@
           .popup-overlay-outer
             .popup-overlay-inner
               button.close.btn-close.unselectable data-target='#project-private-share' data-effect='fade' &times;
-              p You can share your #{@project.identifier} with others while keeping it public. For this, send them the following link:
+              p You can share your #{@project.identifier} with others while keeping it private. For this, send them the following link:
               input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
 
       li.divider
