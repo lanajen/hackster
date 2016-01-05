@@ -2,8 +2,9 @@ import { Comments } from '../constants/ActionTypes';
 
 const initialState = {
   comments: [],
+  commentUpdated: { id: null },
   fetchedInitialComments: false,
-  formData: { isLoading: false, error: null },
+  formData: { isLoading: false, error: null, id: null },
   replyBox: { show: false, id: null },
   rootCommentsToDelete: [],
   scrollTo: { scroll: false, element: null },
@@ -36,7 +37,15 @@ export default function(state = initialState, action) {
         comments: newComments,
         scrollTo: scrollTo,
         replyBox: { show: false, id: null },
-        formData: { isLoading: false, errors: null }
+        formData: { isLoading: false, errors: null, id: null }
+      };
+
+    case Comments.updateComment:
+      return {
+        ...state,
+        comments: updateComment(state.comments, action.comment),
+        formData: { isLoading: false, errors: null, id: null },
+        commentUpdated: { id: action.comment.id }
       };
 
     case Comments.removeComment:
@@ -54,10 +63,16 @@ export default function(state = initialState, action) {
         rootCommentsToDelete: state.rootCommentsToDelete.filter(id => id !== action.id)
       };
 
+    case Comments.toggleCommentUpdated:
+      return {
+        ...state,
+        commentUpdated: { id: null }
+      };
+
     case Comments.toggleFormData:
       return {
         ...state,
-        formData: { isLoading: action.isLoading, error: action.error }
+        formData: { isLoading: action.isLoading, error: action.error, id: action.id }
       };
 
     case Comments.toggleLikes:
@@ -146,4 +161,18 @@ function _addToOrRemoveFromArray(array, bool, item) {
     array = array.filter((x) => { item !== x; });
   }
   return array;
+}
+
+function updateComment(comments, newComment) {
+  return comments.map(comment => {
+    if(newComment.parent_id) {
+      comment.children = comment.children.map(child => {
+        child = child.id === newComment.id ? newComment : child;
+        return child;
+      });
+    } else {
+      comment.root = comment.root.id === newComment.id ? newComment : comment.root;
+    }
+    return comment;
+  });
 }

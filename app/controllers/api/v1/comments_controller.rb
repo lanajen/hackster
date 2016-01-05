@@ -28,6 +28,16 @@ class Api::V1::CommentsController < Api::V1::BaseController
     end
   end
 
+  def update
+    comment = Comment.find(params[:id])
+    authorize! :update, comment
+    if comment.update_attributes(params[:comment])
+      render json: { comment: CommentJsonDecorator.new(comment).node }
+    else
+      render json: { comment: comment.errors }, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     comment = Comment.find(params[:id])
     authorize! :destroy, comment

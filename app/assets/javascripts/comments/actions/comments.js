@@ -120,11 +120,18 @@ export function removeIdFromDeleteList(id) {
   };
 }
 
-export function toggleFormData(isLoading, error) {
+export function toggleCommentUpdated() {
+  return {
+    type: Comments.toggleCommentUpdated
+  };
+}
+
+export function toggleFormData(isLoading, error, id) {
   return {
     type: Comments.toggleFormData,
     isLoading: isLoading,
-    error: error
+    error: error,
+    id: id
   };
 }
 
@@ -142,4 +149,23 @@ export function triggerReplyBox(show, id) {
     show: show,
     id: id
   };
+}
+
+export function updateComment(comment) {
+  return {
+    type: Comments.updateComment,
+    comment: comment
+  };
+}
+
+export function patchComment(comment, csrfToken) {
+  return function(dispatch) {
+    return Requests.updateComment(comment, csrfToken)
+      .then(response => {
+        dispatch(updateComment(response));
+      })
+      .catch(err => {
+        console.log('UPDATE ERROR: ', err);
+      });
+  }
 }

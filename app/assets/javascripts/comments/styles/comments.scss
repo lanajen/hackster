@@ -8,7 +8,8 @@
 
   .comments-form {
     @include flexbox((
-      display: flex
+      display: flex,
+      flex-direction: column
     ));
     margin-bottom: 70px;
     min-height: 72px;
@@ -23,12 +24,40 @@
       padding-left: 20px;
     }
 
+    .markdown-supported {
+      height: 13px;
+      margin-right: 4px;
+    }
+
+    .comments-form-nav {
+      @include flexbox((
+        display: flex
+      ));
+
+      .comments-form-tab {
+        padding: 1% 2%;
+        border-radius: 3px 3px 0 0;
+        font-size: 0.8em;
+        color: #999;
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        &.active {
+          color: #555;
+          background: #eeedf2;
+          text-decoration: none;
+        }
+      }
+    }
+
     .comments-textarea {
       @include flexbox((
         flex: 6
       ));
       background: #eeedf2;
-      border-radius: 3px 0 0 3px;
+      border-radius: 0 3px 0 0;
       border: none;
       box-shadow: none;
       resize: none;
@@ -42,20 +71,27 @@
       }
     }
 
+    .comments-preview {
+      @extend .comments-textarea;
+      min-height: 72px;
+    }
+
     .comments-form-button-container {
       @include flexbox((
         flex: 1,
         display: flex,
         align-items: center,
-        justify-content: center
+        justify-content: flex-end
       ));
       border: 1px solid #eeedf2;
-      border-radius: 0 3px 3px 0;
+      border-radius: 0 0 3px 3px;
+      padding: 1%;
+      font-size: 0.8em;
 
       @include tablet {
         @include flexbox((
-          align-items: flex-start,
-          justify-content: flex-start
+          align-items: flex-end,
+          justify-content: flex-end
         ));
         border: none;
         padding-top: 0.3em;
@@ -77,6 +113,7 @@
       @include flexbox((
         display: flex
       ));
+      position: relative;
       margin-bottom: 10px;
 
       .avatar {
@@ -97,6 +134,12 @@
         .comment-date {
         }
       }
+    }
+
+    .comment-manage {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
 
     .comment-body {

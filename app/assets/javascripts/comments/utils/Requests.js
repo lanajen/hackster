@@ -24,6 +24,18 @@ export default {
     });
   },
 
+  updateComment(comment, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .put(`/api/v1/comments/${comment.comment.id}`)
+        .set('X-CSRF-Token', csrfToken)
+        .send(comment)
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.comment);
+        });
+    });
+  },
+
   postLike(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
