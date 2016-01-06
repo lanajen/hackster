@@ -44,6 +44,8 @@ class NotificationDecorator < ApplicationDecorator
         "Winners for the #{challenge.pre_contest_label.downcase} of #{challenge_link} have been announced."
       when :pre_contest_winners
         "Your idea has been selected as a winner for the #{challenge.pre_contest_label.downcase} of #{challenge_link}. Congrats!"
+      when :judged
+        "The results for #{challenge_link} are out!"
       end
     when ChallengeEntry
       entry = notifiable
@@ -84,6 +86,9 @@ class NotificationDecorator < ApplicationDecorator
           "#{author_link} commented on #{thought_link}."
         when Issue, BuildLog
           thread_link = h.link_to commentable.title, commentable
+          "#{author_link} commented on #{thread_link}."
+        when ReviewThread
+          thread_link = h.link_to "#{commentable.project.name}'s moderation conversation", commentable
           "#{author_link} commented on #{thread_link}."
         end
       when :mention
