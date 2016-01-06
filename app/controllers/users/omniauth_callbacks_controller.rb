@@ -43,14 +43,16 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
-    session.keys.grep(/^(devise|omniauth)\./).each { |k| session.delete(k) } if params[:setup].present?
+    if params[:setup].present?
+      session.keys.grep(/^(devise|omniauth)\./).each { |k| session.delete(k) }
 
-    session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
+      session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
 
-    session['omniauth.current_site'] = params[:current_site] if params[:current_site]
-    session['omniauth.redirect_to'] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
-    session['omniauth.link_accounts'] = params[:link_accounts] if params[:link_accounts]
-    session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
+      session['omniauth.current_site'] = params[:current_site] if params[:current_site]
+      session['omniauth.redirect_to'] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
+      session['omniauth.link_accounts'] = params[:link_accounts] if params[:link_accounts]
+      session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
+    end
 
     # puts 'session setup: ' + session.inspect
 
