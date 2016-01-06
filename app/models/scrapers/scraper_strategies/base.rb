@@ -70,7 +70,7 @@ module ScraperStrategies
       end
 
       def clean_brs text
-        return unless text
+        return if text.blank?
 
         doc = Nokogiri::HTML text
         doc.xpath('/html/body/br').each{|el| el.remove }
