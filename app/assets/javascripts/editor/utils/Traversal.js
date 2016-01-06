@@ -9,7 +9,6 @@ export default {
           callback(child, root, depth);
           recurse(child, depth+1);
         });
-        return root;
       }
     }(tree, 0));
     return tree;

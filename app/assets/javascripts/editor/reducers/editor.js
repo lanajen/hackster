@@ -321,8 +321,7 @@ export default function(state = initialState, action) {
       };
 
     case Editor.toggleErrorMessenger:
-      let actionIcon = randomizeErrorActionIcon();
-      let errorMessenger = { show: action.show, msg: action.msg, actionIcon: actionIcon }
+      let errorMessenger = { show: action.show, msg: action.msg, actionIcon: 'x' }
       return {
         ...state,
         errorMessenger: errorMessenger
@@ -1065,7 +1064,11 @@ function handlePastedHTML(dom, html, depth, storeIndex, endDepth) {
     return item;
   });
 
-  component.json = html.json;
+  let start = json.slice(0, depth);
+  let end = json[endDepth+1] !== undefined ? json.slice(endDepth+1) : [];
+  let newJson = start.concat(html.json.concat(end));
+
+  component.json = newJson;
   dom.splice(storeIndex, 1, component);
 
   let node = Parser.toHtml([html.json[html.json.length-1]]);
