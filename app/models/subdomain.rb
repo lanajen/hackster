@@ -5,6 +5,15 @@ class Subdomain < ActiveRecord::Base
   end
 
   def host
-    domain.present? ? domain : "#{subdomain}.#{APP_CONFIG['default_domain']}"
+    if domain.present?
+      domain
+    else
+      out = subdomain + '.'
+      if ENV['SUBDOMAIN'].present? and ENV['SUBDOMAIN'] != 'www'
+        out << ENV['SUBDOMAIN'] + '.'
+      end
+      out << APP_CONFIG['default_domain']
+      out
+    end
   end
 end

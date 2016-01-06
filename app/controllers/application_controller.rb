@@ -168,7 +168,8 @@ class ApplicationController < ActionController::Base
     # puts 'params[:redirect_to]: ' + params[:redirect_to].to_s
     # puts 'session[request.host].try(:[], :user_return_to): ' + session[request.host].try(:[], :user_return_to).to_s
     if host
-      base_uri = "#{request.scheme}://#{host}:#{APP_CONFIG['default_port']}"
+      base_uri = "#{request.scheme}://#{host}"
+      base_uri += ":#{APP_CONFIG['default_port']}" if APP_CONFIG['port_required']
       if params[:redirect_to].present?
         "#{base_uri}#{params[:redirect_to]}"
       elsif return_to = session[host].try(:[], :user_return_to).presence
