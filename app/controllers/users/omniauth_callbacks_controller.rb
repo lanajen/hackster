@@ -50,7 +50,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session['omniauth.current_site'] = params[:current_site] if params[:current_site]
     session['omniauth.redirect_to'] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
     session['omniauth.link_accounts'] = params[:link_accounts] if params[:link_accounts]
-    session['omniauth.omniauth_login_locale'] = I18n.locale
+    session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
 
     # puts 'session setup: ' + session.inspect
 
@@ -58,18 +58,18 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    set_flash_message :alert, :failure, kind: proper_name_for_provider(failed_strategy.name), reason: failure_message
+    message = find_message(:failure, kind: proper_name_for_provider(failed_strategy.name), reason: failure_message)
 
     logger.error "env['omniauth.error']: " + env['omniauth.error'].inspect
 
-    redirect_to after_omniauth_failure_path_for(resource_name)
+    redirect_to after_omniauth_failure_path_for(resource_name), alert: message
   end
 
   private
     def oauthorize(kind)
       # logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
 
-      I18n.locale = session.delete('omniauth.omniauth_login_locale') || I18n.default_locale
+      I18n.locale = session.delete('omniauth.login_locale') || I18n.default_locale
 
       omniauth_data = case kind
       when 'facebook', 'github', 'twitter', 'windowslive'
