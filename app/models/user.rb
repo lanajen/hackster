@@ -201,6 +201,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
+  # validates :email, uniqueness: { message: 'has already been taken. Are you trying to log in?' }, allow_blank: true  # change the message
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
@@ -332,7 +333,7 @@ class User < ActiveRecord::Base
       # extract social data for omniauth
       elsif session['devise.provider_data']
         user = super.tap do |user|
-          SocialProfileBuilder.new(user).extract_from_social_profile params, session
+          SocialProfile::Builder.new(session).initialize_user_from_social_profile(user)
         end
         if existing_user = where(email: user.email).where('invitation_token IS NOT NULL').first
           attributes = user.attributes.select{|k,v| k.in? accessible_attributes }

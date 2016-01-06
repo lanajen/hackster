@@ -1535,3 +1535,28 @@ i + span, span + i {
   border-width: 18px;
   margin-left: -18px;
 }
+
+.minimal-layout {
+  header {
+    height: 120px;
+    text-align: center;
+    position: relative;
+  }
+  .cancel-login {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    font-size: 0.8em;
+  }
+  .header-inner {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+  }
+  .site-logo {
+
+  }
+  .powered-by {
+
+  }
+}

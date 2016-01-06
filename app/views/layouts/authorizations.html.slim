@@ -1,0 +1,60 @@
+doctype 5
+
+
+/!
+  Whatever your mind can conceive and can believe, it can achieve. ~Napoleon Hill
+
+  Whatever we think about and thank about we bring about. ~John Demartini
+
+  Whether you think you can or can’t either way you are right. ~Henry Ford
+
+
+html(lang="en")
+  head
+    meta(http-equiv="content-type" content="text/html; charset=UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    meta(property="fb:app_id" content="414718878625776")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    meta(name="description" content="#{meta_desc}")
+    = content_for :head
+    - unless csrf_disabled?
+      = csrf_meta_tags
+    /! Le HTML5 shim, for IE6-8 support of HTML elements
+    /![if lt IE 9]
+      = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
+    = stylesheet_link_tag "application", :media => "all"
+    - if is_whitelabel? and current_site.favicon.try(:file_url)
+      link href=current_site.favicon.file_url rel="shortcut icon"
+    - else
+      - cache ['favicons', '2015-12-20'] do
+        = render 'shared/favicons'
+    meta name="apple-mobile-web-app-title" content=site_name
+    meta name="application-name" content=site_name
+    - if ENV['ENABLE_ANALYTICS'] and !current_user.try(:is?, :admin)
+      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
+
+  body.minimal-layout class=yield(:body_class)
+    #outer-wrapper
+      - unless @no_flash
+        = bootstrap_flash
+      header
+        .cancel-login= link_to "&larr; Cancel log in and return to #{site_name}".html_safe, root_url(host: site_host)
+        .header-inner
+          - if is_whitelabel?
+            .site-logo= current_site.logo.present? ? image_tag(current_platform.logo.file_url) : site_name
+            .powered-by
+              small  style='font-size:11px;'
+                ' powered by
+                = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+          - else
+            .site-logo= image_tag 'hackster_logo_blue.png', alt: "Hackster.io"
+      #main
+        #content
+          .container= yield
+
+    = javascript_include_tag "application"
+    = content_for :js
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+       try{Typekit.load({async: true});}catch(e){}

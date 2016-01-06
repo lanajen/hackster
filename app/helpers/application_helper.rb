@@ -168,7 +168,7 @@ module ApplicationHelper
   end
 
   def site_host
-    is_whitelabel? ? current_site.full_domain : APP_CONFIG['default_host']
+    is_whitelabel? ? current_site.host : APP_CONFIG['default_host']
   end
 
   def site_twitter

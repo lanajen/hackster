@@ -169,10 +169,11 @@ class ApplicationController < ActionController::Base
     # puts 'session[request.host].try(:[], :user_return_to): ' + session[request.host].try(:[], :user_return_to).to_s
     if host
       scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
+      base_uri = "#{scheme}#{host}:#{APP_CONFIG['default_port']}"
       if params[:redirect_to].present?
-        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{params[:redirect_to]}"
-      elsif session[request.host].try(:[], :user_return_to).present?
-        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{session[request.host].try(:[], :user_return_to)}"
+        "#{base_uri}#{params[:redirect_to]}"
+      elsif return_to = session[host].try(:[], :user_return_to).presence
+        "#{base_uri}#{return_to}"
       else
         root_url(host: host)
       end
@@ -193,10 +194,8 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate_user_from_token!
-      user_email = params[:user_email].presence
-      user = user_email && User.find_by_email(user_email)
-
-      if user && Devise.secure_compare(user.authentication_token, params[:user_token])
+      if user = find_user_and_validate_auth_token(params[:user_email], params[:user_token])
+        cookies[:hackster_user_signed_in] = '1'
         sign_in user#, store: false
         flash.keep
         redirect_to UrlParam.new(request.url).remove_params(%w(user_token user_email)) and return
@@ -263,6 +262,13 @@ class ApplicationController < ActionController::Base
 
     def disable_flash
       @no_flash = true
+    end
+
+    def find_user_and_validate_auth_token email, token
+      return if email.blank? or token.blank?
+
+      user = User.find_by_email(email)
+      user if Devise.secure_compare(user.authentication_token, token)
     end
 
     def flash_disabled?

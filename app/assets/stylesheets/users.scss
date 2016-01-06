@@ -157,3 +157,50 @@
   padding: 15px;
   margin-bottom: 20px;
 }
+
+.social-profile-thumb {
+  text-align: center;
+  width: 200px;
+  .profile-image {
+    position: relative;
+    margin-bottom: 10px;
+    img {
+      width: 150px;
+      height: 150px;
+    }
+  }
+  .provider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 2em;
+    line-height: 1;
+  }
+  .name {
+    font-weight: bold;
+  }
+  .username {
+    font-weight: normal;
+    color: #777;
+    a {
+      color: #777;
+    }
+  }
+}
+
+.authorization-container {
+  @include flexbox((
+    display: flex,
+    justify-content: center,
+    align-items: center
+  ));
+  .column {
+    // @include flexbox((
+    //   flex-basis: 50%;
+    // ));
+    margin-right: 40px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

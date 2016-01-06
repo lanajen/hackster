@@ -4,6 +4,8 @@ class Users::AuthorizationsController < Users::RegistrationsController
   prepend_before_filter :allow_params_authentication!, only: :update
   before_filter :ensure_provider_data
   before_filter :configure_permitted_parameters
+  helper_method :social_profile_attributes
+  layout 'authorizations'
 
   def new
     options = { invitation_token: session['devise.invitation_token'] }
@@ -43,7 +45,8 @@ class Users::AuthorizationsController < Users::RegistrationsController
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
       redirect_to edit_registration_path(resource)
     else
-      resource = warden.authenticate!({ :scope => resource_name, :recall => "#{controller_path}#edit" })
+      unless params[:user].try(:[], :authentication_token) and self.resource = find_user_and_validate_auth_token(params[:user][:email], params[:user][:authentication_token])
+      end
       resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
       sign_in(resource_name, resource)
@@ -70,19 +73,43 @@ class Users::AuthorizationsController < Users::RegistrationsController
     def after_sign_up_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
       track_event 'Connected with social account', { provider: resource.authorizations.first.try(:provider) }
-      super(resource)
+      build_path(super(resource))
     end
 
-    # def after_sign_in_path_for(resource)
-    #   super(resource)
-    # end
+    def after_sign_in_path_for(resource)
+      cookies[:hackster_user_signed_in] = '1'
+
+      host = ClientSubdomain.find_by_subdomain(session[:current_site]).try(:host) || APP_CONFIG['default_host']
+
+      params[:redirect_to] = session.delete(:redirect_to)
+      build_path(user_return_to(host))
+    end
+
+    def build_path orig_path
+      current_site_name = session.delete(:current_site)
+      return orig_path unless current_site_name
+
+      current_site = ClientSubdomain.find_by_subdomain(current_site_name)
+      return orig_path unless current_site
+
+      url = if URI.parse(orig_path).class == URI::HTTP
+        orig_path
+      else
+        scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
+        url = "#{scheme}#{current_site.host}:#{APP_CONFIG['default_port']}#{orig_path}"
+      end
+      url = UrlParam.new(url).add_param('f', '1')
+      url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
+      url = UrlParam.new(url).add_param(:user_email, resource.email)
+      url
+    end
 
     def build_resource(hash = nil)
       hash ||= resource_params || {}
       if hash[:invitation_token].present?
         self.resource = resource_class.where(invitation_token: hash[:invitation_token]).first
         if self.resource
-          self.resource = SocialProfileBuilder.new(resource).extract_from_social_profile params, session
+          self.resource = SocialProfile::Builder.new(session).initialize_user_from_social_profile(resource)
           self.resource.attributes = hash
           self.resource.accept_invitation
           self.resource.invitation_token = hash[:invitation_token]
@@ -93,5 +120,25 @@ class Users::AuthorizationsController < Users::RegistrationsController
       else
         self.resource = super
       end
+    end
+
+    def current_site
+      return unless session[:current_site].present?
+
+      return @current_site if @current_site
+
+      @current_site = ClientSubdomain.find_by_subdomain(session[:current_site])
+    end
+
+    def current_platform
+      return unless current_site
+
+      return @current_platform if @current_platform
+
+      @current_platform = current_site.try(:platform)
+    end
+
+    def social_profile_attributes
+      SocialProfile::Builder.new(session).social_profile_attributes
     end
 end
