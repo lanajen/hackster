@@ -100,12 +100,6 @@ $desktop-width: 1024px;
         overflow: visible;
         // This is set to short circuit a previously set global pre style.  Tsk tsk.
         max-height: inherit;
-        &:first-child {
-          padding-bottom: 0;
-        }
-        &:last-child {
-          margin-top: 20px;
-        }
       }
 
       pre + pre {
