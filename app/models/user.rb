@@ -333,7 +333,7 @@ class User < ActiveRecord::Base
       # extract social data for omniauth
       elsif session['devise.provider_data']
         user = super.tap do |user|
-          SocialProfile::Builder.new(session).initialize_user_from_social_profile(user)
+          SocialProfile::Builder.new(session['devise.provider'], session['devise.provider_data']).initialize_user_from_social_profile(user)
         end
         if existing_user = where(email: user.email).where('invitation_token IS NOT NULL').first
           attributes = user.attributes.select{|k,v| k.in? accessible_attributes }

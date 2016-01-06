@@ -79,14 +79,14 @@ class Users::AuthorizationsController < Users::RegistrationsController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-      host = ClientSubdomain.find_by_subdomain(session[:current_site]).try(:host) || APP_CONFIG['default_host']
+      host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host) || APP_CONFIG['default_host']
 
-      params[:redirect_to] = session.delete(:redirect_to)
+      params[:redirect_to] = session.delete('omniauth.redirect_to')
       build_path(user_return_to(host))
     end
 
     def build_path orig_path
-      current_site_name = session.delete(:current_site)
+      current_site_name = session.delete('omniauth.current_site')
       return orig_path unless current_site_name
 
       current_site = ClientSubdomain.find_by_subdomain(current_site_name)
@@ -95,7 +95,9 @@ class Users::AuthorizationsController < Users::RegistrationsController
       url = if URI.parse(orig_path).class == URI::HTTP
         orig_path
       else
-        url = "#{request.scheme}://#{current_site.host}:#{APP_CONFIG['default_port']}#{orig_path}"
+        url = "#{request.scheme}://#{current_site.host}"
+        url << ":#{APP_CONFIG['default_port']}" if APP_CONFIG['port_required']
+        url << orig_path
       end
       url = UrlParam.new(url).add_param('f', '1')
       url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
@@ -108,7 +110,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       if hash[:invitation_token].present?
         self.resource = resource_class.where(invitation_token: hash[:invitation_token]).first
         if self.resource
-          self.resource = SocialProfile::Builder.new(session).initialize_user_from_social_profile(resource)
+          self.resource = SocialProfile::Builder.new(session['devise.provider'], session['devise.provider_data']).initialize_user_from_social_profile(resource)
           self.resource.attributes = hash
           self.resource.accept_invitation
           self.resource.invitation_token = hash[:invitation_token]
@@ -122,11 +124,11 @@ class Users::AuthorizationsController < Users::RegistrationsController
     end
 
     def current_site
-      return unless session[:current_site].present?
+      return unless session['omniauth.current_site'].present?
 
       return @current_site if @current_site
 
-      @current_site = ClientSubdomain.find_by_subdomain(session[:current_site])
+      @current_site = ClientSubdomain.find_by_subdomain(session['omniauth.current_site'])
     end
 
     def current_platform
@@ -138,6 +140,6 @@ class Users::AuthorizationsController < Users::RegistrationsController
     end
 
     def social_profile_attributes
-      SocialProfile::Builder.new(session).social_profile_attributes
+      SocialProfile::Builder.new(session['devise.provider'], session['devise.provider_data']).social_profile_attributes
     end
 end

@@ -3,40 +3,21 @@ class UserOauthFinder
     @relation = relation
   end
 
-  def find_for_oauth provider, auth
-    # Rails.logger.info 'auth: ' + auth.to_yaml
-    uid = auth.uid
-    case provider
-    when 'arduino'
-      email = auth.info.email
-    when 'facebook', 'github', 'gplus', 'linkedin'
-      email = auth.info.email
-      name = auth.info.name
-    when 'saml'
-      email = auth.info.email
-    when 'twitter'
-      name = auth.info.name
-    when 'windowslive'
-      email = auth.info.emails.try(:first).try(:value)
-      name = auth.info.name
-    else
-      raise 'Provider #{provider} not handled'
-    end
+  def find_for_oauth provider, data
+    uid = data.uid
 
     if user = find_for_oauth_by_uid(provider, uid)
       user.match_by = 'uid'
       return user
     end
 
+    attributes = SocialProfile::Builder.new(provider, data).social_profile_attributes  # let this handle extracting the data
+    email = attributes.email
+
     if email and user = @relation.where(email: email, invitation_token: nil).first
       user.match_by = 'email'
       return user
     end
-
-    # if name and user = @relation.find_by_full_name(name)
-    #   user.match_by = 'name'
-    #   return user
-    # end
   end
 
   def find_for_oauth_by_uid(provider, uid)

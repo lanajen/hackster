@@ -213,7 +213,7 @@ module ApplicationHelper
   end
 
   def proper_name_for_provider provider
-    case provider
+    case provider.to_sym
     when :facebook, :github, :twitter
       provider.to_s.capitalize
     when :gplus

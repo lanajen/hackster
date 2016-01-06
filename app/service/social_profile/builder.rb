@@ -14,11 +14,11 @@ module SocialProfile
       'windowslive' => :windowslive,
     }
 
-    def initialize session
-      @data = session['devise.provider_data']
-      @provider = session['devise.provider']
-      raise UnknownProvider, "`#{@provider}` isn't recognized" unless @provider
-      @resolver = "SocialProfile::Resolver::#{@provider.camelize}".constantize.new(@data)
+    def initialize provider, data
+      @provider = provider
+      @data = data
+      raise UnknownProvider, "`#{provider}` isn't recognized" unless provider
+      @resolver = "SocialProfile::Resolver::#{provider.camelize}".constantize.new(data)
     end
 
     def initialize_user_from_social_profile user
