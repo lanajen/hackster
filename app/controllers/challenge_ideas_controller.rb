@@ -23,8 +23,7 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def show
-    @challenge = Challenge.find params[:challenge_id]
-    authorize! :admin, @challenge
+    @challenge = Challenge.find_by_slug! params[:slug]
     @idea = @challenge.ideas.find params[:id]
   end
 
@@ -127,7 +126,7 @@ class ChallengeIdeasController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w()
+      if self.action_name.to_s.in? %w(show)
         'challenge'
       else
         current_layout
