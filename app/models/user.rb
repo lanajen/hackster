@@ -617,7 +617,8 @@ class User < ActiveRecord::Base
 
   def profile_needs_care?
     # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
-    (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
+    # (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
+    default_user_name? and full_name.blank?
   end
 
   def profile_complete?

@@ -24,6 +24,10 @@ module UrlHelper
     super challenge.slug, opts
   end
 
+  def challenge_idea_path idea, opts={}
+    super idea.challenge.slug, idea, opts
+  end
+
   def new_challenge_idea_path challenge, opts={}
     super challenge.slug, opts
   end

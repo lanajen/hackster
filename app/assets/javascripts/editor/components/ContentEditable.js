@@ -83,7 +83,6 @@ const ContentEditable = React.createClass({
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
 
           if(node.parentNode !== null) {
-            // console.log('MUTATION!');
             node.parentNode.removeChild(node);
           }
         }
@@ -654,7 +653,8 @@ const ContentEditable = React.createClass({
     this.preventEvent(e);
     let pastedText, dataType;
     let { sel, range, parentNode, depth, commonAncestorContainer } = Utils.getSelectionData();
-    let endDepth = Utils.findChildsDepthLevel(Utils.getRootParentElement(range.endContainer), commonAncestorContainer);
+    let endParent = Utils.getRootParentElement(range.endContainer);
+    let endDepth = Utils.findChildsDepthLevel(endParent, ReactDOM.findDOMNode(this));
 
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
@@ -694,20 +694,16 @@ const ContentEditable = React.createClass({
       pastedText = liveNode.innerHTML;
     }
 
-    // console.log('range', range, range.startContainer.nodeName);
-    range.deleteContents();
-    let currentNode = ReactDOM.findDOMNode(this).cloneNode(true);
+    let currentNode = parentNode.cloneNode(true);
     let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
-    // console.log('LIVE', liveNode.outerHTML);
-    // console.log('Current', currentNode);
 
     let newHtml = domWalk(currentNode, (child, root, depth) => {
       if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
         let start = range.startContainer.textContent.substring(0, range.startOffset);
-        let end = range.startContainer.textContent.substring(range.startOffset);
-        // console.log('CHECKITY', start, end);
+        let end = range.endContainer.textContent.substring(range.endOffset);
+
         if(root.nodeName === 'UL') {
-          start.length > 0 ? child.textContent = start : true;
+          child.textContent = start;
           [].slice.apply(liveNode.childNodes).forEach(c => {
             if(child.nodeName === 'PRE' && c.nodeName === 'PRE') {
               child.nextSibling ? child.parentNode.insertBefore(c, child) : child.parentNode.appendChild(c);
@@ -717,13 +713,11 @@ const ContentEditable = React.createClass({
           });
           end.length > 0 ? child.appendChild(document.createTextNode(end)) : true;
         } else {
-          start.length > 0 ? root.textContent = start : true;
+          root.textContent = start;
           [].slice.apply(liveNode.childNodes).forEach(c => {
             if(root.nodeName === 'PRE' && c.nodeName === 'PRE') {
-              // console.log('DOING', root, c);
               root.nextSibling ? root.parentNode.insertBefore(c, root) : root.parentNode.appendChild(c);
             } else {
-              // console.log('ALSO', root, child, c, depth);
               root.appendChild(c);
             }
           });
@@ -731,8 +725,7 @@ const ContentEditable = React.createClass({
         }
       }
     });
-    pastedText = newHtml.innerHTML;
-    // console.log('PASTING', pastedText, newHtml);
+    pastedText = newHtml.outerHTML;
 
     return Utils.parseDescription(pastedText)
       .then(results => {

@@ -1,0 +1,11 @@
+- if !current_user.confirmed?
+  .alert.alert-flat.alert-warning.alert-smaller
+    .container
+      ' Hi! Please confirm your email address by clicking the link in the email we sent you.
+      ' Haven't received it?
+      = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
+- elsif current_user.profile_needs_care? and !current_site.try(:disable_onboarding_screens?)
+  .alert.alert-flat.alert-warning.alert-smaller
+    .container
+      ' Hi! Looks like your profile is incomplete.
+      = link_to 'Give it some love!', profile_edit_path, class: 'alert-link'

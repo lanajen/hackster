@@ -44,12 +44,9 @@ html lang="en" class=content_for(:html_class)
 
   body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
-      - if user_signed_in? and current_user.simplified_signup?
-        .alert.alert-flat.alert-warning.alert-smaller
-          .container
-            ' Hi! Please confirm your email address by clicking the link in the email we've sent you.
-            ' Haven't received such email?
-            = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
+      - if user_signed_in?
+        = render 'shared/important_notifs'
+
       - unless user_signed_in?
         = render 'shared/modals/simplified_signup_popup'
       - if content_for? :header

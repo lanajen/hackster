@@ -1,12 +1,12 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
-  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
-  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
-  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
   skip_before_filter :track_visitor, only: [:show, :brief, :projects, :ideas]
@@ -66,6 +66,10 @@ class ChallengesController < ApplicationController
   def ideas
     title "#{@challenge.name} ideas"
     @ideas = @challenge.ideas.approved.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
+  end
+
+  def idea
+    @idea = @challenge.ideas.find params[:id]
   end
 
   def faq
@@ -229,7 +233,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules projects brief participants ideas faq)
+      if self.action_name.to_s.in? %w(show rules projects brief participants ideas idea faq)
         'challenge'
       else
         current_layout

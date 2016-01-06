@@ -41,24 +41,10 @@ const ImageUtils = {
     /** Setting the crossOrigin to Anon will upset Safari CORS gods. */
     // image.crossOrigin = 'Anonymous';
     image.onload = function(e) {
-      // Resize the image.
       let canvas = document.createElement('canvas'),
-          maxSize = 580,
           width = image.width,
           height = image.height,
           dataUrl;
-
-      if (width > height) {
-          if (width > maxSize) {
-              height *= maxSize / width;
-              width = maxSize;
-          }
-      } else {
-          if (height > 487) {
-              width *= 487 / height;
-              height = 487;
-          }
-      }
 
       canvas.width = width;
       canvas.height = height;
