@@ -81,7 +81,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['devise.provider'] = kind
 
       if session.delete('omniauth.link_accounts')
-        redirect_to update__authorizations_url(link_accounts: true)
+        redirect_to update__authorizations_path(link_accounts: true)
       else
         @user = UserOauthFinder.new.find_for_oauth(kind, omniauth_data)
 
@@ -94,10 +94,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
             sign_in_and_redirect @user, event: :authentication
           when 'email'#, 'name'
             session['devise.match_by'] = @user.match_by
-            redirect_to edit__authorization_url(@user.id)
+            redirect_to edit__authorization_path(@user.id)
           end
         else
-          redirect_to new__authorization_url(autosave: 1)
+          redirect_to new__authorization_path(autosave: 1)
         end
       end
     end
