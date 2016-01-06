@@ -21,7 +21,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       resource.authorizations.each{|a| logger.error a.errors.inspect }
       message = "Error authorizing account for #{resource.inspect}: #{resource.errors.messages} // #{resource.authorizations.map{|a| a.errors.inspect }.join(' // ')}"
       log_line = LogLine.create(message: message, log_type: 'social_signup_error', source: 'authorizations_controller#new')
-      resource.errors.clear
+      # resource.errors.clear
       respond_with resource
     end
   end
