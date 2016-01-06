@@ -3,7 +3,7 @@
   p.subheading We've found an existing Hackster.io account with a similar #{@match_by_type} (#{@match_by_value}):
 
 .authorization-container.mg-40
-  .column= render "users/authorizations/social_thumbs/#{session['devise.provider']}", data: session['devise.provider_data']
+  .column= render "users/authorizations/social_thumbs/#{session['devise.provider']}", data: social_profile_attributes
   .column
     i.fa.fa-link.fa-2x.text-muted style="transform: rotate(90deg);"
   .column= render "users/authorizations/social_thumbs/hackster", user: resource
