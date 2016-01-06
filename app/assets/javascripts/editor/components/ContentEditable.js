@@ -706,7 +706,7 @@ const ContentEditable = React.createClass({
           child.textContent = start;
           [].slice.apply(liveNode.childNodes).forEach(c => {
             if(child.nodeName === 'PRE' && c.nodeName === 'PRE') {
-              child.nextSibling ? child.parentNode.insertBefore(c, child) : child.parentNode ? child.parentNode.appendChild(c) : child.appendChild(c);
+              child.nextSibling ? child.parentNode.insertBefore(c, child) : child.parentNode.appendChild(c);
             } else {
               child.appendChild(c);
             }
@@ -716,7 +716,7 @@ const ContentEditable = React.createClass({
           root.textContent = start;
           [].slice.apply(liveNode.childNodes).forEach(c => {
             if(root.nodeName === 'PRE' && c.nodeName === 'PRE') {
-              root.nextSibling ? root.parentNode.insertBefore(c, root) : root.appendChild(c);
+              root.nextSibling && root.parentNode ? root.parentNode.insertBefore(c, root) : root.appendChild(c);
             } else {
               root.appendChild(c);
             }
@@ -725,7 +725,7 @@ const ContentEditable = React.createClass({
         }
       }
     });
-    pastedText = newHtml.outerHTML;
+    pastedText = newHtml.innerHTML;
 
     return Utils.parseDescription(pastedText)
       .then(results => {
