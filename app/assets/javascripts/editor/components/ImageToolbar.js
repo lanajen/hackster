@@ -158,7 +158,7 @@ const ImageToolbar = React.createClass({
                ? (<div className="reit-toolbar">
                     <IconButton style={Object.assign({}, buttonStyle, { marginRight: '10px' })} className="btn btn-primary" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-plus" tooltip="Add an Image" onClick={this.handleAddImageClick}/>
                     <IconButton style={Object.assign({}, buttonStyle, { marginRight: '10px' })} className="btn btn-primary" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-exchange" tooltip="Reorder Images" onClick={this.handleCarouselEditorShow}/>
-                    <IconButton style={Object.assign({}, buttonStyle)} className="btn btn-danger" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-trash-o" tooltip="Delete this Image" onClick={this.handleDeleteImage}/>
+                    <IconButton style={Object.assign({}, buttonStyle)} className="btn btn-danger" iconStyle={buttonIconStyle} iconClassName="reit-button fa fa-trash-o" tooltip="Delete this Image" disabled={this.props.editor.isDataLoading} onClick={this.handleDeleteImage}/>
                   </div>)
                : this.props.editor.imageToolbarData.type === 'video'
                ? (<div className="reit-toolbar">
