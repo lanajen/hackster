@@ -43,6 +43,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
+    puts 'crsf: ' + form_authenticity_token.to_s
     if params[:setup].present?
       session.keys.grep(/^(devise|omniauth)\./).each { |k| session.delete(k) }
 
@@ -54,7 +55,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
     end
 
-    # puts 'session setup: ' + session.inspect
+    puts 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k, v| "#{k}: #{v}" }.join(', ')
 
     render text: 'Setup complete.', status: 404
   end

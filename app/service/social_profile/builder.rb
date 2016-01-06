@@ -81,7 +81,7 @@ module SocialProfile
       def initialize data
         @data = data
         @info = data.info
-        # Rails.logger.debug 'data: ' + data.to_yaml
+        Rails.logger.debug 'data: ' + data.to_yaml
       end
 
       def profile_attributes
