@@ -95,8 +95,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       url = if URI.parse(orig_path).class == URI::HTTP
         orig_path
       else
-        scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
-        url = "#{scheme}#{current_site.host}:#{APP_CONFIG['default_port']}#{orig_path}"
+        url = "#{request.scheme}://#{current_site.host}:#{APP_CONFIG['default_port']}#{orig_path}"
       end
       url = UrlParam.new(url).add_param('f', '1')
       url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)

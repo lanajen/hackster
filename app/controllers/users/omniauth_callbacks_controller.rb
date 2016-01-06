@@ -113,4 +113,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       UrlParam.new(user_return_to(host)).add_param('f', '1')
     end
+
+    def after_omniauth_failure_path_for resource_name
+      host = ClientSubdomain.find_by_subdomain(session[:current_site]).try(:host) || APP_CONFIG['default_host']
+
+      new_user_session_url(host: host)
+    end
 end
