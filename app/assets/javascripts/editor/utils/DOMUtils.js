@@ -1666,6 +1666,8 @@ const Utils = {
           children: [ item ]
         };
         return p;
+      } else if( (item.children === null || !item.children.length) && (item.content === null || !item.content.length) ) {
+        return null;
       } else {
         return item;
       }

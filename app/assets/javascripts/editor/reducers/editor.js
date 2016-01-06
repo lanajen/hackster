@@ -237,7 +237,7 @@ export default function(state = initialState, action) {
         dom: newDom || state.dom,
         cursorPosition: data.cursorPosition,
         setCursorToNextLine: false,
-        isDataLoading: false,
+        // isDataLoading: false,
         lastMediaHash: data.mediaHash,
         forceUpdate: true
       };
@@ -248,7 +248,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        isDataLoading: false
+        // isDataLoading: false
       };
 
     case Editor.deleteImagesFromCarousel:
@@ -293,7 +293,8 @@ export default function(state = initialState, action) {
       newDom = resetImageUrl(dom, action.imageData, mediaHash, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        isDataLoading: false
       };
 
     case Editor.removeImageFromList:
@@ -329,7 +330,7 @@ export default function(state = initialState, action) {
 
     case Editor.handlePastedHTML:
       dom = state.dom;
-      data = handlePastedHTML(dom, action.html, action.depth, action.storeIndex);
+      data = handlePastedHTML(dom, action.html, action.depth, action.storeIndex, action.endDepth);
       newDom = _mergeAdjacentCE(data.newDom);
       newDom = _insertPlaceholder(newDom);
       return {
@@ -1052,7 +1053,7 @@ function createPlaceholderElement(dom, element, position, storeIndex) {
   return dom;
 }
 
-function handlePastedHTML(dom, html, depth, storeIndex) {
+function handlePastedHTML(dom, html, depth, storeIndex, endDepth) {
   let cursorPosition = { pos: depth, node: null, offset: 0, anchorNode: null, rootHash: null };
   let component = dom[storeIndex];
   let json = component.json;
@@ -1064,9 +1065,7 @@ function handlePastedHTML(dom, html, depth, storeIndex) {
     return item;
   });
 
-
-  json = json.slice(0, depth).concat(html.json).concat(json.slice(depth+1));
-  component.json = json;
+  component.json = html.json;
   dom.splice(storeIndex, 1, component);
 
   let node = Parser.toHtml([html.json[html.json.length-1]]);

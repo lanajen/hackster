@@ -360,12 +360,13 @@ export function toggleErrorMessenger(show, msg) {
   };
 }
 
-export function handlePastedHTML(html, depth, storeIndex) {
+export function handlePastedHTML(html, depth, storeIndex, endDepth) {
   return {
     type: Editor.handlePastedHTML,
     html: html,
     depth: depth,
-    storeIndex: storeIndex
+    storeIndex: storeIndex,
+    endDepth: endDepth
   };
 }
 

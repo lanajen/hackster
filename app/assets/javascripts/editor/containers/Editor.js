@@ -3,13 +3,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Toolbar from './Toolbar';
 import Editable from './Editable';
-import { Snackbar } from 'material-ui';
 import * as ToolbarActions from '../actions/toolbar';
 import * as EditorActions from '../actions/editor';
 import { createRandomNumber } from '../../utils/Helpers';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { ThemeManager, LightRawTheme } from 'material-ui/lib/styles';
-import { Dialog, IconButton, FlatButton } from 'material-ui';
+import { Dialog, IconButton, FlatButton, Snackbar } from 'material-ui';
 import browser from 'detect-browser';
 
 /** This can be removed when React1.0 is released. */
@@ -45,18 +44,12 @@ const Editor = React.createClass({
     }
   },
 
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.editor.errorMessenger.show) {
-      this.refs.errorMessenger.show();
-    }
-  },
-
   handleErrorMessengerDismiss() {
     this.props.actions.toggleErrorMessenger(false, '');
   },
 
   handleOnMessageTouch() {
-    this.refs.errorMessenger.dismiss();
+    this.handleErrorMessengerDismiss();
   },
 
   handleIconClick(browser, e) {
@@ -103,8 +96,13 @@ const Editor = React.createClass({
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
         <Editable {...this.props} />
-        <Dialog actions={dialogActions} actionFocus="closeDialog" open={this.state.openDialog}>{dialogBody}</Dialog>
-        <Snackbar style={{zIndex: 10001, maxWidth: '100%'}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon} autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
+        <Dialog actions={dialogActions} open={this.state.openDialog} onRequestClose={this.handleDialogClose}>{dialogBody}</Dialog>
+        <Snackbar style={{top: 10, right: 10, bottom: 'none', left: 'none', zIndex: 10001, maxWidth: '100%', transition: 'transform 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, visibility 0ms cubic-bezier(0.23, 2, 0.32, 1) 0ms'}}
+                  bodyStyle={{margin: 0}} open={this.props.editor.errorMessenger.show}
+                  message={this.props.editor.errorMessenger.msg} action={this.props.editor.errorMessenger.actionIcon}
+                  autoHideDuration={5000}
+                  onActionTouchTap={this.handleOnMessageTouch}
+                  onRequestClose={this.handleErrorMessengerDismiss} />
       </div>
     );
   }

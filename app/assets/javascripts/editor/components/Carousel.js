@@ -12,10 +12,17 @@ const hashids = new Hashids('hackster', 4);
 
 const Carousel = React.createClass({
 
-  shouldComponentUpdate(nextProps) {
+  getInitialState() {
+    return {
+      showDialog: false
+    };
+  },
+
+  shouldComponentUpdate(nextProps, nextState) {
     return nextProps.images !== this.props.images ||
            nextProps.editor.imageToolbarData.storeIndex === this.props.storeIndex ||
-           nextProps.editor.updateComponent === this.props.storeIndex;
+           nextProps.editor.updateComponent === this.props.storeIndex ||
+           nextState !== this.state;
   },
 
   componentDidUpdate(nextProps) {
@@ -144,7 +151,11 @@ const Carousel = React.createClass({
   },
 
   handleCarouselEditorShow() {
-    this.refs.CarouselEditor.show();
+    this.setState({ showDialog: true });
+  },
+
+  handleDialogDismiss() {
+    this.setState({ showDialog: false });
   },
 
   handleReorderCarousel(images) {
@@ -191,7 +202,7 @@ const Carousel = React.createClass({
         </div>
         {controls}
         {imageToolbar}
-        <CarouselEditor ref="CarouselEditor" initialImages={this.props.images} reorderCarousel={this.handleReorderCarousel} />
+        <CarouselEditor show={this.state.showDialog} dismiss={this.handleDialogDismiss} initialImages={this.props.images} reorderCarousel={this.handleReorderCarousel} />
       </div>
     );
   }

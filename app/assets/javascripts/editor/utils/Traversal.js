@@ -5,11 +5,11 @@ export default {
       if(!root.childNodes.length) {
         return root;
       } else {
-        let childNodes = [].slice.apply(root.childNodes);
-        childNodes.forEach(child => {
+        [].slice.apply(root.childNodes).forEach(child => {
           callback(child, root, depth);
           recurse(child, depth+1);
         });
+        return root;
       }
     }(tree, 0));
     return tree;
