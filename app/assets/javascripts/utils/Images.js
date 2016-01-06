@@ -10,12 +10,11 @@ const ImageUtils = {
     async.map(files, function(file, callback) {
       this.handleFileReader(file, function(dataUrl, fileName, hash) {
         this.handleImageResize(dataUrl, fileName, hash, function(data) {
-          return callback(null, data);
+          return callback(null, { ...data, rawFile: file });
         });
       }.bind(this));
     }.bind(this), function(err, results) {
       if(err) console.log(err);
-
       mainCallback(results);
     }.bind(this));
   },
@@ -104,7 +103,6 @@ const ImageUtils = {
   },
 
   postToS3(data, file, S3BucketURL, AWSAccessKeyId) {
-    const blob = this.dataURIToBlob(file.url);
     const form = new FormData();
     form.append('AWSAccessKeyId', AWSAccessKeyId);
     form.append('key', data.key);
@@ -112,7 +110,7 @@ const ImageUtils = {
     form.append('policy', data.policy);
     form.append('signature', data.signature);
     form.append('success_action_status', '201');
-    form.append('file', blob);
+    form.append('file', file.rawFile);
 
     return new Promise((resolve, reject) => {
       request

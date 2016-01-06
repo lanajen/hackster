@@ -88,10 +88,24 @@ const Editable = React.createClass({
         will see that theres a difference in the serialized vs altered form and call its prompt.
       */
     if(nextProps.editor.hasUnsavedChanges && !this.props.editor.hasUnsavedChanges) {
-      if(window.pe) {
+      if(window && window.pe) {
         let input = document.getElementById('story_json');
-        input.value = 'true';
+        input.value = '[]';
         window.pe.showSavePanel();
+      }
+    }
+
+    if(nextProps.editor.isDataLoading !== this.props.editor.isDataLoading) {
+      if(window) {
+        let container = document.querySelectorAll('.pe-save')[0];
+        let button = container.querySelector('.pe-submit');
+        if(nextProps.editor.isDataLoading) {
+          button.innerText = 'Uploading image';
+          button.setAttribute('disabled', true);
+        } else if(!nextProps.editor.isDataLoading) {
+          button.innerText = 'Save changes';
+          button.removeAttribute('disabled');
+        }
       }
     }
   },

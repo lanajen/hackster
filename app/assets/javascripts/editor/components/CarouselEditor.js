@@ -7,8 +7,7 @@ export default class CarouselEditor extends Component {
     super(props);
     this.state = { images: props.initialImages, indexToAnimate: null, hovered: null }
 
-    this.show = this.show.bind(this);
-    this.dismiss = this.dismiss.bind(this);
+    this.dismissDialog = this.dismissDialog.bind(this);
     this.handleReorder = this.handleReorder.bind(this);
     this.handleImageUp = this.handleImageUp.bind(this);
     this.handleImageDown = this.handleImageDown.bind(this);
@@ -17,17 +16,19 @@ export default class CarouselEditor extends Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
-  show() {
-    this.refs.dialog.show();
+  componentDidUpdate(nextProps) {
+    if(nextProps.initialImages.length !== this.state.images.length || nextProps.initialImages !== this.props.initialImages) {
+      this.setState({ images: nextProps.initialImages });
+    }
   }
 
-  dismiss() {
-    this.refs.dialog.dismiss();
+  dismissDialog() {
+    this.props.dismiss();
   }
 
   handleReorder() {
     this.props.reorderCarousel(this.state.images);
-    this.refs.dialog.dismiss();
+    this.dismissDialog();
   }
 
   handleImageUp(index) {
@@ -78,7 +79,7 @@ export default class CarouselEditor extends Component {
         style={ this.state.hovered === 'cancelButton' ? { ...buttonStyles.cancelButton, color: '#286090', textDecoration: 'underline' } : buttonStyles.cancelButton }
         hoverColor="white"
         labelStyle={{textTransform: 'none', fontFamily: fonts}}
-        onTouchTap={this.dismiss}
+        onTouchTap={this.dismissDialog}
         onMouseEnter={this.handleMouseEnter.bind(this, 'cancelButton')}
         onMouseLeave={this.handleMouseLeave.bind(this, 'cancelButton')} />,
       <FlatButton
@@ -87,7 +88,7 @@ export default class CarouselEditor extends Component {
         label="Reorder"
         style={ this.state.hovered === 'reorderButton' ?  { ...buttonStyles.reorderButton, backgroundColor: '#286090' } : buttonStyles.reorderButton }
         labelStyle={{textTransform: 'none', fontFamily: fonts}}
-        onTouchTap={this.handleReorder }
+        onTouchTap={this.handleReorder}
         onMouseEnter={this.handleMouseEnter.bind(this, 'reorderButton')}
         onMouseLeave={this.handleMouseLeave.bind(this, 'reorderButton')} />
     ];
@@ -129,12 +130,14 @@ export default class CarouselEditor extends Component {
     );
 
     return (
-      <Dialog ref="dialog"
+      <Dialog open={this.props.show}
               style={{zIndex: 1000, overflow: 'auto'}}
               contentStyle={{width: '40%', minWidth: 400}}
               actions={actions}
               modal={false}
-              autoScrollBodyContent={false}>
+              onRequestClose={this.dismissDialog}
+              autoScrollBodyContent={false}
+              autoDetectWindowHeight={false}>
               {body}
       </Dialog>
     );
@@ -143,9 +146,7 @@ export default class CarouselEditor extends Component {
 
 CarouselEditor.PropTypes = {
   initialImages: React.PropTypes.array,
-  reorderCarousel: React.PropTypes.func.isRequired
-};
-
-CarouselEditor.defaultProps = {
-  initialImages: []
+  reorderCarousel: React.PropTypes.func.isRequired,
+  show: React.PropTypes.bool.isRequired,
+  dismiss: React.PropTypes.func.isRequired
 };

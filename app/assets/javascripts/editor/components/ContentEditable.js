@@ -83,6 +83,7 @@ const ContentEditable = React.createClass({
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
 
           if(node.parentNode !== null) {
+            // console.log('MUTATION!');
             node.parentNode.removeChild(node);
           }
         }
@@ -342,7 +343,6 @@ const ContentEditable = React.createClass({
             if(!videoData) {
               // TODO: HANDLE VIDEO ERROR!
             } else {
-              this.props.actions.isDataLoading(true);
               this.props.actions.createMediaByType([videoData], depth, this.props.storeIndex, 'Video');
               this.props.actions.forceUpdate(true);
             }
@@ -653,7 +653,8 @@ const ContentEditable = React.createClass({
   handlePaste(e) {
     this.preventEvent(e);
     let pastedText, dataType;
-    let { sel, range, parentNode, depth } = Utils.getSelectionData();
+    let { sel, range, parentNode, depth, commonAncestorContainer } = Utils.getSelectionData();
+    let endDepth = Utils.findChildsDepthLevel(Utils.getRootParentElement(range.endContainer), commonAncestorContainer);
 
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
@@ -676,34 +677,7 @@ const ContentEditable = React.createClass({
       pastedText = Parser.stringifyLineBreaksToParagraphs(pastedText, parentNode.nodeName);
     }
 
-    if( (parentNode.nodeName !== 'P' && parentNode.nodeName !== 'DIV' || parentNode.nodeName === 'P' && parentNode.textContent.length > 0)
-       && sel.toString().length > 0) {
-      range.deleteContents();
-      let currentNode = parentNode.cloneNode(true);
-      let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
-      console.log('OP', liveNode);
-
-      let newHtml = domWalk(currentNode, (child, root, depth) => {
-        if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
-          let start = range.startContainer.textContent.substring(0, range.startOffset);
-          let end = range.startContainer.textContent.substring(range.startOffset);
-          console.log('GOT IT', 'S', start, 'E', end, 'L', liveNode);
-          if(root.nodeName === 'UL') {
-            child.textContent = start;
-            child.appendChild(liveNode);
-            child.appendChild(document.createTextNode(end));
-          } else {
-            root.textContent = start;
-            root.appendChild(liveNode);
-            root.appendChild(document.createTextNode(end));
-          }
-        }
-        return child;
-      });
-
-      console.log('true', newHtml);
-      pastedText = newHtml.outerHTML;
-    } else if(pastedText.match(/(<table)/g)) {
+    if(pastedText.match(/(<table)/g)) {
       let liveNode = Parser.toLiveHtml(pastedText, { body: true });
       let table;
       domWalk(liveNode, (child, root, depth) => {
@@ -720,6 +694,46 @@ const ContentEditable = React.createClass({
       pastedText = liveNode.innerHTML;
     }
 
+    // console.log('range', range, range.startContainer.nodeName);
+    range.deleteContents();
+    let currentNode = ReactDOM.findDOMNode(this).cloneNode(true);
+    let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
+    // console.log('LIVE', liveNode.outerHTML);
+    // console.log('Current', currentNode);
+
+    let newHtml = domWalk(currentNode, (child, root, depth) => {
+      if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
+        let start = range.startContainer.textContent.substring(0, range.startOffset);
+        let end = range.startContainer.textContent.substring(range.startOffset);
+        // console.log('CHECKITY', start, end);
+        if(root.nodeName === 'UL') {
+          start.length > 0 ? child.textContent = start : true;
+          [].slice.apply(liveNode.childNodes).forEach(c => {
+            if(child.nodeName === 'PRE' && c.nodeName === 'PRE') {
+              child.nextSibling ? child.parentNode.insertBefore(c, child) : child.parentNode.appendChild(c);
+            } else {
+              child.appendChild(c);
+            }
+          });
+          end.length > 0 ? child.appendChild(document.createTextNode(end)) : true;
+        } else {
+          start.length > 0 ? root.textContent = start : true;
+          [].slice.apply(liveNode.childNodes).forEach(c => {
+            if(root.nodeName === 'PRE' && c.nodeName === 'PRE') {
+              // console.log('DOING', root, c);
+              root.nextSibling ? root.parentNode.insertBefore(c, root) : root.parentNode.appendChild(c);
+            } else {
+              // console.log('ALSO', root, child, c, depth);
+              root.appendChild(c);
+            }
+          });
+          end.length > 0 ? root.appendChild(document.createTextNode(end)) : true;
+        }
+      }
+    });
+    pastedText = newHtml.innerHTML;
+    // console.log('PASTING', pastedText, newHtml);
+
     return Utils.parseDescription(pastedText)
       .then(results => {
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
@@ -731,7 +745,7 @@ const ContentEditable = React.createClass({
         });
 
         clean.json = Parser.removeAttributes(clean.json);
-        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex);
+        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth);
         this.props.actions.forceUpdate(true);
       })
       .catch(err => { console.log('Paste Error', err); });
