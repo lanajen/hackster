@@ -319,7 +319,7 @@ module ScraperStrategies
           'img' => 'src',
         }.each do |name, attr|
           base.css(name).each do |node|
-            node[attr] = normalize_link(node[attr]) if node[attr]
+            node[attr] = normalize_link(node[attr]) if node[attr].present?
           end
         end
       end

@@ -13,7 +13,7 @@ module ScraperStrategies
         text = @parsed.at_css('#main-col-body').to_s
 
         next_links = []
-        next_link = @parsed.at_css('#next a').try(:[], 'href')
+        next_link = @parsed.css('#next a').last.try(:[], 'href')
         next_link = normalize_link(next_link)
         current_link = @page_url
 
@@ -27,7 +27,7 @@ module ScraperStrategies
           @page = doc.at_css('#main-col-body')
           normalize_links doc
           text += @page.to_s
-          next_link = doc.at_css('#next a').try(:[], 'href')
+          next_link = doc.css('#next a').last.try(:[], 'href')
         end
 
         Nokogiri::HTML::DocumentFragment.parse(text)
