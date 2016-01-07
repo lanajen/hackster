@@ -110,6 +110,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       cookies[:hackster_user_signed_in] = '1'
 
       host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
+      logger.debug 'current_site: ' + session['omniauth.current_site'].to_s
+      logger.debug 'host: ' + host.to_s
 
       UrlParam.new(user_return_to(host)).add_param('f', '1')
     end
