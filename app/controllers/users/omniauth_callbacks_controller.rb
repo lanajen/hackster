@@ -95,6 +95,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
             params[:current_site] = session.delete('omniauth.current_site')
             is_hackster = session[:current_site].present?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
+            logger.debug 'after_sign_in_path_for(resource): ' + after_sign_in_path_for(@user)
             sign_in_and_redirect @user, event: :authentication
           when 'email'#, 'name'
             session['devise.match_by'] = @user.match_by
