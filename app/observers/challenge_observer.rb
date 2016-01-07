@@ -49,7 +49,7 @@ class ChallengeObserver < ActiveRecord::Observer
     FastlyWorker.perform_async 'purge', record.record_key if purge
 
     if (record.changed & %w(mailchimp_api_key mailchimp_list_id activate_mailchimp_sync)).any? and record.mailchimp_setup?
-      MailchimpWorker.perform_async 'sync_challenge', record.id
+      MailchimpWorker.perform_in 5.seconds, 'sync_challenge', record.id
     end
     if record.pre_contest_awarded_changed? and record.pre_contest_awarded?
       ChallengeWorker.perform_async 'announce_pre_contest_winners', record.id

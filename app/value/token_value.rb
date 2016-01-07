@@ -16,7 +16,8 @@ class TokenValue
         value = @model.send(attribute)
         case value
         when DateTime, Time, Date
-          value = "#{I18n.l(value.in_time_zone(PDT_TIME_ZONE), format: modifier)} PT"
+          value = "#{I18n.l(value.in_time_zone(PDT_TIME_ZONE), format: modifier)}"
+          value << ' PT' if value.match(/[0-9]{1,2}:[0-9]{2}/)
         when NilClass
           value = "[\"#{token}\" is not set]"
         end
