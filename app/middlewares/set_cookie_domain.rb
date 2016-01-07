@@ -7,13 +7,12 @@ class SetCookieDomain
   def call(env)
     if @default_domain
       host = env["HTTP_HOST"].split(':').first
-      env["rack.session.options"][:domain] = custom_domain?(host) ? ".#{host}" : @default_domain
+      env["rack.session.options"][:domain] = custom_domain?(host) ? host : @default_domain
     end
     @app.call(env)
   end
 
   def custom_domain?(host)
-    domain = @default_domain.sub(/^\./, '')
-    host !~ Regexp.new("#{domain}$", Regexp::IGNORECASE)
+    host !~ Regexp.new("#{@default_domain}$", Regexp::IGNORECASE)
   end
 end

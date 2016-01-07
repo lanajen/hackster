@@ -106,12 +106,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
   protected
-    def after_sign_in_path_for(resource)
-      cookies[:hackster_user_signed_in] = '1'
-
+    def sign_in_and_redirect resource, opts={}
       host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
 
-      UrlParam.new(user_return_to(host)).add_param('f', '1')
+      url = user_return_to(host)
+      url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
+      url = UrlParam.new(url).add_param(:user_email, resource.email)
+      url = UrlParam.new(url).add_param('f', '1')
+      redirect_to url
     end
 
     def after_omniauth_failure_path_for resource_name
