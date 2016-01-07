@@ -51,6 +51,8 @@ module HstoreColumn
           val.to_datetime.to_i
         when :json_object
           val.to_s
+        when :hash
+          val.to_s
         else
           # ActionController::Base.helpers.strip_tags val
           val
@@ -144,6 +146,8 @@ module HstoreColumn
           value ? value.to_f : nil
         when :integer
           value ? value.to_i : nil
+        when :hash
+          value ? (value.kind_of?(String) ? eval(value) : value) : {}
         when :json_object
           value.present? ? JSON.parse(value) : nil
         when :string

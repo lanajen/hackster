@@ -161,7 +161,7 @@
       h4 Timeline
       = render 'challenges/timeline', challenge: @challenge
 
-  - cache ["challenge-#{@challenge.id}-brief", params[:show_rules]], tag: ["challenge-#{@challenge.id}-brief"] do
+  - cache ["challenge-#{@challenge.id}-brief", params[:show_rules]], tag: ["challenge-#{@challenge.id}-brief"] + token_tags_for(@challenge, 'brief') do
 
     .col-md-8.col-md-pull-4
       section.section-container.section-collapsible
@@ -174,7 +174,7 @@
         .section-content.medium-editor
           - if @challenge.video
             .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video, options: {} }; rescue; end;
-          = raw @challenge.description
+          = replace_tokens_for @challenge, raw(@challenge.description)
 
       .section-interlude
 
