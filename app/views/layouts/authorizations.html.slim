@@ -42,7 +42,7 @@ html(lang="en")
         .cancel-login= link_to "&larr; Cancel log in and return to #{site_name}".html_safe, root_url(host: site_host)
         .header-inner
           - if is_whitelabel?
-            .site-logo= current_site.logo.present? ? image_tag(current_platform.logo.file_url) : site_name
+            .site-logo= current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name
             .powered-by
               small  style='font-size:11px;'
                 ' powered by

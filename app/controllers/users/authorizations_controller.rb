@@ -79,7 +79,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-      host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host) || APP_CONFIG['default_host']
+      host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host) || APP_CONFIG['default_host']
 
       params[:redirect_to] = session.delete('omniauth.redirect_to')
       build_path(user_return_to(host))

@@ -116,13 +116,13 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     def after_omniauth_failure_path_for resource_name
       site = ClientSubdomain.find_by_subdomain(session['omniauth.current_site'])
-      host = site.try(:host) || APP_CONFIG['default_host']
-      prefix = site.try(:path_prefix)
 
       if site.try(:disable_login?)
-        root_url(host: host, protocol: request.protocol, script: prefix.presence)
+        site.base_uri(request.scheme) + root_path
       else
-        new_user_session_url(host: host, protocol: request.protocol)
+        url = new_user_session_path
+        url = site.base_uri(request.scheme) + url if site
+        url
       end
     end
 end
