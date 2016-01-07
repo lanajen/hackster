@@ -694,38 +694,52 @@ const ContentEditable = React.createClass({
       pastedText = liveNode.innerHTML;
     }
 
-    let currentNode = parentNode.cloneNode(true);
+    let parentWrappingNode = parentNode.cloneNode(true);
+    let bucket = document.createElement('div');
     let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
 
-    let newHtml = domWalk(currentNode, (child, root, depth) => {
+    domWalk(parentWrappingNode, (child, root, depth) => {
       if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
         let start = range.startContainer.textContent.substring(0, range.startOffset);
         let end = range.endContainer.textContent.substring(range.endOffset);
+        let assuredRoot = Utils.getRootParentElement(root);
 
-        if(root.nodeName === 'UL') {
+        if(assuredRoot.nodeName === 'UL') {
           child.textContent = start;
           [].slice.apply(liveNode.childNodes).forEach(c => {
-            if(child.nodeName === 'PRE' && c.nodeName === 'PRE') {
-              child.nextSibling ? child.parentNode.insertBefore(c, child) : child.parentNode.appendChild(c);
-            } else {
-              child.appendChild(c);
-            }
+            child.nodeType === 3 ? child.parentNode.appendChild(c) : child.appendChild(c);
           });
-          end.length > 0 ? child.appendChild(document.createTextNode(end)) : true;
+          if(end.length > 0) { child.nodeType === 3 ? child.parentNode.appendChild(document.createTextNode(end)) : child.appendChild(document.createTextNode(end)); }
+          bucket.appendChild(assuredRoot);
         } else {
-          root.textContent = start;
+          // Makes sure to get a root element that is directly under .content-editable.
+
+          if(start.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = start; bucket.appendChild(temp); }
+          // Iterate through the pasted nodes.
           [].slice.apply(liveNode.childNodes).forEach(c => {
-            if(root.nodeName === 'PRE' && c.nodeName === 'PRE') {
-              root.nextSibling && root.parentNode ? root.parentNode.insertBefore(c, root) : root.appendChild(c);
+            let nodeName = assuredRoot.nodeName === 'P' ? c.nodeName : assuredRoot.nodeName;
+            let el = document.createElement(nodeName);
+            // If node is a UL AND the node we're pasting into is NOT a paragraph, we remove the li.
+            if(c.nodeName === 'UL' && assuredRoot.nodeName !== 'P') {
+              [].slice.apply(c.childNodes).forEach(li => {
+                let newBlockEl = document.createElement(nodeName);
+                newBlockEl.innerHTML = newBlockEl.nodeName === 'PRE' ? li.textContent : li.innerHTML;
+                bucket.appendChild(newBlockEl);
+              });
             } else {
-              root.appendChild(c);
+              // If the nodeName of the root element we're creating is a PRE, we just take the text.
+              // ElseIf the pasted element is a block element, just take its innards; Else, we want the styling elements.
+              el.innerHTML = el.nodeName === 'PRE' ? c.textContent : BlockElements[c.nodeName] ? c.innerHTML : c.outerHTML;
+              bucket.appendChild(el);
             }
           });
-          end.length > 0 ? root.appendChild(document.createTextNode(end)) : true;
+
+          if(end.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = end; bucket.appendChild(temp); }
         }
       }
     });
-    pastedText = newHtml.innerHTML;
+
+    pastedText = bucket.innerHTML;
 
     return Utils.parseDescription(pastedText)
       .then(results => {
