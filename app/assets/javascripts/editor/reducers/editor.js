@@ -1056,6 +1056,7 @@ function handlePastedHTML(dom, html, depth, storeIndex, endDepth) {
   let cursorPosition = { pos: depth, node: null, offset: 0, anchorNode: null, rootHash: null };
   let component = dom[storeIndex];
   let json = component.json;
+  endDepth = endDepth <= depth ? depth : endDepth;
 
   html.json = html.json.map(item => {
     if(!item.attribs || !item.attribs['data-hash']) {
