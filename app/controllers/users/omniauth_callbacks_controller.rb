@@ -70,7 +70,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
     def oauthorize(kind)
-      # logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
+      logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
 
       I18n.locale = session.delete('omniauth.login_locale') || I18n.default_locale
 
