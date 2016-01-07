@@ -82,6 +82,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host) || APP_CONFIG['default_host']
 
       params[:redirect_to] = session.delete('omniauth.redirect_to')
+      logger.debug 'user_return_to: ' + user_return_to(host).to_s
       build_path(user_return_to(host))
     end
 
@@ -96,6 +97,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
         orig_path
       else
         url = current_site.base_uri(request.scheme)
+        logger.debug 'base_uri: ' + url.to_s
         url << orig_path
       end
       url = UrlParam.new(url).add_param('f', '1')
