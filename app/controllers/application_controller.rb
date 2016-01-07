@@ -17,7 +17,11 @@ class ApplicationController < ActionController::Base
     'mobile'
 
   protect_from_forgery except: [:not_found]
+  before_action :current_site
+  before_action :current_platform
+  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
   before_filter :authenticate_user_from_token!
+  before_action :set_locale, except: [:not_found]
   before_filter :mark_last_seen!
   before_filter :store_location_before
   before_filter :track_visitor
@@ -49,14 +53,10 @@ class ApplicationController < ActionController::Base
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
-  before_action :current_site
-  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
-  before_action :current_platform
   helper_method :current_layout
   before_filter :set_view_paths
   layout :current_layout
 
-  before_action :set_locale, except: [:not_found]
 
   # hoping that putting it here will only make the condition run once when the
   # app loads and not on every request
@@ -202,13 +202,17 @@ class ApplicationController < ActionController::Base
         cookies[:hackster_user_signed_in] = '1'
         sign_in user#, store: false
         flash.keep
-        url = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
-        if is_whitelabel?
-          url = current_site.base_uri(request.scheme) + url
-          logger.debug 'base_uri: ' + current_site.base_uri(request.scheme).to_s
+        path = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
+        # if is_whitelabel?
+        #   url = current_site.base_uri(request.scheme) + url
+        #   logger.debug 'base_uri: ' + current_site.base_uri(request.scheme).to_s
+        # end
+        if is_whitelabel? and current_site.has_path_prefix?
+          path = current_site.path_prefix + path
+          logger.debug 'path_prefix: ' + current_site.path_prefix.to_s
         end
-        logger.debug 'url: ' + url.to_s
-        redirect_to url and return
+        logger.debug 'path: ' + path.to_s
+        redirect_to path and return
       end
     end
 
