@@ -276,7 +276,7 @@ class ApplicationController < ActionController::Base
       return if email.blank? or token.blank?
 
       user = User.find_by_email(email)
-      user if Devise.secure_compare(user.authentication_token, token)
+      user if user and Devise.secure_compare(user.authentication_token, token)
     end
 
     def flash_disabled?
