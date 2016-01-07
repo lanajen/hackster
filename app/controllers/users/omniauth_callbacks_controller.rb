@@ -45,17 +45,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def setup
     logger.debug 'crsf: ' + form_authenticity_token.to_s
     if params[:setup].present?
-      session.keys.grep(/^(devise|omniauth)\./).each { |k| session.delete(k) }
+      session.keys.grep(/^(devise)\./).each { |k| session.delete(k) }
 
       session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
 
-      session['omniauth.current_site'] = params[:current_site] if params[:current_site]
-      session['omniauth.redirect_to'] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
-      session['omniauth.link_accounts'] = params[:link_accounts] if params[:link_accounts]
-      session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
+      # session['omniauth.current_site'] = params[:current_site] if params[:current_site]
+      # session['omniauth.redirect_to'] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
+      # session['omniauth.link_accounts'] = params[:link_accounts] if params[:link_accounts]
+      # session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
     end
 
-    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
+    logger.debug 'session omniauth keys (setup): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
 
     render text: 'Setup complete.', status: 404
   end
@@ -70,9 +70,13 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
     def oauthorize(kind)
-      logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
+      logger.debug 'session omniauth keys (oauthorize): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
+      logger.debug 'omniauth.params (oauthorize): ' + request.env['omniauth.params'].map{ |k, v| "#{k}: #{v}" }.join(', ')
 
-      I18n.locale = session.delete('omniauth.login_locale') || I18n.default_locale
+      params = request.env['omniauth.params']
+      logger.debug 'params (oauthorize): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
+
+      I18n.locale = params['login_locale'] || I18n.default_locale
 
       omniauth_data = case kind
       when 'facebook', 'github', 'twitter', 'windowslive'
@@ -83,7 +87,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['devise.provider_data'] = omniauth_data
       session['devise.provider'] = kind
 
-      if session.delete('omniauth.link_accounts')
+      if params['link_accounts']
         redirect_to update__authorizations_path(link_accounts: true)
       else
         @user = UserOauthFinder.new.find_for_oauth(kind, omniauth_data)
@@ -91,8 +95,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         if @user
           case @user.match_by
           when 'uid'
-            params[:redirect_to] = session.delete('omniauth.redirect_to')
-            params[:current_site] = session.delete('omniauth.current_site')
+            params[:redirect_to] = params['redirect_to']
+            params[:current_site] = params['current_site']
             is_hackster = session[:current_site].present?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
             logger.debug 'after_sign_in_path_for(resource): ' + after_sign_in_path_for(@user)
