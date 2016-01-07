@@ -115,6 +115,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
+      logger.debug 'params (after_sign_in_path_for): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
+
+
       host = ClientSubdomain.find_by_subdomain(params[:current_site]).try(:host)
       logger.debug 'current_site: ' + params[:current_site].to_s
       logger.debug 'host: ' + host.to_s
@@ -136,7 +139,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # end
 
     def after_omniauth_failure_path_for resource_name
-      site = ClientSubdomain.find_by_subdomain(session['omniauth.current_site'])
+      site = ClientSubdomain.find_by_subdomain(params['current_site'])
 
       if site.try(:disable_login?)
         site.base_uri(request.scheme) + root_path
