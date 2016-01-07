@@ -198,7 +198,7 @@ class ApplicationController < ActionController::Base
         cookies[:hackster_user_signed_in] = '1'
         sign_in user#, store: false
         flash.keep
-        redirect_to UrlParam.new(request.url).remove_params(%w(user_token user_email)) and return
+        redirect_to UrlParam.new(request.fullpath).remove_params(%w(user_token user_email)) and return
       end
     end
 
