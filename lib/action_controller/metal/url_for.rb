@@ -35,7 +35,7 @@ module ActionController
       }.merge!(super).freeze
 
       # this is what I added, just three lines below
-      if request.host == ENV['ARDUINO_INCOMING_HOST'] || request.host == ENV['ARDUINO_REAL_HOST']
+      if request.host == ENV['ARDUINO_INCOMING_HOST'] || request.host == ENV['ARDUINO_REAL_HOST']
         request.script_name = '/projecthub'
       end
 
