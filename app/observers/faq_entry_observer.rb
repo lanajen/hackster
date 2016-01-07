@@ -8,7 +8,7 @@ class FaqEntryObserver < ActiveRecord::Observer
   end
 
   def before_save record
-    token_tags = record.token_tags.dup || {}
+    token_tags = record.token_tags.try(:dup) || {}
     (record.changed & FaqEntry::TOKEN_PARSABLE_ATTRIBUTES).each do |attr|
       parser = TokenParser.new record.threadable, record.send(attr)
       token_tags[attr] = (parser.all_cleaned & record.threadable_type.constantize::TOKENABLE_ATTRIBUTES)

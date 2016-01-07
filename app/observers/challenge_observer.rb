@@ -104,7 +104,7 @@ class ChallengeObserver < ActiveRecord::Observer
   def before_save record
     # parse all text fields that may contain tokens and cache which *recognized*
     # tokens they contain
-    token_tags = record.token_tags.dup || {}
+    token_tags = record.token_tags.try(:dup) || {}
     (record.changed & Challenge::TOKEN_PARSABLE_ATTRIBUTES).each do |attr|
       parser = TokenParser.new record, record.send(attr)
       token_tags[attr] = (parser.all_cleaned & Challenge::TOKENABLE_ATTRIBUTES)

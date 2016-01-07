@@ -254,6 +254,8 @@ module ApplicationHelper
   end
 
   def token_tags_for model, cache_key
+    return [] unless model.token_tags
+
     attributes = case cache_key
     when 'brief'
       Challenge::TOKEN_PARSABLE_ATTRIBUTES
