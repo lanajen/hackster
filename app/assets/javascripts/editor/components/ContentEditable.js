@@ -717,7 +717,8 @@ const ContentEditable = React.createClass({
           if(start.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = start; bucket.appendChild(temp); }
           // Iterate through the pasted nodes.
           [].slice.apply(liveNode.childNodes).forEach(c => {
-            let nodeName = assuredRoot.nodeName === 'P' ? c.nodeName : assuredRoot.nodeName;
+            let currentNodeName = c.nodeType === 3 ? c.parentNode.nodeName : c.nodeName;
+            let nodeName = assuredRoot.nodeName === 'P' ? currentNodeName : assuredRoot.nodeName;
             let el = document.createElement(nodeName);
             // If node is a UL AND the node we're pasting into is NOT a paragraph, we remove the li.
             if(c.nodeName === 'UL' && assuredRoot.nodeName !== 'P') {
@@ -730,6 +731,7 @@ const ContentEditable = React.createClass({
               // If the nodeName of the root element we're creating is a PRE, we just take the text.
               // ElseIf the pasted element is a block element, just take its innards; Else, we want the styling elements.
               el.innerHTML = el.nodeName === 'PRE' ? c.textContent : BlockElements[c.nodeName] ? c.innerHTML : c.outerHTML;
+              el.innerHTML = el.innerHTML === 'undefined' ? c.textContent : el.innerHTML;
               bucket.appendChild(el);
             }
           });

@@ -1666,6 +1666,15 @@ const Utils = {
           children: [ item ]
         };
         return p;
+      } else if(item.tag === 'p' && item.children.length < 1) {
+        /** Remove any carriage returns and get rid of the element if it's then empty. */
+        if(item.content.match(/\n/)) {
+          item.content = item.content.replace(/\n/g, '');
+        }
+        if(!item.content.length) {
+          item = null;
+        }
+        return item;
       } else if( (item.children === null || !item.children.length) && (item.content === null || !item.content.length) ) {
         return null;
       } else {
