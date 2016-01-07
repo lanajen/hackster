@@ -109,7 +109,7 @@ module HackerIo
 
     config.middleware.insert_before(Rack::Runtime, RackReverseProxyMod)
 
-    # config.middleware.use "SetCookieDomain", (ENV['FULL_HOST'].present? ? nil : ENV['DEFAULT_DOMAIN'])
+    config.middleware.use "SetCookieDomain", (ENV['FULL_HOST'].present? ? nil : ENV['DEFAULT_DOMAIN'])
 
     allowed_origins = []
     if ENV['DEFAULT_DOMAIN']

@@ -79,15 +79,15 @@ class Users::AuthorizationsController < Users::RegistrationsController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-      host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host) || APP_CONFIG['default_host']
+      host = ClientSubdomain.find_by_subdomain(session['oauth.current_site']).try(:host) || APP_CONFIG['default_host']
 
-      params[:redirect_to] = session.delete('omniauth.redirect_to')
+      params[:redirect_to] = session.delete('oauth.redirect_to')
       # logger.debug 'user_return_to: ' + user_return_to(host).to_s
       build_path(user_return_to(host))
     end
 
     def build_path orig_path
-      current_site_name = session.delete('omniauth.current_site')
+      current_site_name = session.delete('oauth.current_site')
       return orig_path unless current_site_name
 
       current_site = ClientSubdomain.find_by_subdomain(current_site_name)
@@ -125,11 +125,11 @@ class Users::AuthorizationsController < Users::RegistrationsController
     end
 
     def current_site
-      return unless session['omniauth.current_site'].present?
+      return unless session['oauth.current_site'].present?
 
       return @current_site if @current_site
 
-      @current_site = ClientSubdomain.find_by_subdomain(session['omniauth.current_site'])
+      @current_site = ClientSubdomain.find_by_subdomain(session['oauth.current_site'])
     end
 
     def current_platform
