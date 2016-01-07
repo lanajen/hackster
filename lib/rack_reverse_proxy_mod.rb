@@ -19,7 +19,7 @@ class RackReverseProxyMod
   def rewrite_env(env)
     # change the env here
     # raise env.inspect
-    # env['HTTP_HOST'] = ENV['ARDUINO_REAL_HOST']
+    env['HTTP_HOST'] = ENV['ARDUINO_REAL_HOST'] if ENV['ARDUINO_REAL_HOST']
     env["REQUEST_PATH"] = env["REQUEST_PATH"].gsub(/projecthub\/?/, '')
     env["PATH_INFO"] = env["PATH_INFO"].gsub(/projecthub\/?/, '')
     env["REQUEST_URI"] = env["REQUEST_URI"].gsub(/projecthub\/?/, '')

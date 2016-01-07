@@ -203,7 +203,11 @@ class ApplicationController < ActionController::Base
         sign_in user#, store: false
         flash.keep
         url = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
-        url = current_site.base_uri(request.scheme) + url if is_whitelabel?
+        if is_whitelabel?
+          url = current_site.base_uri(request.scheme) + url
+          logger.debug 'base_uri: ' + current_site.base_uri(request.scheme).to_s
+        end
+        logger.debug 'url: ' + url.to_s
         redirect_to url and return
       end
     end
