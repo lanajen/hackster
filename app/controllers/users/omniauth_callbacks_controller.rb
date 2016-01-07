@@ -55,7 +55,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
     end
 
-    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k, v| "#{k}: #{v}" }.join(', ')
+    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session(k)}" }.join(', ')
 
     render text: 'Setup complete.', status: 404
   end
