@@ -7,11 +7,11 @@
   .arduino-bbq data-offset-top="5" data-spy="affix"
     #ham.hamNoBack
       svg#toggleNav xmlns:xlink="http://www.w3.org/2000/xlink"
-        use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Menu_Home-BBCube').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+        use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Menu_Home-BBCube').gsub(asset_host_with_protocol, '')
     #back.opacity_bg.hidden
       #home.backUnsolid style=("transform: translate(0),0,0);")
         svg.logo-home-bottom xmlns:xlink="http://www.w3.org/2000/xlink"
-          use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-WebApp_Compressed').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+          use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-WebApp_Compressed').gsub(asset_host_with_protocol, '')
         /! VIDEO BACKGROUND
         video#bgvid handle-play="expanded" loop="" muted="" poster="" preload="metadata"
           source#mp4 src="" type="video/mp4"
@@ -29,46 +29,46 @@
           .grid_row
             a href="http://create-staging.arduino.cc/ide/#/editor" target="_blank"
               .grid_square.by_col.editor
-                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Editor.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Editor.svg').gsub(asset_host_with_protocol, '')
                 p Arduino Web Editor
             a href="http://create-staging.arduino.cc/ide/#/getting-started" target="_blank"
               .grid_square.by_col.editor
-                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Start.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Start.svg').gsub(asset_host_with_protocol, '')
                 p Getting Started
             a href="http://blog.arduino.cc/category/projects/" target="_blank"
               .grid_square.by_col.ideas
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
-                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
-                img.ideas src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Ideas.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
+                img.ideas src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Ideas.svg').gsub(asset_host_with_protocol, '')
                 p Arduino Tutorials
           .grid_row
             a href="http://forum.arduino.cc/" target="_blank"
               .grid_square.by_col.help
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
-                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
-                img.help src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Help.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
+                img.help src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Help.svg').gsub(asset_host_with_protocol, '')
                 p Need Help? Go to Forum
             a href="http://store.arduino.cc/" target="_blank"
               .grid_square.by_col.store
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
-                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
-                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Store.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
+                img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Store.svg').gsub(asset_host_with_protocol, '')
                 p Arduino Store
             a href="https://www.temboo.com/arduino" target="_blank"
               .grid_square.by_col.products
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
-                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
-                img src=asset_path('whitelabel/arduino/barbecue/temboo-drop.svg').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+                  use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
+                img src=asset_path('whitelabel/arduino/barbecue/temboo-drop.svg').gsub(asset_host_with_protocol, '')
                 p Connect to Temboo
       #closeArea
 
     - if user_signed_in?
       .user-profile
         svg.default-usr-pic xmlns:xlink="http://www.w3.org/2000/xlink"
-          use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-user-profile').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+          use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-user-profile').gsub(asset_host_with_protocol, '')
         .dropover.simple
           svg xmlns:xlink="http://www.w3.org/2000/xlink"
-            use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Triangle_Up').gsub(request.protocol + Rails.configuration.action_controller.asset_host, '')
+            use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Triangle_Up').gsub(asset_host_with_protocol, '')
           ul
             li
               a href="https://id.arduino.cc/" target="_blank"

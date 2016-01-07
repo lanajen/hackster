@@ -1,4 +1,4 @@
-= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue => e; logger.error e.inspect; ''; end;
+= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue => e; logger.error e.inspect unless e.kind_of? ActionView::MissingTemplate; ''; end;
 /= render "whitelabel/#{current_site.subdomain}/all"
 
 /!

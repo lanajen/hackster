@@ -19,6 +19,14 @@ module ApplicationHelper
     include_word ? "#{article} #{word}" : article
   end
 
+  def asset_host_with_protocol
+    if Rails.configuration.action_controller.asset_host
+      request.protocol + Rails.configuration.action_controller.asset_host
+    else
+      ''
+    end
+  end
+
   def auto_link text
     auto_html text do
       # image
