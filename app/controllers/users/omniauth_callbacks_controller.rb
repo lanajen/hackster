@@ -55,7 +55,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['omniauth.login_locale'] = params[:login_locale] if params[:login_locale]
     end
 
-    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session(k)}" }.join(', ')
+    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
 
     render text: 'Setup complete.', status: 404
   end
@@ -108,6 +108,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   protected
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
+
+
+    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
 
       host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
       logger.debug 'current_site: ' + session['omniauth.current_site'].to_s
