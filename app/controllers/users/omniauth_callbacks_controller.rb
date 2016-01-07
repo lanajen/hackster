@@ -106,15 +106,26 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
   protected
-    def sign_in_and_redirect resource, opts={}
+    def after_sign_in_path_for(resource)
+      cookies[:hackster_user_signed_in] = '1'
+
       host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
 
-      url = user_return_to(host)
-      url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
-      url = UrlParam.new(url).add_param(:user_email, resource.email)
-      url = UrlParam.new(url).add_param('f', '1')
-      redirect_to url
+      UrlParam.new(user_return_to(host)).add_param('f', '1')
     end
+
+    # def sign_in_and_redirect resource, opts={}
+    #   host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
+
+    #   # 1. flash is shown on wrong domain
+    #   # 2. when redirect_to is set to other than / it redirects to the wrong domain
+
+    #   url = user_return_to(host)
+    #   url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
+    #   url = UrlParam.new(url).add_param(:user_email, resource.email)
+    #   url = UrlParam.new(url).add_param('f', '1')
+    #   redirect_to url
+    # end
 
     def after_omniauth_failure_path_for resource_name
       site = ClientSubdomain.find_by_subdomain(session['omniauth.current_site'])
