@@ -92,6 +92,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           case @user.match_by
           when 'uid'
             params[:redirect_to] = session.delete('omniauth.redirect_to')
+            params[:current_site] = session.delete('omniauth.current_site')
             is_hackster = session[:current_site].present?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
             sign_in_and_redirect @user, event: :authentication
@@ -109,11 +110,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-
-    logger.debug 'session omniauth keys: ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
-
-      host = ClientSubdomain.find_by_subdomain(session['omniauth.current_site']).try(:host)
-      logger.debug 'current_site: ' + session['omniauth.current_site'].to_s
+      host = ClientSubdomain.find_by_subdomain(params[:current_site]).try(:host)
+      logger.debug 'current_site: ' + params[:current_site].to_s
       logger.debug 'host: ' + host.to_s
 
       UrlParam.new(user_return_to(host)).add_param('f', '1')
