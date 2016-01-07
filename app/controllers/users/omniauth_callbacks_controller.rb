@@ -73,6 +73,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       logger.debug 'session omniauth keys (oauthorize): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
       logger.debug 'omniauth.params (oauthorize): ' + request.env['omniauth.params'].map{ |k, v| "#{k}: #{v}" }.join(', ')
 
+      logger.debug 'params before (oauthorize): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
       params = request.env['omniauth.params']
       logger.debug 'params (oauthorize): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
 
