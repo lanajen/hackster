@@ -43,14 +43,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
-    # logger.debug 'crsf: ' + form_authenticity_token.to_s
     if params[:setup].present?
       session.keys.grep(/^(devise|oauth)\./).each { |k| session.delete(k) }
 
       session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
     end
-
-    # logger.debug 'session omniauth keys (setup): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
 
     render text: 'Setup complete.', status: 404
   end
@@ -103,19 +100,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
   protected
-    # def after_sign_in_path_for(resource)
-    #   cookies[:hackster_user_signed_in] = '1'
-
-    #   host = ClientSubdomain.find_by_subdomain(params[:current_site]).try(:host)
-
-    #   UrlParam.new(user_return_to(host)).add_param('f', '1')
-    # end
-
     def sign_in_and_redirect resource, opts={}
       host = ClientSubdomain.find_by_subdomain(params[:current_site]).try(:host)
 
       # 1. flash is shown on wrong domain
-      # 2. when redirect_to is set to other than / it redirects to the wrong domain
+      # 2. potentially use the token login option only for different domains
 
       url = user_return_to(host)
       url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)

@@ -33,6 +33,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :active_locales, :array, default: I18n.active_locales.map{|v| v.to_s }
   hstore_column :properties, :analytics_code, :string
   hstore_column :properties, :default_avatar_url, :string
+  hstore_column :properties, :default_project_cover_image_file_path, :string
   hstore_column :properties, :default_locale, :string, default: I18n.default_locale
   hstore_column :properties, :disable_login, :boolean
   hstore_column :properties, :disable_https, :boolean
@@ -60,6 +61,10 @@ class ClientSubdomain < Subdomain
 
   def has_default_avatar?
     default_avatar_url.present?
+  end
+
+  def has_default_project_cover_image?
+    default_project_cover_image_file_path.present?
   end
 
   def has_path_prefix?

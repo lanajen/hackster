@@ -7,4 +7,4 @@
 # outcome: can't comfortably switch from dev to prod without having to constantly
 # re-log in.
 session_key = ENV['SESSION_KEY'] || '_hackerio_session'
-HackerIo::Application.config.session_store :cookie_store, key: session_key#, domain: (ENV['FULL_HOST'].present? ? nil : ENV['DEFAULT_DOMAIN'])
+HackerIo::Application.config.session_store :cookie_store, key: session_key

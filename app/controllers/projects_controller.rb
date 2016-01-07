@@ -626,7 +626,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if !ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?
+        if (!ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?) and !current_user.try(:id).in?(@project.users.pluck('users.id'))
           raise ActiveRecord::RecordNotFound
         end
       end
