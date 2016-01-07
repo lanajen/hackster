@@ -38,9 +38,10 @@ const Toolbar = React.createClass({
 
   handleScroll(e) {
     let el = ReactDOM.findDOMNode(this.refs.toolbar);
-    let parentTop = el.parentNode.getBoundingClientRect().top;
+    let positions = el.parentNode.getBoundingClientRect();
+    let wrapperPositions = el.parentNode.parentNode.getBoundingClientRect();
 
-    if (parentTop < 0) {
+    if (parseInt(positions.top, 10) < 0 && parseInt(wrapperPositions.bottom, 10) >= 45 ) {
       if (!el.classList.contains('fixed-toolbar'))
         el.classList.add('fixed-toolbar');
     } else {

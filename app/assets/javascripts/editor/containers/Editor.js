@@ -70,7 +70,7 @@ const Editor = React.createClass({
   },
 
   render() {
-    if(this.props.hashLocation !== '#story') {
+    if(this.props.projectType === 'Project' && this.props.hashLocation !== '#story') {
       return null;
     }
 

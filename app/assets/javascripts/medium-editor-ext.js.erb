@@ -309,7 +309,6 @@ $(function() {
       focusEditable();
 
       callback();
-      console.log('editor activated');
       return _.self;
     },
 
@@ -350,7 +349,6 @@ $(function() {
         // _.clearErrors();
 
         callback();
-        console.log('editor disabled');
       }
       return _.self;
     },
@@ -410,9 +408,6 @@ $(function() {
       //   createInputFor('project[widgets_attributes]' + key, val, form);
       // });
       // var formData = new FormData(form[0]);
-
-      console.log('saving...');
-      console.log('mode: ' + _.saveMode);
 
       if (_.saveMode == 'auto') {
         _.showLoadingBar();
