@@ -155,11 +155,13 @@ function toggleLikes(comments, commentId, parentId, userId, bool) {
 }
 
 function _addToOrRemoveFromArray(array, bool, item) {
+  console.log('array', array, 'bool', bool, 'item', item);
   if(bool) {
     array.push(item);
   } else {
-    array = array.filter((x) => { item !== x; });
+    array = array.filter((x) => { return item !== x; });
   }
+  console.log('array', array);
   return array;
 }
 
