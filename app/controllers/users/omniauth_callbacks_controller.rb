@@ -74,7 +74,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       logger.debug 'omniauth.params (oauthorize): ' + request.env['omniauth.params'].map{ |k, v| "#{k}: #{v}" }.join(', ')
 
       logger.debug 'params before (oauthorize): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
-      params = request.env['omniauth.params']
+      # params = request.env['omniauth.params']
+      request.env['omniauth.params'].each{|k, v| params[k] = v }
       logger.debug 'params (oauthorize): ' + params.map{ |k, v| "#{k}: #{v}" }.join(', ')
 
       I18n.locale = params['login_locale'] || I18n.default_locale
