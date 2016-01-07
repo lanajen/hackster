@@ -249,6 +249,27 @@ module ApplicationHelper
     end unless user_signed_in?
   end
 
+  def replace_tokens_for model, text
+    TokenParser.new(model, text).replace
+  end
+
+  def token_tags_for model, cache_key
+    return [] unless model.token_tags
+
+    attributes = case cache_key
+    when 'brief'
+      Challenge::TOKEN_PARSABLE_ATTRIBUTES
+    else
+      []
+    end
+
+    attributes.map do |attr|
+      model.token_tags[attr] || []
+    end.flatten.uniq.map do |attr|
+      "#{model.model_name.name.underscore}-#{model.id}-#{attr}"
+    end
+  end
+
   def zocial_class_for_provider provider
     case provider
     when :facebook, :github, :twitter

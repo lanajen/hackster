@@ -1,6 +1,6 @@
 class MailchimpListManager
   def add users
-    add_subscribers_in_batches(users)
+    ENV['MAILCHIMP_ACTIVE'] ? add_subscribers_in_batches(users) : []
   end
 
   def initialize api_key, list_id
@@ -9,7 +9,7 @@ class MailchimpListManager
   end
 
   def remove users
-    remove_subscribers_in_batches(users)
+    ENV['MAILCHIMP_ACTIVE'] ? remove_subscribers_in_batches(users) : []
   end
 
   private

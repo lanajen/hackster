@@ -41,11 +41,15 @@ class ChallengeObserver < ActiveRecord::Observer
     if record.password_protect_changed? or record.disable_projects_tab_changed?
       purge = true
     end
+    (record.changed & Challenge::TOKENABLE_ATTRIBUTES).each do |attr|
+      keys << "challenge-#{record.id}-#{attr}"
+      purge = true
+    end
     Cashier.expire *keys if keys.any?
     FastlyWorker.perform_async 'purge', record.record_key if purge
 
     if (record.changed & %w(mailchimp_api_key mailchimp_list_id activate_mailchimp_sync)).any? and record.mailchimp_setup?
-      MailchimpWorker.perform_async 'sync_challenge', record.id
+      MailchimpWorker.perform_in 5.seconds, 'sync_challenge', record.id
     end
     if record.pre_contest_awarded_changed? and record.pre_contest_awarded?
       ChallengeWorker.perform_async 'announce_pre_contest_winners', record.id
@@ -95,6 +99,17 @@ class ChallengeObserver < ActiveRecord::Observer
 
   def after_mark_as_judged record
     ChallengeWorker.perform_async 'do_after_judged', record.id
+  end
+
+  def before_save record
+    # parse all text fields that may contain tokens and cache which *recognized*
+    # tokens they contain
+    token_tags = record.token_tags.try(:dup) || {}
+    (record.changed & Challenge::TOKEN_PARSABLE_ATTRIBUTES).each do |attr|
+      parser = TokenParser.new record, record.send(attr)
+      token_tags[attr] = (parser.all_cleaned & Challenge::TOKENABLE_ATTRIBUTES)
+    end
+    record.token_tags = token_tags
   end
 
   alias_method :after_cancel, :after_take_offline
