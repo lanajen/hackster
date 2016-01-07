@@ -174,7 +174,7 @@
         .section-content.medium-editor
           - if @challenge.video
             .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video, options: {} }; rescue; end;
-          = replace_tokens_for @challenge, raw(@challenge.description)
+          = raw replace_tokens_for(@challenge, @challenge.description)
 
       .section-interlude
 
@@ -206,23 +206,23 @@
         .section-content.medium-editor
           - if @challenge.eligibility.present?
             h3 Eligibility
-            = raw @challenge.eligibility
+            = raw replace_tokens_for(@challenge, @challenge.eligibility)
 
           - if @challenge.requirements.present?
             h3 Requirements
-            = raw @challenge.requirements
+            = raw replace_tokens_for(@challenge, @challenge.requirements)
 
           - if @challenge.judging_criteria.present?
             h3 Judging criteria
-            = raw @challenge.judging_criteria
+            = raw replace_tokens_for(@challenge, @challenge.judging_criteria)
 
           - if @challenge.how_to_enter.present?
             h3 How to enter
-            = raw @challenge.how_to_enter
+            = raw replace_tokens_for(@challenge, @challenge.how_to_enter)
 
           - if @challenge.rules.present?
             h3 Full rules
-            = raw @challenge.rules
+            = raw replace_tokens_for(@challenge, @challenge.rules)
 
 = content_for :js do
 
