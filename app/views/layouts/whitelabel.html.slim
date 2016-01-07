@@ -1,4 +1,4 @@
-= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue; end;
+= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue => e; logger.error e.inspect; ''; end;
 /= render "whitelabel/#{current_site.subdomain}/all"
 
 /!
@@ -44,7 +44,7 @@ html lang="en" class=content_for(:html_class)
 
   body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
-      - if user_signed_in?
+      - if !content_for?(:header) and user_signed_in?
         = render 'shared/important_notifs'
 
       - unless user_signed_in?
