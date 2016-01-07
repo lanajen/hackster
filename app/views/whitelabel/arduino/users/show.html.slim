@@ -1,0 +1,186 @@
+- if @user.pryvate?
+  - content_for :head do
+    meta name='robots' content='noindex'
+
+= inserts_stats_for @user
+
+- cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
+  section#projects-list
+    .wrapper
+      #user-profile-box
+        .profile-pic
+          .profile-img-container
+            = image_tag @user.avatar(:big)
+        .user-info
+          h2.user-name= @user.name
+          ul
+            li
+              span.number>= @user.projects_count
+              = pluralize_without_count @user.projects_count, 'project'
+            li
+              span.number>= @user.followers_count
+              = pluralize_without_count @user.followers_count, 'follower'
+          = render partial: 'followers/button', locals: { followable: @user, button_type: 'text_wide', button_partial: 'button_text_wide', display_name: true }
+
+      .container-userproj-info
+        .clearfix
+          h2.pull-left
+            ' Public projects and articles
+            = content_tag(:span, @public_count, class: 'badge')
+          - if @public_count > 3
+            .pull-right
+              = link_to "See all of #{@user.name}'s public projects", user_projects_path(@user)
+        - if @other_projects and @other_projects.any?
+          strong.text-muted
+            ' Built with #{current_platform.name}
+            = content_tag(:span, @public_projects.count, class: 'badge')
+
+      - if @public_projects.any?
+        .thumb-list
+          .row.project-list
+            - @public_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
+
+      - elsif user_is_current?
+        p
+          ' Looks like a great time to
+          - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
+          ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
+          ' !
+        p.smaller.text-muted
+          strong> Tip:
+          | Access private projects below.
+      - else
+        | #{@user.name} has no public projects.
+
+      - if @other_projects and @other_projects.any?
+        strong.text-muted
+          ' Built with other platforms
+          = content_tag(:span, @other_projects.count, class: 'badge')
+        .thumb-list
+          .row.project-list
+            - @other_projects.each_with_index do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www', locale: I18n.default_www_locale }
+
+      - if user_is_current_or_admin? and @private_projects.any?
+          hr
+          .clearfix
+            h2.pull-left
+              ' Private projects and articles
+              = content_tag(:span, @private_count, class: 'badge')
+            - if @private_count > 3
+              .pull-right
+                = link_to "See all your private projects", user_projects_drafts_path(@user)
+          .thumb-list
+            .row.project-list
+              - @private_projects.each_with_index do |project, i|
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+      - if @guest_projects.any?
+        hr
+        .clearfix
+          h2.pull-left
+            ' Guest projects and articles (posted on their behalf)
+            = content_tag(:span, @guest_count, class: 'badge')
+          - if @guest_count > 3
+            .pull-right
+              = link_to "See all of #{@user.name}'s guest projects", user_projects_guest_path(@user)
+        .thumb-list
+          .row.project-list
+            - @guest_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+      - if !is_whitelabel? and (@parts.any? or user_is_current?)
+        hr
+        .clearfix
+          h2.pull-left
+            ' Toolbox
+            = content_tag(:span, @parts_count, class: 'badge')
+          - if user_is_current?
+            .pull-right
+              = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
+          - elsif @parts_count > 3
+            .pull-right
+              = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
+        .row
+          - @parts.each do |part|
+            .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
+
+      - if !is_whitelabel? and @lists and @lists.any?
+        hr
+        h2
+          ' Curated lists
+          = content_tag(:span, @lists.count, class: 'badge')
+        .row
+          - @lists.each do |list|
+            = render partial: 'groups/lists/list_thumb', locals: { list: list }
+
+      hr
+      .clearfix
+        h2.pull-left
+          ' Replicated projects
+          = content_tag(:span, @replicated_count, class: 'badge')
+        - if @replicated_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s replicated projects", user_projects_replicated_path(@user)
+      - if @replicated_projects.any?
+        .thumb-list
+          .row.project-list
+            - @replicated_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+      - elsif user_is_current?
+        p
+          ' You haven't replicated any projects yet.
+          ==> link_to 'Browse around', projects_path
+          | for cool projects!
+      - else
+        | #{@user.name} hasn't replicated any projects yet.
+
+      hr
+      .clearfix
+        h2.pull-left
+          ' Respected projects and articles
+          = content_tag(:span, @respected_count, class: 'badge')
+        - if @respected_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s respected projects", user_projects_respected_path(@user)
+      - if @respected_projects.any?
+        .thumb-list
+          .row.project-list
+            - @respected_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userrespected', ref_id: @user.id, offset: i }
+
+      - elsif user_is_current?
+        p
+          ' You haven't respected any projects yet.
+          ==> link_to 'Browse around', projects_path
+          | for cool projects!
+      - else
+        | #{@user.name} hasn't respected any projects yet.
+
+      hr
+      .clearfix
+        h2.pull-left
+          ' Comments
+          = content_tag(:span, @comments_count, class: 'badge')
+        - if @comments_count > 3
+          .pull-right
+            = link_to "See all of #{@user.name}'s comments", user_comments_path(@user)
+      - if @comments.any?
+        ul.list-unstyled.user-comments-list
+          - @comments.each do |comment|
+            li.comment
+              h5.comment-project
+                ==> link_to comment.commentable.name, project_path(comment.commentable, anchor: 'widget-comments')
+                small
+                  ==> time_ago_in_words(comment.created_at)
+                  | ago
+              .comment-text= raw comment.body
+      - elsif user_is_current?
+        p
+          ' You haven't commented on any projects yet.
+          ==> link_to 'Browse around', projects_path
+          ' for projects you can get involved in!
+      - else
+        | #{@user.name} hasn't commented on any projects yet.
