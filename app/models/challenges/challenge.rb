@@ -3,6 +3,8 @@ class Challenge < ActiveRecord::Base
   OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
   REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
+  TOKEN_PARSABLE_ATTRIBUTES = %w(description how_to_enter eligibility judging_criteria requirements rules)
+  TOKENABLE_ATTRIBUTES = %w(pre_registration_date pre_contest_start_date pre_contest_end_date pre_winners_announced_date start_date end_date winners_announced_date)
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
@@ -104,6 +106,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
   hstore_column :hproperties, :teaser, :string
+  hstore_column :hproperties, :token_tags, :hash
   hstore_column :hproperties, :sponsor_link, :string
   hstore_column :hproperties, :sponsor_name, :string
   hstore_column :hproperties, :voting_start, :string, default: :end

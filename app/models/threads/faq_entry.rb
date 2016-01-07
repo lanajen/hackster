@@ -1,4 +1,9 @@
 class FaqEntry < Post
+  include HstoreColumn
+  TOKEN_PARSABLE_ATTRIBUTES = %w(title body)
+
+  hstore_column :hproperties, :token_tags, :hash
+
   sanitize_text :body
   register_sanitizer :trim_whitespace, :before_save, :body
 

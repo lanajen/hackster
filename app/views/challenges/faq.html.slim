@@ -1,4 +1,4 @@
-- cache ["challenge-#{@challenge.id}-faq"], tag: ["challenge-#{@challenge.id}-faq"] do
+- cache ["challenge-#{@challenge.id}-faq"], tag: ["challenge-#{@challenge.id}-faq"] + @cache_keys do
 
   .row
     .col-md-8
@@ -33,7 +33,7 @@
               = render 'faq_entries/answer', question: question, answer: answer, anchor: "faq_g_#{i}"
 
           - @faq_entries.each do |entry|
-            = render 'faq_entries/answer', question: entry.title, answer: entry.body, anchor: dom_id(entry)
+            = render 'faq_entries/answer', question: replace_tokens_for(@challenge, entry.title), answer: replace_tokens_for(@challenge, entry.body), anchor: dom_id(entry)
 
           .faq-entry
             p
