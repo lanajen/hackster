@@ -96,7 +96,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       url = if URI.parse(orig_path).class == URI::HTTP
         orig_path
       else
-        url = current_site.base_uri(request.scheme)
+        url = "#{request.scheme}://#{current_site.full_domain}"
         # logger.debug 'base_uri: ' + url.to_s
         url << orig_path
       end

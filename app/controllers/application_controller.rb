@@ -148,8 +148,12 @@ class ApplicationController < ActionController::Base
     # logger.info 'controller: ' + params[:controller].to_s
     # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
+      path = request.fullpath
+      if is_whitelabel? and current_site.has_path_prefix?
+        path = current_site.path_prefix + path
+      end
       session[request.host] ||= {}
-      session[request.host][cookie_name] = request.fullpath
+      session[request.host][cookie_name] = path
     end
     # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end
@@ -198,7 +202,9 @@ class ApplicationController < ActionController::Base
         cookies[:hackster_user_signed_in] = '1'
         sign_in user#, store: false
         flash.keep
-        redirect_to UrlParam.new(request.fullpath).remove_params(%w(user_token user_email)) and return
+        url = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
+        url = current_site.base_uri(request.scheme) + url if is_whitelabel?
+        redirect_to url and return
       end
     end
 

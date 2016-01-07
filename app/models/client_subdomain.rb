@@ -52,8 +52,8 @@ class ClientSubdomain < Subdomain
   end
   after_save :update_domains_on_heroku
 
-  def base_uri protocol='http://'
-    _base_uri = "#{protocol}#{full_domain}"
+  def base_uri scheme='http'
+    _base_uri = "#{scheme}://#{full_domain}"
     _base_uri << path_prefix if has_path_prefix?
     _base_uri
   end
