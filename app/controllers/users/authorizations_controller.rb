@@ -95,8 +95,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       url = if URI.parse(orig_path).class == URI::HTTP
         orig_path
       else
-        url = "#{request.scheme}://#{current_site.host}"
-        url << ":#{APP_CONFIG['default_port']}" if APP_CONFIG['port_required']
+        url = current_site.base_uri(request.scheme)
         url << orig_path
       end
       url = UrlParam.new(url).add_param('f', '1')

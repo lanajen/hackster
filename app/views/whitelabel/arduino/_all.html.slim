@@ -78,7 +78,7 @@
             li
               = link_to content_tag(:button, 'Sign Out'), destroy_user_session_path, method: :delete
     - else
-      a class="login-link" href="//#{APP_CONFIG['full_host']}/users/auth/arduino?redirect_host=#{request.host}&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}" Sign In
+      a class="login-link" href=arduino_sign_in_url Sign In
 
     .load-bold-font
       span.load-text-font Arduino Create

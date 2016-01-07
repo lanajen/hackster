@@ -34,6 +34,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :analytics_code, :string
   hstore_column :properties, :default_avatar_url, :string
   hstore_column :properties, :default_locale, :string, default: I18n.default_locale
+  hstore_column :properties, :disable_login, :boolean
   hstore_column :properties, :disable_https, :boolean
   hstore_column :properties, :disable_onboarding_screens, :boolean, default: false
   hstore_column :properties, :enable_localization, :boolean, default: false
@@ -50,6 +51,12 @@ class ClientSubdomain < Subdomain
     remove_domain_from_heroku(domain) unless domain.blank?
   end
   after_save :update_domains_on_heroku
+
+  def base_uri protocol='http://'
+    _base_uri = "#{protocol}#{full_domain}"
+    _base_uri << path_prefix if has_path_prefix?
+    _base_uri
+  end
 
   def has_default_avatar?
     default_avatar_url.present?

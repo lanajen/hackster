@@ -14,6 +14,10 @@ module ApplicationHelper
     affix
   end
 
+  def arduino_sign_in_url
+    "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/arduino?current_site=arduino&setup=true&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}"
+  end
+
   def indefinite_articlerize word, include_word=true
     article = %w(a e i o u).include?(word[0].downcase) ? 'an' : 'a'
     include_word ? "#{article} #{word}" : article
