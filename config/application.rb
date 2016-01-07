@@ -21,6 +21,7 @@ module HackerIo
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir[ config.root.join('app', 'models', '**/') ]
     config.autoload_paths += Dir[ config.root.join('app', 'serializers', '**/') ]
+    config.autoload_paths += Dir[ config.root.join('app', 'middlewares', '**/') ]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -107,6 +108,8 @@ module HackerIo
     config.cashier.adapter.redis = RedisConn.conn
 
     config.middleware.insert_before(Rack::Runtime, RackReverseProxyMod)
+
+    config.middleware.use "SetCookieDomain", (ENV['FULL_HOST'].present? ? nil : ENV['DEFAULT_DOMAIN'])
 
     allowed_origins = []
     if ENV['DEFAULT_DOMAIN']
