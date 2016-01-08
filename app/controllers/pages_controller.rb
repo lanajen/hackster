@@ -85,7 +85,7 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.publyc.active.ends_first
+      @challenges = Challenge.publyc.active.ends_last
 
       @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 15)
       if @projects.any?

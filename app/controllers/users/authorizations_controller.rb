@@ -73,7 +73,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
     def after_sign_up_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
       track_event 'Connected with social account', { provider: resource.authorizations.first.try(:provider) }
-      build_path(super(resource))
+      build_path(super(resource), resource)
     end
 
     def after_sign_in_path_for(resource)
@@ -83,10 +83,10 @@ class Users::AuthorizationsController < Users::RegistrationsController
 
       params[:redirect_to] = session.delete('oauth.redirect_to')
       # logger.debug 'user_return_to: ' + user_return_to(host).to_s
-      build_path(user_return_to(host))
+      build_path(user_return_to(host), resource)
     end
 
-    def build_path orig_path
+    def build_path orig_path, resource
       current_site_name = session.delete('oauth.current_site')
       return orig_path unless current_site_name
 

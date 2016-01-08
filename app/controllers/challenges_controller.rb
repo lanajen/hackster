@@ -55,7 +55,7 @@ class ChallengesController < ApplicationController
       end
       format.csv do
         authorize! :admin, @challenge
-        @registrations = @challenge.registrations.includes(:user).order("users.full_name ASC")
+        @registrations = @challenge.registrations.joins(:user).includes(:user).order("users.full_name ASC")
         file_name = FileNameGenerator.new(@challenge.name, 'participants')
         headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
         headers['Content-Type'] ||= 'text/csv'
