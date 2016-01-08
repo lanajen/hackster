@@ -237,7 +237,6 @@ export default function(state = initialState, action) {
         dom: newDom || state.dom,
         cursorPosition: data.cursorPosition,
         setCursorToNextLine: false,
-        // isDataLoading: false,
         lastMediaHash: data.mediaHash,
         forceUpdate: true
       };

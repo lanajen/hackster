@@ -736,8 +736,8 @@ const Utils = {
         P = document.createElement('p');
         P.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
         // Copy nodes children over.
-        while(child.hasChildNodes()) {
-          P.appendChild(child.removeChild(child.firstChild));
+        if(child.hasChildNodes()) {
+          P.appendChild(child.cloneNode(true));
         }
         CE.replaceChild(P, child);
       } else if(!blockEls[child.nodeName] && child.nodeType === 3) {
@@ -1293,6 +1293,10 @@ const Utils = {
       } else {
         el.children.forEach(child => {
           if(child.name === 'img') {
+            /** If the embed image widget is nested in another element, get the id from the third parent up. */
+            if(child.parent && child.parent.parent && child.parent.parent.parent && child.parent.parent.parent.attribs['data-file-id']) {
+              obj.id = child.parent.parent.parent.attribs['data-file-id'];
+            }
             obj.url = child.attribs.src;
             obj.alt = child.attribs.alt || '';
             obj.figcaption = '';
@@ -1666,7 +1670,7 @@ const Utils = {
           children: [ item ]
         };
         return p;
-      } else if(item.tag === 'p' && item.children.length < 1) {
+      } else if(item.tag === 'p' && item.children && item.children.length < 1) {
         /** Remove any carriage returns and get rid of the element if it's then empty. */
         if(item.content && item.content.match(/\n/)) {
           item.content = item.content.replace(/\n/g, '');
