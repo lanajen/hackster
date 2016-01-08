@@ -455,7 +455,7 @@ function _unmergePreBlocks(json) {
       children.forEach(child => {
         /** Remove new lines at the end of each row. */
         if(child.content && child.content.substr(child.content.length-1) === '\n') {
-          child.content = child.content.slice();
+          child.content = child.content.replace(/\n/g, '');
         }
         if(child.content && child.content.length < 1) {
           child.children.push( _createElement('br') );

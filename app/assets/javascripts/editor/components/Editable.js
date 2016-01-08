@@ -204,7 +204,7 @@ const Editable = React.createClass({
           };
         }).filter(image => { return !image.id ? false : true; });
         item.images = cleaned;
-        return Promise.resolve(item);
+        return !item.images.length ? null : Promise.resolve(item);
       } else if(item.type === 'Video') {
         let video = _.clone(item.video);
         cleaned = video.map(v => {
