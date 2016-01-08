@@ -556,6 +556,13 @@ const ContentEditable = React.createClass({
       anchorNode.parentNode.parentNode.replaceChild(span, anchorNode.parentNode);
     }
 
+    /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
+    if(e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+      this.handleUndo(e);
+    } else if((e.keyCode === 89 && e.ctrlKey) || (e.keyCode === 90 && e.metaKey && e.shiftKey)) {
+      this.handleRedo(e);
+    }
+
     switch(e.keyCode || e.charCode) {
       case 13: // ENTER
         this.handleEnterKey(e);
@@ -647,6 +654,14 @@ const ContentEditable = React.createClass({
     if(Utils.isSelectionInAnchor(range.startContainer)) {
       this.handlePopOver(true);
     }
+  },
+
+  handleUndo(e) {
+
+  },
+
+  handleRedo(e) {
+
   },
 
   handlePaste(e) {
