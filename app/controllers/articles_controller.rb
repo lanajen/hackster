@@ -22,7 +22,11 @@ class ArticlesController < ApplicationController
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware articles on Hackster.io."
     meta_desc @project_meta_desc
-    @project = @project.decorate
+    @project = ProjectDecorator.decorate(@project)
+
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+      @description = @project.description(nil)
+    end
 
     @parts = @project.parts.alphabetical.includes(:image)
 

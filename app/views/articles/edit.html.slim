@@ -96,21 +96,22 @@
                 = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
                 = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the article. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
 
-      = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+      = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote description-form' }, wrapper: :bootstrap3_horizontal do |f|
         .row
           .col-xs-12
             .panel.panel-default data-anchor='description'
               .panel-heading
                 h4 Description
               .panel-body
-                = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
+                = react_component('ReactEditor', {projectId: @project.id, projectType: 'Article', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
+                / = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
 
-                p.small.text-muted
-                  strong> Tip:
-                  | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-                #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your article here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url=project_path(@project) data-save-mode='form'
+                / p.small.text-muted
+                /   strong> Tip:
+                /   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
+                / #model-editor data-model-id=@project.id data-model-type='BaseArticle' data-model-symbol='base_article' data-model-placeholder="Start describing your article here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url=project_path(@project) data-save-mode='form'
 
-                  #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
+                /   #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
       #protip_parts= render 'projects/forms/protip_parts'
 
@@ -139,14 +140,14 @@
                         .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
                     = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
-      .row
-        .col-xs-12
-          .clearfix
-            .pe-error Error saving
-            .pull-right
+      / .row
+        / .col-xs-12
+          / .clearfix
+            / .pe-error Error saving
+            / .pull-right
               / = link_to 'Discard changes', @project, class: 'btn btn-link pe-discard'
-              = link_to 'Go to article', @project, class: 'btn btn-link'
-              = link_to 'Save changes', 'javascript:void(0)', class: 'btn btn-primary pe-submit'
+              / = link_to 'Go to article', @project, class: 'btn btn-link'
+              / = link_to 'Save changes', 'javascript:void(0)', class: 'btn btn-primary pe-submit'
 
 = content_for :head do
   = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
@@ -187,7 +188,7 @@
         width: '100%'
       });
 
-      editor.activate();
+      // editor.activate();
 
       var cEditor = new ProjectCodeEditor('text', '0');
       cEditor.activate();
@@ -198,9 +199,9 @@
         resizeModal('#code-editor-popup');
       });
 
-      $(window).load(function(){
-        loadSlickSlider();
-      });
+      // $(window).load(function(){
+      //   loadSlickSlider();
+      // });
     });
 
 = render 'projects/forms/part_form'

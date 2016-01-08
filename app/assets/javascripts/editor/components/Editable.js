@@ -19,20 +19,28 @@ const Editable = React.createClass({
   componentWillMount() {
     let metaList = document.getElementsByTagName('meta');
     let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
-    let projectId = Utils.getWindowLocationHref().match(/\/[\d]+/).join('').slice(1);
 
-    this.props.actions.setProjectData(projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
+    this.props.actions.setProjectData(this.props.projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
 
     if(!this.props.editor.dom.length) {
       this.props.actions.setIsFetching(true);
-      this.props.actions.fetchInitialDOM(projectId, csrfToken);
+      this.props.actions.fetchInitialDOM(this.props.projectId, csrfToken);
     }
   },
 
   componentDidMount() {
-    let panel = document.getElementById('story');
-    let form = panel.querySelector('.simple_form');
+    let form;
+    switch(this.props.projectType) {
+      case 'Project':
+        form = document.querySelector('form.story-form');
+        break;
+      case 'Article':
+        form = document.querySelector('form.description-form');
+        break;
+      default:
+        break;
+    }
 
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
@@ -65,8 +73,17 @@ const Editable = React.createClass({
   },
 
   componentWillUnmount() {
-    let panel = document.getElementById('story');
-    let form = panel.querySelector('.simple_form');
+    let form;
+    switch(this.props.projectType) {
+      case 'Project':
+        form = document.querySelector('form.story-form');
+        break;
+      case 'Article':
+        form = document.querySelector('form.description-form');
+        break;
+      default:
+        break;
+    }
 
     form.removeEventListener('pe:submit', this.handleSubmit);
     window.removeEventListener('resize', this.debouncedResize);

@@ -2,7 +2,7 @@
   bold/italic/h1/links/list
   full width input
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote story-form' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='story'
 
@@ -19,6 +19,6 @@
         | with a link to your project.
 
       = f.error_notification
-      = react_component('ReactEditor', {S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
+      = react_component('ReactEditor', {projectId: @project.id, projectType: 'Project', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
 
     = render 'projects/forms/pe_save'

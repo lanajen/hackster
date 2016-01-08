@@ -6,7 +6,6 @@ export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       request(`/api/v1/projects/${projectId}/description`)
-        .set('X-CSRF-Token', csrfToken)
         .query({ id: projectId })
         .end((err, res) => {
           if(err) reject(err);

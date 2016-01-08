@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import Editor from './Editor';
 import configureStore from '../store/configureStore';
@@ -30,7 +30,7 @@ export default class Root extends Component {
     /** Temp fix for Rails router pagination.  This is the main stoppage block since its responsible for passing state from our stores
       * to these components.  We will never render past this point after any async actions if this block is hit.
      */
-    if(this.state.hashLocation !== '#story') {
+    if(this.props.projectType === 'Project' && this.state.hashLocation !== '#story') {
       return null;
     }
 
@@ -41,3 +41,8 @@ export default class Root extends Component {
     );
   }
 }
+
+Root.PropTypes = {
+  projectId: PropTypes.number.isRequired,
+  projectType: PropTypes.string.isRequired
+};

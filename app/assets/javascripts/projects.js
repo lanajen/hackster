@@ -288,7 +288,7 @@ $select2target = null;
       saveChanges: function(e) {
         var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {
-          // Custom Event passes the form to React, where call submit.
+          // Custom Event passes the form to React.
           var event = new CustomEvent(
             'pe:submit',
             {
@@ -299,6 +299,24 @@ $select2target = null;
           );
           $form[0].dispatchEvent(event);
         } else {
+          // Protip form needs seperation; React component handles posting the submit.
+          if($('.description-form')) {
+            var $dForm = $('.description-form');
+            var event = new CustomEvent(
+              'pe:submit',
+              {
+                detail: { form: $dForm },
+                bubbles: true,
+                cancelable: true
+              }
+            );
+            $dForm[0].dispatchEvent(event);
+          }
+          // Remove the description form from the $form array (all forms on page).
+          $form = $form.filter(function(index, f) {
+            return !f.classList.contains('description-form');
+          });
+
           $form.submit();
         }
       },

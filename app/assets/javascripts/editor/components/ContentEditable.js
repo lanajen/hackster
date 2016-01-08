@@ -712,7 +712,6 @@ const ContentEditable = React.createClass({
           if(end.length > 0) { child.nodeType === 3 ? child.parentNode.appendChild(document.createTextNode(end)) : child.appendChild(document.createTextNode(end)); }
           bucket.appendChild(assuredRoot);
         } else {
-          // Makes sure to get a root element that is directly under .content-editable.
 
           if(start.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = start; bucket.appendChild(temp); }
           // Iterate through the pasted nodes.
