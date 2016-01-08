@@ -300,7 +300,7 @@ $select2target = null;
           $form[0].dispatchEvent(event);
         } else {
           // Protip form needs seperation; React component handles posting the submit.
-          if($('.description-form')) {
+          if ($('.description-form').length) {
             var $dForm = $('.description-form');
             var event = new CustomEvent(
               'pe:submit',
