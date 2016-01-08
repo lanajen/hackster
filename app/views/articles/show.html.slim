@@ -108,7 +108,7 @@ c= content_for :head do
 
             section.section-container.section-no-title
               .section-content.hljs-active
-                .medium-editor= @project.story_json.empty? ? @project.description : raw(@project.story_json)
+                .medium-editor= @description
 
           - if @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).exists?
             section#team.section-container

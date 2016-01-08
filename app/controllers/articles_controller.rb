@@ -22,10 +22,18 @@ class ArticlesController < ApplicationController
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware articles on Hackster.io."
     meta_desc @project_meta_desc
-    @project = ProjectDecorator.decorate(@project)
 
+    @project = @project.decorate
+
+    # call with already loaded widgets and images
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
-      @description = @project.description(nil)
+      @description = if @project.story_json.empty?
+        @image_widgets = @project.widgets.where(type: 'ImageWidget')
+        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+        @project.description(nil, widgets: @image_widgets, images: @images)
+      else
+        @project.story_json.html_safe
+      end
     end
 
     @parts = @project.parts.alphabetical.includes(:image)

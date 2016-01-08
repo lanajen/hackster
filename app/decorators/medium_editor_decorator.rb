@@ -30,7 +30,7 @@ module MediumEditorDecorator
               else
                 Widget.find_by_id el['data-widget-id']
               end
-              embed = Embed.new widget: widget
+              embed = Embed.new widget: widget, images: options[:images]
               raise "widget ID #{el['data-widget-id']} not found, widget: #{widget.inspect}" if embed.widget.nil?
 
               if options[:except]

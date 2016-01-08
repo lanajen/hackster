@@ -6,7 +6,7 @@ class CommentJsonDecorator < BaseJsonDecorator
     node[:userSlug] = (model.user_id.zero? or model.user_id == -1) ? nil : model.user.user_name
     node[:depth] = model.is_root? ? 0 : 1
     node[:createdAt] = model.created_at.to_f * 1_000
-    node[:likingUsers] = model.liking_users.map(&:id) || []
+    node[:likingUsers] = model.likes.map(&:user_id) || []
     node
   end
 end

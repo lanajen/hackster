@@ -87,8 +87,8 @@ export default class CommentForm extends Component {
 
     let actions = this.props.dismissable
                 ? (<div>
-                     <a href="javascript:void(0);" className="btn-link btn" onClick={this.handleCancelClick}>Cancel</a>
                      <button className="btn btn-primary" onClick={this.handlePostClick}>{buttonBody}</button>
+                     <a href="javascript:void(0);" className="btn-link btn" onClick={this.handleCancelClick}>Cancel</a>
                    </div>)
                 : (<button className="btn btn-primary" onClick={this.handlePostClick}>{buttonBody}</button>);
 

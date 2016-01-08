@@ -85,9 +85,13 @@ class ProjectsController < ApplicationController
 
     # call with already loaded widgets and images
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
-      @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
-      @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
-      @description = @project.description(nil, widgets: @widgets, images: @images)
+      @description = if @project.story_json.empty?
+        @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+        @project.description(nil, widgets: @widgets, images: @images)
+      else
+        @project.story_json.html_safe
+      end
     end
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display

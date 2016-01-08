@@ -114,7 +114,7 @@
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
                   .section-content.hljs-active
-                    .medium-editor= @project.story_json.empty? ? @project.description : raw(@project.story_json)
+                    .medium-editor= @description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                 - if @hardware_parts.any?
