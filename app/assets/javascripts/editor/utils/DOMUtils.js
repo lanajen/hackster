@@ -1668,10 +1668,10 @@ const Utils = {
         return p;
       } else if(item.tag === 'p' && item.children.length < 1) {
         /** Remove any carriage returns and get rid of the element if it's then empty. */
-        if(item.content.match(/\n/)) {
+        if(item.content && item.content.match(/\n/)) {
           item.content = item.content.replace(/\n/g, '');
         }
-        if(!item.content.length) {
+        if(item.content && !item.content.length) {
           item = null;
         }
         return item;
