@@ -451,18 +451,18 @@ function _unmergePreBlocks(json) {
 
   json.forEach(item => {
     if(item.tag === 'pre' && item.children.length > 0) {
-      let children = item.children[0].tag === 'code' ? item.children[0].children : item.children;
+      let children = item.children[0].tag === 'code' && item.children[0].children.length > 0 ? item.children[0].children : item.children;
       children.forEach(child => {
         /** Remove new lines at the end of each row. */
         if(child.content && child.content.substr(child.content.length-1) === '\n') {
-          child.content = child.content.slice(0, child.content.length-1);
+          child.content = child.content.slice();
         }
         if(child.content && child.content.length < 1) {
           child.children.push( _createElement('br') );
         }
 
         let code = _createElement('code', { children: [ child ] });
-        let pre = _createElement('pre', { children: [ code] });
+        let pre = _createElement('pre', { children: [ code ] });
         newJson.push(pre);
       });
     } else {
