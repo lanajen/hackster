@@ -5,7 +5,6 @@ $(function() {
             dataType: "jsonp",
             success: function(a) {
                 var m = a.meta;
-                console.log(a);
                 switch (m.status) {
                     case 301:
                         fetchGithubData(b, m.Location);

@@ -54,7 +54,7 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def load_platform username
-      @current_platform = Platform.find_by_api_username username
+      @current_platform = Platform.find_by_api_username! username
       @current_ability = @current_platform.ability
     end
 

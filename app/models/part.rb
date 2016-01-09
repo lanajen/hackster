@@ -196,7 +196,7 @@ class Part < ActiveRecord::Base
   def full_name
     return @full_name if @full_name
 
-    @full_name = if platform and !name.starts_with?(platform.name)
+    @full_name = if platform and !name.downcase.starts_with?(platform.name.downcase)
       "#{platform.name} #{name}"
     else
       name

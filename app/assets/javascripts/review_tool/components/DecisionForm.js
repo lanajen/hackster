@@ -51,7 +51,6 @@ const DecisionForm = React.createClass({
       case 'needs_work':
         Object.assign(data, {
           'type': ReactDOM.findDOMNode(this.refs.type.refs.textarea).value,
-          'content_type': ReactDOM.findDOMNode(this.refs.content_type.refs.textarea).value,
           'name': ReactDOM.findDOMNode(this.refs.name.refs.textarea).value,
           'one_liner': ReactDOM.findDOMNode(this.refs.one_liner.refs.textarea).value,
           'cover_image_id': ReactDOM.findDOMNode(this.refs.cover_image_id.refs.textarea).value,
@@ -198,8 +197,7 @@ const DecisionForm = React.createClass({
   renderFeedbackInputs: function() {
     return (
       <div>
-        {this.renderTextArea('Template', 'type')}
-        {this.renderTextArea('Content type', 'content_type')}
+        {this.renderTextArea('Template/Content type', 'type')}
         {this.renderTextArea('Name', 'name')}
         {this.renderTextArea('Pitch', 'one_liner')}
         {this.renderTextArea('Cover image', 'cover_image_id')}

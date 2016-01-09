@@ -34,8 +34,7 @@ const Decision = React.createClass({
           <span>
             <i className='fa fa-exclamation-triangle text-warning'></i><span>Needs work</span>
           </span>), 'Opinion')}
-        {this.renderComment(feedback.type, 'Template')}
-        {this.renderComment(feedback.content_type, 'Content type')}
+        {this.renderComment(feedback.type, 'Template/Content type')}
         {this.renderComment(feedback.name, 'Name')}
         {this.renderComment(feedback.one_liner, 'Elevator pitch')}
         {this.renderComment(feedback.cover_image_id, 'Cover image')}
