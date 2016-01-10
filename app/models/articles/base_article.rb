@@ -161,6 +161,7 @@ class BaseArticle < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :hproperties, :celery_id, :string
+  hstore_column :hproperties, :challenge_id, :integer
   hstore_column :hproperties, :content_type, :string
   hstore_column :hproperties, :desc_backup, :string
   hstore_column :hproperties, :guest_twitter_handle, :string

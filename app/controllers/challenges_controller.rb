@@ -197,7 +197,7 @@ class ChallengesController < ApplicationController
     def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
       @link_params = Rails.cache.fetch "challenge-#{@challenge.id}-link_params", tag: ["challenge-#{@challenge.id}-sponsors"] do
-        { base_article: {platform_tags_string: @sponsors.map(&:name).join(',') } }
+        { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id } }
       end
       @prizes = @challenge.prizes.includes(:image)
     end
