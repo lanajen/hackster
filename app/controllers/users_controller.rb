@@ -1,11 +1,13 @@
 class UsersController < ApplicationController
+  include ScraperUtils
+
   before_filter :authenticate_user!, only: [:edit, :update, :after_registration, :after_registration_save, :toolbox, :toolbox_save]
   before_filter :load_user, only: [:show, :projects_public, :projects_drafts, :projects_guest, :projects_respected, :projects_replicated, :toolbox_show, :comments]
   authorize_resource only: [:update, :edit]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
-  skip_before_filter :track_visitor, only: [:show]
-  skip_after_filter :track_landing_page, only: [:show]
+  skip_before_filter :track_visitor, only: [:show, :avatar]
+  skip_after_filter :track_landing_page, only: [:show, :avatar]
 
   def index
     title "Browse top community members"
@@ -158,6 +160,28 @@ class UsersController < ApplicationController
     else
       @user.live_comments.includes(:commentable)
     end
+  end
+
+  def avatar
+    @user = User.find params[:id]
+
+    surrogate_keys = [@user.record_key, 'user/avatar']
+    surrogate_keys << current_platform.user_name if is_whitelabel?
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers 86400
+
+    size = params[:size] || :thumb
+
+    if is_whitelabel? and current_site.enable_custom_avatars?
+      link = CustomAvatarHandler.new(@user).fetch(current_site.subdomain)
+      unless link.present? and test_link(link)
+        link = current_site.default_avatar_url
+      end
+    else
+      link = @user.decorate.avatar(size)
+    end
+
+    redirect_to link
   end
 
   def redirect_to_show

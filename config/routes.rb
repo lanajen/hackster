@@ -567,6 +567,8 @@ HackerIo::Application.routes.draw do
       get 'users/registration/toolbox_save' => 'users#toolbox_save', as: :user_toolbox_save
       patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
+      get 'users/:id/avatar' => 'users#avatar', as: :user_avatar
+
       resources :announcements, only: [:destroy] do
         resources :comments, only: [:create]
       end

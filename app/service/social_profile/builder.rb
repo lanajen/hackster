@@ -25,9 +25,12 @@ module SocialProfile
       @user = user
       # Rails.logger.debug 'user: ' + @user.to_yaml
 
-      assign_attributes social_profile_attributes.except(:image_url)
+      assign_attributes social_profile_attributes.except(:image_url, :custom_image_url)
       image_url = social_profile_attributes[:image_url]
       build_avatar image_url if image_url
+
+      custom_image_url = social_profile_attributes[:custom_image_url]
+      assign_custom_image_url custom_image_url, @provider if custom_image_url
 
       @user.email_confirmation = @user.email
       @user.authorizations.build(
@@ -57,6 +60,10 @@ module SocialProfile
         attributes.each do |name, value|
           @user.send("#{name}=", value) if @user.send(name).blank?
         end
+      end
+
+      def assign_custom_image_url image_url, provider
+        CustomAvatarHandler.new(@user).add(provider, image_url)
       end
 
       def build_avatar image_url

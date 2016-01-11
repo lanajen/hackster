@@ -5,6 +5,7 @@ module SocialProfile::Resolver
         user_name: clean_user_name(info.id),
         email: info.email,
         image_url: "https://dcw9y8se13llu.cloudfront.net/avatars/#{data.uid}.jpg",
+        custom_image_url: "https://dcw9y8se13llu.cloudfront.net/avatars/#{data.uid}.jpg",
       }
     end
   end

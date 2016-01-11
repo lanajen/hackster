@@ -13,7 +13,7 @@ module ScraperUtils
 
   def fetch_page page_url, file_name=nil
     page_url = 'http://' + page_url unless page_url =~ /^https?\:\/\//
-    puts "Fetching page #{page_url}..."
+    Rails.logger.debug "Fetching page #{page_url}..."
     @options = { allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
     5.times do
       begin
@@ -23,7 +23,7 @@ module ScraperUtils
         if e.class == Zlib::DataError
           @options['Accept-Encoding'] = 'plain'
         end
-        puts "Failed opening #{page_url}. Retrying in 1 second..."
+        Rails.logger.debug "Failed opening #{page_url}. Retrying in 1 second..."
         sleep 1
       end
     end
@@ -53,13 +53,13 @@ module ScraperUtils
   end
 
   def read_file file_name
-    puts "Reading file #{file_name}..."
+    Rails.logger.debug "Reading file #{file_name}..."
     File.open(file_name).read
   end
 
   def test_link link, mime=nil
     u = URI.parse link
-    print "Testing link #{link}... "
+    Rails.logger.debug "Testing link #{link}..."
     begin
       http = Net::HTTP.new(u.host, u.port)
       if u.scheme == 'https'
@@ -73,11 +73,10 @@ module ScraperUtils
       status_code = "Error"
       mime_type = ''
     end
-    puts "#{status_code} (#{mime_type})"
+    Rails.logger.debug "#{status_code} (#{mime_type})"
     case status_code.to_i
     when 200
-      return (mime.in?(mime_type) ? link : false) if mime
-      link
+      mime ? (mime.in?(mime_type) ? link : false) : link
     when 301, 302
       test_link head['Location']
     else
@@ -94,7 +93,7 @@ module ScraperUtils
     File.open(file_name, mode) do |file|
       file.syswrite content
       output = (mode == 'w+' ? 'Wrote' : 'Appended')
-      puts "#{output} to #{file_name}"
+      Rails.logger.debug "#{output} to #{file_name}"
     end
   end
 end

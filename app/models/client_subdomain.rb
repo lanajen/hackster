@@ -38,6 +38,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :disable_login, :boolean
   hstore_column :properties, :disable_https, :boolean
   hstore_column :properties, :disable_onboarding_screens, :boolean, default: false
+  hstore_column :properties, :enable_custom_avatars, :boolean, default: false
   hstore_column :properties, :enable_localization, :boolean, default: false
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :force_explicit_locale, :boolean, default: false
