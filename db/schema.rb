@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160107013429) do
+ActiveRecord::Schema.define(version: 20160111011918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20160107013429) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.integer  "address_id"
+    t.hstore   "counters_cache"
   end
 
   create_table "challenge_projects", force: :cascade do |t|
@@ -226,6 +227,7 @@ ActiveRecord::Schema.define(version: 20160107013429) do
     t.string   "guest_name",       limit: 255
     t.text     "raw_body"
     t.boolean  "deleted",                      default: false
+    t.integer  "likes_count",                  default: 0
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
@@ -405,19 +407,20 @@ ActiveRecord::Schema.define(version: 20160107013429) do
 
   add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
 
-  create_table "live_event_sets", force: :cascade do |t|
+  create_table "live_chapters", force: :cascade do |t|
     t.string   "event_type"
     t.string   "link"
-    t.integer  "organizer_id",                 null: false
+    t.integer  "organizer_id",                             null: false
     t.string   "city"
     t.string   "country"
-    t.boolean  "virtual",      default: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.boolean  "virtual",                  default: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.string   "name"
+    t.string   "one_liner",    limit: 160
   end
 
-  add_index "live_event_sets", ["organizer_id"], name: "index_live_event_sets_on_organizer_id", using: :btree
+  add_index "live_chapters", ["organizer_id"], name: "index_live_chapters_on_organizer_id", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255

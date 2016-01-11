@@ -1,4 +1,10 @@
-class LiveEventSetDecorator < ApplicationDecorator
+class LiveChapterDecorator < ApplicationDecorator
+  def country
+    {
+      'United States' => 'USA',
+    }[model.country] || model.country
+  end
+
   def name
     model.name.present? ? model.name : model.event_type.capitalize
   end
@@ -7,7 +13,7 @@ class LiveEventSetDecorator < ApplicationDecorator
     if model.virtual
       'Online'
     else
-      [model.city, model.country].select{|v| v.present? }.join(', ')
+      [model.city, country].select{|v| v.present? }.join(', ')
     end
   end
 

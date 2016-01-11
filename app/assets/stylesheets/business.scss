@@ -113,8 +113,7 @@
     }
   }
   #moar {
-    background: #fff asset-url('footer-bg.png');
-    background-size: contain;
+    background: #fff;
   }
   .product-description {
     padding-top: 100px;
@@ -130,13 +129,22 @@
   }
   .product-small {
     padding: 100px 80px;
+    &:first-child {
+      padding-left: 100px;
+    }
+    &:last-child {
+      padding-right: 100px;
+    }
     h2 {
       margin-top: 0;
+      margin-bottom: 30px;
+    }
+    ul {
+      padding-left: 60px;
     }
     &:nth-child(2) {
       border-left: 2px solid #e5e5e5;
       border-right: 2px solid #e5e5e5;
-      background: #fff;
     }
   }
 }

@@ -66,8 +66,8 @@
           .col-sm-6.col-sm-push-6.product-illustration
             = image_tag 'business/challenge.png'
           .col-sm-6.col-sm-pull-6.product-description
-            h2 Product Challenges
-            p Launch awesome contests:
+            h2 Contests
+            p Launch awesome challenges:
             ul
               li Online voting capabilities
               li Challenge submission showcase
@@ -83,7 +83,7 @@
           .col-sm-6.product-illustration
             = image_tag 'business/course.png'
           .col-sm-6.product-description
-            h2 Product Tutorials
+            h2 Tutorials
             p Create authentic product tutorials:
             ul
               li Created by top community developers
@@ -99,25 +99,51 @@
     section#moar
       .row
         .col-md-4.product-small
-        .col-md-4.product-small
-          h2 Live Hackathons
+          h2 Hackster Live
           ul
-            li
-              ' Based on our
-              = link_to 'Hardware Weekend', '/hardwareweekend'
-            li Complete planning and execution
-            Li Run-of-show services
-            li Awesome industry venues
-            li Hackathon management software
-            li Rich hardware assortment
-            li Social, photography and blogging
-            li Liability insurance coverage
-            li Dedicated project lead
-            .cta
-              .price Starting $30,000
-              a.button data-toggle="modal" data-target="#myModal" Contact us
-
+            li Hackster Ambassadors
+            li Community outreach
+            li Product workshops
+            li Platform evangelism
+            li Brand awareness
+            li Product trials
+            li Video broadcasts
+            li 30,000+ global attendees
+            li Reports and insights
+          .cta.cta-block
+            .price Starting $50,000/6 months
+            a.button data-toggle="modal" data-target="#myModal" Contact us
         .col-md-4.product-small
+          h2 Hackathons
+          ul
+            li Two days
+            li Planning and execution
+            li Event venue
+            li Hardware library
+            li Custom webpage
+            li Food and drinks
+            li Dedicated staff
+            li Blogging and social
+            li Reports and insights
+          .cta
+            .price Starting $30,000
+            a.button data-toggle="modal" data-target="#myModal" Contact us
+        .col-md-4.product-small
+          h2 Workshops
+          ul
+            li One day
+            li Planning and execution
+            li Curriculum creation
+            li Event venue
+            li Custom webpage
+            li Food and drinks
+            li Dedicated staff
+            li Blogging and social
+            li Liability insurance
+            li Reports and insights
+          .cta
+            .price Starting $5,000
+            a.button data-toggle="modal" data-target="#myModal" Contact us
 
     / section#else
       .container
@@ -147,7 +173,6 @@
           = f.input :phone, label: 'Your phone'
           = f.input :location, label: 'Your location', hint: 'City, State, Country'
           = f.input :referral, label: 'Where did you hear about us?', collection: InfoRequest::REFERRALS
-          = f.input :promotional_code, label: 'Referral code'
         .modal-footer
           = f.submit 'Send request', class: 'btn btn-primary'
           button.btn.btn-default data-dismiss="modal" type="button"  Close

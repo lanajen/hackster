@@ -150,15 +150,13 @@ html(lang="en")
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
                   = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
-                  - if current_user.reputation
-                    li
-                      a> href=users_stats_path
-                        strong>= number_with_delimiter current_user.reputation_count
-                        = pluralize_without_count current_user.reputation_count, 'point'
-                  - else
-                    li
-                      strong> 0
-                      | points
+                  li
+                    a> href=users_stats_path rel='tooltip' title="Reputation points" data-placement='bottom'
+                      strong
+                        - if current_user.reputation
+                          = number_with_delimiter current_user.reputation_count
+                        - else
+                          | 0
 
               #navbar-search
                 = render 'shared/search_form'

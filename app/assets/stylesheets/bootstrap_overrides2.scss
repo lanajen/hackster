@@ -20,6 +20,9 @@ h6, .h6 {
 .btn {
   font-size: 1em;
   font-weight: bold;
+  &.btn-lg {
+    font-size: 1.1em;
+  }
 }
 .input-group-btn .btn {
   font-size: 14px;
@@ -47,6 +50,9 @@ h6, .h6 {
   &.btn-xs {
     padding: 0 5px;
     border-width: 1px;
+  }
+  &.btn-lg {
+    padding: 8px 14px;
   }
   &:hover,
   &:focus,

@@ -13,15 +13,6 @@
           = image_tag platform.avatar.try(:imgix_url, :medium)
         h4
           = link_to platform.name, platform
-          / span.platform-type Platform
-        / ul.list-inline
-          / li.list-label Good for
-          li
-            a.tag href='' Beginners
-          li
-            a.tag href='' Wearables
-          li
-            a.tag href='' Wifi
         ul.list-inline.project-stats
           li
             span.stat-figure> = number_with_delimiter platform.projects_count

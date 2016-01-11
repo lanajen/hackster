@@ -1,37 +1,20 @@
-.events-list {
-  max-width: 90%;
-  width: 600px;
-  margin: 0 auto 50px;
-  h3 {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin: 0 0 20px;
+.chapter-thumb {
+  h4 {
+    margin-bottom: 0;
   }
-  .event {
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    &:first-of-type {
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-    }
-    h4 {
-      font-size: 1em;
-      margin: 0;
-    }
+  .thumb-bottom {
+    padding: 20px 20px 20px;
   }
 }
 
-.event-description {
-  font-weight: bold;
-  display: inline;
-  margin-right: 4px;
+.chapter-location {
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 5px;
 }
 
-.event-organizer {
-  display: inline;
+.chapter-organizer {
+  text-align: center;
   font-size: 0.9em;
   color: #777;
   img {
@@ -39,18 +22,52 @@
   }
 }
 
-.event-location {
-  font-size: 0.9em;
+.live-thumb {
+  img {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  // a {
+  //   font-weight: bold;
+  //   color: #444;
+  //   font-size: 1em;
+  // }
+  margin-bottom: 30px;
 }
 
-#live {
+#live-home {
   section {
-    padding: 100px 0;
+    padding: 80px 0;
     &.section-header {
-      padding: 200px 0;
-      background-image: asset-url('live_phx.jpg');
-      padding: 250px 0;
-      background-image: asset-url('live_delorean.jpg');
+      padding: 150px 0;
+      background-image: asset-url('live_sea.jpg');
+      h1 {
+        text-shadow: 0 0 10px #000;
+      }
+      p {
+        max-width: 500px;
+        margin: 0 auto;
+        text-shadow: 0 0 10px #000;
+      }
     }
+    h2:first-child {
+      margin: 0 0 30px;
+      text-align: center;
+    }
+  }
+}
+
+.live-modal {
+  h2 {
+    margin: 0 0 30px;
+    font-size: 1.5em;
+  }
+  h3 {
+    margin: 0 0 5px;
+    font-size: 1em;
+    font-weight: bold;
+  }
+  ul {
+    margin-bottom: 20px;
   }
 }

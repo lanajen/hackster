@@ -154,6 +154,12 @@ class Platform < Collection
     where("groups.hproperties -> 'api_username' = ?", api_username).first
   end
 
+  def self.find_by_api_username! api_username
+    record = find_by_api_username(api_username)
+    raise ActiveRecord::RecordNotFound, "Couldn't find platform with 'api_username = `#{api_username}`'" unless record
+    record
+  end
+
   def self.minimum_followers
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS)
   end

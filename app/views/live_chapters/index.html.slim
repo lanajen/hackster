@@ -1,0 +1,103 @@
+= content_for :body_class do
+  | white
+
+= content_for :no_container do
+
+  #live-home
+    section.section-header.hero-header
+      .container
+        h1 Hackster Live
+        p Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+
+    section style='padding-bottom:50px'
+      .container
+        .row.text-center
+          .col-sm-4.live-thumb
+            a.smooth-scroll href='#events'
+              = image_tag 'live/chapters.jpg'
+            = link_to 'Participate in local chapters', '#events', class: 'smooth-scroll btn btn-default'
+          .col-sm-4.live-thumb
+            a.modal-open href='javascript:void(0)' data-target='#ambassador-popup'
+              = image_tag 'live/ambassador.jpg'
+            = link_to 'Become an Ambassador', 'javascript:void(0)', data: { target: '#ambassador-popup' }, class: 'modal-open btn btn-default'
+          .col-sm-4.live-thumb
+            a.modal-open href='javascript:void(0)' data-target='#sponsor-popup'
+              = image_tag 'live/sponsor.jpg'
+            = link_to 'Become a Sponsor', 'javascript:void(0)', data: { target: '#sponsor-popup' }, class: 'modal-open btn btn-default'
+
+    section#events style='background:#fafafa'
+      .container
+        h2 Global Chapters
+        .row
+          - @chapters.each do |chapter|
+            = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
+
+
+= content_for :js do
+
+  #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target='#ambassador-popup' &times;
+        h2 Become a Hackster Ambassador
+
+        h3 What it means for you:
+        ul
+          li Build a community
+          li Be seen as a leader
+          li Keep current with the latest technology
+
+        h3 What you're committing you:
+        ul
+          li Monthly events
+          li Monthly calls and reports with Hackster
+          li Follow code of conduct
+          li Volunteer-based
+
+        h3 Resources you get:
+        ul
+          li Food and drinks cash
+          li Hardware for events
+          li Content for workshops
+
+        h3 Pre-requisites:
+        ul
+          li Hacker, Developer, Community Leader
+          li Meetup experience
+          li Account on Hackster
+          li Active on social media
+
+        = link_to 'Apply to become a Hackster Ambassador', 'https://docs.google.com/forms/d/1Gq0T2FIjMnjk6ZQB_HiKI2MattkSIDnn60ADvrwhmmU/viewform', class: 'btn btn-primary', target: '_blank'
+
+  #sponsor-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target='#sponsor-popup' &times;
+        h2 Sponsor Hackster Live
+
+        h3 What it means for you:
+        ul
+          li Build a community
+          li Brand evangelism
+          li Product activation and feedback
+
+        h3 What you're committing you:
+        ul
+          li 6 months duration
+          li Content and hardware
+          li Cross-promotion
+
+        h3 Resources you give:
+        ul
+          li Cash and hardware
+          li Content and speakers
+
+        h3 Outcome and reach:
+        ul
+          li 50,000 annual impressions
+          li Globally distributed
+          li Social, stories, community
+
+        = link_to 'Apply to sponsor Hackster Live', 'mailto:adam@hackster.io?subject=About Hackster Live Sponsorship', class: 'btn btn-primary'
