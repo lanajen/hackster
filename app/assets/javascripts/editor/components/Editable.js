@@ -100,6 +100,15 @@ const Editable = React.createClass({
     if(window && window.pe) { window.pe.resizePeContainer(); }
   },
 
+  componentDidUpdate(nextProps) {
+    /** Adds editor state to history. */
+    if(this.props.editor !== this.props.history[this.props.history.length - 1]) {
+      console.log(this.props.history);
+      // this.props.actions.addToHistory({...this.props.editor});
+      // setTimeout(() => {}, 200);
+    }
+  },
+
   componentWillReceiveProps(nextProps) {
     /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
         will see that theres a difference in the serialized vs altered form and call its prompt.

@@ -366,6 +366,9 @@ export default function(state = initialState, action) {
         updateComponent: action.storeIndex
       };
 
+    case Editor.setState:
+      return { ...action.state };
+
     default:
       return state;
   };

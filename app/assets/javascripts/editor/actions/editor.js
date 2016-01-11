@@ -401,3 +401,10 @@ export function updateComponent(storeIndex) {
     storeIndex: storeIndex
   };
 }
+
+export function setState(state) {
+  return {
+    type: Editor.setState,
+    state: state
+  };
+}
