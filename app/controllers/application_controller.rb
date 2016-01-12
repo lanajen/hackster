@@ -197,7 +197,11 @@ class ApplicationController < ActionController::Base
           session[:site_username] = cookies[:site_username]
           session[:site_password] = cookies[:site_password]
         else
-          redirect_to site_login_path(redirect_to: request.fullpath)
+          path = request.fullpath
+          if is_whitelabel? and current_site.has_path_prefix?
+            path = current_site.path_prefix + path
+          end
+          redirect_to site_login_path(redirect_to: path)
         end
       end
     end
