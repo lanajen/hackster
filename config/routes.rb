@@ -634,6 +634,9 @@ HackerIo::Application.routes.draw do
 
       resources :messages, as: :conversations, controller: :conversations
 
+      get 'site/login' => 'site_logins#new', as: :site_login
+      post 'site/login' => 'site_logins#create'
+
       resources :followers, only: [] do
         collection do
           get 'create' => 'followers#create', as: :create

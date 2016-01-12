@@ -61,7 +61,11 @@ class ApplicationController < ActionController::Base
   # hoping that putting it here will only make the condition run once when the
   # app loads and not on every request
   if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']
-    before_filter :authorize_access!
+    before_filter :authorize_site_access!
+  end
+
+  def authorize_site_access!
+    authorize_access! ENV['SITE_USERNAME'], ENV['SITE_PASSWORD']
   end
 
   def set_signed_in_cookie
@@ -187,9 +191,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
-    def authorize_access!
-      authenticate_or_request_with_http_basic do |username, password|
-        username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
+    def authorize_access! username, password
+      unless session[:site_username] == username && session[:site_password] == password
+        if cookies[:site_username] == username && cookies[:site_password] == password
+          session[:site_username] = cookies[:site_username]
+          session[:site_password] = cookies[:site_password]
+        else
+          redirect_to site_login_path(redirect_to: request.fullpath)
+        end
       end
     end
 
