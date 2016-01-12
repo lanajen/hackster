@@ -454,6 +454,12 @@
                         li
                           a.smooth-scroll href="#about-project" data-target="#about-project"
                             | About this project
+
+                        - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                          - @project.toc.each do |title|
+                            li.small-toc
+                              a.smooth-scroll href=id_for_toc(title) data-target=id_for_toc(title)
+                                = title
                         - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                           - if @hardware_parts.any?
                             li

@@ -1,7 +1,7 @@
 module StoryJsonDecorator
   private
     def parse_story_json story, options={}
-      story.map { |item|
+      story.map do |item|
         case item['type']
         when 'CE'
           build_html item['json']
@@ -35,24 +35,28 @@ module StoryJsonDecorator
         else
           ''
         end
-      }.join('')
+      end.join('')
     end
 
     def build_html json
       if json.empty?
         json
       else
-        json.map { |item|
-          if item['tag'] === 'br'
+        json.map do |item|
+          case item['tag']
+          when 'br'
             "<br/>"
           else
-            href = item['tag'] === 'a' ? " href='#{item['attribs']['href']}'" : ''
-            tag = '<' + item['tag'] + href + '>'
+            attributes = item['attribs'] || {}
+            if item['tag'] == 'h3'
+              attributes['id'] = item['content'].downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub /[^a-z]/, '-'
+            end
+            tag = '<' + item['tag'] + ' ' + attributes.map{|k,v| "#{k}='#{v}'" }.join('') + '>'
             innards = item['content']
             children = item['children'].length < 1 ? '' : build_html(item['children'])
             "#{tag}#{innards}#{children}</#{item['tag']}>"
           end
-        }.join('')
+        end.join('')
       end
     end
 

@@ -44,7 +44,7 @@ class CronTask < BaseWorker
 
     triggers = Rewardino::Trigger.find_all :cron
     badges = triggers.map{|t| t.badge }
-    User.invitation_accepted_or_not_invited.each do |user|
+    User.not_hackster.invitation_accepted_or_not_invited.each do |user|
       badges.each do |badge|
         User.delay.evaluate_badge user.id, badge.code, send_notification: true
       end

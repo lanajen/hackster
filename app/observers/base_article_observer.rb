@@ -87,6 +87,7 @@ class BaseArticleObserver < ActiveRecord::Observer
     # end
 
     if record.description_changed? or record.story_json_changed?
+      record.extract_toc!
       cache_keys << "project-#{record.id}-widgets"
     end
 

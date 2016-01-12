@@ -4,6 +4,12 @@ module MediumEditorDecorator
       if model_attribute.present?
         parsed = Nokogiri::HTML::DocumentFragment.parse model_attribute
 
+        parsed.css('h3').each do |el|
+          if el.content
+            el['id'] = el.content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub /[^a-z]/, '-'
+          end
+        end
+
         parsed.css('.embed-frame').each do |el|
           begin
             type = el['data-type']

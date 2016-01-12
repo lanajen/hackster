@@ -170,6 +170,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string
   hstore_column :hproperties, :story_json, :json_object
+  hstore_column :hproperties, :toc, :array, default: []
   hstore_column :hproperties, :tweeted_at, :datetime
 
   self.per_page = 18
@@ -419,6 +420,18 @@ class BaseArticle < ActiveRecord::Base
 
   def credits_widget
     @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'BaseArticle').first_or_create
+  end
+
+  def extract_toc!
+    toc = if story_json.present?
+      story_json.select{|i| i['type'] == 'CE' }.map{|i| i['json'].select{|j| j['tag'] == 'h3' }.map{|j| j['content'] } }
+    elsif description.present?
+      doc = Nokogiri::HTML::DocumentFragment.parse description
+      doc.css('h3').map{|h| h.text }
+    else
+      []
+    end
+    self.toc = toc.flatten.map{|v| v.try(:gsub, /[^a-zA-Z0-9]$/, '').try(:strip) }.select{|v| v.present? }
   end
 
   def get_next_time_slot last_scheduled_slot

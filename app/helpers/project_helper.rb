@@ -7,6 +7,10 @@ module ProjectHelper
     content_types
   end
 
+  def id_for_toc title
+    '#' + title.downcase.gsub(/[^a-z]/, '-')
+  end
+
   def select_tag_for_part_join join, options={}
     if part = join.part
       option_attrs = {
