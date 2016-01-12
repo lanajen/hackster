@@ -454,7 +454,6 @@
                         li
                           a.smooth-scroll href="#about-project" data-target="#about-project"
                             | About this project
-
                         - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
                           - @project.toc.each do |title|
                             li.small-toc

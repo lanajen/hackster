@@ -106,5 +106,6 @@
             .pull-right
               = link_to 'Discard changes', @project, class: 'btn tab-create pe-discard'
               = link_to 'Save changes', '', class: 'btn btn-primary pe-submit'
+              = link_to content_tag(:i, '', class: 'fa fa-chevron-right'), '', class: 'btn btn-primary pe-submit next'
 
 = render 'projects/forms/part_form'

@@ -129,47 +129,6 @@ $select2target = null;
       }
     });
 
-    // var delayOut = 500,
-    //     delayIn = 200,
-    //     setTimeoutConstIn = {},
-    //     setTimeoutConstOut = {};
-
-    // $('.platform-card-popover').hover(function(e){
-    //   clearTimeout(setTimeoutConstOut[$(this).data('target')]);
-    //   var that = this;
-    //   setTimeoutConstIn[$(this).data('target')] = setTimeout(function(){
-    //     var target = $($(that).data('target'));
-    //     var x = $(that).offset().left;
-    //     if ((x + target.outerWidth()) > window.innerWidth) {
-    //       x = $(that).offset().left + $(that).width() - target.outerWidth();
-    //     }
-    //     var y = $(that).offset().top + $(that).outerHeight() + 3;
-    //     var $window = $(window);
-    //     if ((y + target.outerHeight()) > ($window.scrollTop() + $window.height())) {
-    //       y = $(that).offset().top - target.outerHeight() - 3;
-    //     }
-    //     target.css('top', y + 'px');
-    //     target.css('left', x + 'px');
-    //     $('.platform-card').hide();
-    //     target.fadeIn(100);
-    //   }, delayIn);
-    // }, function(e){
-    //   clearTimeout(setTimeoutConstIn[$(this).data('target')]);
-    //   var target = $($(this).data('target'));
-    //   setTimeoutConstOut[$(this).data('target')] = setTimeout(function(){
-    //     target.fadeOut(100);
-    //   }, delayOut);
-    // });
-
-    // $('.platform-card').hover(function(e){
-    //   clearTimeout(setTimeoutConstOut['#' + $(this).attr('id')]);
-    // }, function(e){
-    //   var that = this;
-    //   setTimeoutConstOut['#' + $(this).attr('id')] = setTimeout(function(){
-    //     $(that).fadeOut(100);
-    //   }, delayOut);
-    // });
-
     $serializedForm = null;
     $formContent = {};
 
@@ -380,10 +339,19 @@ $select2target = null;
         pe.serializeForm();
         $('.fields.added').removeClass('added');
         $('.fields.removed').remove();
+        var nextTab = $('.pe-container').data('next-tab');
+        if (nextTab)
+          window.location.hash = nextTab.replace('#', '');
       });
 
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
+      $('.pe-container').data('next-tab', null);
+      if ($(this).hasClass('next')) {
+        var id = $('.pe-panel:visible').attr('id');
+        var a = $('.pe-nav a[href="#' + id + '"]').parent().next().find('a');
+        $('.pe-container').data('next-tab', a.attr('href'));
+      }
       pe.saveChanges(e);
     });
 
