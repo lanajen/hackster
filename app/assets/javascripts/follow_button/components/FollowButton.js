@@ -116,14 +116,16 @@ const FollowButton = React.createClass({
   getClasses() {
     let classes = {
       'append': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
-      'append_sandwich': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
       'append_hacker': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
-      'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
+      'append_sandwich': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
       'community_shorter': 'follow-button btn btn-primary btn-sm btn-shorter community_shorter',
+      'part': 'follow-button btn btn-primary btn-block btn-sm',
+      'project': 'follow-button btn btn-link btn-sm',
+      'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
+      'shorter_arduino': 'follow-button btn btn-secondary btn-sm btn-shorter',
       'text': 'follow-button btn btn-primary',
       'text_wide': 'follow-button btn btn-primary btn-block btn-ellipsis react-button-margin-bottom',
-      'part': 'follow-button btn btn-primary btn-block btn-sm',
-      'project': 'follow-button btn btn-link btn-sm'
+      'text_wide_arduino': 'follow-button btn btn-secondary btn-block btn-ellipsis react-button-margin-bottom'
     };
     return classes;
   },

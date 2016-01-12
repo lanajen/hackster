@@ -20,7 +20,7 @@
             li
               span.number>= @user.followers_count
               = pluralize_without_count @user.followers_count, 'follower'
-          = render partial: 'followers/button', locals: { followable: @user, button_type: 'text_wide', button_partial: 'button_text_wide', display_name: true }
+          = render partial: 'followers/button', locals: { followable: @user, button_type: 'text_wide_arduino', button_partial: 'button_text_wide', display_name: true }
 
       .container-userproj-info
         .clearfix
