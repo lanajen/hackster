@@ -390,8 +390,10 @@ class BaseArticle < ActiveRecord::Base
     indexable.where(wip: true).last_updated
   end
 
-  def self.with_group group
-    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
+  def self.with_group group, opts={}
+    records = joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
+    records = records.where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }) unless opts[:all] == true
+    records
   end
 
   def self.with_type content_type
