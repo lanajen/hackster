@@ -85,9 +85,17 @@
     #navigation.navbar.navbar-default.navbar-static-top
       .navbar-in style="position:relative;"
         a.create-logo href=root_path
-        .pull-right style=("padding-top: 11px;")
-          a.btn.btn-primary href=new_project_path
-            span Add project
+        - if user_signed_in?
+          .pull-right style=("padding-top: 11px;")
+            a.btn.btn-primary.add-project href=new_project_path
+              span
+          .pull-right style=("padding-top: 11px;")
+            a.btn.btn-primary href=current_user
+              span My Projects
+        - else
+          .pull-right style=("padding-top: 11px;")
+            a.btn.btn-primary href=new_project_path
+              span Add project
         #navbar-search.pull-right.show-on-desktop
           form.navbar-form action=search_path method="get"
             .form-group

@@ -124,6 +124,7 @@ const FollowButton = React.createClass({
       'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
       'shorter_arduino': 'follow-button btn btn-secondary btn-sm btn-shorter',
       'text': 'follow-button btn btn-primary',
+      'text_arduino': 'follow-button btn btn-secondary',
       'text_wide': 'follow-button btn btn-primary btn-block btn-ellipsis react-button-margin-bottom',
       'text_wide_arduino': 'follow-button btn btn-secondary btn-block btn-ellipsis react-button-margin-bottom'
     };

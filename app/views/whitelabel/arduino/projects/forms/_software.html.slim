@@ -1,0 +1,66 @@
+/
+  add libraries
+  add usage instructions (steps?)
+
+= content_for :head do
+  = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
+
+= simple_nested_form_for @project, url: project_path(@project), html: { id: 'software-form', data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='software'
+  input type='hidden' name='save' value='1'
+
+  .row
+    .col-md-8.col-md-offset-2
+      .box
+        .box-title
+          h2 The software
+          .subheading What is the code that powers this project? What apps or online services are you using?
+
+  .row
+    .col-md-8.col-md-offset-2
+      = f.error_notification
+
+      .box data-anchor='code'
+        .box-title.small-title
+          h4 Code
+        .box-content
+          .btn-group
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
+              i.fa.fa-cloud-upload>
+              | Upload or paste code
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-repository-popup'
+              i.fa.fa-link>
+              | Link existing repository
+
+          = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(CodeRepoWidget CodeWidget), embed_id: 'code-repository' }
+
+      .box data-anchor='tools'
+        .box-title.small-title
+          h4 OSs, Apps and online services
+        .box-content
+          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :software, human_type: 'app', options: { prompt: 'Select an app', label: 'App', part_type: 'software', link_type: 'product_page_link' } }
+
+    = render 'projects/forms/pe_save'
+
+
+= content_for :js do
+
+  = render_pe_popup 'code-repository', widget_class: CodeRepoWidget, url_placeholder: 'Eg: https://github.com/fritzing/fritzing-app', url_hint: 'Supported: Bitbucket, Codebender, Gist, Github', popup_style: 'repository'
+
+  = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
+
+  form id='code-upload-form' action='/api/v1/code_files' method='post' enctype='multipart/form-data' style='display:none;'
+    input type="file" name="file"
+
+  javascript:
+    $(function(){
+      var cEditor = new ProjectCodeEditor('text', '0');
+      cEditor.activate();
+      window.cEditor = cEditor;
+
+      cEditor.ace.getSession().on('change', function(e){
+        $('#code-editor-form [data-field-type="raw_code"]').val(cEditor.ace.getValue());
+        resizeModal('#code-editor-popup');
+      });
+    });

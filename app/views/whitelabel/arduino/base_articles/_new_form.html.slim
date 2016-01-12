@@ -52,7 +52,7 @@
         strong> Note:
         | We only import the URL you enter, not subsequent pages.
         br
-        small= link_to 'Click here to import multiple pages at once.', new_project_import_path
+        = link_to 'Click here to import multiple pages at once.', new_project_import_path
 
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group

@@ -167,8 +167,10 @@ body {
   font-family: 'Typonine Sans Pro';
   background: #ecf1f1;
   -webkit-font-smoothing: antialiased;
-  font-size: 16px;
-  line-height: 23px;
+  /*font-size: 16px;
+  line-height: 23px;*/
+  font-size: 18px;
+  line-height: 24px;
   letter-spacing: 0.3px;
   color: #879191;
 }
@@ -250,30 +252,78 @@ div.arduino-bbq.bbq-overlap div.user-profile svg {
 }
 /*  -- END CREATE TOOLBAR --  */
 
-.user #projects-list div.container-userproj-info h2 {
-  margin-top: 0;
+section#projects-list a.btn.btn-info.btn-sm:active,
+section#projects-list a.btn.btn-info.btn-sm:focus {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  margin-left: 1px;
 }
-div.container-userproj-info p:last-child,
-div.container-userproj-info strong:last-child {
-  margin-bottom: 0;
+.section-thumbs {
+  font-size: 16px;
 }
-div.container-userproj-info {
-  width: calc(50% - 16px);
-  padding-left: 15px;
-  position: relative;
-  display: inline-block;
-  float: left;
-  border-left: 1px solid #d4d4d4;
-  margin-bottom: 50px;
-  min-height: 142px;
+.user-profile .dropover.simple button {
+  font-size: 13.5px;
+  line-height: 20px;
+  padding: 6px 14px;
+}
+div.project-widget-with-user-thumbs p {
+  font-size: 16px;
 }
 div#user-profile-box {
-  /*width: calc(66.66666666% - 10px);*/
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  margin: 30px 0 20px 0;
+  border-bottom: 3px solid white;
+  padding-bottom: 50px;
+}
+div#user-profile-box div.container-user-info {
   width: calc(50% - 15px);
   position: relative;
   display: inline-block;
-  margin-right: 15px;
   float: left;
+  margin-right: 15px;
+}
+div#user-profile-box div.user-projects {
+  width: calc(50% - 5px);
+  border-left: 1px solid #d4d4d4;
+  position: relative;
+  display: inline-block;
+  float: left;
+  padding-left: 15px;
+  min-height: 150px;
+}
+div#user-profile-box div.user-projects ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+div#user-profile-box div.user-projects ul span.proj-number {
+  float: right;
+  background-color: #777777;
+  border-radius: 27px;
+  color: white;
+  min-width: 20px;
+  height: 20px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 21px;
+  font-weight: bold;
+  padding: 0 7px;
+  letter-spacing: 1px;
+}
+div#user-profile-box div.user-projects ul a:hover span.proj-number {
+  background-color: #00979C;
+}
+div#user-profile-box div.user-projects ul li {
+  border-bottom: 1px solid #d4d4d4;
+  padding: 3.5px;
+  width: 100%;
+}
+div#user-profile-box div.user-projects ul li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 div#user-profile-box div.profile-pic,
 div#user-profile-box div.user-info {
@@ -284,11 +334,16 @@ div#user-profile-box div.profile-pic {
   width: 150px;
   height: 150px;
   margin-right: 30px;
+  background-image: asset-url("whitelabel/arduino/Global-user-profile-big.svg");
+  background-repeat: no-repeat;
+  background-size: 150px;
 }
 div#user-profile-box div.profile-pic div.profile-img-container {
-  border: 4px solid white;
-  background: #879191;
+  /*background: #879191;*/
+  background-size: 150px;
   margin-bottom: 10px;
+  border-radius: 80px;
+  overflow: hidden;
 }
 div#user-profile-box div.profile-pic img {
   width: 100%;
@@ -326,6 +381,11 @@ div#user-profile-box div.user-info a.follow-button:hover {
 div#user-profile-box div.user-info a.follow-button:active {
   bottom: 0;
 }
+div#user-profile-box div.user-info a.follow-button + a {
+  position: absolute;
+  bottom: 10px;
+  margin-left: 111px;
+}
 .user #projects-list h2.user-name {
   margin-top: 0;
   margin-bottom: 12px;
@@ -359,10 +419,41 @@ a:hover, a:focus {
   color: #00979C;
   text-decoration: none;
 }
+.form-group a, .box-content a {
+  color: #00979C;
+}
+.form-group a.btn.btn-default.btn-sm,
+.box-content a.btn.btn-default.btn-sm,
+a.btn.btn-default.btn-xs {
+  color: #879191;
+}
+.box-content a.btn-danger, .box-content a.btn-success, .box-content a.btn-danger:hover, .box-content a.btn-success:hover {
+  color: white;
+}
+
+.form-group a:hover, .box-content a:hover {
+  color: #006569;
+}
+.box-content p.text-center {
+  margin: 10px 0 25px 0;
+}
+div#checklist li {
+  font-size: 16px;
+}
+div#checklist li a {
+  color: #879191;
+}
+div#checklist li i {
+  margin-top: 2px;
+}
 h4, .h4 {
   font-size: 21px;
   line-height: 23px;
   letter-spacing: 0.5px;
+}
+
+div.template-chooser-container + p.help-block {
+  text-align: center;
 }
 
 .avatar {
@@ -376,7 +467,7 @@ h4, .h4 {
 }
 .thumb p {
   font-size: 16px;
-  line-height: 18px;
+  line-height: 20px;
   letter-spacing: 0.6px;
 }
 .thumb .project-stats li {
@@ -639,9 +730,26 @@ div.user-profile div.dropover.simple {
   right: auto;
   left: 0;
 }
-
+.pe-panel {
+  font-size: 16px;
+}
 div.pe-panel#hardware .table > tbody > tr > td {
   vertical-align: middle;
+}
+div.pe-panel#team .form-horizontal .fields {
+    margin-bottom: 40px;
+}
+div.pe-panel#hardware p.text-muted {
+  text-align: center;
+  margin-bottom: 20px;
+}
+div.pe-panel#hardware div.btn-group,
+div.pe-panel#software div.btn-group {
+  width: 100%;
+}
+div.pe-panel#hardware div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset,
+div.pe-panel#software div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
+  width: 50%;
 }
 .parts-widget td {
   background: #F4F7F7;
@@ -658,8 +766,24 @@ div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
 }
 
 .help-block {
-  text-align: center;
+  text-align: left;
+  color: #879191;
+  margin: 10px 0 20px;
+  font-size: 16px;
+  line-height: 20px;
 }
+
+select[multiple] {
+  min-height: 160px;
+}
+
+.form-control option {
+  margin: 5px 0;
+  font-size: 16px;
+  line-height: 20px;
+  font-family: 'Typonine Sans Pro';
+}
+
 .btn .caret, .btn-follow .caret {
   margin-left: 7px;
 }
@@ -678,12 +802,82 @@ div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
   letter-spacing: 0.9px;
   max-height: 34px;
 }
+.btn-primary.add-project {
+  height: 34px;
+  border-left: 1px solid rgba(0, 92, 95, 0.5);
+  padding-left: 0;
+  padding-right: 0;
+  width: 47px;
+}
+.btn-primary.add-project span {
+  background-image: asset-url("whitelabel/arduino/Global-Plus.svg");
+  background-size: 11px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
+.btn-primary i.fa-cloud-download,
+.btn-primary i.fa-clipboard {
+  color: transparent;
+  background-repeat: no-repeat;
+  background-size: 18px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  top: -4px;
+}
+.btn-primary i.fa-cloud-download {
+  background-image: asset-url("whitelabel/arduino/icon-download.svg");
+}
+.btn-primary i.fa-clipboard {
+  background-image: asset-url("whitelabel/arduino/icon-copy.svg");
+}
+
+.repository .button-content-container {
+  margin-bottom: 15px;
+}
+.repository .button-content .buttons .btn-primary {
+  margin-bottom: 10px;
+}
+
+.repository .comment {
+  font-size: 18px;
+}
+.repository h5,
+.code-widgets .preview-header h5 {
+  margin: 0 0 5px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 25px;
+  padding-top: 4px;
+}
+.code-widgets .preview-header h5 small {
+  font-size: 18px;
+  font-weight: 300;
+  margin-left: 10px;
+}
+.repository .button-content h5 {
+  vertical-align: baseline;
+}
 
 .btn-secondary {
   background: #DAE3E3;
   box-shadow: 0 6px #BDC7C7;
   color: #7f8c8d;
 }
+
+
+.part-row .part-img {
+  width: 140px;
+  padding: 0;
+}
+.part-row .part-img img {
+  max-width: 100%;
+  width: 100%;
+}
+
 .pe-nav + .pe-nav {
   margin-left: 65px;
 }
@@ -713,6 +907,7 @@ div.pe-panel#hardware div#hardware-parts-form select.form-control.select2 {
 }
 .pe-nav li a.tab-create.active {
   border: 1px solid #95A5A6;
+  color: #566262;
 }
 .btn-primary:hover {
   transition: all ease-out .1s;
@@ -855,7 +1050,9 @@ div.pe-panel#team textarea {
   max-width: 185px;
 }
 a.btn.btn-sm.btn-danger.remove_nested_fields {
-  padding: 3px 6px 2px;
+  width: 23px;
+  height: 23px;
+  border-radius: 13px;
 }
 
 div.pe-panel#team a.btn-xs.btn-success.add_nested_fields,
@@ -892,11 +1089,15 @@ tr.sortable-disabled td {
   font-weight: 400;
   color: #879191;
 }
+div#team-form th {
+  font-weight: 600;
+}
+
 .box-title h4 {
-  font-weight: 500;
+  font-weight: 400;
   font-size: 24px;
   line-height: 26px;
-  color: #879191;
+  color: #666;
   margin-bottom: 10px;
 }
 
@@ -987,7 +1188,7 @@ tr.sortable-disabled td {
   display: block;
 }
 .form-horizontal .parts-widget .control-label {
-  padding-top: 25px;
+  padding-top: 14px;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow {
   height: 26px;
@@ -1105,6 +1306,40 @@ div#tob-bar-bg {
   border-color: transparent;
 }
 
+.box-title .subheading {
+  font-size: 20px;
+  line-height: 26px;
+  padding: 0 23px;
+}
+i.fa-cloud-upload, i.fa-link {
+  color: transparent;
+  background-size: 15px;
+  background-repeat: no-repeat;
+  width: 15px;
+}
+div.pe-panel#hardware i.fa-cloud-upload,
+div.pe-panel#hardware i.fa-link,
+div.pe-panel#software i.fa-cloud-upload,
+div.pe-panel#software i.fa-link {
+  margin-right: 9px;
+}
+i.fa-cloud-upload {
+  background-image: asset-url("whitelabel/arduino/icon-upload.svg");
+}
+i.fa-link {
+  background-image: asset-url("whitelabel/arduino/icon-link.svg");
+  background-size: 18px;
+  width: 18px;
+}
+i.fa-times-circle-o {
+  color: transparent;
+  background-size: 15px;
+  background-repeat: no-repeat;
+  width: 15px;
+  background-image: asset-url("whitelabel/arduino/Global-Close.svg");
+  background-position-y: 2px;
+}
+
 div#mini-footer {
   background-color: white;
   width: 100%;
@@ -1134,7 +1369,7 @@ div#mini-footer p {
   margin: 0 0 10px 0;
 }
 div#mini-footer a#hackster-logo {
-  background-image: asset-url("hackster_logo_text.png");
+  background-image: asset-url("whitelabel/arduino/hackster_logo.png");
   background-size: 107px;
   background-repeat: no-repeat;
   position: relative;
@@ -1151,8 +1386,6 @@ div#mini-footer a#hackster-logo:hover {
   transition-property: opacity;
   transition-duration: 0.2s;
 }
-
-
 #content.project-page {
   padding: 100px 0 60px;
 }
@@ -1260,9 +1493,27 @@ b, strong {
 .wide-thumb-body h5 {
   font-weight: 500;
   letter-spacing: 0.5px;
-  font-size: 16px;
-  line-height: 20px;
-  margin-bottom: 2px;
+  font-size: 18px;
+  line-height: 24px;
+  margin-bottom: 4px;
+}
+ul.project-stats.list-inline {
+  margin-bottom: 4px;
+}
+.btn-warning i.fa.fa-plus {
+  display: none;
+}
+.btn-warning {
+  color: #00979C;
+  background-color: transparent;
+}
+.btn-warning:hover,
+.btn-warning:active,
+.btn-warning:focus {
+  color: #006569;
+  text-decoration: none;
+  box-shadow: none;
+  background-color: transparent;
 }
 .box {
   border: none;
@@ -1284,9 +1535,7 @@ b, strong {
   line-height: 38.4px;
   letter-spacing: 1.6px;
 }
-.help-block {
-  color: #879191;
-}
+
 .form-control {
   border-radius: 0;
   box-shadow: none;

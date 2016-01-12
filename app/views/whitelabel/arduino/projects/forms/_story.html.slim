@@ -1,0 +1,27 @@
+/ super editor with text/images/videos/files
+  bold/italic/h1/links/list
+  full width input
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote story-form' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='story'
+
+  .row
+    .col-md-8.col-md-offset-2
+      .box
+        .box-title
+          h2 The story
+          .subheading What is your project about? Why did you decide to make it? How does it work? Show us with images and videos!
+
+  .row
+    .col-md-8.col-md-offset-2
+      .alert.alert-warning
+        strong> We've updated the story editor!
+        ' If you experience any issues with it, please email us directly at
+        => link_to 'admin@hackster.io', 'mailto:admin@hackster.io?subject=Need help with story editor', class: 'alert-link'
+        | with a link to your project.
+
+      = f.error_notification
+      = react_component('ReactEditor', {projectId: @project.id, projectType: 'Project', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
+
+    = render 'projects/forms/pe_save'

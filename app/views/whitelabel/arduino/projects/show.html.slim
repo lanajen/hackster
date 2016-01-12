@@ -418,49 +418,49 @@
                     #scroll-nav.section-container
                       ul.nav
                         li.active
-                          a.smooth-scroll href="#home" data-target="#home" data-offset='-40'
+                          a.smooth-scroll href="#home" data-offset='-40'
                             = @project.name
                         li
-                          a.smooth-scroll href="#about-project" data-target="#about-project"
+                          a.smooth-scroll href="#about-project"
                             | About this project
                         - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
                           - @project.toc.each do |title|
                             li.small-toc
-                              a.smooth-scroll href=id_for_toc(title) data-target=id_for_toc(title)
+                              a.smooth-scroll href=id_for_toc(title)
                                 = title
                         - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                           - if @hardware_parts.any?
                             li
-                              a.smooth-scroll href="#components" data-target="#components"
+                              a.smooth-scroll href="#components"
                                 | Components and supplies
                         - cache ["project-#{@project.id}-contents-tool-parts"], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
                           - if @tool_parts.any?
                             li
-                              a.smooth-scroll href="#tools" data-target="#tools"
+                              a.smooth-scroll href="#tools"
                                 | Necessary tools and machines
                         - cache ["project-#{@project.id}-contents-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                           - if @cad_widgets.any?
                             li
-                              a.smooth-scroll href="#cad" data-target="#cad"
+                              a.smooth-scroll href="#cad"
                                 | Custom parts and enclosures
                         - cache ["project-#{@project.id}-contents-schematics"], tag: ["project-#{@project.id}-schematics"], skip_digest: true do
                           - if @schematic_widgets.any?
                             li
-                              a.smooth-scroll href="#schematics" data-target="#schematics"
+                              a.smooth-scroll href="#schematics"
                                 | Schematics
                         - cache ["project-#{@project.id}-contents-software-parts"], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
                           - if @software_parts.any?
                             li
-                              a.smooth-scroll href="#apps" data-target="#apps"
+                              a.smooth-scroll href="#apps"
                                 | Apps and online services
                         - cache ["project-#{@project.id}-contents-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
                           - if @code_widgets.any?
                             li
-                              a.smooth-scroll href="#code" data-target="#code"
+                              a.smooth-scroll href="#code"
                                 | Code
                         - if (@project.build_logs_count > 0 and !@project.private_logs)
                           li
-                            a.smooth-scroll href="#logs"  data-target="#logs"
+                            a.smooth-scroll href="#logs"
                               | Build Logs
                               span.nav-count
                                 | (
@@ -468,14 +468,14 @@
                                 | )
                         - if (@project.issues_count > 0 and !@project.private_issues)
                           li
-                            a.smooth-scroll href="#issues"  data-target="#issues"
+                            a.smooth-scroll href="#issues"
                               | Issues
                               span.nav-count
                                 | (
                                 = @project.issues_count
                                 | )
                         li
-                          a.smooth-scroll href="#comments"  data-target="#comments"
+                          a.smooth-scroll href="#comments"
                             | Comments
                             span.nav-count
                               | (
