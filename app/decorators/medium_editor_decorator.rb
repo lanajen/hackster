@@ -6,7 +6,7 @@ module MediumEditorDecorator
 
         parsed.css('h3').each do |el|
           if el.content
-            el['id'] = el.content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub /[^a-z]/, '-'
+            el['id'] = 'toc-' + el.content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub(/[^a-z]/, '-')
           end
         end
 

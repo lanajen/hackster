@@ -38,43 +38,53 @@ module StoryJsonDecorator
       end.join('')
     end
 
-    def build_html json
-      if json.empty?
-        json
-      else
-        json.map do |item|
-          case item['tag']
-          when 'br'
-            "<br/>"
-          else
-            attributes = item['attribs'] || {}
-            if item['tag'] == 'h3'
-              attributes['id'] = item['content'].downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub /[^a-z]/, '-'
+    private
+      def build_html json
+        if json.empty?
+          json
+        else
+          json.map do |item|
+            case item['tag']
+            when 'br'
+              "<br/>"
+            else
+              attributes = item['attribs'] || {}
+              if item['tag'] == 'h3'
+                content = extract_content(item)
+                attributes['id'] = 'toc-' + content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub(/[^a-z]/, '-') if content
+              end
+              tag = '<' + item['tag'] + ' ' + attributes.map{|k,v| "#{k}='#{v}'" }.join('') + '>'
+              innards = item['content']
+              children = item['children'].length < 1 ? '' : build_html(item['children'])
+              "#{tag}#{innards}#{children}</#{item['tag']}>"
             end
-            tag = '<' + item['tag'] + ' ' + attributes.map{|k,v| "#{k}='#{v}'" }.join('') + '>'
-            innards = item['content']
-            children = item['children'].length < 1 ? '' : build_html(item['children'])
-            "#{tag}#{innards}#{children}</#{item['tag']}>"
-          end
-        end.join('')
+          end.join('')
+        end
       end
-    end
 
-    def embed_html data, type, options
-      case type
-      when 'Carousel'
-        h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash], options: options }
-      when 'Url'
-        embed = Embed.new url: data[:url], default_caption: data[:caption]
-        h.render partial: "api/embeds/embed_frame", locals: { embed: embed, caption: data[:caption], options: options }
-      when 'File'
-        embed = Embed.new file_id: data[:id]
-        h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
-      when 'Widget'
-        embed = Embed.new widget_id: data[:id]
-        h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
-      else
-        ''
+      def extract_content item
+        return item['content'] if item['content']
+
+        item['children'].map do |child|
+          extract_content(child)
+        end.join(' ')
       end
-    end
+
+      def embed_html data, type, options
+        case type
+        when 'Carousel'
+          h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash], options: options }
+        when 'Url'
+          embed = Embed.new url: data[:url], default_caption: data[:caption]
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, caption: data[:caption], options: options }
+        when 'File'
+          embed = Embed.new file_id: data[:id]
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
+        when 'Widget'
+          embed = Embed.new widget_id: data[:id]
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
+        else
+          ''
+        end
+      end
 end

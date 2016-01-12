@@ -8,7 +8,7 @@ class Article < BaseArticle
   CONTENT_TYPES_TO_HUMAN = PUBLIC_CONTENT_TYPES.invert.freeze
 
   add_checklist :parts, 'Products', 'parts.any?'
-  add_checklist :description, 'Description', 'Sanitize.clean(description).try(:strip).present?'
+  add_checklist :description, 'Description', 'Sanitize.clean(description).try(:strip).present? or story_json.present?'
 
   def self.model_name
     BaseArticle.model_name

@@ -424,7 +424,7 @@ class BaseArticle < ActiveRecord::Base
 
   def extract_toc!
     toc = if story_json.present?
-      story_json.select{|i| i['type'] == 'CE' }.map{|i| i['json'].select{|j| j['tag'] == 'h3' }.map{|j| j['content'] } }
+      story_json.select{|i| i['type'] == 'CE' }.map{|i| i['json'].select{|j| j['tag'] == 'h3' }.map{|j| extract_content_from_story_json(j) } }
     elsif description.present?
       doc = Nokogiri::HTML::DocumentFragment.parse description
       doc.css('h3').map{|h| h.text }
@@ -741,6 +741,14 @@ class BaseArticle < ActiveRecord::Base
     def ensure_website_protocol
       self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
       self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
+    end
+
+    def extract_content_from_story_json item
+      return item['content'] if item['content']
+
+      item['children'].map do |child|
+        extract_content_from_story_json(child)
+      end.join(' ')
     end
 
     def generate_slug

@@ -71,8 +71,6 @@ class BaseArticleObserver < ActiveRecord::Observer
         new_state = :closed
       end
 
-      raise 'state: ' + new_state.to_s
-
       record.review_thread.update_column :workflow_state, new_state if record.review_thread and new_state
     end
 
