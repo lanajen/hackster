@@ -110,7 +110,7 @@ class Part < ActiveRecord::Base
       '1=1'
     end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).order('groups.full_name ASC, parts.name ASC').includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).includes(:platform)
   end
 
   def self.approved

@@ -26,7 +26,12 @@ class Api::V1::PartsController < Api::V1::BaseController
       end
     end
 
-    sort = params[:sort] || Part::DEFAULT_SORT
+    sort = params[:sort]
+    logger.debug 'sort: ' + sort.to_s
+    unless sort.in? Part::SORTING.keys
+      sort = Part::DEFAULT_SORT
+    end
+    logger.debug 'sort: ' + sort.to_s
     @parts = @parts.send(Part::SORTING[sort])
 
     if params[:approved]
