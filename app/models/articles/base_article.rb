@@ -119,7 +119,7 @@ class BaseArticle < ActiveRecord::Base
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :locale, :article
   attr_accessor :current, :private_changed, :needs_platform_refresh,
-    :approved_changed
+    :approved_changed, :updater_id
   accepts_nested_attributes_for :images, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, allow_destroy: true
