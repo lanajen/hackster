@@ -656,6 +656,12 @@ const ContentEditable = React.createClass({
     let endParent = Utils.getRootParentElement(range.endContainer);
     let endDepth = Utils.findChildsDepthLevel(endParent, ReactDOM.findDOMNode(this));
 
+    if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text') && e.keyCode !== 13) {
+      parentNode.classList.remove('react-editor-placeholder-text');
+      parentNode.textContent = '';
+      parentNode.appendChild(document.createElement('br'));
+    }
+
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
       pastedText = window.clipboardData.getData('Text');
@@ -700,6 +706,7 @@ const ContentEditable = React.createClass({
 
     domWalk(parentWrappingNode, (child, root, depth) => {
       if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
+        console.log(( root.isEqualNode(range.startContainer) && depth === 0 ), ( child.isEqualNode(range.startContainer ) ));
         let start = range.startContainer.textContent.substring(0, range.startOffset);
         let end = range.endContainer.textContent.substring(range.endOffset);
         let assuredRoot = Utils.getRootParentElement(root);
@@ -744,6 +751,7 @@ const ContentEditable = React.createClass({
 
     return Utils.parseDescription(pastedText)
       .then(results => {
+        if(!results.length) { return; }
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
         let clean = results.filter(item => {
           return item.type === 'CE';

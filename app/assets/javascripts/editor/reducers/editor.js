@@ -810,8 +810,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
     cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: component.hash };
   } else {
-    /** Remove the line if it was video url. */
-    let bottomDepthStart = mediaType === 'Video' ? depth+2 : depth+1;
+    let bottomDepthStart = depth+1;
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart);
     let topCE = { type: 'CE', hash: component.hash, json: top };
