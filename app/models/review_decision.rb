@@ -44,6 +44,10 @@ class ReviewDecision < ActiveRecord::Base
   hstore_column :feedback, :general, :string
   hstore_column :feedback, :rejection_reason, :string
 
+  def self.approved
+    where approved: true
+  end
+
   private
     # def has_at_least_one_field_selected
     #   errors.add :base, 'at least one field needs to be selected' unless (FEEDBACK_FIELDS.keys + %i(no_changes_needed rejection_reason)).select{|f| send(f).present? }.any?

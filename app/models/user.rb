@@ -177,6 +177,7 @@ class User < ActiveRecord::Base
   has_many :replicated_projects, source_type: 'BaseArticle', through: :follow_relations, source: :followable
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'BaseArticle'
+  has_many :review_decisions
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :thoughts

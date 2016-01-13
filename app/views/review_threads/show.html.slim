@@ -12,7 +12,7 @@
           = link_to 'Content guidelines', guidelines_path, class: 'btn btn-link btn-sm'
         .pull-right= link_to content_tag(:i, '', class: 'fa fa-times'), @project, class: 'btn btn-link btn-sm', rel: 'tooltip', title: 'Close sidebar', data: { placement: 'bottom' }
         .pull-right= link_to content_tag(:i, '', class: 'fa fa-minus'), 'javascript:void(0)', class: 'btn btn-link btn-sm toggle-review-frame', rel: 'tooltip', title: 'Minimize sidebar', data: { placement: 'bottom' }
-      = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: current_user.is?(:admin, :moderator) }, {}
+      = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: (current_user.is?(:admin, :moderator) and !current_user.id.in?(@project.users.pluck(:id))) }, {}
 
 = content_for :js do
 

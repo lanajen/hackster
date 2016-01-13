@@ -10,6 +10,10 @@ class ReviewDecisionObserver < ActiveRecord::Observer
 
     if record.user.can? :approve, record
       record.update_column :approved, true
+      # approve/reject all other decisions
+      record.review_thread.decisions.where.not(id: record.id).each do |decision|
+        decision.update_column :approved, decision.decision.in?([record.decision, 'needs_work'])
+      end
       finalize_decision record
     end
 
@@ -22,13 +26,16 @@ class ReviewDecisionObserver < ActiveRecord::Observer
 
   private
     def finalize_decision record
+      project = record.project
+      thread = record.review_thread
+
       case record.decision
       when 'approve'
-        record.project.approve_later! reviewer_id: record.user_id
-        record.review_thread.update_column :workflow_state, :closed
+        project.approve_later! reviewer_id: record.user_id if project.can_approve?
+        thread.update_column :workflow_state, :closed unless thread.closed?
       when 'reject'
-        record.project.reject! reviewer_id: record.user_id
-        record.review_thread.update_column :workflow_state, :closed
+        project.reject! reviewer_id: record.user_id if project.can_reject?
+        thread.update_column :workflow_state, :closed unless thread.closed?
       end
     end
 end

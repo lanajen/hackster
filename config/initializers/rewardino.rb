@@ -285,6 +285,15 @@ Rewardino::Event.create!({
   users_count_method: -> (project) { project.team_members_count }
 })
 
+Rewardino::Event.create!({
+  code: :reviewed_project,
+  name: 'Project reviewed',
+  description: "You reviewed a project",
+  points: 5,
+  date_method: -> (decision) { decision.created_at },
+  models_method: -> (user) { user.is?(:admin, :hackster_moderator) ? [] : user.review_decisions.approved }
+})
+
 # Rewardino::Event.create!({
 #   code: :approved_article,
 #   name: 'Article approved',
