@@ -218,7 +218,8 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
-  after_validation :geocode, if: proc{|u| u.city_changed? or u.country_changed? }
+  after_validation :geocode, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.present? }
+  after_validation :reset_geocoding, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.blank? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -901,5 +902,9 @@ class User < ActiveRecord::Base
 
     def postpone_email_change?
       super && confirmed?
+    end
+
+    def reset_geocoding
+      self.latitude = self.longitude = nil
     end
 end

@@ -48,7 +48,7 @@
 = content_for :js do
 
   = javascript_include_tag 'live'
-  script async='async' defer='defer' src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkjq63eS0klk9HLPBLrth6j6QMBPbNmMo&callback=initMap"
+  script async='async' defer='defer' src="https://maps.googleapis.com/maps/api/js?key=#{ENV['GMAPS_BROWSER_KEY']}&callback=initMap"
   = javascript_include_tag '//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js'
 
   #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
