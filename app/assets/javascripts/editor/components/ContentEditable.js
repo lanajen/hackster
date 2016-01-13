@@ -656,7 +656,7 @@ const ContentEditable = React.createClass({
     let endParent = Utils.getRootParentElement(range.endContainer);
     let endDepth = Utils.findChildsDepthLevel(endParent, ReactDOM.findDOMNode(this));
 
-    if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text') && e.keyCode !== 13) {
+    if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text')) {
       parentNode.classList.remove('react-editor-placeholder-text');
       parentNode.textContent = '';
       parentNode.appendChild(document.createElement('br'));
@@ -706,7 +706,6 @@ const ContentEditable = React.createClass({
 
     domWalk(parentWrappingNode, (child, root, depth) => {
       if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
-        console.log(( root.isEqualNode(range.startContainer) && depth === 0 ), ( child.isEqualNode(range.startContainer ) ));
         let start = range.startContainer.textContent.substring(0, range.startOffset);
         let end = range.endContainer.textContent.substring(range.endOffset);
         let assuredRoot = Utils.getRootParentElement(root);
