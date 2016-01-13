@@ -1,5 +1,4 @@
 var map, markerClusterer, initialLocation;
-// var browserSupportFlag = new Boolean();
 
 function initMap() {
   var mapOpts = {
@@ -14,28 +13,21 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), mapOpts);
 
   if (navigator.geolocation) {
-    //browserSupportFlag = true;
     navigator.geolocation.getCurrentPosition(function(position) {
       initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       map.setCenter(initialLocation);
     }, function() {
-      //handleNoGeolocation(browserSupportFlag);
+      handleNoGeolocation();
     });
   }
   // Browser doesn't support Geolocation
   else {
-    //browserSupportFlag = false;
-    //handleNoGeolocation(browserSupportFlag);
+    handleNoGeolocation();
   }
 
-  function handleNoGeolocation(errorFlag) {
-    if (errorFlag == true) {
-      alert("Geolocation service failed.");
-      initialLocation = newyork;
-    } else {
-      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-      initialLocation = siberia;
-    }
+  function handleNoGeolocation() {
+    console.log("Geolocation service failed.");
+    initialLocation = new google.maps.LatLng(37.774929, -122.419416);  // SF
     map.setCenter(initialLocation);
   }
 
