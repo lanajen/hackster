@@ -657,7 +657,8 @@ const ContentEditable = React.createClass({
   },
 
   handleUndo(e) {
-
+    e.preventDefault();
+    this.props.actions.getPreviousHistory();
   },
 
   handleRedo(e) {
@@ -766,6 +767,7 @@ const ContentEditable = React.createClass({
       .then(results => {
         if(!results.length) { return; }
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
+        console.log('R', results);
         let clean = results.filter(item => {
           return item.type === 'CE';
         }).reduce((acc, curr) => {

@@ -11,6 +11,27 @@ export function setDOM(html, depth, storeIndex) {
   };
 }
 
+export function domUpdated(bool) {
+  return {
+    type: Editor.domUpdated,
+    bool: bool
+  };
+}
+
+export function setEditorState(state) {
+  return {
+    type: Editor.setEditorState,
+    state: state
+  };
+}
+
+export function getPreviousHistory() {
+  return function(dispatch, getState) {
+    let history = getState().history;
+
+  };
+}
+
 export function hasUnsavedChanges(bool) {
   return {
     type: Editor.hasUnsavedChanges,

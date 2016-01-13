@@ -16,6 +16,12 @@ import Parser from '../utils/Parser';
 
 const Editable = React.createClass({
 
+  getInitialState() {
+    return {
+      domUpdated: false
+    };
+  },
+
   componentWillMount() {
     let metaList = document.getElementsByTagName('meta');
     let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
@@ -100,15 +106,6 @@ const Editable = React.createClass({
     if(window && window.pe) { window.pe.resizePeContainer(); }
   },
 
-  componentDidUpdate(nextProps) {
-    /** Adds editor state to history. */
-    if(this.props.editor !== this.props.history[this.props.history.length - 1]) {
-      console.log(this.props.history);
-      // this.props.actions.addToHistory({...this.props.editor});
-      // setTimeout(() => {}, 200);
-    }
-  },
-
   componentWillReceiveProps(nextProps) {
     /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
         will see that theres a difference in the serialized vs altered form and call its prompt.
@@ -133,6 +130,19 @@ const Editable = React.createClass({
           button.removeAttribute('disabled');
         }
       }
+    }
+
+    /** Adds editor store to history. */
+    if(this.props.editor.domUpdated && !this.state.domUpdated) {
+      this.setState({
+        domUpdated: true
+      }, () => {
+        console.log('UPDATE HISTORY!');
+        this.props.actions.domUpdated(false);
+        this.props.actions.updateHistory(_.cloneDeep(this.props.editor));
+
+        this.setState({ domUpdated: false });
+      });
     }
   },
 

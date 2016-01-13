@@ -95,7 +95,7 @@ const Editor = React.createClass({
         <div className="react-editor-toolbar-container">
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
-        <Editable {...this.props} />
+        <Editable { ...this.props } />
         <Dialog actions={dialogActions} open={this.state.openDialog} onRequestClose={this.handleDialogClose}>{dialogBody}</Dialog>
         <Snackbar style={{top: 10, right: 10, bottom: 'none', left: 'none', zIndex: 10001, maxWidth: '100%', transition: 'transform 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, visibility 0ms cubic-bezier(0.23, 2, 0.32, 1) 0ms'}}
                   bodyStyle={{margin: 0}} open={this.props.editor.errorMessenger.show}

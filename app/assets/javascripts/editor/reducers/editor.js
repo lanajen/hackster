@@ -31,7 +31,8 @@ const initialState = {
   errorMessenger: { show: false, msg: '' },
   lastMediaHash: null,
   isIE: false,
-  updateComponent: null
+  updateComponent: null,
+  domUpdated: false
 };
 
 export default function(state = initialState, action) {
@@ -43,8 +44,18 @@ export default function(state = initialState, action) {
       newDom = updateComponentAtIndex(dom, action.html, action.storeIndex, action.depth);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
+
+    case Editor.domUpdated:
+      return {
+        ...state,
+        domUpdated: action.bool
+      };
+
+    case Editor.setEditorState:
+      return { ...action.state };
 
     case Editor.hasUnsavedChanges:
       return {
@@ -823,7 +834,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     dom.splice(storeIndex, 1, topCE);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, bottomCE);
-
+    console.log(mediaType, bottom, top, media);
     newNodeForCursor = Parser.toHtml([bottomCE.json[0]]);
     newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
     cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: bottomCE.hash };

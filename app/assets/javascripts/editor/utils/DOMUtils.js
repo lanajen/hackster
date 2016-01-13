@@ -975,8 +975,8 @@ const Utils = {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
         if(err) reject(err);
-
         let clean = this.createContainers(dom);
+        console.log("DOM", dom);
         this.convertVideoSrc(clean, result => {
           result = result.filter(item => { return item !== null; });
 
