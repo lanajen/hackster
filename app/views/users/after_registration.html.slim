@@ -19,7 +19,7 @@
 
           = f.input :mini_resume, as: :text, input_html: { rows: 4 },
             hint: 'A short sentence, max 140 characters', label: 'About me'
-          = f.input :city, label: 'City'
+          = f.input :city, label: 'City', hint: 'Include state if relevant'
           = f.input :country, label: 'Country', input_html: { class: 'form-control' }
           .form-actions
             .form-actions-inner

@@ -71,3 +71,70 @@
     margin-bottom: 20px;
   }
 }
+
+.user-thumb-gmap {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.9em;
+  &:last-child {
+    border-bottom: 0;
+  }
+  .name {
+    margin-bottom: 5px;
+    img {
+      margin-right: 5px;
+      width: 30px;
+    }
+  }
+  .location {
+    font-size: 0.9em;
+    color: #777;
+  }
+  .tags {
+    .label {
+      margin-right: 3px;
+      display: inline-block;
+    }
+    height: 22px;
+    overflow: hidden;
+  }
+  .tags-title {
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.map-container {
+  @include flexbox((
+    display: flex
+  ));
+  #map {
+    background: #ddd;
+    @include flexbox((
+      flex-basis: 100%
+    ));
+    width: 100%;
+    height: 500px;
+    label {
+      width: auto;
+      display:inline;
+    }
+    img {
+      max-width: none;
+    }
+  }
+  .user-list {
+    @include flexbox((
+      flex-basis: 40%
+    ));
+    border: 2px solid #ddd;
+    border-left: 0;
+    height: 500px;
+    overflow-y: scroll;
+  }
+}

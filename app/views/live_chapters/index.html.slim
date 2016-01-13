@@ -32,8 +32,24 @@
           - @chapters.each do |chapter|
             = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
 
+    section#members
+      .container
+        h2 Connect with others in your area
+        .map-container
+          #map
+          #user-list.user-list
+            .user-thumb-gmap Browse the map to see Hackster members in the area.
+        small.text-muted
+          ' Want to be on the map?
+          => link_to 'Add your location to your profile.', profile_edit_path
+          ' Don't want to be on it?
+          => link_to 'Minimize the visibility of your profile.', edit_user_registration_path
 
 = content_for :js do
+
+  = javascript_include_tag 'live'
+  script async='async' defer='defer' src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkjq63eS0klk9HLPBLrth6j6QMBPbNmMo&callback=initMap"
+  = javascript_include_tag '//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js'
 
   #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
     .popup-overlay-bg

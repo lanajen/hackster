@@ -114,6 +114,8 @@ class User < ActiveRecord::Base
     }
   }
 
+  geocoded_by :full_location
+
   editable_slug :user_name
 
   devise :database_authenticatable, :registerable, :invitable,
@@ -216,6 +218,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
+  after_validation :geocode, if: proc{|u| u.city_changed? or u.country_changed? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -355,6 +358,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.for_map opts={}
+    publyc.not_hackster.invitation_accepted_or_not_invited.with_geo_location(opts)
+  end
+
   def self.hackster
     where "users.email ILIKE '%@user.hackster.io'"
   end
@@ -373,6 +380,14 @@ class User < ActiveRecord::Base
 
   def self.top
     joins(:reputation).order('reputations.points DESC')
+  end
+
+  def self.with_geo_location opts={}
+    if opts[:sw_lat].present? and opts[:sw_lng].present? and opts[:ne_lat].present? and opts[:ne_lng].present?
+      within_bounding_box([opts[:sw_lat], opts[:sw_lng], opts[:ne_lat], opts[:ne_lng]])
+    else
+      geocoded
+    end
   end
 
   def self.with_at_least_one_action
@@ -490,6 +505,10 @@ class User < ActiveRecord::Base
       pre_contest: challenge.ideas.where(user_id: id),
       contest: challenge.entries.where(user_id: id).includes(:project),
     }
+  end
+
+  def full_location
+    [city, country].select{|v| v.present? }.join(', ')
   end
 
   # def has_access? project

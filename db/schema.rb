@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160111210620) do
+ActiveRecord::Schema.define(version: 20160112201305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -953,6 +953,8 @@ ActiveRecord::Schema.define(version: 20160111210620) do
     t.hstore   "hcounters_cache"
     t.hstore   "hproperties"
     t.boolean  "private",                            default: false
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

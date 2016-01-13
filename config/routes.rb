@@ -62,7 +62,7 @@ HackerIo::Application.routes.draw do
           get '' => 'review_threads#show'
         end
         resources :thoughts
-        resources :users, only: [] do
+        resources :users, only: [:index] do
           get :autocomplete, on: :collection
         end
         resources :widgets, only: [:destroy, :update, :create]
@@ -115,7 +115,7 @@ HackerIo::Application.routes.draw do
           resources :notifications, only: [:index]
           get 'search' => 'search#index'
           resources :thoughts
-          resources :users, only: [] do
+          resources :users, only: [:index] do
             get :autocomplete, on: :collection
           end
           resources :widgets, only: [:destroy, :update, :create]
