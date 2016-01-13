@@ -33,6 +33,10 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def before_update record
+    if record.changed?
+      ProjectWorker.perform_async 'create_review_event', record.id, record.updater_id, :project_update, changed: record.changed
+    end
+
     if (record.changed & %w(private workflow_state platform_tags_string)).any?
       record.needs_platform_refresh = true
     end
