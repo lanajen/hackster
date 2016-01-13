@@ -60,7 +60,7 @@
                   use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
                 img src=asset_path('whitelabel/arduino/barbecue/temboo-drop.svg').gsub(asset_host_with_protocol, '')
                 p Connect to Temboo
-      #closeArea
+      #closeArea.hidden
 
     - if user_signed_in?
       .user-profile
@@ -106,8 +106,10 @@
     /! #navigation
     #filler-bg-toolbar
 
+= content_for :bootstrap_flash do
+  = bootstrap_flash nil, false
+
 = content_for :js do
-  = javascript_include_tag "https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"
   = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"
   javascript:
     WebFont.load({

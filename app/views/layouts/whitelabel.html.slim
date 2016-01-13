@@ -94,7 +94,10 @@ html lang="en" class=content_for(:html_class)
                 = render 'shared/search_form'
 
       #main
-        = bootstrap_flash
+        - if content_for?(:bootstrap_flash)
+          = yield(:bootstrap_flash)
+        - else
+          = bootstrap_flash
         - if content_for?(:no_container)
           = yield(:no_container)
         - else

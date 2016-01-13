@@ -24,10 +24,11 @@
                 span.number>= @user.followers_count
                 = pluralize_without_count @user.followers_count, 'follower'
             - if user_is_current?
-              = link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, 'Edit profile'), profile_edit_path, class: 'btn btn-default'
+              = link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, 'Edit profile'), 'https://id.arduino.cc/', class: 'btn btn-default'
             - else
               = render partial: 'followers/button', locals: { followable: @user, button_type: 'text_arduino', button_partial: 'button_text', display_name: true }
-              a href="#"  View Arduino Profile
+              - if auth = @user.authorizations.where(provider: 'arduino').first
+                a href="https://id.arduino.cc/#{auth.uid}"  View Arduino Profile
         .user-projects
           ul
             li

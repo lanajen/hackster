@@ -646,5 +646,8 @@ function resetSortablePositions(target){
 function showAlerts() {
   window.setTimeout(function(){
     $('.alert-top').removeClass('alert-hidden');
+    window.setTimeout(function(){
+      $('.alert-top').addClass('alert-hidden');
+    }, 5000);
   }, 100);
 }
