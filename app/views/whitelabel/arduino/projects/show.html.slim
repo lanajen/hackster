@@ -427,7 +427,7 @@
                           - @project.toc.each do |title|
                             li.small-toc
                               a.smooth-scroll href=id_for_toc(title)
-                                = title
+                                = title_for_toc title
                         - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                           - if @hardware_parts.any?
                             li

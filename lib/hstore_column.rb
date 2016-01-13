@@ -44,6 +44,7 @@ module HstoreColumn
 
         val = case type
         when :array
+          val = val.map{|v| v.kind_of?(String) ? v.gsub(/,/, '&#44;') : v }
           val.join(',')
         when :boolean
           val.to_i
@@ -57,6 +58,7 @@ module HstoreColumn
           # ActionController::Base.helpers.strip_tags val
           val
         end if val
+
         column_name = options[:column_name].presence || attribute
         store[column_name] = val
 
@@ -137,7 +139,7 @@ module HstoreColumn
       def cast_value value, type
         case type
         when :array
-          value.split(',').flatten
+          value.split(/,/).map{|v| v.kind_of?(String) ? v.gsub('&#44;', ',') : v }.flatten
         when :boolean
           value == '1' or value == true or value == 'true' or value == 't' or value == 1
         when :datetime

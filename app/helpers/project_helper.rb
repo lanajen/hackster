@@ -11,6 +11,10 @@ module ProjectHelper
     '#toc-' + title.downcase.gsub(/[^a-z]/, '-')
   end
 
+  def title_for_toc title
+    raw title
+  end
+
   def select_tag_for_part_join join, options={}
     if part = join.part
       option_attrs = {
