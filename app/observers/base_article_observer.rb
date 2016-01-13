@@ -33,7 +33,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if record.changed?
+    if record.changed? and record.updater_id
       ProjectWorker.perform_async 'create_review_event', record.id, record.updater_id, :project_update, changed: record.changed
     end
 
