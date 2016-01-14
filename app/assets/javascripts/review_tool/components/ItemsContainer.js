@@ -33,6 +33,17 @@ const ItemsContainer = React.createClass({
       );
     });
 
+    if (!this.props.hasDecisions) {
+      items.push((
+        <div className='review-item review-item-event'>
+          <div className='review-item-header'>
+            <i className="fa fa-clock-o" />
+            <span>No feedback has been left yet</span>
+          </div>
+        </div>
+      ));
+    }
+
     if (items.length) {
       return items;
     } else {
@@ -40,7 +51,7 @@ const ItemsContainer = React.createClass({
         <div className='review-item review-item-event'>
           <div className='review-item-header'>
             <i className="fa fa-clock-o" />
-            <span>No feedback has been left yet</span>
+            <span>Nothing to see yet</span>
           </div>
         </div>
       );
