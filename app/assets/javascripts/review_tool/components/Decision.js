@@ -3,12 +3,17 @@ import ItemHeader from './ItemHeader';
 
 const Decision = React.createClass({
   render: function() {
+
+    let privateComment = (this.props.canAdmin ?
+                          this.renderComment(this.props.feedback.private_comment, 'Private comment (moderators only)') :
+                          null);
     return (
       <div className=''>
         <ItemHeader action='left a review' {...this.props} />
         <div className='review-item-body'>
           {this.renderDecision()}
           {this.renderComment(this.props.feedback.general, 'General comment')}
+          {privateComment}
         </div>
       </div>
     );

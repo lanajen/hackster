@@ -42,6 +42,7 @@ class ReviewDecision < ActiveRecord::Base
   end
   hstore_column :feedback, :no_changes_needed, :boolean
   hstore_column :feedback, :general, :string
+  hstore_column :feedback, :private_comment, :string
   hstore_column :feedback, :rejection_reason, :string
 
   def self.approved

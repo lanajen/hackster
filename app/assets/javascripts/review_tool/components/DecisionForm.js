@@ -47,6 +47,9 @@ const DecisionForm = React.createClass({
     if (this.refs.general)
       data['general'] = ReactDOM.findDOMNode(this.refs.general.refs.textarea).value;
 
+    if (this.refs.privateComment)
+      data['private_comment'] = ReactDOM.findDOMNode(this.refs.privateComment.refs.textarea).value;
+
     switch (this.state.decision) {
       case 'needs_work':
         Object.assign(data, {
@@ -180,7 +183,12 @@ const DecisionForm = React.createClass({
   renderGeneralComment: function() {
     if (!this.state.decision) return;
 
-    return this.renderTextArea('General comment', 'general');
+    return (
+      <div>
+        {this.renderTextArea('General comment', 'general')}
+        {this.renderTextArea('Private comment (moderators only)', 'privateComment')}
+      </div>
+    );
   },
 
   renderInputs: function() {
