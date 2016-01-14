@@ -2,13 +2,15 @@ module ScraperStrategies
   class Makezine < Wordpress
 
     def crap_list
-      super + %w(.ctx-sidebar-container)
+      super + %w(.ctx-sidebar-container .essb_links .ctx-sidebar-container)
     end
 
     private
       def after_parse
         extract_components
         extract_one_liner
+
+        @project.product_tags_string = @parsed.css('.post-tags a').map{|t| t.text.gsub('#', '') }.join(',')
         super
       end
 
@@ -18,6 +20,14 @@ module ScraperStrategies
 
         parts = @parsed.css('.parts-tools .tab-pane#2 li')
         process_components parts, part_class=ToolPart
+      end
+
+      def extract_cover_image
+        if img = @parsed.at_css('.story-hero-image')
+          img
+        else
+          super
+        end
       end
 
       def extract_one_liner
@@ -52,7 +62,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('.projects.type-projects .span8')
+        @parsed.at_css('.projects.type-projects .span8') || @parsed.at_css('article')
       end
   end
 end
