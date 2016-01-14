@@ -35,7 +35,7 @@ const ItemsContainer = React.createClass({
 
     if (!this.props.hasDecisions) {
       items.push((
-        <div className='review-item review-item-event'>
+        <div key='somerandomkey' className='review-item review-item-event'>
           <div className='review-item-header'>
             <i className="fa fa-clock-o" />
             <span>No feedback has been left yet</span>

@@ -52,6 +52,18 @@ function addToCollectionByDate(inputCollection, outputCollection, type) {
   return outputCollection;
 }
 
+function compactItems(items) {
+  let prevItem;
+  return items.reverse().filter(function(item){
+    let bool = !(prevItem &&
+      prevItem.type == item.type && item.type == 'event' &&
+      prevItem.message == item.message &&
+      prevItem.user_id == item.user_id);
+    prevItem = item;
+    return bool;
+  }).reverse();
+}
+
 function currentThread(state = {
   items: []
 }, action) {
@@ -62,6 +74,7 @@ function currentThread(state = {
 
     case RECEIVE_THREAD:
       let items = sortItems(action.thread);
+      items = compactItems(items);
       let thread = {
         id: action.thread.id,
         status: action.thread.workflow_state,
