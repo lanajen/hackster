@@ -39,7 +39,7 @@ const App = React.createClass({
         canUpdateDecision: isEditable && currentThread.hasDecisions && canAdmin
       };
 
-      return (<ItemsContainer items={currentThread.items} hasDecisions={currentThread.hasDecisions} formStates={formStates} onCommentFormSubmit={this.handleCommentFormSubmit} onDecisionFormSubmit={this.handleDecisionFormSubmit} permissions={permissions} showDecisionForm={showDecisionForm} />);
+      return (<ItemsContainer items={currentThread.items} hasDecisions={currentThread.hasDecisions} formStates={formStates} onCommentFormSubmit={this.handleCommentFormSubmit} onDecisionFormSubmit={this.handleDecisionFormSubmit} permissions={permissions} showDecisionForm={showDecisionForm} threadStatus={currentThread.status} />);
     } else {
       return (<div className="text-center"><i className="fa fa-spin fa-spinner" /></div>);
     }

@@ -59,6 +59,11 @@ class BaseArticleObserverWorker < BaseWorker
   end
 
   def after_pending_review record
+    if record.review_thread
+      record.review_thread.update_attribute :workflow_state, :needs_review
+    else
+      record.create_review_thread
+    end
     NotificationCenter.notify_via_email :published, :base_article, record.id
   end
 

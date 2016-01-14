@@ -33,7 +33,7 @@ const ItemsContainer = React.createClass({
       );
     });
 
-    if (!this.props.hasDecisions) {
+    if (!this.props.hasDecisions && !this.props.threadStatus == 'closed') {
       items.push((
         <div key='somerandomkey' className='review-item review-item-event'>
           <div className='review-item-header'>
