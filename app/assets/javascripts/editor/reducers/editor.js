@@ -275,7 +275,8 @@ export default function(state = initialState, action) {
       newDom = _insertPlaceholder(newDom);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        forceUpdate: true
       };
 
     case Editor.createPlaceholderElement:
