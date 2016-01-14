@@ -31,6 +31,28 @@ function initMap() {
     map.setCenter(initialLocation);
   }
 
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById('pac-input');
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+  autocomplete.setTypes(['geocode']);
+
+  autocomplete.addListener('place_changed', function() {
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(12);
+    }
+  });
+
   map.addListener('idle', function() {
     var bounds = map.getBounds();
     if (bounds) {

@@ -36,6 +36,7 @@
       .container
         h2 Connect with others in your area
         .map-container
+          input id="pac-input" class="controls" type="text" placeholder="Search for a location"
           #map
           #user-list.user-list
             .user-thumb-gmap Browse the map to see Hackster members in the area.
@@ -48,7 +49,7 @@
 = content_for :js do
 
   = javascript_include_tag 'live'
-  script async='async' defer='defer' src="https://maps.googleapis.com/maps/api/js?key=#{ENV['GMAPS_BROWSER_KEY']}&callback=initMap"
+  script async='async' defer='defer' src="https://maps.googleapis.com/maps/api/js?key=#{ENV['GMAPS_BROWSER_KEY']}&callback=initMap&libraries=places"
   = javascript_include_tag '//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js'
 
   #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
