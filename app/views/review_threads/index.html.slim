@@ -29,7 +29,13 @@ table.table.table-striped
             = project.users.map(&:name).to_sentence
         td #{project.checklist_completion}%
         td= thread.created_at.in_time_zone(PDT_TIME_ZONE).strftime("%Y-%m-%d<br>%l:%M %p").html_safe
-        td= thread.workflow_state
+        td
+          span= thread.workflow_state.humanize
+          - if thread.ready_for_approval?
+            - if thread.decision == 'approve'
+              i.fa.fa-flag.text-success
+            - elsif thread.decision == 'reject'
+              i.fa.fa-flag.text-danger
         td
           - if current_user.is? :admin
             .btn-group

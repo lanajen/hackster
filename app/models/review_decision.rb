@@ -2,9 +2,9 @@ class ReviewDecision < ActiveRecord::Base
   include HstoreColumn
 
   DECISIONS = {
-    approved: 'Approved',
+    approve: 'Approved',
     needs_work: 'Needs work',
-    rejected: 'Rejected',
+    reject: 'Rejected',
   }.freeze
   FEEDBACK_FIELDS = {
     type: 'Template',

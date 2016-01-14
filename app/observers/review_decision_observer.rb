@@ -4,7 +4,7 @@ class ReviewDecisionObserver < ActiveRecord::Observer
     case record.decision.to_sym
     when :needs_work
       record.review_thread.update_column :workflow_state, :feedback_given
-    when :rejected, :approved
+    when :reject, :approve
       record.review_thread.update_column :workflow_state, :decision_made
     end
 

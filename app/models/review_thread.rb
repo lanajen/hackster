@@ -25,7 +25,15 @@ class ReviewThread < ActiveRecord::Base
     decisions.last.try(:decision)
   end
 
+  def open?
+    !closed?
+  end
+
   def participants
     @participants ||= User.where(id: comments.pluck(:user_id) + decisions.pluck(:user_id) + events.pluck(:user_id))
+  end
+
+  def ready_for_approval?
+    open? and decisions.where(decision: %w(approve reject)).exists?
   end
 end
