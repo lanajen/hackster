@@ -1,6 +1,7 @@
 import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
 import ImageHelpers from '../../utils/Images';
+import _ from 'lodash';
 
 export function setDOM(html, depth, storeIndex) {
   return {
@@ -8,6 +9,14 @@ export function setDOM(html, depth, storeIndex) {
     html: html,
     depth: depth,
     storeIndex: storeIndex
+  };
+}
+
+export function setNewDOM(html, depth, storeIndex) {
+  return function(dispatch, getState) {
+    if(!_.isEqual(getState().editor.dom[storeIndex].json, html)) {
+      dispatch(setDOM(html, depth, storeIndex));
+    }
   };
 }
 
@@ -28,7 +37,9 @@ export function setEditorState(state) {
 export function getPreviousHistory() {
   return function(dispatch, getState) {
     let history = getState().history;
+    let last = history[history.length-2];
 
+    dispatch(setEditorState(last));
   };
 }
 

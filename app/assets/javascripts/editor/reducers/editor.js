@@ -55,7 +55,10 @@ export default function(state = initialState, action) {
       };
 
     case Editor.setEditorState:
-      return { ...action.state };
+      return { ...state,
+        ...action.state,
+        forceUpdate: true
+      };
 
     case Editor.hasUnsavedChanges:
       return {
@@ -834,7 +837,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     dom.splice(storeIndex, 1, topCE);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, bottomCE);
-    console.log(mediaType, bottom, top, media);
+
     newNodeForCursor = Parser.toHtml([bottomCE.json[0]]);
     newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
     cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: bottomCE.hash };
