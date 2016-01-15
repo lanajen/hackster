@@ -42,7 +42,7 @@
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
         = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.registration_open?
-        = link_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
+        = button_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
 
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
