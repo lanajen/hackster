@@ -133,17 +133,11 @@ Rewardino::Badge.create!({
     },
     bronze: 5,
     silver: 20,
+    gold: 50,
   },
 })
-Rewardino::Trigger.set 'admin/projects#update', {
-  action: :set_badge,
-  badge_code: :created_project,
-  condition: -> (context) {
-    context.instance_variable_get('@base_article').approved?
-  },
-  nominee_variable: '@team_members',
-  background: true,
-}
+Rewardino::Trigger.set :cron, action: :set_badge, badge_code: :created_project,
+  background: true
 
 
 # achievements
@@ -212,6 +206,7 @@ Rewardino::Badge.create!({
     },
     bronze: 10,
     silver: 50,
+    gold: 150,
   }
 })
 Rewardino::Trigger.set ['respects#create', 'respects#destroy'], {
@@ -238,6 +233,8 @@ Rewardino::Badge.create!({
       explanation_: "having your profile followed for the first time.",
     },
     bronze: 10,
+    silver: 50,
+    gold: 150,
   }
 })
 Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {

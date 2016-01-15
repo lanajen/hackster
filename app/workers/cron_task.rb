@@ -70,7 +70,6 @@ class CronTask < BaseWorker
     CronTask.perform_in 8.minutes, 'cleanup_duplicates'
     CronTask.perform_in 10.minutes, 'clean_invitations'
     PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
-    CronTask.perform_in 14.minutes, 'evaluate_badges'
   end
 
   def launch_daily_cron
@@ -78,6 +77,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'update_mailchimp_for_challenges'
     CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
+    CronTask.perform_in 14.minutes, 'evaluate_badges'
     CacheWorker.perform_in 30.minutes, 'warm_cache'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
