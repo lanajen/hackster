@@ -3,9 +3,10 @@ class ReviewThread < ActiveRecord::Base
   include Workflow
 
   belongs_to :project, class_name: 'BaseArticle', foreign_key: :project_id, inverse_of: :review_thread
-  has_many :comments, -> { order(:created_at) }, as: :commentable
-  has_many :decisions, -> { order(:created_at) }, class_name: 'ReviewDecision'
-  has_many :events, -> { order(:created_at) }, class_name: 'ReviewEvent'
+  has_many :comments, -> { order(:created_at) }, as: :commentable, dependent: :destroy
+  has_many :decisions, -> { order(:created_at) }, class_name: 'ReviewDecision', dependent: :destroy
+  has_many :events, -> { order(:created_at) }, class_name: 'ReviewEvent', dependent: :destroy
+  has_many :notifications, as: :notifiable, dependent: :delete_all
 
   workflow do
     state :new
@@ -30,7 +31,7 @@ class ReviewThread < ActiveRecord::Base
   end
 
   def participants
-    @participants ||= User.where(id: comments.pluck(:user_id) + decisions.pluck(:user_id) + events.pluck(:user_id))
+    @participants ||= User.where(id: comments.pluck(:user_id) + decisions.pluck(:user_id))
   end
 
   def ready_for_approval?

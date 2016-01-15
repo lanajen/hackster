@@ -5,13 +5,16 @@
 
     = link_to content_tag(:i, '', class: 'fa fa-arrows-alt'), 'javascript:void(0)', class: 'expand-review-btn toggle-review-frame', rel: 'tooltip', title: 'Show sidebar', data: { placement: 'left', container: 'body' }
     .review-frame
-      .frame-nav.clearfix
-        .pull-left
-          - if current_user.is?(:admin, :moderator)
-            = link_to "&larr; Review dashboard".html_safe, reviews_path, class: 'btn btn-link btn-sm'
-          = link_to 'Content guidelines', guidelines_path, class: 'btn btn-link btn-sm'
-        .pull-right= link_to content_tag(:i, '', class: 'fa fa-times'), @project, class: 'btn btn-link btn-sm', rel: 'tooltip', title: 'Close sidebar', data: { placement: 'bottom' }
-        .pull-right= link_to content_tag(:i, '', class: 'fa fa-minus'), 'javascript:void(0)', class: 'btn btn-link btn-sm toggle-review-frame', rel: 'tooltip', title: 'Minimize sidebar', data: { placement: 'bottom' }
+      .frame-nav
+        .clearfix
+          .pull-left
+            - if current_user.is?(:admin, :moderator, :hackster_moderator)
+              = link_to "&larr; Review dashboard".html_safe, reviews_path, class: 'btn btn-link btn-sm'
+            = link_to 'Content guidelines', guidelines_path, class: 'btn btn-link btn-sm'
+          .pull-right= link_to content_tag(:i, '', class: 'fa fa-times'), @project, class: 'btn btn-link btn-sm', rel: 'tooltip', title: 'Close sidebar', data: { placement: 'bottom' }
+          .pull-right= link_to content_tag(:i, '', class: 'fa fa-minus'), 'javascript:void(0)', class: 'btn btn-link btn-sm toggle-review-frame', rel: 'tooltip', title: 'Minimize sidebar', data: { placement: 'bottom' }
+        - if current_user.is?(:admin, :moderator, :hackster_moderator)
+          div= link_to 'Moderator FAQ', 'http://hackster.uservoice.com/knowledgebase/topics/115761-project-moderation', class: 'btn btn-link btn-sm'
       = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: (current_user.is?(:admin, :moderator) and !current_user.id.in?(@project.users.pluck(:id))) }, {}
 
 = content_for :js do

@@ -20,6 +20,7 @@ class BaseArticleObserver < ActiveRecord::Observer
   end
 
   def after_pending_review record
+    record.update_column :private, false if record.pryvate?
     BaseArticleObserverWorker.perform_async 'after_pending_review', record.id
   end
 
@@ -50,18 +51,12 @@ class BaseArticleObserver < ActiveRecord::Observer
       else
         if record.force_hide?
           record.reject! if record.can_reject?
-        else
-          if record.can_mark_needs_review? or record.can_publish?
-            unless record.review_thread
-              record.create_review_thread
-              record.review_thread.update_column :workflow_state, :needs_review
-            end
-          end
         end
       end
     end
 
-    if record.workflow_state_changed? and record.review_thread
+    if record.workflow_state_changed?
+      record.create_review_thread unless record.review_thread
       new_state = nil
 
       case record.workflow_state

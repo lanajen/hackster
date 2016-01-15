@@ -12,7 +12,7 @@ class ReviewThreadsController < ApplicationController
       'status' => 'review_threads.workflow_state',
     }
 
-    params[:sort_order] ||= 'DESC'
+    params[:sort_order] ||= 'ASC'
 
     @threads = ReviewThread.joins(:project)
     @threads = @threads.active unless params[:filters].try(:[], :status).present?

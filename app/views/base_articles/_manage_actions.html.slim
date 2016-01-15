@@ -6,7 +6,9 @@
 
   a.btn.btn-default class=btn_size href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'base_articles/publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
     - if @project.publyc?
-      - if @project.pending_review? or @project.unpublished?
+      - if @project.unpublished?
+        span Public - Unpublished
+      - elsif @project.pending_review?
         span Public - Pending review
       - else
         span Public

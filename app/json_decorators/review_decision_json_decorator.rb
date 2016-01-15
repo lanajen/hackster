@@ -4,9 +4,11 @@ class ReviewDecisionJsonDecorator < BaseJsonDecorator
     if model.rejection_reason.present?
       node[:rejection_reason] = model.decorate.rejection_reason
     end
-    node[:avatarLink] = model.user.decorate.avatar(:mini)
-    node[:userName] = model.user.name
-    node[:userSlug] = model.user.user_name
+    user = model.user
+    node[:avatarLink] = user.decorate.avatar(:mini)
+    node[:userName] = user.name
+    node[:userSlug] = user.user_name
+    node[:userRole] = user.is?(:admin, :hackster_moderator) ? :hackster : (user.is?(:moderator) ? :moderator : nil)
     node[:createdAt] = model.created_at.to_f * 1_000
     node[:feedback] = model.feedback.present? ? model.feedback : {}
     node

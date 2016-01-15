@@ -34,7 +34,7 @@ const App = React.createClass({
     if (this.props.currentThread.isLoaded) {
       let permissions = {
         canAdmin: canAdmin,
-        canComment: isEditable && currentThread.hasDecisions,
+        canComment: isEditable,
         canCreateDecision: showDecisionForm && canAdmin,
         canUpdateDecision: isEditable && currentThread.hasDecisions && canAdmin
       };

@@ -244,11 +244,8 @@ class ProjectsController < ApplicationController
           if private_was != @project.pryvate
             ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_privacy_update, privacy: @project.pryvate
             if @project.pryvate == false
-              notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
-              session[:share_modal] = 'published_share_prompt'
-              session[:share_modal_model] = 'project'
-              session[:share_modal_model_id] = @project.id
-              session[:share_modal_time] = 'after_redirect'
+              notice = "Your project is now public!"
+              notice << " If you want it to show up widely on Hackster, publish it." if @project.unpublished?
 
               track_event 'Made project public', @project.to_tracker
             elsif @project.pryvate == false
@@ -258,7 +255,7 @@ class ProjectsController < ApplicationController
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
+            flash[:alert] = "Couldn't make the project public, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project
@@ -300,12 +297,32 @@ class ProjectsController < ApplicationController
   end
 
   def update_workflow
-    if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
-      flash[:notice] = "Article state changed to: #{params[:event]}."
-      redirect_to admin_projects_path(workflow_state: 'pending_review')
+    not_found and return unless params[:event]
+
+    @project = BaseArticle.find params[:id]
+    authorize! params[:event], @project
+
+    if current_user.is? :admin, :hackster_moderator
+      if @project.send "#{params[:event]}!"
+        if params[:event] == 'publish'
+          session[:share_modal] = 'published_share_prompt'
+          session[:share_modal_model] = 'project'
+          session[:share_modal_model_id] = @project.id
+          session[:share_modal_time] = 'after_redirect'
+        else
+          flash[:notice] = "Write-up #{params[:event]}'ed."
+        end
+      else
+        flash[:alert] = "Couldn't #{params[:event]} this write-up."
+      end
+      redirect_to @project
     else
-      # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
-      render :edit
+      if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
+        flash[:notice] = "Write-up state changed to: #{params[:event]}."
+        redirect_to admin_projects_path(workflow_state: 'pending_review')
+      else
+        render :edit
+      end
     end
   end
 

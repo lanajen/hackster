@@ -920,6 +920,10 @@ hr.spacious {
   color: #999;
   margin: 20px 0;
   text-align: center;
+  position: relative;
+  &.small {
+    margin: 10px 0;
+  }
   &:before, &:after {
     border-bottom: 1px solid #d1d1d1;
     content: '';

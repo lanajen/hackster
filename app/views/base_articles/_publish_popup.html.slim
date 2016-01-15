@@ -1,5 +1,5 @@
 - if @project.publyc?
-  - if (@project.pending_review? or @project.unpublished?)
+  - if @project.pending_review?
     .alert.alert-warning.text-center
       p
         i.fa.fa-clock-o>
@@ -30,11 +30,20 @@
   = f.input :content_type, collection: content_types_for_article(@project), label: "#{@project.identifier.capitalize} type", required: true
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
-- if @project.publyc?
-  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
-- else
-  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
-    = simple_form_for @project, html: { id: 'project-form-publish' } do |f|
+  - if @project.publyc?
+    = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-warning btn-block btn-sm'
+  - else
+    = simple_form_for @project do |f|
       = f.input :private, as: :hidden, input_html: { value: 0 }
-      = f.submit 'Publish publicly', class: 'btn btn-success btn-block'
-    .alert-msg Please select a type before publishing.
+      = f.submit 'Make public', class: 'btn btn-success btn-block btn-sm'
+
+- if @project.can_publish?
+  .hr.small or
+  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
+      = hidden_field_tag :event, 'publish'
+      = submit_tag 'Submit for publication', class: 'btn btn-success btn-block'
+      = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/816132', target: '_blank'
+    .alert-msg
+      ' Please select a type before publishing.
+      = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/816132', target: '_blank'

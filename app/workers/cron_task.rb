@@ -29,9 +29,9 @@ class CronTask < BaseWorker
   end
 
   def cleanup_buggy_unpublished
-    BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    # BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
     BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
-      project.update_attribute :workflow_state, :approved
+      project.update_column :workflow_state, :approved
     end
   end
 
