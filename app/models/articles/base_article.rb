@@ -12,6 +12,7 @@ class BaseArticle < ActiveRecord::Base
   FILTERS = {
     '7days' => :last_7days,
     '30days' => :last_30days,
+    '1year' => :last_1year,
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
     'on_hackster' => :self_hosted,
@@ -319,6 +320,10 @@ class BaseArticle < ActiveRecord::Base
 
   def self.last_30days
     where('projects.made_public_at > ?', 30.days.ago)
+  end
+
+  def self.last_1year
+    where('projects.made_public_at > ?', 1.year.ago)
   end
 
   def self.last_created

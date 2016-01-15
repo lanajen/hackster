@@ -77,6 +77,7 @@
           li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', projects_path(by: '1year', sort: params[:sort])
           / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
       .btn-group

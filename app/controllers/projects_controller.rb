@@ -21,6 +21,16 @@ class ProjectsController < ApplicationController
 
     if @by and @by.in? BaseArticle::FILTERS.keys
       @projects = @projects.send(BaseArticle::FILTERS[@by])
+      @by = case @by
+      when '7days'
+        '7 days of'
+      when '30days'
+        '30 days of'
+      when '1year'
+        '12 months of'
+      else
+        @by
+      end
     end
 
     if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
