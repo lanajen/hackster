@@ -38,7 +38,10 @@ class SketchfabFile < Document
 
     puts "Uploading to sketchfab..."
     RestClient.post SKETCHFAB_API_MODEL_ENDPOINT,
-      { 'modelFile' => file, 'token' => SKETCHFAB_API_TOKEN, name: file_name } do |json_response, request, result|
+      { 'modelFile' => file,
+        'token' => SKETCHFAB_API_TOKEN,
+        name: file_name,
+        private: true } do |json_response, request, result|
 
       response = JSON.parse json_response
 
