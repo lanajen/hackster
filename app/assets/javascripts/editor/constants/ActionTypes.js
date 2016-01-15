@@ -50,14 +50,12 @@ export default {
     transformInlineToText: null,
     updateCarouselImages: null,
     updateComponent: null,
-    setState: null,
     domUpdated: null,
     setEditorState: null,
   }),
 
   History: keyMirror({
     addToHistory: null,
-    getLastHistoryState: null,
-    getNextHistoryState: null
+    updateCurrentLiveIndex: null,
   })
 };

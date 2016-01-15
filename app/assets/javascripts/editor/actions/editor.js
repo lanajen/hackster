@@ -28,18 +28,10 @@ export function domUpdated(bool) {
 }
 
 export function setEditorState(state) {
+  console.log('SETTING STATE', state);
   return {
     type: Editor.setEditorState,
     state: state
-  };
-}
-
-export function getPreviousHistory() {
-  return function(dispatch, getState) {
-    let history = getState().history;
-    let last = history[history.length-2];
-
-    dispatch(setEditorState(last));
   };
 }
 

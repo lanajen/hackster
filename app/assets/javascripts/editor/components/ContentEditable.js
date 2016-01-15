@@ -17,7 +17,7 @@ const hashids = new Hashids('hackster', 4);
 const ContentEditable = React.createClass({
 
   componentWillMount() {
-    this.debouncedEmitChange = _.debounce(this.emitChange, 50);
+    this.debouncedEmitChange = _.debounce(this.emitChange, 0);
     this.domObserver = new MutationObserver(this.handleDomMutation);
   },
 
@@ -61,6 +61,11 @@ const ContentEditable = React.createClass({
   componentDidUpdate() {
     /** Cleans up the top tree of this CE. */
     Utils.maintainImmediateChildren(ReactDOM.findDOMNode(this));
+
+    if(this.props.html !== ReactDOM.findDOMNode(this).innerHTML.replace(/<br>/g, '<br/>')) {
+      console.log(this.props.html, '*'.repeat(30), ReactDOM.findDOMNode(this).innerHTML);
+      ReactDOM.findDOMNode(this).innerHTML = this.props.html;
+    }
   },
 
   shouldComponentUpdate(){
@@ -119,7 +124,7 @@ const ContentEditable = React.createClass({
     if(el === undefined || el === null) { return; }
 
     /** If we're moving to a new line, set the cursor at index 0. */
-    let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
+    let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset+1;
     let textNode = Utils.getLiveNode(el, cursorPosition.anchorNode);
     textNode = textNode === null ? Utils.getFirstTextNode(el) : textNode;
     /** Protects setStart from an index that was deleted. */
@@ -241,14 +246,14 @@ const ContentEditable = React.createClass({
     }
   },
 
-  onInput() {
+  onInput(e) {
     this.debouncedEmitChange();
   },
 
   emitChange(){
     let html = ReactDOM.findDOMNode(this).innerHTML;
     let { depth } = Utils.getSelectionData();
-
+    console.log('EMITTING CHANGE', html);
     this.props.onChange(html, depth, this.props.storeIndex);
   },
 
@@ -658,12 +663,29 @@ const ContentEditable = React.createClass({
 
   handleUndo(e) {
     this.preventEvent(e);
-    // console.log('UNDO!');
-    this.props.actions.getPreviousHistory();
+    if(this.props.editor.isDataLoading) {
+      this.props.actions.toggleErrorMessenger(true, 'Please wait for the image to finish uploading');
+      return;
+    }
+
+    let state = this.props.actions.getPreviousHistoryState();
+    this.props.actions.setEditorState({
+      ...state,
+      domUpdated: false,
+      isDataLoading: false,
+      forceUpdate: true
+    });
   },
 
   handleRedo(e) {
-
+    this.preventEvent(e);
+    let state = this.props.actions.getNextHistoryState();
+    this.props.actions.setEditorState({
+      ...state,
+      domUpdated: false,
+      isDataLoading: false,
+      forceUpdate: true
+    });
   },
 
   handlePaste(e) {
@@ -783,6 +805,7 @@ const ContentEditable = React.createClass({
   },
 
   render() {
+    console.log('HTML', this.props.html);
     return (
       <div
         data-hash={this.props.hash}

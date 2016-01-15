@@ -32,7 +32,8 @@ const initialState = {
   lastMediaHash: null,
   isIE: false,
   updateComponent: null,
-  domUpdated: false
+  domUpdated: false,
+  historyIndex: 1
 };
 
 export default function(state = initialState, action) {
@@ -45,7 +46,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        domUpdated: true
+        domUpdated: true,
+        // forceUpdate: true
       };
 
     case Editor.domUpdated:
@@ -55,10 +57,7 @@ export default function(state = initialState, action) {
       };
 
     case Editor.setEditorState:
-      return { ...state,
-        ...action.state,
-        forceUpdate: true
-      };
+      return action.state;
 
     case Editor.hasUnsavedChanges:
       return {
@@ -103,7 +102,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        setCursorToNextLine: action.setCursorToNextLine
+        setCursorToNextLine: action.setCursorToNextLine,
+        domUpdated: true
       };
 
     case Editor.createBlockElementWithChildren:
@@ -112,7 +112,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        setCursorToNextLine: action.setCursorToNextLine
+        setCursorToNextLine: action.setCursorToNextLine,
+        domUpdated: true
       };
 
     case Editor.transformBlockElement:
@@ -120,7 +121,8 @@ export default function(state = initialState, action) {
       newDom = transformBlockElement(dom, action.tag, action.position, action.cleanChildren, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.transformBlockElements:
@@ -128,7 +130,8 @@ export default function(state = initialState, action) {
       newDom = transformBlockElements(dom, action.tag, action.elements, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.prependCE:
@@ -136,7 +139,8 @@ export default function(state = initialState, action) {
       newDom = prependCE(dom, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.insertCE:
@@ -150,7 +154,8 @@ export default function(state = initialState, action) {
           ...state.cursorPosition,
           rootHash: obj.rootHash
         },
-        setCursorToNextLine: false
+        setCursorToNextLine: false,
+        domUpdated: true
       };
 
     case Editor.setFigCaptionText:
@@ -158,7 +163,8 @@ export default function(state = initialState, action) {
       newDom = setFigCaptionText(dom, action.figureIndex, action.storeIndex, action.html);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       }
 
     case Editor.handleUnorderedList:
@@ -167,7 +173,8 @@ export default function(state = initialState, action) {
       newDom = _mergeLists(newDom, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.removeListItemFromList:
@@ -175,7 +182,8 @@ export default function(state = initialState, action) {
       newDom = removeListItemFromList(dom, action.parentPos, action.childPos, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.transformListItemsToBlockElements:
@@ -183,7 +191,8 @@ export default function(state = initialState, action) {
       newDom = transformListItemsToBlockElements(dom, action.tag, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.isEditable:
@@ -252,7 +261,8 @@ export default function(state = initialState, action) {
         cursorPosition: data.cursorPosition,
         setCursorToNextLine: false,
         lastMediaHash: data.mediaHash,
-        forceUpdate: true
+        forceUpdate: true,
+        domUpdated: true
       };
 
     case Editor.addImagesToCarousel:
@@ -261,7 +271,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        // isDataLoading: false
+        domUpdated: true
       };
 
     case Editor.deleteImagesFromCarousel:
@@ -271,7 +281,8 @@ export default function(state = initialState, action) {
       newDom = _insertPlaceholder(newDom);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.updateShownImage:
@@ -279,7 +290,8 @@ export default function(state = initialState, action) {
       newDom = updateShownImage(dom, action.activeIndex, action.storeIndex, action.direction);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.deleteComponent:
@@ -290,7 +302,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        forceUpdate: true
+        forceUpdate: true,
+        domUpdated: true
       };
 
     case Editor.createPlaceholderElement:
@@ -298,7 +311,8 @@ export default function(state = initialState, action) {
       newDom = createPlaceholderElement(dom, action.element, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.resetImageUrl:
@@ -308,7 +322,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        isDataLoading: false
+        isDataLoading: false,
+        domUpdated: true
       };
 
     case Editor.removeImageFromList:
@@ -317,7 +332,8 @@ export default function(state = initialState, action) {
       newDom = removeImageFromList(dom, action.imageData, mediaHash, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.isDataLoading:
@@ -331,7 +347,8 @@ export default function(state = initialState, action) {
       newDom = splitBlockElement(dom, action.tagType, action.nodes, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.toggleErrorMessenger:
@@ -349,7 +366,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        cursorPosition: data.cursorPosition
+        cursorPosition: data.cursorPosition,
+        domUpdated: true
       };
 
     case Editor.toggleIE:
@@ -363,7 +381,8 @@ export default function(state = initialState, action) {
       newDom = transformInlineToText(dom, action.text, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.updateCarouselImages:
@@ -371,7 +390,8 @@ export default function(state = initialState, action) {
       newDom = updateCarouselImages(dom, action.images, action.storeIndex);
       return {
         ...state,
-        dom: newDom || state.dom
+        dom: newDom || state.dom,
+        domUpdated: true
       };
 
     case Editor.updateComponent:
