@@ -21,7 +21,7 @@ const ImageToolbar = React.createClass({
 
   handleImages(e) {
     this.preventEvent(e);
-    let files = e.target.files,
+    let files = e.dataTransfer ? e.dataTransfer.files : e.target.files,
         storeIndex = this.props.editor.imageToolbarData.storeIndex,
         filteredFiles;
 

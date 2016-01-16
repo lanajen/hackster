@@ -36,6 +36,48 @@ const ImageUtils = {
     reader.readAsDataURL(file);
   },
 
+  promisifiedFileReader(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+
+      reader.onload = function(upload) {
+        let dataUrl = upload.target.result;
+        let hash = Helpers.createRandomNumber();
+
+        resolve({ dataUrl: dataUrl, hash: hash, rawFile: file });
+      };
+
+      reader.onerror = function(err) {
+        reject(err);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  },
+
+  promisifiedImageResize(src, dimensions) {
+    return new Promise((resolve, reject) => {
+      let image = new Image();
+      image.onload = function(e) {
+        let canvas = document.createElement('canvas'),
+            width = image.width,
+            height = image.height,
+            dataUrl;
+
+        canvas.width = dimensions.width;
+        canvas.height = dimensions.height;
+        canvas.getContext('2d').drawImage(image, 0, 0, dimensions.width, dimensions.height);
+        dataUrl = canvas.toDataURL();
+
+        resolve(dataUrl);
+      };
+
+      image.onerror = function(err) { reject(err); }
+      // Fires the onload event.
+      image.src = src;
+    });
+  },
+
   handleImageResize(imgSrc, fileName, hash, callback) {
     let image = new Image();
     /** Setting the crossOrigin to Anon will upset Safari CORS gods. */
@@ -57,18 +99,20 @@ const ImageUtils = {
     image.src = imgSrc;
   },
 
-  createDataURLFromURL(src) {
+  createDataURLFromURL(src, dimensions) {
     return new Promise((resolve, reject) => {
       let image = new Image();
       image.crossOrigin = 'use credentials';
       let canvas = document.createElement("canvas"),
           canvasContext = canvas.getContext("2d"),
+          width = dimensions ? dimensions.width : image.width,
+          height = dimensions ? dimensions.height : image.height,
           dataURL;
 
       image.onload = function () {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        canvasContext.drawImage(image, 0, 0, image.width, image.height);
+        canvas.width = width;
+        canvas.height = height;
+        canvasContext.drawImage(image, 0, 0, width, height);
         dataURL = canvas.toDataURL();
 
         resolve(dataURL);
@@ -133,6 +177,40 @@ const ImageUtils = {
             err ? reject(err) : resolve(res);
           });
       });
+  },
+
+  postRemoteURL(url, fileType, csrfToken) {
+    const form = new FormData();
+    form.append('file_type', fileType);
+    form.append('file_url', url);
+
+    return new Promise((resolve, reject) => {
+      request
+        .post('/files/remote_upload')
+        .set('X-CSRF-Token', csrfToken)
+        .send(form)
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body);
+        });
+    });
+  },
+
+  pollJob(jobId) {
+    return new Promise((resolve, reject) => {
+      let poll = setInterval(() => {
+        request
+          .get(`/files/remote_upload?job_id=${jobId}`)
+          .end((err, res) => {
+            if(err) {
+              clearInterval(poll);
+              reject(err);
+            } else if(res.body.status === 'complete') {
+              clearInterval(poll);
+              resolve(res.body);
+            }
+          });
+      }, 250);
+    });
   },
 
   dataURIToBlob(dataURI) {

@@ -1,3 +1,5 @@
+/ = react_component('ImageUploader', { locals: local_assigns, S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}" })
+
 = content_for :js do
   javascript:
 

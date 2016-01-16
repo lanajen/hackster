@@ -44,6 +44,11 @@ module.exports = {
     return isValid;
   },
 
+  isImageUrlValid(url) {
+    url = url.split('.');
+    return ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'].indexOf(url[url.length-1]) > 0;
+  },
+
   isUrlValid(url, type) {
     let validExtensions = type === 'video' ? this.VIDEO_SERVICES : [];
     let key = validExtensions.filter(function(item) {

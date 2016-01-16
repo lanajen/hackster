@@ -11,3 +11,4 @@ require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 require('expose?Comments!./comments/app');
 require('expose?ReactEditor!./editor/app');
 require('expose?ReviewTool!./review_tool/containers/Root');
+require('expose?ImageUploader!./image_uploader/app');

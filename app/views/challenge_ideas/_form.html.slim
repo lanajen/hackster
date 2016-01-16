@@ -4,26 +4,28 @@
     = debug @idea.errors
 
   = f.input :name, label: 'Name of your idea or concept'
-  .form-group class=(@idea.errors.messages.include?(:image_id) ? 'has-error' : '')
-    label.control-label
-      abbr> title="required" *
-      | Add an image
-    .image.file-drop
-      - if @idea.image
-        = hidden_field_tag :image_id, @idea.image_id
-      div
-        span.image.image-preview.preview
-          - if @idea.image
-            = image_tag @idea.image.try(:imgix_url, :thumb)
-        .btn-group
-          a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.image' } }  Select picture
-          a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.image" } }
-            i.fa.fa-link
-    p.help-block Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.
-    - if @idea.errors.messages.include?(:image_id)
-      p.help-block= @idea.errors.messages[:image_id].to_sentence
+  / .form-group class=(@idea.errors.messages.include?(:image_id) ? 'has-error' : '')
+  /   label.control-label
+  /     abbr> title="required" *
+  /     | Add an image
+  /   .image.file-drop
+  /     - if @idea.image
+  /       = hidden_field_tag :image_id, @idea.image_id
+  /     div
+  /       span.image.image-preview.preview
+  /         - if @idea.image
+  /           = image_tag @idea.image.try(:imgix_url, :thumb)
+  /       .btn-group
+  /         a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.image' } }  Select picture
+  /         a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.image" } }
+  /           i.fa.fa-link
+  /   p.help-block Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.
+  /   - if @idea.errors.messages.include?(:image_id)
+  /     p.help-block= @idea.errors.messages[:image_id].to_sentence
 
-  = render partial: 'shared/image_form_bare', locals: { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea' }
+  / = render partial: 'shared/image_form_bare', locals: { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea', help_block: 'Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.', errors: @idea.errors, image_data: @idea.image ? { id: @idea.image_id, image_link: @idea.image.try(:imgix_url, :thumb) } : nil }
+  - locals = { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea', help_block: 'Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.', errors: @idea.errors, image_data: @idea.image ? { id: @idea.image_id, image_link: @idea.image.try(:imgix_url, :thumb) } : nil }
+  = react_component('ImageUploader', { locals: locals, S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}" })
 
   = f.input :description, as: :text, input_html: { class: "text-editor" }
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
