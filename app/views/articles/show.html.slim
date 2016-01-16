@@ -105,10 +105,10 @@ c= content_for :head do
                 = image_tag @project.cover_image(:medium)
 
           - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-
-            section.section-container.section-no-title
-              .section-content.hljs-active
-                .medium-editor= @description
+            - if @description.present?
+              section.section-container.section-no-title
+                .section-content.hljs-active
+                  .medium-editor= @description
 
           - if @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).exists?
             section#team.section-container

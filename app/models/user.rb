@@ -208,7 +208,6 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
   with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
