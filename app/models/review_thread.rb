@@ -1,5 +1,6 @@
 class ReviewThread < ActiveRecord::Base
   INACTIVE_STATES = %w(new closed)
+  NEED_ATTENTION = %w(needs_review feedback_responded_to)
   include Workflow
 
   belongs_to :project, class_name: 'BaseArticle', foreign_key: :project_id, inverse_of: :review_thread
@@ -20,6 +21,10 @@ class ReviewThread < ActiveRecord::Base
 
   def self.active
     where.not workflow_state: INACTIVE_STATES
+  end
+
+  def self.need_attention
+    where workflow_state: NEED_ATTENTION
   end
 
   def decision

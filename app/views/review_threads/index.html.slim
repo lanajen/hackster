@@ -8,6 +8,12 @@
   ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 ==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: ReviewThread.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
+.form-group
+  label.control-label
+  .controls= link_to 'See all that need attention', reviews_path(status: :needs_attention), class: 'btn btn-link btn-sm'
+.form-group
+  label.control-label
+  .controls= link_to 'See all that need review', reviews_path(filters: { status: :needs_review }), class: 'btn btn-link btn-sm'
 
 table.table.table-striped
   thead

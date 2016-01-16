@@ -15,7 +15,13 @@ class ReviewThreadsController < ApplicationController
     params[:sort_order] ||= 'ASC'
 
     @threads = ReviewThread.joins(:project)
-    @threads = @threads.active unless params[:filters].try(:[], :status).present?
+    unless params[:filters].try(:[], :status).present?
+      if params[:status] == 'needs_attention'
+        @threads = @threads.need_attention
+      else
+        @threads = @threads.active
+      end
+    end
     @threads = filter_for @threads, @fields
   end
 
