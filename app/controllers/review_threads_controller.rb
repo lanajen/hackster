@@ -14,7 +14,7 @@ class ReviewThreadsController < ApplicationController
 
     params[:sort_order] ||= 'ASC'
 
-    @threads = ReviewThread.joins(:project).where(projects: { private: false })
+    @threads = ReviewThread.joins(:project).where(projects: { private: false }).where.not(review_threads: { workflow_state: :new })
     unless params[:filters].try(:[], :status).present?
       if params[:status] == 'needs_attention'
         @threads = @threads.need_attention

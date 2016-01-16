@@ -6,7 +6,7 @@
 ==> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at status)).each do |field|
   ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: ReviewThread.workflow_spec.states.keys }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: ReviewThread.workflow_spec.states.keys - [:new] }
 = render 'admin/shared/search_form_sort_and_submit'
 .form-group
   label.control-label

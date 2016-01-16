@@ -76,6 +76,7 @@ const CommentForm = React.createClass({
           {this.renderSecondaryBtnLabel()} <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
+          <li><a href="javascript:void(0)" onClick={this.handleDecisionClick} data-decision="needs_work">Mark as needs work</a></li>
           <li><a href="javascript:void(0)" onClick={this.handleDecisionClick} data-decision="approve">Approve</a></li>
           <li><a href="javascript:void(0)" onClick={this.handleDecisionClick} data-decision="reject">Reject</a></li>
         </ul>

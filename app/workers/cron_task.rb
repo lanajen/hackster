@@ -33,6 +33,20 @@ class CronTask < BaseWorker
     BaseArticle.publyc.where.not(type: 'ExternalProject').where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
       project.update_column :workflow_state, :approved
     end
+    ReviewThread.where(workflow_state: :new).joins(:project).where(projects: { workflow_state: :pending_review }).update_all(workflow_state: :needs_review)
+    ReviewThread.where(workflow_state: :new).joins(:project).where(projects: { workflow_state: :pending_review, private: false }).update_all(workflow_state: :needs_review)
+    ReviewThread.where.not(workflow_state: [:new, :closed]).joins(:project).where(projects: { workflow_state: [:unpublished, :pending_review], private: true }).update_all(workflow_state: :new)
+    ReviewThread.group(:project_id).having("count(*) > 1").count.each do |project_id, count|
+      threads = ReviewThread.where(project_id: project_id).to_a
+      first = threads.first
+      threads[1..-1].each do |thread|
+        thread.comments.update_all(commentable_id: first.id)
+        thread.decisions.update_all(review_thread_id: first.id)
+        thread.events.update_all(review_thread_id: first.id)
+        thread.notifications.update_all(notifiable_id: first.id)
+        thread.delete
+      end
+    end
   end
 
   def clean_invitations
