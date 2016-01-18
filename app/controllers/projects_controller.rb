@@ -240,7 +240,7 @@ class ProjectsController < ApplicationController
     title 'Edit project'
     initialize_project
     @team = @project.team
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :hackster_moderator
   end
 
   def update

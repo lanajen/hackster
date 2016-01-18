@@ -54,6 +54,10 @@ class BaseArticleObserverWorker < BaseWorker
       NotificationCenter.notify_all :approved, :base_article, record.id
     end
 
+    if record.review_thread
+      record.review_thread.update_column :workflow_state, :closed
+    end
+
     update_counters record, :approved_projects
     log_state_change record
   end

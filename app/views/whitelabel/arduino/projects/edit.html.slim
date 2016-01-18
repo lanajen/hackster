@@ -61,7 +61,7 @@
 
 .container.project-editor
   .clearfix.text-center
-    - if current_user.is? :admin, :moderator
+    - if current_user.is? :admin, :hackster_moderator
       = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
       - unless params[:show_admin_bar]
         = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'
