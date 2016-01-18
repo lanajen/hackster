@@ -700,55 +700,19 @@ const ContentEditable = React.createClass({
       pastedText = liveNode.innerHTML;
     }
 
-    let parentWrappingNode = parentNode.cloneNode(true);
-    let bucket = document.createElement('div');
     let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
+    let cleaned = Parser.cleanEmptyElements(liveNode);
 
-    domWalk(parentWrappingNode, (child, root, depth) => {
-      if(( root.isEqualNode(range.startContainer) && depth === 0 ) || ( child.isEqualNode(range.startContainer ) )) {
-        let start = range.startContainer.textContent.substring(0, range.startOffset);
-        let end = range.endContainer.textContent.substring(range.endOffset);
-        let assuredRoot = Utils.getRootParentElement(root);
+    if(parentNode.nodeName === 'P' && cleaned.nodeName === 'P' && range.endContainer.parentNode.nextSibling !== null) {
+      let span = document.createElement('span');
+      span.innerHTML = cleaned.innerHTML;
+      cleaned = span;
+    }
 
-        if(assuredRoot.nodeName === 'UL') {
-          child.textContent = start;
-          [].slice.apply(liveNode.childNodes).forEach(c => {
-            child.nodeType === 3 ? child.parentNode.appendChild(c) : child.appendChild(c);
-          });
-          if(end.length > 0) { child.nodeType === 3 ? child.parentNode.appendChild(document.createTextNode(end)) : child.appendChild(document.createTextNode(end)); }
-          bucket.appendChild(assuredRoot);
-        } else {
+    range.deleteContents();
+    range.insertNode(cleaned);
 
-          if(start.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = start; bucket.appendChild(temp); }
-          // Iterate through the pasted nodes.
-          [].slice.apply(liveNode.childNodes).forEach(c => {
-            let currentNodeName = c.nodeType === 3 ? c.parentNode.nodeName : c.nodeName;
-            let nodeName = assuredRoot.nodeName === 'P' ? currentNodeName : assuredRoot.nodeName;
-            let el = document.createElement(nodeName);
-            // If node is a UL AND the node we're pasting into is NOT a paragraph, we remove the li.
-            if(c.nodeName === 'UL' && assuredRoot.nodeName !== 'P') {
-              [].slice.apply(c.childNodes).forEach(li => {
-                let newBlockEl = document.createElement(nodeName);
-                newBlockEl.innerHTML = newBlockEl.nodeName === 'PRE' ? li.textContent : li.innerHTML;
-                bucket.appendChild(newBlockEl);
-              });
-            } else {
-              // If the nodeName of the root element we're creating is a PRE, we just take the text.
-              // ElseIf the pasted element is a block element, just take its innards; Else, we want the styling elements.
-              el.innerHTML = el.nodeName === 'PRE' ? c.textContent : BlockElements[c.nodeName] ? c.innerHTML : c.outerHTML;
-              el.innerHTML = el.innerHTML === 'undefined' ? c.textContent : el.innerHTML;
-              bucket.appendChild(el);
-            }
-          });
-
-          if(end.length > 0) { let temp = document.createElement(assuredRoot.nodeName); temp.textContent = end; bucket.appendChild(temp); }
-        }
-      }
-    });
-
-    pastedText = bucket.innerHTML;
-
-    return Utils.parseDescription(pastedText)
+    return Utils.parseDescription(parentNode.outerHTML)
       .then(results => {
         if(!results.length) { return; }
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
@@ -760,7 +724,7 @@ const ContentEditable = React.createClass({
         });
 
         clean.json = Parser.removeAttributes(clean.json);
-        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth);
+        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth, { node: parentNode, anchorNode: Utils.getLastTextNode(cleaned), offset: range.startOffset + cleaned.textContent.length });
         this.props.actions.forceUpdate(true);
       })
       .catch(err => { console.log('Paste Error', err); });

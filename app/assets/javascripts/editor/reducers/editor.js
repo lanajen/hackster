@@ -329,7 +329,7 @@ export default function(state = initialState, action) {
 
     case Editor.handlePastedHTML:
       dom = state.dom;
-      data = handlePastedHTML(dom, action.html, action.depth, action.storeIndex, action.endDepth);
+      data = handlePastedHTML(dom, action.html, action.depth, action.storeIndex, action.endDepth, action.cursorData);
       newDom = _mergeAdjacentCE(data.newDom);
       newDom = _insertPlaceholder(newDom);
       return {
@@ -1051,7 +1051,7 @@ function createPlaceholderElement(dom, element, position, storeIndex) {
   return dom;
 }
 
-function handlePastedHTML(dom, html, depth, storeIndex, endDepth) {
+function handlePastedHTML(dom, html, depth, storeIndex, endDepth, cursorData) {
   let cursorPosition = { pos: depth, node: null, offset: 0, anchorNode: null, rootHash: null };
   let component = dom[storeIndex];
   let json = component.json;
@@ -1071,11 +1071,7 @@ function handlePastedHTML(dom, html, depth, storeIndex, endDepth) {
   component.json = newJson;
   dom.splice(storeIndex, 1, component);
 
-  let node = Parser.toHtml([html.json[html.json.length-1]]);
-  node = Parser.toLiveHtml(node);
-  let anchorNode = Utils.getLastTextNode(node);
-
-  return { newDom: dom, cursorPosition: { ...cursorPosition, node: node, anchorNode: anchorNode, offset: anchorNode.textContent.length, rootHash: component.hash } };
+  return { newDom: dom, cursorPosition: { ...cursorPosition, node: cursorData.node, anchorNode: cursorData.anchorNode, offset: cursorData.offset, rootHash: component.hash } };
 }
 
 function randomizeErrorActionIcon() {

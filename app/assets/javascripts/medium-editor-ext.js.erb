@@ -1715,6 +1715,8 @@ function detectFileType(file) {
 
 function handleUploadErrors(dataContainer) {
   data = dataContainer.data('data');
+  if(!data) { return; }
+
   target = $('#' + data.context);
   file = data.files[0];
   showErrorBubble(file.name);

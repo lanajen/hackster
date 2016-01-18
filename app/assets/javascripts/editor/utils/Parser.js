@@ -134,14 +134,16 @@ export default {
       return json.map(child => {
         if(!child.children || !child.children.length) {
           if(child.tag !== 'a') {
-            child.attribs = {};
+            let hash = child.attribs && child.attribs['data-hash'] ? child.attribs['data-hash'] : null;
+            child.attribs = hash !== null ? { 'data-hash': hash } : {};
           } else {
             child.attribs = { href: child.attribs.href };
           }
           return child;
         } else {
           if(child.tag !== 'a') {
-            child.attribs = {};
+            let hash = child.attribs && child.attribs['data-hash'] ? child.attribs['data-hash'] : null;
+            child.attribs = hash !== null ? { 'data-hash': hash } : {};
           } else {
             child.attribs = { href: child.attribs.href };
           }
@@ -273,5 +275,15 @@ export default {
       node = html.children[1].firstChild;
     }
     return node;
+  },
+
+  cleanEmptyElements(parent) {
+    let newParent = document.createElement(parent.nodeName);
+    [].slice.apply(parent.childNodes).forEach(child => {
+      if(child.childNodes.length && child.textContent.trim().length) {
+        newParent.appendChild(child);
+      }
+    });
+    return newParent;
   },
 }

@@ -1678,6 +1678,9 @@ const Utils = {
         if(item.content && !item.content.length) {
           item = null;
         }
+        if(item.content === null && !item.children.length) {
+          item = null;
+        }
         return item;
       } else if( (item.children === null || !item.children.length) && (item.content === null || !item.content.length) ) {
         return null;

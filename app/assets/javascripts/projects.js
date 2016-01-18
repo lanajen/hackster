@@ -745,6 +745,7 @@ $select2target = null;
 
       add: function(e, data) {
         fileName = data.files[0].name;
+        if(!fileName) { return; }
         ext = fileName.substr(fileName.lastIndexOf('.') + 1);
         if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
           $(".code-upload-progress-container").html("<p>Images are not allowed. You can only upload files that contain code.</p>");
@@ -797,6 +798,7 @@ $select2target = null;
       limitConcurrentUploads: 1,
       fileInput: $('#file-upload-form input:file'),
       dropZone: $('#file-upload-form'),
+      pasteZone: null,
 
       add: function(e, data) {
         file = data.files[0];

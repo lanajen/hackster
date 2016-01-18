@@ -5,6 +5,7 @@ $(function(){
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     dropZone: '.file-drop.<%= file_type %>',
+    pasteZone: null,
 
     add: function(e, data) {
       file = data.files[0];
