@@ -61,6 +61,9 @@ class License
       name: 'Solderpad Hardware License (SHL)',
       abbr: 'SHL',
       deprecated: true },
+    'https://creativecommons.org/publicdomain/zero/1.0/' => {
+      name: 'Creative Commons Public Domain Dedication version 1.0 or later (CC0 1+)',
+      abbr: 'CC0', },
     'http://creativecommons.org/licenses/by/4.0' => {
       name: 'Creative Commons Attribution CC BY version 4.0 or later (CC BY 4+)',
       abbr: 'CC BY', },
