@@ -10,7 +10,7 @@ class BaseImage < Attachment
     if BaseUploader.storage == CarrierWave::Storage::File
       file_url
     else
-      client = Imgix::Client.new(host: imgix_config[:host], token: imgix_config[:token], secure: true)
+      client = Imgix::Client.new(host: imgix_config[:host], token: imgix_config[:token], include_library_param: false)
       path = file_url.gsub "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", ''
       if path =~ /\.jpe?g\Z/
         extra_options.merge!({ fm: :jpg })

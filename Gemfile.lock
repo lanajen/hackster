@@ -364,7 +364,7 @@ GEM
     httpauth (0.2.1)
     httpclient (2.6.0.1)
     i18n (0.7.0)
-    imgix (0.3.1)
+    imgix (1.0.0)
       addressable
     impressionist (1.5.1)
       httpclient (~> 2.2)
@@ -764,7 +764,7 @@ DEPENDENCIES
   heroku-forward (= 0.4.0)
   hirefire-resource (= 0.3.4)
   hpricot (= 0.8.6)
-  imgix (= 0.3.1)
+  imgix (= 1.0.0)
   impressionist (= 1.5.1)
   ipcat (= 2.0.1)
   jbuilder (= 2.3.0)
