@@ -701,18 +701,50 @@ const ContentEditable = React.createClass({
     }
 
     let liveNode = Parser.toLiveHtml(pastedText, { createWrapper: true });
-    let cleaned = Parser.cleanEmptyElements(liveNode);
+    let swappedIds = Parser.replaceHashIds(liveNode);
+    let cleaned = Parser.cleanEmptyElements(swappedIds);
 
-    if(parentNode.nodeName === 'P' && cleaned.nodeName === 'P' && range.endContainer.parentNode.nextSibling !== null) {
-      let span = document.createElement('span');
-      span.innerHTML = cleaned.innerHTML;
-      cleaned = span;
+    // console.log('Cleaned', cleaned.childNodes, range);
+    range.deleteContents();
+    let wrapperNode = document.createElement('div');
+    let cursorDataNode, cursorDataAnchorNode;
+
+    // If pasting into a block element that is NOT a P, we need to create seperate lines.
+    // Else we just insert the node at the cursor position.
+    if(cleaned.childNodes.length > 1 && parentNode.nodeName !== 'P') {
+      let childNodes = [].slice.call(cleaned.childNodes);
+      range.insertNode(childNodes.shift());
+      wrapperNode.appendChild(parentNode.cloneNode(true));
+      [].slice.call(childNodes).forEach((child, index) => {
+        let nodeName = parentNode.nodeName;
+        let newNode = document.createElement(nodeName);
+        newNode.innerHTML = child.innerHTML;
+        wrapperNode.appendChild(newNode);
+      });
+      cursorDataNode = cleaned.lastChild;
+      cursorDataAnchorNode = cleaned.lastChild;
+    } else {
+      // If theres text after the cursor, transform any paragraphs to spans to keep the current paragraph whole.
+      if(parentNode.nodeName === 'P' && cleaned.nodeName === 'P' && range.endOffset < parentNode.textContent.length) {
+        let span = document.createElement('span');
+        [].slice.call(cleaned.childNodes).forEach(child => {
+          if(child.nodeName === 'P') {
+            let s = document.createElement('span');
+            s.innerHTML = child.innerHTML;
+            span.appendChild(s);
+          } else {
+            span.appendChild(child);
+          }
+        });
+        cleaned = span;
+      }
+      cursorDataNode = parentNode;
+      cursorDataAnchorNode = cleaned;
+      range.insertNode(cleaned);
+      wrapperNode.innerHTML = parentNode.outerHTML;
     }
 
-    range.deleteContents();
-    range.insertNode(cleaned);
-
-    return Utils.parseDescription(parentNode.outerHTML)
+    return Utils.parseDescription(wrapperNode.innerHTML)
       .then(results => {
         if(!results.length) { return; }
         /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
@@ -724,7 +756,7 @@ const ContentEditable = React.createClass({
         });
 
         clean.json = Parser.removeAttributes(clean.json);
-        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth, { node: parentNode, anchorNode: Utils.getLastTextNode(cleaned), offset: range.startOffset + cleaned.textContent.length });
+        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth, { node: cursorDataNode, anchorNode: Utils.getLastTextNode(cursorDataAnchorNode), offset: range.startOffset + cursorDataAnchorNode.textContent.length });
         this.props.actions.forceUpdate(true);
       })
       .catch(err => { console.log('Paste Error', err); });

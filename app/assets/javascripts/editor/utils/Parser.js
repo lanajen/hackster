@@ -4,7 +4,7 @@ import DomHandler from 'domhandler';
 import sanitizer from 'sanitizer';
 import _ from 'lodash';
 import { BlockElements, ElementWhiteList } from './Constants';
-import { treeWalk } from './Traversal';
+import { treeWalk, domWalk } from './Traversal';
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
 
@@ -286,4 +286,16 @@ export default {
     });
     return newParent;
   },
+
+  replaceHashIds(liveNode) {
+    return domWalk(liveNode, (root, child, depth) => {
+      if(depth === 0 && root.hasAttribute('data-hash')) {
+        root.removeAttribute('data-hash');
+        root.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
+      } else if(child.hasAttribute('data-hash')) {
+        child.removeAttribute('data-hash');
+        child.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
+      }
+    });
+  }
 }
