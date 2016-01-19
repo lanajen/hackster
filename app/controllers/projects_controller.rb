@@ -249,6 +249,7 @@ class ProjectsController < ApplicationController
     respond_with @project do |format|
       format.html do
         private_was = @project.pryvate
+        type_was = @project.type
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
           if private_was != @project.pryvate
@@ -261,6 +262,8 @@ class ProjectsController < ApplicationController
             elsif @project.pryvate == false
               notice = "#{@project.name} is now private again."
             end
+          elsif type_was != @project.type
+            notice = "The project template was updated."
           end
           flash[:notice] = notice
         else
