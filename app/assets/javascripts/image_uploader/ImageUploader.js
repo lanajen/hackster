@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import Helpers from '../utils/Helpers';
 import { Dialog } from 'material-ui';
+import ProgressBar from './ProgressBar';
 
 export default class ImageUploader extends Component {
   constructor(props) {
@@ -77,6 +78,15 @@ export default class ImageUploader extends Component {
                     ? 'Change picture'
                     : 'Select picture';
 
+    let actions = isWorking
+                ? (<ProgressBar />)
+                : (<div className="btn-group">
+                    <a href="javascript:void(0);" className="btn btn-default btn-sm browse" onClick={this.handleSelectPictureClick}>{buttonLabel}</a>
+                    <a href="javascript:void(0);" className="btn btn-default btn-sm url" onClick={this.handleRemoteLinkClick}>
+                      <i className="fa fa-link"></i>
+                    </a>
+                  </div>);
+
     let dialog = this.state.showDialog
               ? (<Dialog open={this.state.showDialog} contentStyle={{ width: 600, display: 'flex' }} bodyStyle={{ width: 600, padding: 10, display: 'flex', flexDirection: 'column' }} onRequestClose={this.handleDialogDismiss}>
                   <button style={{ alignSelf: 'flex-end', paddingBottom: 10 }} className="close btn-close unselectable" onClick={this.handleRemoteButtonClick}>x</button>
@@ -88,15 +98,15 @@ export default class ImageUploader extends Component {
               : (null);
 
     let markups = {
-      'base_article': this._createInlineMarkup(locals, label, imagePreview, buttonLabel, dialog),
-      'challenge_idea': this._createStackedMarkup(locals, imagePreview, buttonLabel, dialog),
+      'base_article': this._createInlineMarkup(locals, label, imagePreview, actions, dialog),
+      'challenge_idea': this._createStackedMarkup(locals, imagePreview, actions, dialog),
     };
 
     let markup = markups[model]();
     return (markup);
   }
 
-  _createInlineMarkup(locals, label, imagePreview, buttonLabel, dialog) {
+  _createInlineMarkup(locals, label, imagePreview, actions, dialog) {
     let { human_file_type, file_type, help_block } = locals;
     return function() {
       return (
@@ -105,12 +115,7 @@ export default class ImageUploader extends Component {
           {label}
           <div className={human_file_type ? "col-md-8" : ""}>
             <span className={"image-preview preview " + file_type}>{imagePreview}</span>
-            <div className="btn-group">
-              <a href="javascript:void(0);" className="btn btn-default btn-sm browse" onClick={this.handleSelectPictureClick}>{buttonLabel}</a>
-              <a href="javascript:void(0);" className="btn btn-default btn-sm url" onClick={this.handleRemoteLinkClick}>
-                <i className="fa fa-link"></i>
-              </a>
-            </div>
+            {actions}
             <p className="help-block">{help_block}</p>
             {dialog}
           </div>
@@ -119,7 +124,7 @@ export default class ImageUploader extends Component {
     }.bind(this);
   }
 
-  _createStackedMarkup(locals, imagePreview, buttonLabel, dialog) {
+  _createStackedMarkup(locals, imagePreview, actions, dialog) {
     let { human_file_type, file_type, help_block, errors } = locals;
     return function() {
       let error = errors.image_id && errors.image_id.length ? (<p className="help-block">{errors.image_id[0]}</p>) : null;
@@ -132,12 +137,7 @@ export default class ImageUploader extends Component {
           </label>
           <div className="image">
             <span className={"image-preview preview " + file_type}>{imagePreview}</span>
-            <div className="btn-group">
-              <a href="javascript:void(0);" className="btn btn-default btn-sm browse" onClick={this.handleSelectPictureClick}>{buttonLabel}</a>
-              <a href="javascript:void(0);" className="btn btn-default btn-sm url" onClick={this.handleRemoteLinkClick}>
-                <i className="fa fa-link"></i>
-              </a>
-            </div>
+            {actions}
           </div>
           <p className="help-block">{help_block}</p>
           {error}
