@@ -19,4 +19,4 @@
               i.fa.fa-link>
               | Link existing repository
 
-          = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(GenericEmbedWidget FileWidget CodeWidget), embed_id: 'repo' }
+          = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(GenericEmbedWidget FileWidget CodeWidget CadRepoWidget CadFileWidget SchematicWidget SchematicFileWidget CodeRepoWidget), embed_id: 'repo' }

@@ -61,7 +61,7 @@ const ItemsContainer = React.createClass({
   renderItem: function(item) {
     switch (item.type) {
       case 'decision':
-        return (<Decision canAdmin={this.props.permissions.canAdmin} {...item} />);
+        return (<Decision canModerate={this.props.permissions.canModerate} {...item} />);
       case 'comment':
         return (<Comment {...item} />);
       case 'event':

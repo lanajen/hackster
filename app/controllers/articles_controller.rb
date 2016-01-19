@@ -36,6 +36,12 @@ class ArticlesController < ApplicationController
       end
     end
 
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-attachments"])
+      @widgets = @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget CadRepoWidget CadFileWidget SchematicWidget SchematicFileWidget CodeRepoWidget)).order(:position, :id)
+      @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget) }
+      @other_widgets = @widgets.reject{|w| w.type.in? %w(CodeWidget) }
+    end
+
     @parts = @project.parts.alphabetical.includes(:image)
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display

@@ -15,7 +15,7 @@
           .pull-right= link_to content_tag(:i, '', class: 'fa fa-minus'), 'javascript:void(0)', class: 'btn btn-link btn-sm toggle-review-frame', rel: 'tooltip', title: 'Minimize sidebar', data: { placement: 'bottom' }
         - if current_user.is?(:admin, :moderator, :hackster_moderator)
           div= link_to 'Moderator FAQ', 'http://hackster.uservoice.com/knowledgebase/topics/115761-project-moderation', class: 'btn btn-link btn-sm'
-      = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, canAdmin: (current_user.is?(:admin, :moderator) and !current_user.id.in?(@project.users.pluck(:id))) }, {}
+      = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, userRole: (%w(admin hackster_moderator super_moderator moderator) & current_user.roles).first, isAuthor: current_user.id.in?(@project.users.pluck(:id)) }, {}
 
 = content_for :js do
 

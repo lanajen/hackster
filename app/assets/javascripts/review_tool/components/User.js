@@ -4,8 +4,8 @@ const User = React.createClass({
   render: function() {
     const { userName, userSlug, avatarLink, user_id, userRole } = this.props;
 
-    let role = userRole == 'hackster' ? ' (Hackster team)' :
-              (userRole == 'moderator' ? ' (community moderator)' : null);
+    let role = ['admin', 'hackster_moderator'].indexOf(userRole) > -1 ? ' (Hackster team)' :
+              (['super_moderator', 'moderator'].indexOf(userRole) > -1 ? ' (community moderator)' : null);
 
     if (!user_id || user_id === 0)
       return (<span />);
@@ -15,6 +15,7 @@ const User = React.createClass({
         <img className="img-circle" src={avatarLink} />
         <a href={`/${userSlug}`} target='_blank'>{userName}</a>
         {role}
+        <span> </span>
       </span>
     );
   }

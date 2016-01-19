@@ -65,17 +65,6 @@ class CronTask < BaseWorker
     end
   end
 
-  def generate_user
-    UserGenerator.generate_user
-  rescue => e
-  end
-
-  def generate_users
-    15.times do
-      CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
-    end
-  end
-
   def launch_cron
     CronTask.perform_in 3.minutes, 'cleanup_buggy_unpublished'
     CronTask.perform_in 3.minutes, 'lock_assignment'

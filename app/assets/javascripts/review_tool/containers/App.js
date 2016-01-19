@@ -29,14 +29,18 @@ const App = React.createClass({
   },
 
   renderItemsContainer: function() {
-    const { currentThread, formStates, canAdmin, isEditable, showDecisionForm } = this.props;
+    const { currentThread, formStates, userRole, isAuthor, isEditable, showDecisionForm } = this.props;
+
+    let canAdmin = !isAuthor && ['admin', 'hackster_admin', 'super_moderator'].indexOf(userRole) > -1;
+    let canModerate = !isAuthor && (canAdmin || ['moderator'].indexOf(userRole) > -1);
 
     if (this.props.currentThread.isLoaded) {
       let permissions = {
         canAdmin: canAdmin,
+        canModerate: canModerate,
         canComment: isEditable,
-        canCreateDecision: showDecisionForm && canAdmin,
-        canUpdateDecision: isEditable && currentThread.hasDecisions && canAdmin
+        canCreateDecision: showDecisionForm && canModerate,
+        canUpdateDecision: isEditable && currentThread.hasDecisions && canModerate
       };
 
       return (<ItemsContainer items={currentThread.items} hasDecisions={currentThread.hasDecisions} formStates={formStates} onCommentFormSubmit={this.handleCommentFormSubmit} onDecisionFormSubmit={this.handleDecisionFormSubmit} permissions={permissions} showDecisionForm={showDecisionForm} threadStatus={currentThread.status} />);

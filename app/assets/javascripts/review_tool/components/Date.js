@@ -9,7 +9,10 @@ const Date = React.createClass({
     let date= (window ? window.moment(createdAt).fromNow() : createdAt);
 
     return (
-      <span className="review-item-date">{date}</span>
+      <span className="review-item-date">
+        <span> </span>
+        {date}
+      </span>
     );
   }
 });

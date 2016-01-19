@@ -27,7 +27,7 @@ class WidgetObserver < ActiveRecord::Observer
         else
           keys << "project-#{record.project_id}-widgets"
         end
-        keys += ["project-#{record.project_id}-left-column", "project-#{record.project_id}"]
+        keys += ["project-#{record.project_id}-attachments", "project-#{record.project_id}-left-column", "project-#{record.project_id}"]
       end
       if keys.any?
         Cashier.expire *keys
