@@ -24,10 +24,10 @@ c= content_for :head do
 
     #content.project-page class="project-#{@project.id}"
       .wrapper780.protip-show
-        - if @project.content_type_to_human
+        - if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
           section.section-no-container
             .project-type
-              = @project.content_type_to_human
+              = @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)'
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
             .pull-right-desktop

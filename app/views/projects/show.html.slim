@@ -26,9 +26,9 @@
 
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
-        - if @project.content_type_to_human
+        - if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
           .project-type
-            = @project.content_type_to_human
+            = @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)'
         .row
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
