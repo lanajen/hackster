@@ -704,7 +704,6 @@ const ContentEditable = React.createClass({
     let swappedIds = Parser.replaceHashIds(liveNode);
     let cleaned = Parser.cleanEmptyElements(swappedIds);
 
-    // console.log('Cleaned', cleaned.childNodes, range);
     range.deleteContents();
     let wrapperNode = document.createElement('div');
     let cursorDataNode, cursorDataAnchorNode;
