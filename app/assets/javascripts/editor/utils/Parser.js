@@ -289,10 +289,10 @@ export default {
 
   replaceHashIds(liveNode) {
     return domWalk(liveNode, (root, child, depth) => {
-      if(depth === 0 && root.hasAttribute('data-hash')) {
+      if(depth === 0 && root.nodeType === 1 && root.hasAttribute('data-hash')) {
         root.removeAttribute('data-hash');
         root.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
-      } else if(child.hasAttribute('data-hash')) {
+      } else if(child.nodeType === 1 && child.hasAttribute('data-hash')) {
         child.removeAttribute('data-hash');
         child.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
       }

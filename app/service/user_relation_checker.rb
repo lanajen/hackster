@@ -13,7 +13,7 @@ class UserRelationChecker
       .joins(group: :project_collections)
       .merge(Platform.moderation_enabled)
       .where(project_collections: { project_id: project.id })
-      .with_group_roles([:admin, :hackster_moderator])
+      .with_group_roles([:admin, :moderator])
       .exists?
   end
 end
