@@ -71,7 +71,6 @@ export default class Comments extends Component {
                                         toggleScrollTo={this.props.actions.toggleScrollTo}
                                         triggerReplyBox={this.triggerReplyBox}
                                         parentIsDeleted={comment.root.deleted}
-                                        placeholder={this.props.placeholder}
                                         updateComment={this.updateComment} />
                       });
                      return <Comment key={index}
@@ -92,7 +91,6 @@ export default class Comments extends Component {
                                      toggleScrollTo={this.props.actions.toggleScrollTo}
                                      triggerReplyBox={this.triggerReplyBox}
                                      parentIsDeleted={false}
-                                     placeholder={this.props.placeholder}
                                      updateComment={this.updateComment} />
                      })
                      : ( <div>Be the first to comment!</div> );

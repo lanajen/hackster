@@ -32,7 +32,7 @@ export default class ProgressBar extends Component {
               className="progress-bar progress-bar-success progress-bar-striped"
               style={ Object.assign(
                 {},
-                { transition: 'width 1s', display: 'block', height: '100%', padding: 5, color: '#444', borderRadius: 4 },
+                { transition: 'width 1s', display: 'block', height: '100%', padding: 5, color: 'white', borderRadius: 4 },
                 { width: `${this.state.width}%` }
               )}>
           Uploading
