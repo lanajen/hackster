@@ -6,23 +6,22 @@
   #live-home
     section.section-header.hero-header
       .container
-        h1 Hackster Live
-        p Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
-        = link_to 'Join an event near you', '#events', class: 'smooth-scroll btn btn-primary btn-sm'
+        .hero-content
+          h1 Hackster Live
+          p Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+          = link_to 'Join an event near you', '#events', class: 'smooth-scroll btn btn-primary btn-sm'
 
-    section style='padding-bottom:50px;background-color:#1cacf7'
-      .container
-        .row.text-center
-          .col-sm-6
-            .live-thumb
-              h4 Ambassadorship
-              p Lorem Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
-              = link_to "Become an Ambassador &rarr;".html_safe, 'javascript:void(0)', data: { target: '#ambassador-popup' }, class: 'modal-open btn btn-default'
-          .col-sm-6
-            .live-thumb
-              h4 Sponsorship
-              p Ipsum Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
-              = link_to "Become a Sponsor &rarr;".html_safe, 'javascript:void(0)', data: { target: '#sponsor-popup' }, class: 'modal-open btn btn-default'
+        .hero-bottom
+          .row.text-center
+            .col-sm-4
+              = image_tag 'live/100a.png'
+              div 100 Ambassadors
+            .col-sm-4
+              = image_tag 'live/100h.png'
+              div 100% Internet-Connected Hardware
+            .col-sm-4
+              = image_tag 'live/100l.png'
+              div 100 Locations
 
     section#events style='background:#fafafa'
       .container
@@ -30,6 +29,29 @@
         .row
           - @chapters.each do |chapter|
             = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
+
+    section#mid
+      .container
+        .row.text-center
+          .col-sm-6
+            .live-thumb
+              = image_tag 'live/ambassador.jpg'
+              h4 Ambassadorship
+              p Lorem Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+              = link_to "Become an Ambassador &rarr;".html_safe, 'javascript:void(0)', data: { target: '#ambassador-popup' }, class: 'modal-open btn btn-default'
+          .col-sm-6
+            .live-thumb
+              = image_tag 'live/sponsor.jpg'
+              h4 Sponsorship
+              p Ipsum Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+              = link_to "Become a Sponsor &rarr;".html_safe, 'javascript:void(0)', data: { target: '#sponsor-popup' }, class: 'modal-open btn btn-default'
+
+    section#map
+      .map
+        = image_tag 'live/map.jpg'
+      .text
+        h2 Why Hackster Live?
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vehicula congue urna, et dictum mi congue eget. Fusce egestas ligula sem, nec bibendum velit ullamcorper eget.
 
     / section#members
       .container
