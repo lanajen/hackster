@@ -1,15 +1,14 @@
 class UserDecorator < ApplicationDecorator
   def avatar size=:thumb
     if h.is_whitelabel? and h.current_site.enable_custom_avatars?
-      avatar = h.user_avatar_url(model.id, size: size, subdomain: h.current_site.subdomain)
+      h.user_avatar_url(model.id, size: size, subdomain: h.current_site.subdomain)
     else
       if model.avatar and model.avatar.file_url
-        avatar = model.avatar.imgix_url(size)
+        model.avatar.imgix_url(size)
       else
-        avatar = default_avatar size
+        default_avatar size
       end
     end
-    avatar
   end
 
   def avatar_link size=:thumb

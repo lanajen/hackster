@@ -487,7 +487,6 @@ HackerIo::Application.routes.draw do
         get 'infringement_policy' => 'pages#infringement_policy'
         get 'privacy' => 'pages#privacy'
         get 'conduct' => 'pages#conduct'
-        get 'guidelines' => 'pages#guidelines'
         get 'terms' => 'pages#terms'
         get 'press' => 'pages#press'
         get 'resources' => 'pages#resources'
@@ -656,6 +655,7 @@ HackerIo::Application.routes.draw do
       get 'projects/tags' => 'search#tags'
       get 'robots' => 'pages#robots'
       get 'csrf' => 'pages#csrf'
+      get 'guidelines' => 'pages#guidelines'
 
       # get 'pdf_viewer' => 'pages#pdf_viewer'
 

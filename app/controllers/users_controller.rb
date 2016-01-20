@@ -49,6 +49,7 @@ class UsersController < ApplicationController
       @public_count = @public_projects.count
       @respected_projects = @respected_projects.with_group(current_platform)
       @replicated_projects = @replicated_projects.with_group(current_platform)
+      @guest_projects = @guest_projects.with_group(current_platform)
       if @user == current_user and !current_site.hide_alternate_search_results
         ids = @user.projects.with_group(current_platform, all: true).pluck(:id)
         @other_projects = @user.projects.where.not(id: ids).for_thumb_display

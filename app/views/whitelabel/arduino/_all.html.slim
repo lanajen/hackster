@@ -74,7 +74,7 @@
               a href="https://id.arduino.cc/" target="_blank"
                 button Profile
             li
-              = link_to content_tag(:button, 'My Projects'), current_user
+              = link_to content_tag(:button, 'My projects'), current_user
             li
               = link_to content_tag(:button, 'Sign Out'), destroy_user_session_path, method: :delete
     - else
@@ -90,12 +90,10 @@
             a.btn.btn-primary.add-project href=new_project_path
               span
           .pull-right style=("padding-top: 11px;")
-            a.btn.btn-primary href=current_user
-              span My Projects
+            = link_to content_tag(:span, 'My projects'), current_user, class: 'btn btn-primary'
         - else
           .pull-right style=("padding-top: 11px;")
-            a.btn.btn-primary href=new_project_path
-              span Add project
+            = link_to content_tag(:span, 'Add project'), new_project_path, class: 'btn btn-primary'
         #navbar-search.pull-right.show-on-desktop
           form.navbar-form action=search_path method="get"
             .form-group

@@ -644,10 +644,14 @@ function resetSortablePositions(target){
 }
 
 function showAlerts() {
+  var alert = $('.alert-top');
+  var right = - alert.outerWidth() - 1;
+  alert.css('right', right + 'px');
   window.setTimeout(function(){
-    $('.alert-top').removeClass('alert-hidden');
+    alert.removeClass('alert-hidden');
+    alert.css('right', '');
     window.setTimeout(function(){
-      $('.alert-top').addClass('alert-hidden');
+      alert.css('right', right + 'px');
     }, 5000);
   }, 100);
 }

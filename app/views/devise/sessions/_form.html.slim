@@ -2,6 +2,6 @@
   = f.input :email, required: false, autofocus: (defined?(autofocus) ? autofocus : true), placeholder: 'Email', label: false
   = f.input :password, label: false do
     = f.input :password, required: false, placeholder: 'Password', label: false, wrapper: false
-  = f.input :remember_me, as: :boolean, inline_label: 'Remember me', label: false
+  = f.input :remember_me, as: :boolean, inline_label: 'Keep me signed in on this device', label: false, input_html: { checked: true }
   input type='submit' value="Log into my #{'Hackster.io ' if is_whitelabel? }account" class='btn-block btn btn-primary'
   = link_to 'Forgot your password?', new_user_password_path, class: 'forgot-pass'

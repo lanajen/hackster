@@ -799,7 +799,7 @@ footer {
   border-bottom-right-radius: 4px;
   @include transition(right ease-in-out 200ms);
   &.alert-hidden {
-    right: -520px;
+    right: -100%;
   }
   &.alert-success {
     background: #d8eeca;
