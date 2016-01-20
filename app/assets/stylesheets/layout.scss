@@ -1166,6 +1166,9 @@ a.hidden-link {
   -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
   transition: all 200ms;
   @include box-shadow(0 0 5px #666);
+  &.popup-with-sections {
+    padding: 0;
+  }
   &.transparent {
     background: transparent;
     color: #fff;
@@ -1185,6 +1188,19 @@ a.hidden-link {
       }
     }
   }
+}
+.popup-section-header {
+  text-align: center;
+  padding: 40px;
+  h2 {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+.popup-section-body {
+  padding: 40px;
+  background: #fafafa;
 }
 @media (min-width: 768px) {
   .popup-overlay-inner {

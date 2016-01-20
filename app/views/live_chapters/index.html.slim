@@ -75,69 +75,87 @@
 
 = content_for :js do
 
-  #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
+  #ambassador-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=700
     .popup-overlay-bg
     .popup-overlay-outer
-      .popup-overlay-inner.text-left
-        button.close data-target='#ambassador-popup' &times;
-        h2 Become a Hackster Ambassador
+      .popup-overlay-inner.popup-with-sections
+        .popup-section-header
+          button.close data-target='#ambassador-popup' &times;
+          = image_tag 'live/ambassador.jpg'
+          h2 Become a Hackster Ambassador
 
-        h3 What it means for you:
-        ul
-          li Build a community
-          li Be seen as a leader
-          li Keep current with the latest technology
+        .popup-section-body
+          .row
+            .col-sm-6
+              h3 What it means for you:
+              ul.list-unstyled
+                li Build a community
+                li Be seen as a leader
+                li Keep current with the latest technology
 
-        h3 What you're committing you:
-        ul
-          li Monthly events
-          li Monthly calls and reports with Hackster
-          li Follow code of conduct
-          li Volunteer-based
+            .col-sm-6
+              h3 What you're committing you:
+              ul.list-unstyled
+                li Monthly events
+                li Monthly calls and reports with Hackster
+                li Follow code of conduct
+                li Volunteer-based
 
-        h3 Resources you get:
-        ul
-          li Food and drinks cash
-          li Hardware for events
-          li Content for workshops
+          .row
+            .col-sm-6
+              h3 Resources you get:
+              ul.list-unstyled
+                li Food and drinks cash
+                li Hardware for events
+                li Content for workshops
 
-        h3 Pre-requisites:
-        ul
-          li Hacker, Developer, Community Leader
-          li Meetup experience
-          li Account on Hackster
-          li Active on social media
+            .col-sm-6
+              h3 Pre-requisites:
+              ul.list-unstyled
+                li Hacker, Developer, Community Leader
+                li Meetup experience
+                li Account on Hackster
+                li Active on social media
 
-        = link_to 'Apply to become a Hackster Ambassador', 'https://docs.google.com/forms/d/1Gq0T2FIjMnjk6ZQB_HiKI2MattkSIDnn60ADvrwhmmU/viewform', class: 'btn btn-primary', target: '_blank'
+          .tmg-20= link_to "Apply to become a Hackster Ambassador &rarr;".html_safe, 'https://docs.google.com/forms/d/1Gq0T2FIjMnjk6ZQB_HiKI2MattkSIDnn60ADvrwhmmU/viewform', class: 'btn btn-default', target: '_blank'
 
-  #sponsor-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=500
+  #sponsor-popup.popup-overlay.normal-size.modal-popup.live-modal data-width=700
     .popup-overlay-bg
     .popup-overlay-outer
-      .popup-overlay-inner.text-left
-        button.close data-target='#sponsor-popup' &times;
-        h2 Sponsor Hackster Live
+      .popup-overlay-inner.popup-with-sections
+        .popup-section-header
+          button.close data-target='#sponsor-popup' &times;
+          = image_tag 'live/sponsor.jpg'
+          h2 Sponsor Hackster Live
 
-        h3 What it means for you:
-        ul
-          li Build a community
-          li Brand evangelism
-          li Product activation and feedback
+        .popup-section-body
+          .row
+            .col-sm-6
+              h3 What it means for you:
+              ul.list-unstyled
+                li Build a community
+                li Brand evangelism
+                li Product activation and feedback
 
-        h3 What you're committing you:
-        ul
-          li 6 months duration
-          li Content and hardware
-          li Cross-promotion
+            .col-sm-6
+              h3 What you're committing you:
+              ul.list-unstyled
+                li 6 months duration
+                li Content and hardware
+                li Cross-promotion
 
-        h3 Resources you give:
-        ul
-          li Cash and hardware
-          li Content and speakers
+          .row
+            .col-sm-6
+              h3 Resources you give:
+              ul.list-unstyled
+                li Cash and hardware
+                li Content and speakers
 
-        h3 Outcome and reach:
-        ul
-          li 50,000 annual impressions
-          li Globally distributed
-          li Social, stories, community
+            .col-sm-6
+              h3 Outcome and reach:
+              ul.list-unstyled
+                li 50,000 annual impressions
+                li Globally distributed
+                li Social, stories, community
 
-        = link_to 'Apply to sponsor Hackster Live', 'mailto:adam@hackster.io?subject=About Hackster Live Sponsorship', class: 'btn btn-primary'
+          .tmg-20= link_to "Apply to sponsor Hackster Live &rarr;".html_safe, 'mailto:adam@hackster.io?subject=About Hackster Live Sponsorship', class: 'btn btn-default'

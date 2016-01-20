@@ -77,13 +77,6 @@
       max-width: 500px;
       margin: 0 auto 20px;
     }
-    .btn.btn-primary {
-      background: #fff;
-      color: #208edb;
-      &:hover {
-        color: #3b8bc3;
-      }
-    }
     .hero-content {
       padding: 30px 0 50px;
     }
@@ -120,13 +113,23 @@
     @include background-cover;
     background-image: asset-url('live/live_mid.jpg');
     padding-bottom: 50px;
-    .btn.btn-default {
-      color: #208edb;
-      border-color: #208edb;
-      &:hover {
-        color: #3b8bc3;
-        border-color: #3b8bc3;
-      }
+  }
+}
+
+#live-home, .live-modal {
+  .btn.btn-default {
+    color: #208edb;
+    border-color: #208edb;
+    &:hover {
+      color: #3b8bc3;
+      border-color: #3b8bc3;
+    }
+  }
+  .btn.btn-primary {
+    background: #fff;
+    color: #208edb;
+    &:hover {
+      color: #3b8bc3;
     }
   }
 }
@@ -157,10 +160,6 @@
 }
 
 .live-modal {
-  h2 {
-    margin: 0 0 30px;
-    font-size: 1.5em;
-  }
   h3 {
     margin: 0 0 5px;
     font-size: 1em;
