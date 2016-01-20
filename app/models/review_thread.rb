@@ -40,6 +40,6 @@ class ReviewThread < ActiveRecord::Base
   end
 
   def ready_for_approval?
-    open? and decisions.where(decision: %w(approve reject)).exists?
+    open? and decisions.last.try(:decision).in?(%w(approve reject))
   end
 end
