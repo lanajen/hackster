@@ -4,6 +4,8 @@ class Client::SearchController < Client::BaseController
     title "#{current_platform.name} projects"
 
     if params[:q].present?
+      redirect_to tag_path(params[:q].gsub(/^#/, '')) and return if params[:q] =~ /^#/
+
       begin
         opts = params.dup
         opts[:platform_id] = current_platform.id
