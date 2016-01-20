@@ -49,6 +49,7 @@ class Challenge < ActiveRecord::Base
   before_validation :assign_new_slug
   before_validation :cleanup_custom_registration_email
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
+  before_validation :clean_admins
 
   attr_accessible :new_slug, :name, :prizes_attributes, :sponsor_ids,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
@@ -370,6 +371,12 @@ class Challenge < ActiveRecord::Base
   end
 
   private
+    def clean_admins
+      challenge_admins.each do |admin|
+        challenge_admins.delete(admin) if admin.new_record? and admin.user.nil?
+      end
+    end
+
     # cleanup Adam's autofill
     def cleanup_custom_registration_email
       self.custom_registration_email = nil if custom_registration_email.try(:strip) == 'adamtben@outlook.com'
