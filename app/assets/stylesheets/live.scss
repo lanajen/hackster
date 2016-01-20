@@ -4,7 +4,7 @@
     font-weight: bold;
   }
   .thumb-image-inner-top {
-    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%));
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%));
     text-align: center;
     color: #fff;
     a {
