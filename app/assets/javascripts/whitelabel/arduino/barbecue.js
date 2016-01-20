@@ -41,7 +41,6 @@ $(function(){
 		var hh = $('#home').height();
 		var h = $('#back').height() - hh;
 
-		$('#closeArea')
 		$('#home')
 			.css('top', -hh + 'px')
 			.animate(
@@ -58,9 +57,8 @@ $(function(){
 				}
 	 	});
 
-		$('html, body').css({
-      'overflow': 'hidden',
-      'height': '100%'
+		$('body').css({
+      'overflow': 'hidden'
 		});
 	};
 
@@ -82,9 +80,8 @@ $(function(){
 			}
 	  	});
 
-	  	$('html, body').css({
-		    'overflow': 'auto',
-		    'height': 'auto'
+	  	$('body').css({
+		    'overflow': 'auto'
 			});
 
 	  	expanded = false;
