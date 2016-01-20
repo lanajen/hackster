@@ -305,7 +305,7 @@ module ScraperStrategies
           if parent.name == 'a'
             href = parent['data-fancybox-href'] || parent['href']
             parent.name = 'span'  # so that it's not parsed as an embed later on
-            src = href if href =~ /\.(png|jpg|jpeg|bmp|gif)$/ and test_link(href, 'image')
+            src = href if href =~ /\.(png|jpg|jpeg|bmp|gif)/ and test_link(href, 'image')
             break
           end
         end
