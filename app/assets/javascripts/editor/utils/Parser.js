@@ -284,7 +284,7 @@ export default {
         newParent.appendChild(child);
       }
     });
-    return newParent;
+    return newParent.childNodes.length === 1 ? newParent.firstChild : newParent;
   },
 
   replaceHashIds(liveNode) {

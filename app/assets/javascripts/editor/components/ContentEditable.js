@@ -712,14 +712,17 @@ const ContentEditable = React.createClass({
     // Else we just insert the node at the cursor position.
     if(cleaned.childNodes.length > 1 && parentNode.nodeName !== 'P') {
       let childNodes = [].slice.call(cleaned.childNodes);
+
       range.insertNode(childNodes.shift());
       wrapperNode.appendChild(parentNode.cloneNode(true));
+
       [].slice.call(childNodes).forEach((child, index) => {
         let nodeName = parentNode.nodeName;
         let newNode = document.createElement(nodeName);
         newNode.innerHTML = child.innerHTML;
         wrapperNode.appendChild(newNode);
       });
+
       cursorDataNode = cleaned.lastChild;
       cursorDataAnchorNode = cleaned.lastChild;
     } else {
@@ -737,9 +740,10 @@ const ContentEditable = React.createClass({
         });
         cleaned = span;
       }
+
+      range.insertNode(cleaned);
       cursorDataNode = parentNode;
       cursorDataAnchorNode = cleaned;
-      range.insertNode(cleaned);
       wrapperNode.innerHTML = parentNode.outerHTML;
     }
 
