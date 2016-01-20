@@ -7,6 +7,12 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.jsx?$/,
+        loader: 'eslint-loader',
+      }
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
@@ -26,5 +32,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js', '.jsx', 'json']
+  },
+  eslint: {
+    configFile: '.eslintrc',
+    emitError: true
   }
 };
