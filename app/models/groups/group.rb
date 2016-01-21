@@ -131,7 +131,7 @@ class Group < ActiveRecord::Base
   end
 
   def default_user_name
-    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase[0...100]
   end
 
   def generate_user_name
@@ -143,7 +143,7 @@ class Group < ActiveRecord::Base
     if result = self.class.where(user_name: slug).first
       unless self == result
         # if it exists add a 1 and increment it if necessary
-        slug += '1'
+        slug = slug[0...99] + '1'
         while self.class.where(user_name: slug).first
           slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
         end
