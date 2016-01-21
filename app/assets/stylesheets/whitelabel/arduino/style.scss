@@ -182,6 +182,11 @@ body {
 }
 
 
+div.arduino-bbq.bbq-overlap div.user-profile div.dropover.simple svg {
+  fill: #20A3A8;
+}
+
+
 /*  -- NOTIFICATIONS --  */
 .alert {
   padding: 15px;
@@ -312,6 +317,7 @@ div#user-profile-box div.user-projects ul span.proj-number {
   font-weight: bold;
   padding: 0 7px;
   letter-spacing: 1px;
+  margin-top: 3px;
 }
 div#user-profile-box div.user-projects ul a:hover span.proj-number {
   background-color: #00979C;
@@ -368,11 +374,11 @@ div#user-profile-box div.user-info ul span.number {
 }
 div#user-profile-box div.user-info a.btn-default {
   position: absolute;
-  bottom: 0;
+  bottom: 2px;
 }
-div#user-profile-box div.user-info a.follow-button {
+div#user-profile-box div.user-info div.react-btn {
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   top: auto;
 }
 div#user-profile-box div.user-info a.follow-button:hover {
@@ -391,9 +397,210 @@ div#user-profile-box div.user-info a.follow-button + a {
   margin-bottom: 12px;
 }
 
+.protip-section-title, .protip-section-img {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+.protip-section-title {
+  margin-bottom: 35px;
+}
+.protip-section-img {
+  text-align: center;
+}
+.protip-section-title ul.protip-parts {
+  list-style-type: none;
+  padding: 0;
+}
+.protip-section-title ul.protip-parts li img {
+  width: 80px;
+  height: auto;
+}
+.protip-section-title ul.protip-parts li span {
+  position: absolute;
+  left: 95px;
+  margin: 20px 0;
+}
+.protip-section-title ul.protip-parts li {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  color: #879191;
+  position: relative;
+  min-height: 52px;
+  width: 50%;
+  float: left;
+  border-right: 1px solid #d4d4d4;
+  padding-right: 25px;
+}
+.protip-section-title ul.protip-parts li:nth-child(even) {
+  border-right: none;
+  padding-right: 0;
+  padding-left: 25px;
+}
+.protip-section-title ul.protip-parts li:nth-child(even) span {
+  left: 120px;
+}
+.protip-section-title ul.protip-parts li a {
+  color: #879191;
+}
+.protip-section-title ul.protip-parts li a:hover {
+  color: #00979C;
+}
 
 
 
+/* COMMENTS FORM */
+.r-comments .comments-form .comments-preview, .r-comments .comments-form .comments-form-nav .comments-form-tab.active {
+  background: #ecf1f1;
+}
+.r-comments .comments-form .comments-textarea, .r-comments .comments-form .comments-preview {
+  min-height: 190px;
+}
+.comments-form-button-container {
+  border: none;
+  padding: 0;
+}
+.comments-form-button-container button.btn-primary {
+  position: relative;
+  right: -7px;
+}
+.comments-form div.comments-preview p, .r-comments .comments-form .comments-textarea {
+  background-color: white;
+  padding: 20px;
+  margin: 0;
+  min-height: 190px;
+  color: #666;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+}
+.r-comments .comments-form .comments-textarea {
+ border: 6px solid #ecf1f1;
+ padding: 20px;
+}
+.r-comments .comments-form .comments-preview {
+  padding: 6px;
+}
+.r-comments .comments-form .comments-form-button-container {
+  border: none;
+}
+/* END COMMENTS FORM */
+
+
+.part-row .part-img {
+  padding: 15px;
+}
+
+.table>thead>tr>th, .table-condensed-bordered>thead>tr>th, .table>thead>tr>td, .table-condensed-bordered>thead>tr>td, .table>tbody>tr>th, .table-condensed-bordered>tbody>tr>th, .table>tbody>tr>td, .table-condensed-bordered>tbody>tr>td, .table>tfoot>tr>th, .table-condensed-bordered>tfoot>tr>th, .table>tfoot>tr>td, .table-condensed-bordered>tfoot>tr>td {
+  padding: 20px 15px;
+}
+
+
+
+.media.protip-author.pull-left-desktop div.media-left {
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  position: relative;
+  float: left;
+}
+.media.protip-author.pull-left-desktop div.media-left img {
+  width: 100%;
+  height: auto;
+}
+.media.protip-author.pull-left-desktop div.media-body {
+  margin: 0 0 0 20px;
+  display: inline-block;
+  position: relative;
+  float: left;
+  height: 100px;
+}
+.media.protip-author.pull-left-desktop div.media-body div.media-heading a, .member-thumb-body h5 a {
+  font-size: 27px;
+  line-height: 31px;
+  margin: 40px 0 20px 0;
+  font-weight: normal;
+  color: #666;
+}
+.media.protip-author.pull-left-desktop div.media-body div.media-heading a:hover, .member-thumb-body h5 a:hover {
+  color: #00979C;
+}
+.media.protip-author.pull-left-desktop div.media-body ul.list-inline.project-stats {
+  list-style-type: none;
+  padding: 0;
+}
+.media.protip-author.pull-left-desktop div.media-body ul.list-inline.project-stats li {
+  width: 100%;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #879191;
+}
+.media.protip-author.pull-left-desktop div.media-body ul.list-inline.project-stats li span.stat-figure {
+  font-weight: 600;
+  font-size: 100%;
+}
+
+
+.code-widgets .sidebar ul li a {
+  margin-top: 13px;
+  color: #666;
+}
+
+.protip-parts {
+  margin-top: 15px;
+}
+
+section.protip-section-heading div.pull-right-desktop a.respect-button {
+  display: block;
+  margin-bottom: 25px;
+}
+
+
+
+
+
+div.project-actions div.text-center {
+  margin-top: 16px;
+}
+div.project-actions div.text-center a {
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+}
+div.project-actions div.text-center button {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+}
+div.project-actions div.text-center a[data-target="#embed-popup"] {
+  margin-top: 0;
+  position: relative;
+  top: 5px;
+}
+/*div.project-actions div.text-center div.react-btn + a.btn {
+  margin-top: 0;
+  position: relative;
+  top: 5px;
+}*/
+.react-btn+.btn:not(.btn-block) {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+
+
+
+.wide-thumb img {
+  width: 120px;
+  background-color: #ecf1f1;
+  border: 6px solid white;
+}
+.wide-thumb img[alt="Default"] {
+  padding: 0 15px;
+}
 
 
 
@@ -833,6 +1040,7 @@ select[multiple] {
 }
 .btn-primary i.fa-clipboard {
   background-image: asset-url("whitelabel/arduino/icon-copy.svg");
+  left: 2px;
 }
 
 .repository .button-content-container {
@@ -1311,7 +1519,26 @@ div#tob-bar-bg {
   line-height: 26px;
   padding: 0 23px;
 }
-i.fa-cloud-upload, i.fa-link {
+
+i.fa.fa-circle-o.small {
+    font-size: 7px;
+    margin-right: 8px;
+    top: -1px;
+    position: relative;
+}
+
+i.fa-code-fork {
+  background-image: asset-url("whitelabel/arduino/icon-fork.svg");
+}
+i.fa-share-square-o {
+  background-image: asset-url("whitelabel/arduino/icon-share.svg");
+}
+i.fa-bookmark-o {
+  background-image: asset-url("whitelabel/arduino/icon-bookmark.svg");
+}
+
+
+i.fa-cloud-upload, i.fa-link, i.fa-code-fork, i.fa-share-square-o, i.fa-bookmark-o {
   color: transparent;
   background-size: 15px;
   background-repeat: no-repeat;
@@ -1401,11 +1628,14 @@ div.project-type {
   color: white;
   letter-spacing: 0.6px;
 }
-.project-banner-inner h1 {
-  font-size: 30px;
-  line-height: 33px;
+.project-banner-inner h1, .protip-show h1 {
+  font-size: 34px;
+  line-height: 40px;
   font-weight: 500;
   letter-spacing: 0.5px;
+}
+.protip-show h1 {
+  margin-bottom: 30px;
 }
 div.project-page h3, div.project-page .h3 {
     font-size: 27px;
@@ -1437,24 +1667,37 @@ div.project-page h3, div.project-page .h3 {
   font-size: 70%;
   color: white;
 }
-.tag {
+.tag, .protip-show .tag {
   transition: all ease-out .1s;
   border-radius: 0;
   font-weight: 500;
   padding: 4px 6px 6px 6px;
   font-size: 14px;
 }
+.protip-show .tag {
+  font-weight: 400;
+}
 .tag:hover {
   transition: all ease-out .1s;
   color: #00979C;
 }
-.section-title .title-toggle {
+.protip-show .tag:hover {
+  transition: all ease-out .1s;
+  color: #444;
+}
+.member-thumb img.media-object {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+}
+
+
+.section-title .title-toggle, .section-title .title {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   font-size: 20px;
   line-height: 22px;
-
 }
 .wide-thumb-body-bottom {
   bottom: -18px;
@@ -1475,7 +1718,7 @@ b, strong {
   transition: all ease-out .1s;
   color: #00979C;
 }
-.btn-link:hover {
+.btn-link:hover, .btn-link:focus {
   transition: all ease-out .1s;
   color: #006569;
   text-decoration: none;
