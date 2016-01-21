@@ -72,9 +72,9 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         if event.to_sym == :ending_soon
-          context[:users] = challenge.registrants - challenge.entrants
+          context[:users] = challenge.registrants.with_subscription(notification_type, 'contest_reminder') - challenge.entrants
         elsif event.to_sym == :pre_contest_ending_soon
-          context[:users] = challenge.registrants - challenge.idea_entrants
+          context[:users] = challenge.registrants.with_subscription(notification_type, 'contest_reminder') - challenge.idea_entrants
         elsif event.to_sym == :pre_contest_awarded
           context[:users] = challenge.registrants - challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
         elsif event.to_sym == :pre_contest_winners

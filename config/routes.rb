@@ -388,7 +388,8 @@ HackerIo::Application.routes.draw do
           resources :ideas, controller: :challenge_ideas, only: [] do
             put 'update_workflow' => 'challenge_ideas#update_workflow', on: :member
           end
-          resources :registrations, controller: :challenge_registrations, only: [:create, :destroy] do
+          resources :registrations, controller: :challenge_registrations, only: [:create] do
+            delete '' => 'challenge_registrations#destroy', on: :collection
             get 'create' => 'challenge_registrations#create', on: :collection, as: :create
           end
           post 'projects' => 'challenges#enter', on: :member, as: :enter

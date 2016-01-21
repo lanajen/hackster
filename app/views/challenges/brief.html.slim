@@ -29,6 +29,7 @@
           - else
             p
              strong> You're registered!
+             => link_to content_tag(:i, '', class: 'fa fa-times'), challenge_registrations_path(@challenge), class: 'btn btn-danger btn-xs', data: { method: :delete }
              - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
               ' We'll let you know by email when the challenge launches.
           - if @challenge.open_for_submissions?

@@ -92,6 +92,7 @@ class User < ActiveRecord::Base
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
       'new_projects' => 'New projects related to a list, platform or user I follow',
+      'contest_reminder' => "Reminders that a contest I participate in is approaching a deadline",
     },
     web: {
       'new_comment_own' => 'New comment on one of my projects',
@@ -111,6 +112,7 @@ class User < ActiveRecord::Base
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
       'new_projects' => 'New projects related to a list, platform or user I follow',
+      'contest_reminder' => "Reminders that a contest I participate in is approaching a deadline",
     }
   }
 
