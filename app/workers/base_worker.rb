@@ -23,6 +23,7 @@ class BaseWorker
   end
 
   def log(message, method = nil)
+    message = message.gsub(/%/, '')  # cleaning up % so the line below doesn't complain of malformed string
     log_helper "%s#%s - #{message}" % [self.class.name, method]
   end
 
