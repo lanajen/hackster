@@ -46,8 +46,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        domUpdated: true,
-        // forceUpdate: true
+        domUpdated: true
       };
 
     case Editor.domUpdated:

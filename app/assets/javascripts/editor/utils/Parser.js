@@ -55,6 +55,10 @@ export default {
           return null;
         }
 
+        if(item.attribs && item.attribs.hasOwnProperty('class')) {
+          delete item.attribs.class;
+        }
+
         if(item.type === 'text' && !item.children) {
           if(item.data.match(/&nbsp;/g)) {
             item.data = item.data.replace(/&nbsp;/g, ' ');
@@ -83,7 +87,7 @@ export default {
         } else {
           return {
             tag: name || item.name,
-            content: null,
+            content: '',
             attribs: item.attribs,
             children: handler.apply(this, [item.children || [], depth+1])
           }

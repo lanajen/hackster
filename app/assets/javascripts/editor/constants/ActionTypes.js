@@ -56,6 +56,8 @@ export default {
 
   History: keyMirror({
     addToHistory: null,
+    redoHistoryState: null,
     updateCurrentLiveIndex: null,
+    undoHistoryState: null,
   })
 };

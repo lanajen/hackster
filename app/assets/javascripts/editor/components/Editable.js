@@ -134,7 +134,6 @@ const Editable = React.createClass({
 
     /** Adds editor store to history. */
     if(this.props.editor.domUpdated && !this.state.domUpdated) {
-      console.log('Updating', this.props.editor.domUpdated, this.state.domUpdated);
       this.setState({
         domUpdated: true
       }, () => {
@@ -271,6 +270,7 @@ const Editable = React.createClass({
   },
 
   render() {
+    console.log('*'.repeat(50), this.props.history.undoStore, this.props.history.redoStore);
     let dom = this.props.editor.dom || [{ type: 'CE', json: [] }];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {

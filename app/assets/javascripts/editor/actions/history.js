@@ -12,16 +12,12 @@ export function addToHistory(state) {
 export function updateHistory(state) {
   return function(dispatch, getState) {
     let history = getState().history;
-    let lastState = history.store[history.currentLiveIndex];
+    let lastState = history.undoStore[history.undoStore.length - 1];
 
-    console.log("HEY", lastState, state);
 
-    if(lastState !== undefined && _.isEqual(lastState.dom, state.dom)) {
-      console.log('YUP');
-      return;
-    }
+    if(!history.undoStore.length || ( lastState.dom && !_.isEqual(lastState.dom, state.dom))) {
+      lastState ? console.log('DIFF', lastState.dom, state.dom) : console.log('IN ACTION ', !history.undoStore.length);
 
-    if(!_.isEqual(lastState, state)) {
       dispatch(addToHistory(state));
     }
   };
@@ -34,25 +30,35 @@ export function updateCurrentLiveIndex(index) {
   };
 }
 
+export function undoHistoryState() {
+  return {
+    type: History.undoHistoryState
+  };
+}
+
 export function getPreviousHistoryState() {
   return function(dispatch, getState) {
-    // debugger;
-    let history = getState().history;
-    let currentLiveIndex = history.currentLiveIndex === 0 ? 0 : history.currentLiveIndex-1;
+    let undoStore = getState().history.undoStore;
+    // The last index is always the current shown state. We want a clone of the true previous state.
+    let previousStateIndex = undoStore.length <= 1 ? (undoStore.length - 1) : (undoStore.length - 2);
 
-    console.log('PREV', history.store[currentLiveIndex], currentLiveIndex, history.store);
-    dispatch(updateCurrentLiveIndex(currentLiveIndex));
-    return _.cloneDeep( history.store[currentLiveIndex] );
+    undoStore.length > 1 ? dispatch(undoHistoryState()) : true;
+    return _.cloneDeep( undoStore[previousStateIndex] );
   }
+}
+
+export function redoHistoryState() {
+  return {
+    type: History.redoHistoryState
+  };
 }
 
 export function getNextHistoryState() {
   return function(dispatch, getState) {
-    let history = getState().history;
-    let currentLiveIndex = history.currentLiveIndex+1 === history.store.length ? history.currentLiveIndex : history.currentLiveIndex+1;
+    let redoStore = getState().history.redoStore;
+    let nextStateIndex = redoStore.length - 1;
 
-    console.log('NEXT', history.store[currentLiveIndex], currentLiveIndex);
-    dispatch(updateCurrentLiveIndex(currentLiveIndex));
-    return _.cloneDeep( history.store[currentLiveIndex] );
+    redoStore.length >= 1 ? dispatch(redoHistoryState()) : true;
+    return _.cloneDeep( redoStore[nextStateIndex] );
   };
 }

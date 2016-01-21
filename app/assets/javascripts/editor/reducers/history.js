@@ -1,25 +1,32 @@
 import { History } from '../constants/ActionTypes';
 
 const initialState = {
-  store: [],
-  currentLiveIndex: 0
+  undoStore: [],
+  redoStore: []
 };
 
 export default function(state = initialState, action) {
+  let stores;
   switch(action.type) {
     case History.addToHistory:
-      let newStore = addToHistory([ ...state.store ], action.state, state.currentLiveIndex);
-      console.log('UPDATE HISTORY!', newStore, action.state, newStore.length-1);
+      stores = addToHistory([ ...state.undoStore ], [], action.state);
       return {
         ...state,
-        store: newStore,
-        currentLiveIndex: newStore.length-1
+        ...stores
       };
 
-    case History.updateCurrentLiveIndex:
+    case History.undoHistoryState:
+      stores = undoHistoryState([ ...state.undoStore ], [ ...state.redoStore ]);
       return {
         ...state,
-        currentLiveIndex: action.index
+        ...stores
+      };
+
+    case History.redoHistoryState:
+      stores = redoHistoryState([ ...state.undoStore ], [ ...state.redoStore ]);
+      return {
+        ...state,
+        ...stores
       };
 
     default:
@@ -27,20 +34,25 @@ export default function(state = initialState, action) {
   };
 }
 
-function addToHistory(history, newState, currentLiveIndex) {
+function addToHistory(undoStore, redoStore, newState) {
   const maxStates = 10;
-
-  if(currentLiveIndex+1 < history.length) {
-    console.log('SLICING', history, currentLiveIndex+1, history.length);
-    history = history.slice(0, currentLiveIndex+1);
-  }
-
-  if(history.length === maxStates) {
-    history.shift();
-    history.push(newState);
+  console.log('ADDING TO HISTORY', newState);
+  if(undoStore.length === maxStates) {
+    undoStore.shift();
+    undoStore.push(newState);
   } else {
-    history.push(newState);
+    undoStore.push(newState);
   }
 
-  return history;
+  return { undoStore, redoStore };
+}
+
+function undoHistoryState(undoStore, redoStore) {
+  redoStore.push(undoStore.pop());
+  return { undoStore, redoStore };
+}
+
+function redoHistoryState(undoStore, redoStore) {
+  undoStore.push(redoStore.pop());
+  return { undoStore, redoStore };
 }

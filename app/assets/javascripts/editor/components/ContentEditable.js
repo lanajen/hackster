@@ -63,7 +63,6 @@ const ContentEditable = React.createClass({
     Utils.maintainImmediateChildren(ReactDOM.findDOMNode(this));
 
     if(this.props.html !== ReactDOM.findDOMNode(this).innerHTML.replace(/<br>/g, '<br/>')) {
-      console.log(this.props.html, '*'.repeat(30), ReactDOM.findDOMNode(this).innerHTML);
       ReactDOM.findDOMNode(this).innerHTML = this.props.html;
     }
   },
@@ -253,7 +252,6 @@ const ContentEditable = React.createClass({
   emitChange(){
     let html = ReactDOM.findDOMNode(this).innerHTML;
     let { depth } = Utils.getSelectionData();
-    console.log('EMITTING CHANGE', html);
     this.props.onChange(html, depth, this.props.storeIndex);
   },
 
@@ -669,6 +667,9 @@ const ContentEditable = React.createClass({
     }
 
     let state = this.props.actions.getPreviousHistoryState();
+
+    if(!state) return;
+
     this.props.actions.setEditorState({
       ...state,
       domUpdated: false,
@@ -680,6 +681,9 @@ const ContentEditable = React.createClass({
   handleRedo(e) {
     this.preventEvent(e);
     let state = this.props.actions.getNextHistoryState();
+
+    if(!state) return;
+
     this.props.actions.setEditorState({
       ...state,
       domUpdated: false,
@@ -805,7 +809,6 @@ const ContentEditable = React.createClass({
   },
 
   render() {
-    console.log('HTML', this.props.html);
     return (
       <div
         data-hash={this.props.hash}
