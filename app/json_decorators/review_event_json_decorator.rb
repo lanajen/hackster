@@ -1,7 +1,9 @@
 class ReviewEventJsonDecorator < BaseJsonDecorator
   def node
     node = hash_for(%w(id user_id))
-    node[:userRole] = (%w(admin hackster_moderator super_moderator moderator) & model.user.roles).first
+    if model.user
+      node[:userRole] = (%w(admin hackster_moderator super_moderator moderator) & model.user.roles).first
+    end
     node[:avatarLink] = model.user.try(:decorate).try(:avatar, :mini)
     node[:userName] = model.user.try(:name)
     node[:userSlug] = model.user.try(:user_name)
