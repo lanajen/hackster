@@ -71,7 +71,7 @@
   .section-header {
     padding: 150px 0;
     background-color: #3b8bc3;
-    background-image: asset-url('live/live_sea.jpg');
+    background-image: asset-url('live/live_bkl.jpg');
     position: relative;
     h1 {
       font-size: 4em;
@@ -79,9 +79,12 @@
       margin-bottom: 10px;
     }
     p {
-      max-width: 500px;
-      margin: 0 auto 25px;
+      max-width: 600px;
+      margin: 0 auto 5px;
       font-size: 1.1em;
+      &:last-of-type {
+        margin-bottom: 25px;
+      }
     }
     .hero-content {
       padding: 30px 0 50px;

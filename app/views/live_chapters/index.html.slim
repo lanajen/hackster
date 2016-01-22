@@ -8,7 +8,8 @@
       .container
         .hero-content
           h1 Hackster Live
-          p Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+          p We created Hackster Live to democratize hardware fluency, break the boundaries of information, and educate the maker and developer communities all over the world.
+          p Goodbye walls. Hello knowledge.
           = link_to 'Join an event near you', '#events', class: 'smooth-scroll btn btn-primary btn-sm'
 
         .hero-bottom
@@ -23,12 +24,20 @@
               = image_tag 'live/100l.png'
               div 100 Locations
 
-    section#events style='background:#fafafa'
-      .container
-        h2 Global Chapters
-        .row
-          - @chapters.each do |chapter|
-            = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
+    section#sponsors
+      h2 Sponsors
+      .logos
+        = link_to image_tag('hwweek/partners/particle.png'), 'https://particle.io'
+        = link_to image_tag('hwweek/partners/ms.jpg'), 'http://www.microsoft.com'
+        = link_to image_tag('hwweek/partners/sparkfun.jpg'), 'https://www.sparkfun.com'
+        = link_to image_tag('hwweek/partners/cypress.jpg'), 'https://www.cypress.com'
+
+    section#map
+      .map
+        = image_tag 'live/map.jpg'
+      .text
+        h2 Why Hackster Live?
+        p By supporting 100+ Hackster Live Meetups and Workshops each month, we're reaching over 30,000 makers and developers around the globe, while also empowering our passionate brand ambassadors to advocate the technologies that will define the rest of the 21st century. But above all, we're giving our community and partners a voice in envisioning what's next.
 
     section#mid
       .container
@@ -37,27 +46,21 @@
             .live-thumb
               = image_tag 'live/ambassador.jpg'
               h4 Ambassadorship
-              p Lorem Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+              p Hackster ambassadors create curriculums, workshops, and meetups that will benefit their communities. We support them by providing access to cutting edge hardware and software as well as learning content we create with our partners. We carefully pick our ambassadors after we interview everyone of them, test their technical acumen, outreach and ability to lead. We measure impact with metrics ranging from events frequency, participant satisfaction, content creation on Hackster, and social network mentions.
               = link_to "Become an Ambassador &rarr;".html_safe, 'javascript:void(0)', data: { target: '#ambassador-popup' }, class: 'modal-open btn btn-default'
           .col-sm-6
             .live-thumb
               = image_tag 'live/sponsor.jpg'
               h4 Sponsorship
-              p Ipsum Hackster Live gives people all over the world access to the latest in hardware education, IoT tools, hands-on workshops, and real-time fun.
+              p Sponsoring Hackster Live is an opportunity to help the IoT community in a meaningful way, and also promote your platform and tools. Your sponsorship provides everything our Ambassadors need to run global meetups and workshops, and puts your product directly in the hands of developers and engineers. Events feature workshops, tech talks, contests and prizes, which translate to brand recognition, user familiarity, and hands-on experience with your products.
               = link_to "Become a Sponsor &rarr;".html_safe, 'javascript:void(0)', data: { target: '#sponsor-popup' }, class: 'modal-open btn btn-default'
 
-    section#map
-      .map
-        = image_tag 'live/map.jpg'
-      .text
-        h2 Why Hackster Live?
-        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vehicula congue urna, et dictum mi congue eget. Fusce egestas ligula sem, nec bibendum velit ullamcorper eget.
-
-    section#sponsors
-      h2 Sponsors
-      .logos
-        = link_to image_tag('hwweek/partners/particle.png'), 'https://particle.io'
-        = link_to image_tag('hwweek/partners/ms.jpg'), 'http://www.microsoft.com'
+    section#events style='background:#fafafa'
+      .container
+        h2 Global Chapters
+        .row
+          - @chapters.each do |chapter|
+            = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
 
     / section#members
       .container

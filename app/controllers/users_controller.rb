@@ -60,6 +60,7 @@ class UsersController < ApplicationController
       @private_query = @private_query.with_group(current_platform)
       @guest_query = @guest_query.with_group(current_platform)
       @respected_query = @respected_query.with_group(current_platform)
+      @replicated_query = @replicated_query.with_group(current_platform)
     else
       @parts = @user.owned_parts.limit(3)
       @parts_count = @user.owned_parts.count

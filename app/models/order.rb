@@ -3,7 +3,7 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
-  HIGH_RISK_COUNTRIES = ['India']
+  HIGH_RISK_COUNTRIES = ['Bangladesh', 'Egypt', 'India', 'Pakistan']
   INVALID_STATES = %w(new rejected).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
