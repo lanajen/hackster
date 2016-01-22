@@ -16,7 +16,6 @@ export function updateHistory(state) {
     let lastState = history.redoStore.length ? history.redoStore[history.redoStore.length - 1] : history.undoStore[history.undoStore.length - 1];
 
     if(!history.undoStore.length || ( lastState.dom && !deepEqual(lastState.dom, state.dom, true))) {
-      // lastState ? console.log('DIFF', lastState.dom, state.dom) : true;
       dispatch(addToHistory(state));
     }
   };

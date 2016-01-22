@@ -42,7 +42,6 @@ export default function(state = initialState, action) {
 
 function addToHistory(undoStore, redoStore, newState) {
   const maxStates = 50;
-  // console.log('ADDING TO HISTORY', newState);
   if(undoStore.length === maxStates) {
     undoStore.shift();
     undoStore.push(newState);

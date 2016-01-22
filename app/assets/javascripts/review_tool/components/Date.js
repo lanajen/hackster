@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Date = React.createClass({
+const DateComponent = React.createClass({
   render: function() {
     const { createdAt } = this.props;
 
@@ -17,4 +17,4 @@ const Date = React.createClass({
   }
 });
 
-export default Date;
+export default DateComponent;

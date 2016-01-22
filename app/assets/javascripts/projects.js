@@ -223,12 +223,6 @@ $select2target = null;
           target.fadeIn(100, function(){
             if (tab == '#story') {
               $('.pe-discard').hide();
-              $.each(codeEditor, function(i, el) {
-                heightUpdateFunction("#code-editor-" + el.id, el.ace);
-              });
-            }
-            if (tab == '#story') {
-              loadSlickSlider();
             }
             target.resize(function(){ _.resizePeContainer() });
           });

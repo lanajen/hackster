@@ -22,6 +22,27 @@ export default class CarouselEditor extends Component {
     }
   }
 
+  componentDidMount() {
+    if(window && window.pe) {
+      let peSave = document.querySelector('.pe-save');
+      if(peSave.hasAttribute('style', 'display: block')) {
+        peSave.classList.add('hide');
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if(window && window.pe) {
+      let peSave = document.querySelector('.pe-save');
+      if(peSave.classList.contains('hide')) {
+        peSave.classList.remove('hide');
+      }
+    }
+
+    window.clearTimeout(this.timeoutUp);
+    window.clearTimeout(this.timeoutDown);
+  }
+
   dismissDialog() {
     this.props.dismiss();
   }
@@ -36,7 +57,7 @@ export default class CarouselEditor extends Component {
       let images = this._swapIndexes(this.state.images.slice(), index, index-1);
       this.setState({ images: images, indexToAnimate: index-1 });
 
-      setTimeout(() => { this.setState({ indexToAnimate: null }); }, 1000);
+      this.timeoutUp = setTimeout(() => { this.setState({ indexToAnimate: null }); }, 1000);
     }
   }
 
@@ -45,7 +66,7 @@ export default class CarouselEditor extends Component {
       let images = this._swapIndexes(this.state.images.slice(), index, index+1);
       this.setState({ images: images, indexToAnimate: index+1 });
 
-      setTimeout(() => { this.setState({ indexToAnimate: null }); }, 1000);
+      this.timeoutDown = setTimeout(() => { this.setState({ indexToAnimate: null }); }, 1000);
     }
   }
 

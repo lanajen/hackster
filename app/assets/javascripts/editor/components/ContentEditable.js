@@ -527,7 +527,6 @@ const ContentEditable = React.createClass({
 
   onKeyDown(e) {
     /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
-    // console.log('KEYDOWN', e.keyCode, e.ctrlKey);
     if((e.keyCode === 90 && (e.ctrlKey || e.metaKey) || e.keyCode === 90 && e.keyCode === 17) && !e.shiftKey) {
       this.handleUndo(e);
       return;
@@ -598,7 +597,6 @@ const ContentEditable = React.createClass({
 
   onKeyUp(e) {
     /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
-    // console.log('KEYUP', e.keyCode, e.ctrlKey);
     if((e.keyCode === 90 && (e.ctrlKey || e.metaKey) || e.keyCode === 90 && e.keyCode === 17) && !e.shiftKey) {
       return;
     } else if((e.keyCode === 89 && e.ctrlKey) || (e.keyCode === 89 && e.keyCode === 17) || (e.keyCode === 90 && e.metaKey && e.shiftKey)) {

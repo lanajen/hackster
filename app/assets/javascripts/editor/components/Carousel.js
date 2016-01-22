@@ -191,6 +191,10 @@ const Carousel = React.createClass({
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} showEditor={this.handleCarouselEditorShow} />)
                      : (null);
 
+    let carouselEditor = this.state.showDialog
+                       ? (<CarouselEditor show={this.state.showDialog} dismiss={this.handleDialogDismiss} initialImages={this.props.images} reorderCarousel={this.handleReorderCarousel} />)
+                       : (null);
+
     return (
       <div className="react-editor-carousel"
            data-hash={this.props.hash}
@@ -202,7 +206,7 @@ const Carousel = React.createClass({
         </div>
         {controls}
         {imageToolbar}
-        <CarouselEditor show={this.state.showDialog} dismiss={this.handleDialogDismiss} initialImages={this.props.images} reorderCarousel={this.handleReorderCarousel} />
+        {carouselEditor}
       </div>
     );
   }

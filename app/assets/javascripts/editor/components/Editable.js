@@ -267,7 +267,6 @@ const Editable = React.createClass({
   },
 
   render() {
-    // console.log('*'.repeat(50), this.props.history.undoStore, this.props.history.redoStore);
     let dom = this.props.editor.dom || [{ type: 'CE', json: [] }];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {
