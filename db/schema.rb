@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160112201305) do
+ActiveRecord::Schema.define(version: 20160122004940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -308,6 +308,7 @@ ActiveRecord::Schema.define(version: 20160112201305) do
     t.datetime "end_date"
     t.hstore   "hproperties"
     t.hstore   "hcounters_cache"
+    t.boolean  "virtual",                       default: false
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
@@ -538,6 +539,14 @@ ActiveRecord::Schema.define(version: 20160112201305) do
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
+
+  create_table "parts_platforms", force: :cascade do |t|
+    t.integer "part_id",     null: false
+    t.integer "platform_id", null: false
+  end
+
+  add_index "parts_platforms", ["part_id"], name: "index_parts_platforms_on_part_id", using: :btree
+  add_index "parts_platforms", ["platform_id"], name: "index_parts_platforms_on_platform_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
     t.string   "recipient_name"

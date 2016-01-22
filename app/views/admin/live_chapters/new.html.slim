@@ -1,5 +1,5 @@
 - model_class = LiveChapter
 .page-header
   h1=t '.title', :default => [:'helpers.titles.new', 'New % model '], :model => model_class.model_name.human
-= simple_nested_form_for [:admin, @live_chapter], :html => { :class => 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for [:admin, @live_chapter], url: admin_live_chapters_path,:html => { :class => 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
   = render partial: 'form', locals: { f: f }

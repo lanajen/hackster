@@ -32,14 +32,19 @@
   a {
     color: #777;
   }
+}
+
+.chapter-organizer-avatars {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  width: 100%;
+  text-align: center;
   img {
-    position: absolute;
-    top: -24px;
+    border: 4px solid #fff;
     width: 48px;
     height: 48px;
-    left: 50%;
-    margin-left: -24px;
-    border: 4px solid #fff;
+    margin: 0 2px;
   }
 }
 
@@ -71,11 +76,12 @@
     h1 {
       font-size: 4em;
       font-weight: 300;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     p {
       max-width: 500px;
-      margin: 0 auto 20px;
+      margin: 0 auto 25px;
+      font-size: 1.1em;
     }
     .hero-content {
       padding: 30px 0 50px;

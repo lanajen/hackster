@@ -1,18 +1,20 @@
 .col-sm-6.col-md-4.mobile-scroll-row-item
   .thumb.chapter-thumb
-    .thumb-image.has-link-overlay style="background-image:url('#{chapter.cover_image.try(:imgix_url, :cover_thumb)}')"
-      = link_to '', chapter.link, target: '_blank', class: 'link-overlay'
+    .thumb-image.has-link-overlay style="background-image:url('#{chapter.cover_image(:cover_thumb)}')"
+      = link_to '', chapter.home_link, target: '_blank', class: 'link-overlay'
       .thumb-image-inner-top
         h4
-          = link_to chapter.name, chapter.link, target: '_blank'
+          = link_to chapter.name, chapter.home_link, target: '_blank'
         .chapter-location
           i.fa.fa-map-marker
           span= chapter.location
-        - if chapter.one_liner.present?
+        - if chapter.mini_resume.present?
           p.description.show-on-hover
-            = chapter.one_liner
+            = chapter.mini_resume
     .thumb-below
       .chapter-organizer
-        = image_tag chapter.organizer.decorate.avatar(:mini), class: 'img-circle'
+        .chapter-organizer-avatars
+          - chapter.members.with_group_roles(:organizer).includes(:user).each do |m|
+            = image_tag m.user.decorate.avatar(:mini), class: 'img-circle'
         ' Organized by
-        = link_to chapter.organizer.name, chapter.organizer
+        = chapter.members.with_group_roles(:organizer).includes(:user).map{|m| link_to(m.user.name, m.user) }.to_sentence.html_safe

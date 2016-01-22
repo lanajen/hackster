@@ -1,4 +1,4 @@
-class LiveChapterDecorator < ApplicationDecorator
+class LiveChapterDecorator < GroupDecorator
   def country
     {
       'United States' => 'USA',

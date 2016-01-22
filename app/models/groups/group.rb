@@ -54,7 +54,7 @@ class Group < ActiveRecord::Base
   attr_accessible :avatar_attributes, :type, :email, :mini_resume, :city,
     :country, :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :access_level, :cover_image_id, :project_sorting,
-    :admin_email
+    :admin_email, :virtual
 
   attr_accessor :admin_email, :require_admin_email
 

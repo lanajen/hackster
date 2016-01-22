@@ -1,13 +1,36 @@
 = f.error_notification
 
 = f.input :event_type, collection: LiveChapter::EVENT_TYPES
-= f.input :name
-= f.input :link
+= f.input :full_name
+= f.input :home_link
 = f.input :virtual, as: :boolean, label: false, inline_label: 'Virtual'
 = f.input :city, hint: "Include state if relevant. Leave blank if virtual"
 = f.input :country, hint: "Leave blank if virtual", input_html: { class: 'form-control' }
-= f.input :organizer_id, input_html: { class: 'select2' }, collection: @live_chapter.decorate.organizer_collection_for_form, prompt: 'Select a user (type in their name)'
-= render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @live_chapter.cover_image.try(:imgix_url, :cover_mini_thumb), attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'live_chapter', help_block: '' }
+/ # = f.input :organizer_id, input_html: { class: 'select2' }, collection: @live_chapter.decorate.organizer_collection_for_form, prompt: 'Select a user (type in their name)'
+
+.row
+  .col-sm-4
+    label.control-label Members and organizers
+  .col-sm-8
+    table#sortable.table.table-condensed
+      thead
+        th User
+        th Role
+        th
+      tbody
+        - (@live_chapter.members.includes(:user).sort_by{|m| m.user.name } + [@live_chapter.members.new]).each do |member|
+          = f.simple_fields_for :members, member, wrapper: false do |f_member|
+            tr.fields
+              - if member.persisted?
+                td= link_to member.user.name, member.user
+              - else
+                td= f_member.input :user_id, input_html: { class: 'select2' }, label: false, collection: [], prompt: 'Select a user (type in their name)'
+              td= f_member.input :group_roles, collection: LiveChapterMember.group_roles, label: false
+              td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
+        tr.sortable-disabled
+          td  colspan=4  = f.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
+
+= render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @live_chapter.cover_image.try(:imgix_url, :cover_mini_thumb), attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group', help_block: '' }
 
 .col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn btn-primary'

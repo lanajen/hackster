@@ -13,6 +13,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       []
     end
 
+    users = User.limit(10)
+
     users_json = if users.any?
       users.map do |u|
         name = u.full_name.present? ? "#{u.full_name} (#{u.user_name})" : u.user_name
