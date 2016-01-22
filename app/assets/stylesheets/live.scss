@@ -114,6 +114,29 @@
     background-image: asset-url('live/live_mid.jpg');
     padding-bottom: 50px;
   }
+
+  #sponsors {
+    padding: 20px 0 40px;
+    h2 {
+      font-size: 1em;
+      margin: 0 0 25px;
+      text-align: center;
+    }
+    .logos {
+      margin: 0 -25px;
+      @include flexbox((
+        display: flex,
+        align-items: center,
+        justify-content: center
+      ));
+      a {
+        padding: 0 25px;
+      }
+      img {
+        max-height: 40px;
+      }
+    }
+  }
 }
 
 #live-home, .live-modal {
