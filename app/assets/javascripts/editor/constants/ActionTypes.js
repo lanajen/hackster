@@ -52,12 +52,13 @@ export default {
     updateComponent: null,
     domUpdated: null,
     setEditorState: null,
+    toggleFlag: null,
   }),
 
   History: keyMirror({
     addToHistory: null,
     redoHistoryState: null,
-    updateCurrentLiveIndex: null,
     undoHistoryState: null,
+    replaceLastInUndoStore: null,
   })
 };

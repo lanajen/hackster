@@ -55,8 +55,13 @@ export default {
           return null;
         }
 
-        if(item.attribs && item.attribs.hasOwnProperty('class')) {
-          delete item.attribs.class;
+        /** Remove empty attributes. */
+        if(item.attribs && Object.keys(item.attribs).length) {
+          for(var key in item.attribs) {
+            if(item.attribs.hasOwnProperty(key) && !item.attribs[key].length) {
+              delete item.attribs[key];
+            }
+          }
         }
 
         if(item.type === 'text' && !item.children) {

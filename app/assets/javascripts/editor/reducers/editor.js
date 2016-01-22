@@ -33,11 +33,11 @@ const initialState = {
   isIE: false,
   updateComponent: null,
   domUpdated: false,
-  historyIndex: 1
+  replaceLastInUndoStore: false
 };
 
 export default function(state = initialState, action) {
-  let dom, newDom, cursorPosition, mediaHash, rootHash, obj, data;
+  let dom, newDom, cursorPosition, mediaHash, rootHash, obj, data, cursorData;
   switch (action.type) {
 
     case Editor.setDOM:
@@ -46,7 +46,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom || state.dom,
-        domUpdated: true
+        domUpdated: true,
+        cursorPosition: { ...action.cursorData }
       };
 
     case Editor.domUpdated:
@@ -289,8 +290,7 @@ export default function(state = initialState, action) {
       newDom = updateShownImage(dom, action.activeIndex, action.storeIndex, action.direction);
       return {
         ...state,
-        dom: newDom || state.dom,
-        domUpdated: true
+        dom: newDom || state.dom
       };
 
     case Editor.deleteComponent:
@@ -322,7 +322,7 @@ export default function(state = initialState, action) {
         ...state,
         dom: newDom || state.dom,
         isDataLoading: false,
-        domUpdated: true
+        replaceLastInUndoStore: true
       };
 
     case Editor.removeImageFromList:
@@ -401,6 +401,12 @@ export default function(state = initialState, action) {
 
     case Editor.setState:
       return { ...action.state };
+
+    case Editor.toggleFlag:
+      return {
+        ...state,
+        [action.flag]: action.bool
+      };
 
     default:
       return state;
@@ -514,8 +520,9 @@ function _createElement(tag, options) {
   let hash = BlockElements[tag.toUpperCase()]
            ? options.attribs && options.attribs['data-hash'] ? options.attribs['data-hash'] : _createNewHash()
            : '';
+
   return {
-    attribs: options.attribs ? { ...options.attribs, 'data-hash': hash } : { 'data-hash': hash },
+    attribs: options.attribs ? { ...options.attribs, 'data-hash': hash } : hash.length ? { 'data-hash': hash } : {},
     children: options.children || [],
     content: options.content || '',
     tag: tag,
@@ -816,14 +823,14 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
       type: 'CE',
       json: [ _createElement('p', {
         attribs: { 'data-hash': _createNewHash() },
-        children: mediaType === 'Carousel' ? currNode.children : [ _createElement('br') ]
+        children: mediaType === 'Carousel' && currNode.children.length ? currNode.children : [ _createElement('br') ]
       })],
       hash: _createNewHash()
     };
-
     if(json.length < 1) {
       json.push( _createEmptyParagraph() );
     }
+
     component.json = json;
     dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);

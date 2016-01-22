@@ -1,6 +1,7 @@
 import { History } from '../constants/ActionTypes';
 import * as EditorActions from './editor';
 import _ from 'lodash';
+import deepEqual from 'deep-equal';
 
 export function addToHistory(state) {
   return {
@@ -12,12 +13,10 @@ export function addToHistory(state) {
 export function updateHistory(state) {
   return function(dispatch, getState) {
     let history = getState().history;
-    let lastState = history.undoStore[history.undoStore.length - 1];
+    let lastState = history.redoStore.length ? history.redoStore[history.redoStore.length - 1] : history.undoStore[history.undoStore.length - 1];
 
-
-    if(!history.undoStore.length || ( lastState.dom && !_.isEqual(lastState.dom, state.dom))) {
-      lastState ? console.log('DIFF', lastState.dom, state.dom) : console.log('IN ACTION ', !history.undoStore.length);
-
+    if(!history.undoStore.length || ( lastState.dom && !deepEqual(lastState.dom, state.dom, true))) {
+      // lastState ? console.log('DIFF', lastState.dom, state.dom) : true;
       dispatch(addToHistory(state));
     }
   };
@@ -60,5 +59,12 @@ export function getNextHistoryState() {
 
     redoStore.length >= 1 ? dispatch(redoHistoryState()) : true;
     return _.cloneDeep( redoStore[nextStateIndex] );
+  };
+}
+
+export function replaceLastInUndoStore(state) {
+  return {
+    type: History.replaceLastInUndoStore,
+    state: state
   };
 }

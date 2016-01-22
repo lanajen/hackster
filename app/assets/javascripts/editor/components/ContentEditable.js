@@ -250,9 +250,13 @@ const ContentEditable = React.createClass({
   },
 
   emitChange(){
-    let html = ReactDOM.findDOMNode(this).innerHTML;
-    let { depth } = Utils.getSelectionData();
-    this.props.onChange(html, depth, this.props.storeIndex);
+    let CE = ReactDOM.findDOMNode(this);
+    let html = CE.innerHTML;
+    let dataHash = CE.getAttribute('data-hash');
+    let { depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
+    let cursorData = { pos: depth, node: parentNode, offset: startOffset, anchorNode: anchorNode, rootHash: dataHash };
+
+    this.props.onChange(html, depth, this.props.storeIndex, cursorData);
   },
 
   preventEvent(e) {
@@ -522,6 +526,16 @@ const ContentEditable = React.createClass({
   },
 
   onKeyDown(e) {
+    /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
+    // console.log('KEYDOWN', e.keyCode, e.ctrlKey);
+    if((e.keyCode === 90 && (e.ctrlKey || e.metaKey) || e.keyCode === 90 && e.keyCode === 17) && !e.shiftKey) {
+      this.handleUndo(e);
+      return;
+    } else if((e.keyCode === 89 && e.ctrlKey) || (e.keyCode === 89 && e.keyCode === 17) || (e.keyCode === 90 && e.metaKey && e.shiftKey)) {
+      this.handleRedo(e);
+      return;
+    }
+
     let { sel, range, parentNode, anchorNode } = Utils.getSelectionData();
     let CE = ReactDOM.findDOMNode(this);
 
@@ -559,13 +573,6 @@ const ContentEditable = React.createClass({
       anchorNode.parentNode.parentNode.replaceChild(span, anchorNode.parentNode);
     }
 
-    /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
-    if(e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
-      this.handleUndo(e);
-    } else if((e.keyCode === 89 && e.ctrlKey) || (e.keyCode === 90 && e.metaKey && e.shiftKey)) {
-      this.handleRedo(e);
-    }
-
     switch(e.keyCode || e.charCode) {
       case 13: // ENTER
         this.handleEnterKey(e);
@@ -590,6 +597,14 @@ const ContentEditable = React.createClass({
   },
 
   onKeyUp(e) {
+    /** Command || Ctrl - Z && Command + Shift + Z || Ctrl - Y */
+    // console.log('KEYUP', e.keyCode, e.ctrlKey);
+    if((e.keyCode === 90 && (e.ctrlKey || e.metaKey) || e.keyCode === 90 && e.keyCode === 17) && !e.shiftKey) {
+      return;
+    } else if((e.keyCode === 89 && e.ctrlKey) || (e.keyCode === 89 && e.keyCode === 17) || (e.keyCode === 90 && e.metaKey && e.shiftKey)) {
+      return;
+    }
+
     if(e.keyCode === undefined || e.type === 'mouseup') {
       let { sel, range, anchorNode } = Utils.getSelectionData();
       if(sel === null) { return; }
@@ -645,7 +660,7 @@ const ContentEditable = React.createClass({
     /** Handles Triple Click. Forces the selection to wrap the startContainers element. */
     if(e.detail >= 3) {
       e.preventDefault();
-      range.selectNode(range.startContainer);
+      range.selectNode(parentNode);
       sel.setSingleRange(range);
     }
   },
@@ -785,7 +800,7 @@ const ContentEditable = React.createClass({
       }
 
       range.insertNode(cleaned);
-      cursorDataNode = parentNode;
+      cursorDataNode = dataType === 'text' ? cleaned : parentNode;
       cursorDataAnchorNode = cleaned;
       wrapperNode.innerHTML = parentNode.outerHTML;
     }

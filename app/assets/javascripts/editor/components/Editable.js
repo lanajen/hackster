@@ -16,15 +16,9 @@ import Parser from '../utils/Parser';
 
 const Editable = React.createClass({
 
-  getInitialState() {
-    return {
-      domUpdated: false
-    };
-  },
-
   componentWillMount() {
     let metaList = document.getElementsByTagName('meta');
-    let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
+    let csrfToken = _.find(metaList, { name: 'csrf-token' }).content;
 
     this.props.actions.setProjectData(this.props.projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
@@ -106,7 +100,7 @@ const Editable = React.createClass({
     if(window && window.pe) { window.pe.resizePeContainer(); }
   },
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps, nextState) {
     /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
         will see that theres a difference in the serialized vs altered form and call its prompt.
       */
@@ -131,17 +125,20 @@ const Editable = React.createClass({
         }
       }
     }
+  },
 
+  componentDidUpdate() {
     /** Adds editor store to history. */
-    if(this.props.editor.domUpdated && !this.state.domUpdated) {
-      this.setState({
-        domUpdated: true
-      }, () => {
-        this.props.actions.domUpdated(false);
-        this.props.actions.updateHistory(_.cloneDeep(this.props.editor));
-      });
-    } else {
-      this.setState({ domUpdated: false });
+    if(this.props.editor.domUpdated === true) {
+      let history = this.props.history;
+      let lastState = history.redoStore.length ? history.redoStore[history.redoStore.length - 1] : history.undoStore[history.undoStore.length - 1];
+      this.props.actions.updateHistory(_.cloneDeep(this.props.editor));
+      this.props.actions.domUpdated(false);
+    }
+
+    if(this.props.editor.replaceLastInUndoStore === true) {
+      this.props.actions.toggleFlag('replaceLastInUndoStore', false);
+      this.props.actions.replaceLastInUndoStore(_.cloneDeep(this.props.editor));
     }
   },
 
@@ -156,10 +153,10 @@ const Editable = React.createClass({
     }
   },
 
-  handleContentEditableChange(html, depth, storeIndex) {
+  handleContentEditableChange(html, depth, storeIndex, cursorData) {
     return Parser.parseDOM(html)
       .then(parsedHTML => {
-        this.props.actions.setNewDOM(parsedHTML, depth, storeIndex);
+        this.props.actions.setNewDOM(parsedHTML, depth, storeIndex, cursorData);
       })
       .catch(err => { console.log('Editable.js Parse Error: ' + err); });
   },
@@ -270,7 +267,7 @@ const Editable = React.createClass({
   },
 
   render() {
-    console.log('*'.repeat(50), this.props.history.undoStore, this.props.history.redoStore);
+    // console.log('*'.repeat(50), this.props.history.undoStore, this.props.history.redoStore);
     let dom = this.props.editor.dom || [{ type: 'CE', json: [] }];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {

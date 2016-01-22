@@ -3,19 +3,20 @@ import Request from '../utils/Requests';
 import ImageHelpers from '../../utils/Images';
 import _ from 'lodash';
 
-export function setDOM(html, depth, storeIndex) {
+export function setDOM(html, depth, storeIndex, cursorData) {
   return {
     type: Editor.setDOM,
     html: html,
     depth: depth,
-    storeIndex: storeIndex
+    storeIndex: storeIndex,
+    cursorData: cursorData
   };
 }
 
-export function setNewDOM(html, depth, storeIndex) {
+export function setNewDOM(html, depth, storeIndex, cursorData) {
   return function(dispatch, getState) {
     if(!_.isEqual(getState().editor.dom[storeIndex].json, html)) {
-      dispatch(setDOM(html, depth, storeIndex));
+      dispatch(setDOM(html, depth, storeIndex, cursorData));
     }
   };
 }
@@ -429,5 +430,13 @@ export function setState(state) {
   return {
     type: Editor.setState,
     state: state
+  };
+}
+
+export function toggleFlag(flag, bool) {
+  return {
+    type: Editor.toggleFlag,
+    flag: flag,
+    bool: bool
   };
 }

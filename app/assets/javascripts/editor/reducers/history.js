@@ -29,14 +29,20 @@ export default function(state = initialState, action) {
         ...stores
       };
 
+    case History.replaceLastInUndoStore:
+      return {
+        ...state,
+        undoStore: replaceLastInUndoStore([ ...state.undoStore ], action.state)
+      };
+
     default:
       return state;
   };
 }
 
 function addToHistory(undoStore, redoStore, newState) {
-  const maxStates = 10;
-  console.log('ADDING TO HISTORY', newState);
+  const maxStates = 50;
+  // console.log('ADDING TO HISTORY', newState);
   if(undoStore.length === maxStates) {
     undoStore.shift();
     undoStore.push(newState);
@@ -55,4 +61,10 @@ function undoHistoryState(undoStore, redoStore) {
 function redoHistoryState(undoStore, redoStore) {
   undoStore.push(redoStore.pop());
   return { undoStore, redoStore };
+}
+
+function replaceLastInUndoStore(undoStore, newState) {
+  undoStore.pop();
+  undoStore.push(newState);
+  return undoStore;
 }
