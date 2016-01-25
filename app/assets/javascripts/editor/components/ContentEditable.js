@@ -125,12 +125,12 @@ const ContentEditable = React.createClass({
     /** If we're moving to a new line, set the cursor at index 0. */
     let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset+1;
     let textNode = Utils.getLiveNode(el, cursorPosition.anchorNode);
+
     textNode = textNode === null ? Utils.getFirstTextNode(el) : textNode;
     /** Protects setStart from an index that was deleted. */
     if(textNode.textContent.length < offset) {
       offset = textNode.textContent.length;
     }
-
     this.setCursorAt(textNode, offset);
     this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     this.props.actions.setCursorToNextLine(false);
@@ -510,7 +510,12 @@ const ContentEditable = React.createClass({
     /** A span gets placed in converted empty LI's.  This will replace the span for a br so that the node has dimensions in Chrome. */
     if(e.keyCode === 40 && parentNode.nodeName === 'UL') {
       let li = Utils.getListItemFromTextNode(anchorNode);
-      if(li && li.nextSibling && li.nextSibling.nodeName === 'LI' && li.nextSibling.textContent.length < 1 && li.nextSibling.childNodes[0].nodeName === 'SPAN') {
+      if(li &&
+         li.nextSibling &&
+         li.nextSibling.nodeName === 'LI' &&
+         li.nextSibling.textContent.length < 1 &&
+         li.nextSibling.childNodes.length &&
+         li.nextSibling.childNodes[0].nodeName === 'SPAN') {
         li.nextSibling.replaceChild(document.createElement('br'), li.nextSibling.childNodes[0]);
       }
     }

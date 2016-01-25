@@ -343,6 +343,7 @@ const Utils = {
   },
 
   getHashFromNode(node) {
+    if(!node) { return node; }
     let hash;
     if(typeof node === 'string') {
       let search = 'data-hash="';
