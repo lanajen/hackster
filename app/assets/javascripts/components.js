@@ -12,3 +12,6 @@ require('expose?Comments!./comments/app');
 require('expose?ReactEditor!./editor/app');
 require('expose?ReviewTool!./review_tool/containers/Root');
 require('expose?ImageUploader!./image_uploader/app');
+
+/** Global Utils */
+require('expose?Utils!./utils/Utils');
