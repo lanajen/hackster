@@ -31,6 +31,7 @@ HackerIo::Application.routes.draw do
             delete '' => 'followers#destroy'
           end
         end
+        resources :groups, only: [:index, :create]
         resources :jobs, only: [:create, :show]
         resources :likes, only: [:create] do
           delete '' => 'likes#destroy', on: :collection
@@ -311,6 +312,7 @@ HackerIo::Application.routes.draw do
             end
           end
         end
+        get 'courses/new' => 'courses#new'
         resources :assignments, only: [:edit, :update, :destroy]
 
         resources :events, except: [:show, :update, :destroy]

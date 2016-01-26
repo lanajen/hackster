@@ -20,15 +20,8 @@ h2
 p
   - if @group.mini_resume.present?
     = @group.mini_resume
-  - elsif can? :update, @group
-    ' No mini resume.
-    = link_to 'Add one?', edit_promotion_path(@group)
 
 - if @group.location
   p.secondary-info
-    i.fa.fa-map-marker>
-    = @group.location
-- elsif can? :update, @group
-  p.secondary-info
-    ' No location.
-    = link_to 'Add one?', edit_promotion_path(@group)
+    i.fa.fa-map-marker
+    span= @group.location

@@ -104,7 +104,7 @@ module UrlHelper
       when 'Community'
         community_path group, opts
       when 'Course'
-        super params_for_course(group).merge(opts)
+        # super params_for_course(group).merge(opts)
       when 'HackerSpace'
         hacker_space_path(group, opts)
       when 'Hackathon'
@@ -112,7 +112,7 @@ module UrlHelper
       when 'Promotion'
         promotion_path group, opts
       when 'University'
-        super params_for_group(group).merge(opts)
+        # super params_for_group(group).merge(opts)
       when 'Event'
         event_path group, opts
       when 'Platform'

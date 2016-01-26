@@ -56,4 +56,8 @@ class Promotion < Community
   def project_collections
     ProjectCollection.where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.where(promotion_id: id) })
   end
+
+  def university
+    @university ||= course.try(:university)
+  end
 end
