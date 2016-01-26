@@ -72,44 +72,6 @@ html(lang="en")
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
                 li= link_to 'Challenges', challenges_path, class: 'nav-link'
                 li= link_to 'Live', live_path, class: 'nav-link'
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    i.fa.fa-ellipsis-h
-                    / span.caret
-                  ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
-                    li= link_to 'Free Store', store_path, class: 'nav-link'
-                    li= link_to 'Curated lists', lists_path, class: 'nav-link'
-                    li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
-                    li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
-                    li= link_to 'Blog', blog_index_path, class: 'nav-link'
-                    / li.dropdown
-                      a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                        | Challenges
-                        span.caret
-                      ul#challenge-nav.dropdown-menu style="padding:5px"
-                        li
-                          div style="width:300px;"
-                            .thumb style='padding-bottom:5px'
-                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png');padding-top:50%"
-                                = link_to '', '/challenges/hardware-home', class: 'link-overlay'
-                                .thumb-image-inner
-                                  h4
-                                    ==> link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
-                                    br
-                                    a.small sponsored by Autodesk
-                                  p
-                                    strong Win a Type A Series 1 3D Printer
-                            .thumb
-                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png');padding-top:50%"
-                                = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
-                                .thumb-image-inner
-                                  h4
-                                    ==> link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
-                                    br
-                                    a.small sponsored by Microsoft
-                                  p
-                                    strong Win $5,000
-
 
               - if user_signed_in?
                 ul#user-navigation-links.navbar-nav.navbar-right
@@ -174,28 +136,41 @@ html(lang="en")
               .container= yield
 
     - unless params[:blank_frame]
-      footer.clearfix
-        .footer-nav.clearfix
-          ul.list-unstyled.list-inline.pull-left
-            li= link_to 'About', about_path
-            li= link_to 'Community', users_path
-            / # li= link_to 'Blog', '/blog'
-            li= link_to 'Hackster for business', business_path
-            / li= link_to 'Partners', '/partners'
-            / # li= link_to 'Press', '/press'
-            li= link_to 'Feedback & support', 'javascript:showClassicWidget();'
-            li= link_to 'Changelog', 'https://assembly.com/hacksterio'
-            li= link_to 'Jobs', jobs_path
-            li= link_to 'Code of Conduct', '/conduct'
-            li= link_to 'Terms', '/terms'
-            / # li= link_to 'Privacy', '/privacy'
-            / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
-            li
-          ul.list-unstyled.list-inline.pull-right
-            li= link_to content_tag(:i, '', class: 'fa fa-twitter'), 'http://www.twitter.com/hacksterio'
-            li= link_to content_tag(:i, '', class: 'fa fa-facebook'), 'http://www.facebook.com/hacksterio'
-            li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
-            li Hackster #{Date.today.year}
+      footer
+        .footer-nav
+          .container.clearfix
+            ul.list-unstyled.pull-left
+              li
+                h3 More cool stuff
+              li= link_to 'Community', users_path
+              li= link_to 'Curated lists', lists_path
+              li= link_to 'Free Store', store_path
+              li= link_to 'Hardware Weekend', '/hardwareweekend'
+              li= link_to 'Hacker spaces', hacker_spaces_path
+            ul.list-unstyled.pull-left
+              li
+                h3 Legal thingies
+              li= link_to 'Terms of Service', '/terms'
+              li= link_to 'Code of Conduct', '/conduct'
+              li= link_to 'Privacy Policy', '/privacy'
+            ul.list-unstyled.pull-left
+              li
+                h3 About us
+              li= link_to "What's Hackster?", about_path
+              li= link_to 'Our kickass blog', '/blog'
+              li= link_to 'Hackster for business', business_path
+              li= link_to 'Feedback & support', 'javascript:showClassicWidget();'
+              / li= link_to 'Changelog', 'https://assembly.com/hacksterio'
+              / li= link_to 'Jobs', jobs_path
+              / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
+            ul.list-unstyled.pull-left
+              li
+                h3 We're fairly social people
+              li= link_to content_tag(:i, '', class: 'fa fa-facebook') + content_tag(:span, 'Facebook'), 'http://www.facebook.com/hacksterio'
+              li= link_to content_tag(:i, '', class: 'fa fa-twitter') + content_tag(:span, 'Twitter'), 'http://www.twitter.com/hacksterio'
+            ul.list-unstyled.list-inline.pull-right
+              /li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
+              li Hackster, Inc. #{Date.today.year}
       - unless user_signed_in?
         = render 'shared/modals/login_popup'
 

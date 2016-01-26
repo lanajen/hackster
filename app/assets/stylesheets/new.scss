@@ -460,6 +460,16 @@ footer {
 }
 .footer-nav {
   background: #333;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  h3 {
+    margin: 0 0 10px;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  ul.pull-left {
+    margin-bottom: 0;
+    width: 200px;
+    max-width: 100%;
+  }
 }
