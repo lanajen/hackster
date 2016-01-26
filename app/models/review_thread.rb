@@ -1,6 +1,6 @@
 class ReviewThread < ActiveRecord::Base
   INACTIVE_STATES = %w(new closed)
-  NEED_ATTENTION = %w(needs_review feedback_responded_to)
+  NEED_ATTENTION = %w(needs_review feedback_responded_to needs_second_review)
   include Workflow
 
   belongs_to :project, class_name: 'BaseArticle', foreign_key: :project_id, inverse_of: :review_thread
@@ -14,6 +14,7 @@ class ReviewThread < ActiveRecord::Base
     state :needs_review
     state :feedback_given
     state :feedback_responded_to
+    state :needs_second_review
     state :decision_made
     state :project_updated
     state :closed
@@ -40,6 +41,6 @@ class ReviewThread < ActiveRecord::Base
   end
 
   def ready_for_approval?
-    open? and decisions.last.try(:decision).in?(%w(approve reject))
+    open? and decisions.where(decision: %w(approve reject)).count >= 2
   end
 end

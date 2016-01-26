@@ -38,10 +38,7 @@ table.table.table-striped
         td
           span= thread.workflow_state.humanize
           - if thread.ready_for_approval?
-            - if thread.decision == 'approve'
-              i.fa.fa-flag.text-success
-            - elsif thread.decision == 'reject'
-              i.fa.fa-flag.text-danger
+            i.fa.fa-flag
         td
           - if current_user.is? :admin
             .btn-group

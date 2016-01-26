@@ -4,8 +4,7 @@ class ReviewDecisionObserver < ActiveRecord::Observer
     case record.decision.to_sym
     when :needs_work
       record.review_thread.update_column :workflow_state, :feedback_given
-    when :reject, :approve
-      record.review_thread.update_column :workflow_state, :decision_made
+    # when :reject, :approve
     end
 
     if record.user.can? :approve, record
@@ -15,6 +14,13 @@ class ReviewDecisionObserver < ActiveRecord::Observer
         decision.update_column :approved, decision.decision.in?([record.decision, 'needs_work'])
       end
       finalize_decision record
+    elsif record.decision.in? %w(approve reject)
+      workflow_state = if record.review_thread.decisions.where(decision: record.decision).exists?
+        :needs_second_review
+      else
+        :decision_made
+      end
+      record.review_thread.update_column :workflow_state, workflow_state
     end
 
     NotificationCenter.notify_all :new, :review_decision, record.id
