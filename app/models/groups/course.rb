@@ -5,6 +5,8 @@ class Course < Community
   has_many :promotions, foreign_key: :parent_id
   validate :university_is_selected
 
+  hstore_column :hproperties, :course_number, :string
+
   attr_accessible :parent_id
 
   def generate_user_name

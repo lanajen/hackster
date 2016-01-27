@@ -85,6 +85,13 @@
     #navigation.navbar.navbar-default.navbar-static-top
       .navbar-in style="position:relative;"
         a.create-logo href=root_path
+        #navbar-search.pull-right.show-on-desktop
+          form.navbar-form action=search_path method="get"
+            .form-group
+              .input-group
+                span.input-group-addon
+                  i.fa.fa-search
+                input#q.form-control name="q" placeholder=("Search projects") type="text" value=params[:q]
         - if user_signed_in?
           .pull-right style=("padding-top: 11px;")
             a.btn.btn-primary.add-project href=new_project_path
@@ -94,14 +101,6 @@
         - else
           .pull-right style=("padding-top: 11px;")
             = link_to content_tag(:span, 'Add project'), new_project_path, class: 'btn btn-primary'
-        #navbar-search.pull-right.show-on-desktop
-          form.navbar-form action=search_path method="get"
-            .form-group
-              .input-group
-                span.input-group-addon
-                  i.fa.fa-search
-                input#q.form-control name="q" placeholder=("Search projects") type="text" value=params[:q]
-    /! #navigation
     #filler-bg-toolbar
 
 = content_for :bootstrap_flash do
@@ -116,6 +115,10 @@
       }
     });
   = javascript_include_tag 'whitelabel/arduino/application'
+  javascript:
+    $(function() {
+      $(".ellipsis").dotdotdot();
+    });
 
 = content_for :footer do
   - unless @hide_footer

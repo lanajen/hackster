@@ -26,7 +26,7 @@
             p.description.show-on-hover
               = project.one_liner
         .thumb-inner
-          h4
+          h4.ellipsis
             - if project.pryvate?
               i.fa.fa-lock>
             ==> link_to project.name, project_link, class: 'project-link-with-ref'

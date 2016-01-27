@@ -399,16 +399,10 @@
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge
 
-              - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other", skip_digest: true do
-                - if @other_projects.count > 0
-                  section.section-thumbs
-                    h4 Similar projects you might like
-                    - @other_projects.each_with_index do |project, i|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_small)}')"
-                        = link_to '', project_path(project, ref: 'similar', ref_id: @project.id, offset: i), class: 'link-overlay'
-                        .project-thumb-mini-inner
-                          h4= link_to project.name, project
-                          / # p= render partial: 'projects/by_team', locals: { project: project }
+              a href="#similar-proj" class="similar-proj-btn smooth-scroll" data-offset=-60
+                | See similar projects
+                br
+                | you might like
 
               - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
                 section.section-thumbs.hidden-xs.hidden-sm
@@ -489,7 +483,7 @@
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other", expires_in: 5.days do
         - if @other_projects.count > 0
-          section.other-projects
+          section.other-projects#similar-proj
             .container
               section.section-thumbs
                 h4 style='border:0' Similar projects you might like

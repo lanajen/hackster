@@ -563,7 +563,7 @@
 }
 
 #project-review {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 60px);  // full window height - header bar
   position: relative;
   .project-frame {
     width: 100%;
