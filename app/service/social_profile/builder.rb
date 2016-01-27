@@ -31,6 +31,8 @@ module SocialProfile
 
       custom_image_url = social_profile_attributes[:custom_image_url]
       assign_custom_image_url custom_image_url, @provider if custom_image_url
+      Rails.logger.debug 'custom_image_url: ' + custom_image_url.to_s
+      Rails.logger.debug 'user: ' + @user.inspect
 
       @user.email_confirmation = @user.email
       @user.authorizations.build(

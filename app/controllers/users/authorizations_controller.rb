@@ -12,6 +12,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
     build_resource(options)
     resource.email = resource.email_confirmation = '' if params[:new_email]
     if params[:autosave] and resource.save
+      Rails.logger.debug 'resource: ' + resource.inspect
       resource.accept_invitation!
       set_flash_message :notice, :signed_up if is_flashing_format?
       sign_up(resource_name, resource)
