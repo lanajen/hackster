@@ -29,13 +29,15 @@ class CronTask < BaseWorker
   end
 
   def cleanup_buggy_unpublished
-    # BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    # bug: projects that have been approved in the past (they have a made_public_at date) should always be approved
     BaseArticle.publyc.where.not(type: 'ExternalProject').where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
       project.update_column :workflow_state, :approved
     end
-    ReviewThread.where(workflow_state: :new).joins(:project).where(projects: { workflow_state: :pending_review }).update_all(workflow_state: :needs_review)
+    # bug: pending review projects should have a review thread in needs_review state
     ReviewThread.where(workflow_state: :new).joins(:project).where(projects: { workflow_state: :pending_review, private: false }).update_all(workflow_state: :needs_review)
+    # bug: unbpublished projects should have a review thread in :new state so that they don't appear in the queue
     ReviewThread.where.not(workflow_state: [:new, :closed]).joins(:project).where(projects: { workflow_state: [:unpublished, :pending_review], private: true }).update_all(workflow_state: :new)
+    # bug: multiple review threads exist for the same project
     ReviewThread.group(:project_id).having("count(*) > 1").count.each do |project_id, count|
       threads = ReviewThread.where(project_id: project_id).to_a
       first = threads.first
@@ -47,6 +49,8 @@ class CronTask < BaseWorker
         thread.delete
       end
     end
+    # bug: projects are approved but review threads open
+    ReviewThread.where.not(workflow_state: %w(closed)).joins(:project).where(projects: { workflow_state: :approved }).where.not(projects: { made_public_at: nil }).update_all(workflow_state: :closed)
   end
 
   def clean_invitations
