@@ -40,12 +40,7 @@
         .box-title.small-title
           h4 Schematics and circuit diagrams
         .box-content
-          p.small.text-muted
-            - if @project.challenge_id == 24
-              ' Link your
-              => link_to 'SchemeIt', 'http://www.digikey.com/schemeit/', target: '_blank'
-              ' schematics.
-            - else
+          p.text-muted
               ' We recommend using
               ==> link_to 'Fritzing.org', 'http://fritzing.org', target: '_blank'
               | for circuit diagrams. It's free and accessible to all skill levels.

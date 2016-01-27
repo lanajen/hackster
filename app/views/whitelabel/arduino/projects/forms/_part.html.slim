@@ -1,0 +1,40 @@
+li.fields
+  table.table
+    tbody
+      tr
+        td colspan=2 style="background:white;padding:5px 0;"
+          = f.input :id, as: :hidden, input_html: { class: 'id' }
+          = f.input :position, as: :hidden, input_html: { class: 'position' }
+          - if options[:part_type]
+            input type='hidden' value="#{options[:part_type].capitalize}Part" data-field-type='type'
+          input.reset type='hidden' value=part.part_id data-field-type='id'
+          input.reset type='hidden' value=part.part.try(:name) data-field-type='name'
+          input.reset type='hidden' value=part.part.try(:store_link) data-field-type='store_link'
+          input.reset type='hidden' value=part.part.try(:product_page_link) data-field-type='product_page_link'
+          input.reset type='hidden' value=part.part.try(:workflow_state) data-field-type='status'
+          input.reset type='hidden' value=(part.part.try(:has_own_page?) ? part_url(part.part) : nil) data-field-type='url'
+          input.reset type='hidden' value=part.part.try(:platform_id) data-field-type='platform_id'
+          ul.list-inline.pull-right
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
+            li= f.link_to_remove content_tag(:i, '', class: 'fa fa-times-circle-o'), class: 'btn btn-danger btn-sm'
+
+      - if options[:show_quantity]
+        tr
+          td style='width:85%'= select_tag_for_part_join part, options.merge(i: i)
+
+          td style='width:15%;'
+            = f.input :quantity, label: '&times;'.html_safe, input_html: { style: 'width:calc(100% - 30px) !important;height:68px;' }, label_html: { class: 'times', style: 'height:68px;padding-top:21px;' }
+      - else
+        tr
+          td= select_tag_for_part_join part, options.merge(i: i)
+
+      - unless options[:disable_comment]
+        tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
+          td colspan=2 = f.input :comment, label: 'Comment', label_html: { class: 'comment-label' }
+
+        - if part.comment.blank?
+          tr
+            td colspan=2 style='padding:5px 10px'
+              ul.list-inline
+                li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'

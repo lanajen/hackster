@@ -64,8 +64,7 @@
 
     - if user_signed_in?
       .user-profile
-        svg.default-usr-pic xmlns:xlink="http://www.w3.org/2000/xlink"
-          use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-user-profile').gsub(asset_host_with_protocol, '')
+        = image_tag current_user.decorate.avatar(:mini), class: 'img-circle default-usr-pic'
         .dropover.simple
           svg xmlns:xlink="http://www.w3.org/2000/xlink"
             use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Triangle_Up').gsub(asset_host_with_protocol, '')
