@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
   helper_method :returning_user?
   helper_method :controller_action
   helper_method :is_trackable_page?
+  helper_method :api_host
   before_filter :set_signed_in_cookie
   before_filter :set_default_response_format
 
