@@ -1,4 +1,3 @@
-import request from 'superagent';
 import { Wizard } from './constants/ActionTypes';
 import { postForm, getOptions } from './requests';
 
