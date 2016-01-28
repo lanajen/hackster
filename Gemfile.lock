@@ -29,7 +29,7 @@ GIT
 
 GIT
   remote: https://github.com/hacksterio/pygments.rb.git
-  revision: 1e9a4144801d37ea7982de00efea8480c49dc721
+  revision: ce9c51cd23f19bb171e7f518bc5fd19eef939ef6
   specs:
     pygments.rb (0.6.3)
       posix-spawn (~> 0.3.6)
