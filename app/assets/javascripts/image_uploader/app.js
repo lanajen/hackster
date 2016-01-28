@@ -30,6 +30,12 @@ export default class App extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if(nextState.isWorking !== this.state.isWorking && this.props.imageUploading) {
+      this.props.imageUploading(nextState.isWorking);
+    }
+  }
+
   handleImageUpload(file) {
     let fileData = {};
 
@@ -48,7 +54,12 @@ export default class App extends Component {
         return ImageHelpers.postURLToServer(url, null, this.state.csrfToken, fileType, fileType + '-upload');
       })
       .then(response => {
-        this.setState({ imageData: { ...fileData, ...response.body }, isWorking: false });
+        let imageData = { ...fileData, ...response.body };
+        this.setState({ imageData: imageData, isWorking: false });
+
+        if(this.props.getImageData) {
+          this.props.getImageData(imageData);
+        }
       })
       .catch(err => {
         this.setState({ isWorking: false });
@@ -67,7 +78,12 @@ export default class App extends Component {
         return ImageHelpers.pollJob(body['job_id']);
       })
       .then(status => {
-        this.setState({ imageData: { ...this.state.imageData, ...fileData, dataUrl: null }, isWorking: false });
+        let imageData = { ...this.state.imageData, ...fileData, dataUrl: null };
+        this.setState({ imageData: imageData, isWorking: false });
+
+        if(this.props.getImageData) {
+          this.props.getImageData(imageData);
+        }
       })
       .catch(err => {
         this.setState({ isWorking: false });
@@ -85,6 +101,8 @@ export default class App extends Component {
 }
 
 App.PropTypes = {
+  getImageData: PropTypes.func,
+  imageUploading: PropTypes.func,
   locals: PropTypes.object.isRequired,
   S3BucketURL: PropTypes.string.isRequired,
   AWSAccessKeyId: PropTypes.string.isRequired,

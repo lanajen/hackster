@@ -17,27 +17,46 @@
   }
 */
 
-import { combineReducers } from 'redux';
-import {
-  SEARCH_UNIVERSITY, RECEIVE_UNIVERSITIES, SELECT_UNIVERSITY
-} from './actions';
+import { Wizard } from './constants/ActionTypes';
 
-function store(state = {
+const initialState = {
   university: null,
   course: null,
   promotion: null
-}, action) {
+};
+
+export default function store(state = initialState, action) {
   switch (action.type) {
-    case SEARCH_UNIVERSITY:
-      return Object.assign({}, state, {});
+
+    case Wizard.setStore:
+      return {
+        ...state,
+        [action.storeName]: action.store
+      };
+
+    case Wizard.changeSelection:
+      return changeSelection({...state}, action.storeName);
 
     default:
       return state;
   }
 }
 
-const rootReducer = combineReducers({
-  store
-});
-
-export default rootReducer;
+function changeSelection(state, storeName) {
+  if(storeName === 'university') {
+    state = {
+      university: null,
+      course: null,
+      promotion: null
+    };
+  } else if(storeName === 'course') {
+    state = {
+      university: state.university,
+      course: null,
+      promotion: null
+    };
+  } else {
+    state[storeName] = null;
+  }
+  return state;
+}

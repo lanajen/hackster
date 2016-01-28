@@ -1,66 +1,50 @@
-import { fetchReviewThread, postDecision, postComment } from '../utils/ReactAPIUtils';
+import request from 'superagent';
+import { Wizard } from './constants/ActionTypes';
+import { postForm, getOptions } from './requests';
 
-export const SEARCH_UNIVERSITY = 'SEARCH_UNIVERSITY';
-export const RECEIVE_UNIVERSITIES = 'RECEIVE_UNIVERSITIES';
-export const SELECT_UNIVERSITY = 'SELECT_UNIVERSITY';
-export const SUBMIT_UNIVERSITY = 'SUBMIT_UNIVERSITY';
-export const RECEIVE_UNIVERSITY = 'RECEIVE_UNIVERSITY';
-
-function searchUniversity(query) {
-  return {
-    type: SEARCH_UNIVERSITY,
-    query
-  };
-}
-
-function receiveUniversities(results) {
-  return {
-    type: RECEIVE_UNIVERSITIES,
-    results
-  };
-}
-
-function selectUniversity(university) {
-  return {
-    type: SELECT_UNIVERSITY,
-    university
-  };
-}
-
-function submitUniversity(university) {
-  return {
-    type: SUBMIT_UNIVERSITY,
-    university
-  };
-}
-
-function receiveUniversity(university) {
-  return {
-    type: RECEIVE_UNIVERSITY,
-    university
-  };
-}
-
-export function doSubmitDecision(decision, projectId) {
+export function getOptionsHandler(query) {
   return function(dispatch) {
-    dispatch(submitDecision(decision));
-
-    let promise = postDecision(decision, projectId);
-    return promise
-      .then(response =>
-        dispatch(setDecisionSubmitted(response.body.decision))
-      ).catch(function(err) { console.log('Request Error: ' + err); });
+    return getOptions(query)
+      .then(response => {
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.error('GET Options ERROR ', err);
+      });
   };
 }
 
-function fetchThreadFromServer(projectId) {
-  return function (dispatch) {
-    dispatch(requestThread());
-
-    let promise = fetchReviewThread(projectId);
-    return promise
-      .then(response =>
-        dispatch(receiveThread(response.body.thread))
-      ).catch(function(err) { console.log('Response Error: ' + err); });
+function setStore(storeName, store) {
+  return {
+    type: Wizard.setStore,
+    storeName: storeName,
+    store: store
   };
 }
+
+export function postFormHandler(form, endpoint, csrfToken, imageData) {
+  return function(dispatch) {
+    return postForm(form, endpoint, csrfToken)
+      .then(response => {
+        let store = imageData !== null ? { ...response, imageData } : response;
+        dispatch(setStore(form.type.toLowerCase(), store));
+      })
+      .catch(err => {
+        console.log('POST Form ERROR: ', err);
+      });
+  };
+}
+
+export function setSelectionValue(store, storeName) {
+  return function(dispatch) {
+    dispatch(setStore(storeName, store));
+  };
+}
+
+export function changeSelection(storeName) {
+  return {
+    type: Wizard.changeSelection,
+    storeName: storeName
+  };
+}
+
