@@ -586,29 +586,8 @@ class User < ActiveRecord::Base
     PlatformMember.where(group_id: platform.id, user_id: id).any?
   end
 
-  def link_to_provider provider, uid, data=nil
-    auth = {
-      name: data.name,
-      provider: provider,
-      uid: uid,
-      token: data.credentials.try(:token),
-    }
-
-    link = if data and data = data.info
-       data.urls.try(:[], provider)
-     end
-
-    if link
-      auth[:link] = link
-      link_name = case provider
-      when 'Google+'
-        'google_plus'
-      else
-        provider.to_s.underscore
-      end
-      update_attribute "#{link_name}_link", link
-    end
-    authorizations.create(auth)
+  def link_to_provider provider, data
+    SocialProfile::Builder.new(provider, data).update_user_from_social_profile(self)
   end
 
   def live_comments

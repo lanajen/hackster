@@ -42,13 +42,15 @@ class Users::AuthorizationsController < Users::RegistrationsController
   def update
     if params[:link_accounts]
       self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
-      resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
+      resource.link_to_provider session['devise.provider'], session['devise.provider_data']
+      resource.save
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
       redirect_to edit_registration_path(resource)
     else
       unless params[:user].try(:[], :authentication_token) and self.resource = find_user_and_validate_auth_token(params[:user][:email], params[:user][:authentication_token])
       end
-      resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
+      resource.link_to_provider session['devise.provider'], session['devise.provider_data']
+      resource.save
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
       sign_in(resource_name, resource)
       redirect_to after_sign_in_path_for(resource)

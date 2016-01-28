@@ -14,6 +14,17 @@ module SocialProfile
       'windowslive' => :windowslive,
     }
 
+    def build_authorization
+      @user.authorizations.build(
+        uid: @data.uid,
+        provider: @provider,
+        name: @user.full_name,
+        link: provider_link(@provider),
+        token: @data.credentials.token,
+        secret: @data.credentials.secret
+      )
+    end
+
     def initialize provider, data
       @provider = provider
       @data = data
@@ -31,24 +42,23 @@ module SocialProfile
 
       custom_image_url = social_profile_attributes[:custom_image_url]
       assign_custom_image_url custom_image_url, @provider if custom_image_url
-      Rails.logger.debug 'custom_image_url: ' + custom_image_url.to_s
-      Rails.logger.debug 'user: ' + @user.inspect
 
       @user.email_confirmation = @user.email
-      @user.authorizations.build(
-        uid: @data.uid,
-        provider: @provider,
-        name: @user.full_name,
-        link: provider_link(@provider),
-        token: @data.credentials.token,
-        secret: @data.credentials.secret
-      )
+      build_authorization
 
       # logger.info 'auth: ' + @user.authorizations.inspect
       @user.generate_user_name unless UserNameValidator.new(@user).valid?
       @user.password = Devise.friendly_token[0,20]
       @user.logging_in_socially = true
       @user
+    end
+
+    def update_user_from_social_profile user
+      @user = user
+      build_authorization
+
+      custom_image_url = social_profile_attributes[:custom_image_url]
+      assign_custom_image_url custom_image_url, @provider if custom_image_url
     end
 
     def social_profile_attributes
