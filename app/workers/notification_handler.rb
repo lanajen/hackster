@@ -142,6 +142,7 @@ class NotificationHandler
           context[:users] -= [author]
         when ReviewThread
           context[:thread] = commentable
+          context[:project] = commentable.project
           # if comment was posted by a project author, mail everyone else, otherwise mail project authors
           context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
             commentable.participants - commentable.project.users
