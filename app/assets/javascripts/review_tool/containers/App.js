@@ -31,7 +31,7 @@ const App = React.createClass({
   renderItemsContainer: function() {
     const { currentThread, formStates, userRole, isAuthor, isEditable, showDecisionForm } = this.props;
 
-    let canAdmin = !isAuthor && ['admin', 'hackster_admin', 'super_moderator'].indexOf(userRole) > -1;
+    let canAdmin = !isAuthor && ['admin', 'hackster_moderator', 'super_moderator'].indexOf(userRole) > -1;
     let canModerate = !isAuthor && (canAdmin || ['moderator'].indexOf(userRole) > -1);
 
     if (this.props.currentThread.isLoaded) {
