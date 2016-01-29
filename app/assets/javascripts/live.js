@@ -70,7 +70,7 @@ function initMap() {
 function loadMarkers(latLng) {
   $.ajax({
     type: 'GET',
-    url: '/api/v1/users',
+    url: Utils.getApiPath() + '/v1/users',
     data: latLng
   }).done(function(response){
     printMarkers(response.users);
@@ -102,7 +102,7 @@ function loadThumbs(opts, preserve) {
     userList.html('<div class="user-thumb-gmap text-center"><i class="fa fa-spinner fa-spin"></i></div>');
   $.ajax({
     type: 'GET',
-    url: '/api/v1/users',
+    url: Utils.getApiPath() + '/v1/users',
     data: opts
   }).done(function(response){
     var thumbs = _.map(response.users, function(user){

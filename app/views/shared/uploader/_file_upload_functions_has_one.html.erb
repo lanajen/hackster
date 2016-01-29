@@ -58,7 +58,7 @@ var <%= file_type %>Functions = {
 
     window.setTimeout(function() {
       $.ajax({
-        url: '/files/' + fileId,
+        url: Utils.getApiPath() + '/v1/files/' + fileId,
         type: 'GET',
         dataType: 'json',
         data: { context: context },
@@ -105,7 +105,7 @@ $(function(){
 
     if (fileUrl != '') {
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/v1/files/remote_upload',
         type: 'POST',
         data: {
           file_type: "<%= file_type %>",
@@ -130,7 +130,7 @@ $(function(){
 <%= file_type %>Functions.checkRemoteFileProcessed = function(jobId, el, fileUrl, id) {
   window.setTimeout(function(){
     $.ajax({
-      url: '/files/remote_upload',
+      url: Utils.getApiPath() + '/v1/files/remote_upload',
       data: { job_id: jobId },
       success: function(data){
         switch (data.status){

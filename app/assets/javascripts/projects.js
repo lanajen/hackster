@@ -805,7 +805,7 @@ $select2target = null;
         data.context.data('data', data);
 
         $.ajax({
-          url: '/files/signed_url',
+          url: Utils.getApiPath() + '/v1/files/signed_url',
           type: 'GET',
           dataType: 'json',
           data: { file: {name: file.name}, context: 'no-context' },
@@ -854,7 +854,7 @@ $select2target = null;
         url = form.attr('data-url');
 
         $.ajax({
-          url: '/files',
+          url: Utils.getApiPath() + '/v1/files',
           type: 'POST',
           dataType: 'json',
           data: {

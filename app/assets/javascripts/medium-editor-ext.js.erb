@@ -413,7 +413,7 @@ $(function() {
         _.showLoadingBar();
         _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-        $.ajax(_.modelUrl + '/' + _.modelId, {
+        $.ajax(Utils.getApiPath() + _.modelUrl + '/' + _.modelId, {
           data: formData,
           // processData: false,
           // contentType: false,
@@ -1298,7 +1298,7 @@ $(function () {
 
     if (fileUrl != '') {
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/v1/files/remote_upload',
         type: 'POST',
         data: {
           file_type: fileType,
@@ -1341,7 +1341,7 @@ $(function () {
   function checkRemoteFileProcessed(jobId, el) {
     window.setTimeout(function(){
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/v1/files/remote_upload',
         data: { job_id: jobId },
         success: function(data){
           switch (data.status){
@@ -1892,7 +1892,7 @@ function goToPreviousP(node, e){
 
 function insertEmbedTag(url, node) {
   editor.showLoadingBar();
-  $.ajax('/api/v1/embeds', {
+  $.ajax(Utils.getApiPath() + '/v1/embeds', {
     async: false,
     data: { url: url },
     success: function(data){
@@ -1925,7 +1925,7 @@ function insertWidget(type, modelId, modelType, node, data) {
   data['widget']['widgetable_type'] = modelType;
 
   editor.showLoadingBar();
-  $.ajax('/api/v1/widgets', {
+  $.ajax(Utils.getApiPath() + '/v1/widgets', {
     async: false,
     data: data,
     success: function(data){
@@ -2050,21 +2050,21 @@ function loadPlaceholder(el, force) {
 
 function deleteFile(id) {
   $.ajax({
-    url: '/files/' + id,
+    url: Utils.getApiPath() + '/v1/files/' + id,
     type: 'DELETE'
   })
 }
 
 function deleteWidget(id) {
   $.ajax({
-    url: '/api/v1/widgets/' + id,
+    url: Utils.getApiPath() + '/v1/widgets/' + id,
     type: 'DELETE'
   })
 }
 
 // function deletePart(id) {
 //   $.ajax({
-//     url: '/api/v1/parts/' + id,
+//     url: Utils.getApiPath() + '/v1/parts/' + id,
 //     type: 'DELETE'
 //   })
 // }
@@ -2148,7 +2148,7 @@ function uploadToS3(data, file, form) {
   $('#' + data.context).data('data', data);
 
   $.ajax({
-    url: '/files/signed_url',
+    url: Utils.getApiPath() + '/v1/files/signed_url',
     type: 'GET',
     dataType: 'json',
     data: {file: {name: file.name}, context: data.context},
@@ -2190,7 +2190,7 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
   url = form.attr('data-url');
 
   $.ajax({
-    url: '/files',
+    url: Utils.getApiPath() + '/v1/files',
     type: 'POST',
     dataType: 'json',
     data: {

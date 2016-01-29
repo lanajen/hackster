@@ -275,7 +275,7 @@ $(function () {
   $('#show-login-form, .show-simplified-signup').on('click', function(e){
     if (!$('.user-form [name="authenticity_token"]').length) {
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/v1/csrf',
         dataType: 'text',
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
@@ -291,7 +291,7 @@ $(function () {
     if (!form.find('[name="authenticity_token"]').length) {
       e.preventDefault();
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/v1/csrf',
         dataType: 'text',
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');

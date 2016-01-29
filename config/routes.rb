@@ -74,6 +74,7 @@ HackerIo::Application.routes.draw do
     constraints(ApiSite) do
       scope module: :api, defaults: { format: :json } do
         namespace :v1 do
+          get 'csrf' => 'pages#csrf'
           get 'embeds' => 'embeds#show'
           get 'me' => 'users#show'
           # post 'embeds' => 'embeds#create'
@@ -81,6 +82,11 @@ HackerIo::Application.routes.draw do
           resources :build_logs
           resources :code_files, only: [:create]
           resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
+          resources :files, only: [:create, :show, :destroy] do
+            get 'remote_upload' => 'files#check_remote_upload', on: :collection
+            post 'remote_upload', on: :collection
+            get 'signed_url', on: :collection
+          end
           resources :flags, only: [:create]
           resources :followers, only: [:create, :index] do
             collection do

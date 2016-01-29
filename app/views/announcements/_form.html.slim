@@ -11,7 +11,7 @@
   .col-md-8.col-md-pull-4
     .section-container
       .section-content
-        #model-editor.mg-20*{ data: { 'model-id' => @announcement.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'announcement', 'model-placeholder' => "What's new? Enter text or add media by clicking the left button.", 'model-url' => "/api/v1/announcements" } }
+        #model-editor.mg-20*{ data: { 'model-id' => @announcement.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'announcement', 'model-placeholder' => "What's new? Enter text or add media by clicking the left button.", 'model-url' => "/v1/announcements" } }
 
           h3.mg-20
             span.editable-attribute*{ 'data-model' => "announcement", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @announcement.title_not_default }

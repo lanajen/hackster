@@ -5,6 +5,7 @@ class Api::V1::BaseController < ApplicationController
   skip_before_action :set_locale
   before_filter :allow_cors_requests
   before_filter :public_api_methods, only: [:cors_preflight_check]
+  before_filter :private_api_methods, except: [:cors_preflight_check]
 
   def cors_preflight_check
     head(:ok)
@@ -60,5 +61,11 @@ class Api::V1::BaseController < ApplicationController
 
     def public_api_methods
       headers['Access-Control-Allow-Origin'] = '*'
+    end
+
+    def private_api_methods
+      referrer = request.referrer
+      allowed_origin = referrer.gsub(URI.parse(referrer).path, '')
+      headers['Access-Control-Allow-Origin'] = allowed_origin
     end
 end

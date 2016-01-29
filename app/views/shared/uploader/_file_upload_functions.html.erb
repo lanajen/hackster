@@ -44,7 +44,7 @@ var <%= file_type %>Functions = {
 
     window.setTimeout(function() {
       $.ajax({
-        url: '/files/' + fileId,
+        url: Utils.getApiPath() + '/v1/files/' + fileId,
         type: 'GET',
         dataType: 'json',
         data: { context: context },
