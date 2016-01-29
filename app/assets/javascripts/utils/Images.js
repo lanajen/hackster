@@ -3,6 +3,7 @@ import request from 'superagent';
 import _ from 'lodash';
 import xmlParser from 'xml2js';
 import Helpers from './Helpers';
+import { getApiPath } from './Utils';
 
 const ImageUtils = {
 
@@ -125,7 +126,7 @@ const ImageUtils = {
   getS3AuthData(fileName) {
     return new Promise((resolve, reject) => {
       request
-        .get('/files/signed_url?file%5Bname%5D='+ fileName +'&context=no-context')
+        .get(`${getApiPath()}/v1/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
         .end(function(err, res) {
           err ? reject(err) : resolve(res.body);
         });
@@ -170,7 +171,7 @@ const ImageUtils = {
 
       return new Promise((resolve, reject) => {
         request
-          .post('/files')
+          .post(`${getApiPath()}/v1/files`)
           .set('X-CSRF-Token', csrfToken)
           .send(params)
           .end(function(err, res) {
@@ -186,7 +187,7 @@ const ImageUtils = {
 
     return new Promise((resolve, reject) => {
       request
-        .post('/files/remote_upload')
+        .post(`${getApiPath()}/v1/files/remote_upload`)
         .set('X-CSRF-Token', csrfToken)
         .send(form)
         .end((err, res) => {
@@ -199,7 +200,7 @@ const ImageUtils = {
     return new Promise((resolve, reject) => {
       let poll = setInterval(() => {
         request
-          .get(`/files/remote_upload?job_id=${jobId}`)
+          .get(`${getApiPath()}/v1/files/remote_upload?job_id=${jobId}`)
           .end((err, res) => {
             if(err) {
               clearInterval(poll);

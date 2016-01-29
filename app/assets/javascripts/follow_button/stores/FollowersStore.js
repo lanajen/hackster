@@ -1,4 +1,3 @@
-import request from 'superagent';
 import { fetchFollowing } from '../../utils/ReactAPIUtils';
 import postal from 'postal';
 import _ from 'lodash';

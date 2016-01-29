@@ -247,7 +247,7 @@ export default {
 
   getAttributesByTagType(item) {
     item.attribs = item.attribs || {};
-    let hash = item.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1));
+    let hash = BlockElements[item.tag.toUpperCase()] ? item.attribs['data-hash'] || hashids.encode(Math.floor(Math.random() * 9999 + 1)) : null;
     let block = BlockElements[item.tag.toUpperCase()] ? item.tag : null;
     let classes = item.attribs.class || '';
     let attribs = {

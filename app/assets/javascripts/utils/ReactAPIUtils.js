@@ -5,7 +5,7 @@ module.exports = {
   addList(name) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/lists')
+        .post(`${getApiPath()}/v1/lists`)
         .send({ group: { full_name: name } })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -16,7 +16,7 @@ module.exports = {
   addToFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/followers')
+        .post(`${getApiPath()}/v1/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
@@ -32,7 +32,7 @@ module.exports = {
   checkJob(jobId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/jobs/' + jobId)
+        .get(`${getApiPath()}/v1/jobs/${jobId}`)
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -42,7 +42,7 @@ module.exports = {
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/me')
+        .get(`${getApiPath()}/v1/me`)
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.user);
         });
@@ -52,7 +52,7 @@ module.exports = {
   fetchFollowing(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/followers')
+        .get(`${getApiPath()}/v1/followers`)
         .set('X-CSRF-Token', csrfToken)
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -63,7 +63,7 @@ module.exports = {
   fetchLists(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/lists')
+        .get(`${getApiPath()}/v1/lists`)
         .query({ project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -74,7 +74,7 @@ module.exports = {
   fetchNotifications(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/notifications')
+        .get(`${getApiPath()}/v1/notifications`)
         .set('X-CSRF-Token', csrfToken)
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -85,7 +85,7 @@ module.exports = {
   fetchReviewThread(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/review_threads')
+        .get(`${getApiPath()}/v1/review_threads`)
         .query({ project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -96,7 +96,7 @@ module.exports = {
   flagContent(flaggableType, flaggableId, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/flags')
+        .post(`${getApiPath()}/v1/flags`)
         .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -107,7 +107,7 @@ module.exports = {
   launchJob(jobType, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/jobs')
+        .post(`${getApiPath()}/v1/jobs`)
         .send({ type: jobType, user_id: userId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -118,7 +118,7 @@ module.exports = {
   postComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/comments')
+        .post(`${getApiPath()}/v1/comments`)
         .set('X-CSRF-Token', csrfToken)
         .send(comment)
         .end((err, res) => {
@@ -130,7 +130,7 @@ module.exports = {
   postDecision(decision, projectId) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/review_decisions')
+        .post(`${getApiPath()}/v1/review_decisions`)
         .send({ review_decision: decision, project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -141,7 +141,7 @@ module.exports = {
   removeFromFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del('/api/v1/followers')
+        .del(`${getApiPath()}/v1/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
@@ -156,7 +156,7 @@ module.exports = {
 
   toggleProjectInList(requestType, listId, projectId) {
     return new Promise((resolve, reject) => {
-      request(requestType, '/api/v1/lists/' + listId + '/projects')
+      request(requestType, `${getApiPath()}/v1/lists/${listId}/projects`)
         .send({ project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
