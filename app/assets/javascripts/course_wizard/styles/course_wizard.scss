@@ -1,18 +1,7 @@
 @import "../../../node_modules/react-select/scss/default";
 
 .course-wizard-wrapper {
-  // @include flexbox((
-  //   display: flex,
-  //   justify-content: center
-  // ));
-
   .course-wizard {
-    // @include card(2);
-    // padding: 5% 15%;
-    // background-color: white;
-    // max-width: 800px;
-    // width: 100%;
-
     .completed-button-wrapper {
       @include flexbox((
         display: flex,

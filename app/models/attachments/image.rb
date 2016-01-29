@@ -1,4 +1,6 @@
 class Image < BaseImage
+  DEFAULT_CAPTION = "caption (optional)"
+
   VERSIONS = {
     lightbox: { w: 1280, h: 960, fit: :max },
     headline: { w: 580, h: 435, fit: :max },

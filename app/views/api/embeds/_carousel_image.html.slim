@@ -7,5 +7,5 @@
           = image_tag image.imgix_url(:headline), alt: image.title.presence
       - else
         = image_tag image.imgix_url(:headline), alt: image.title.presence
-    - if caption.present?
+    - if caption.present? and caption != Image::DEFAULT_CAPTION
       figcaption= caption
