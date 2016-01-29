@@ -30,9 +30,8 @@ class Promotion < Community
   end
   # end of search methods
 
-  def generate_user_name
-    slug = short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
-    self.user_name = slug
+  def default_user_name
+    short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase[0...100]
   end
 
   alias_method :old_name, :name

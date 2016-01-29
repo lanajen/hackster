@@ -46,4 +46,3 @@ export function changeSelection(storeName) {
     storeName: storeName
   };
 }
-

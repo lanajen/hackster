@@ -52,7 +52,7 @@ export default class Form extends Component {
   }
 
   _assembleForm() {
-    let form = { type: this.props.name };
+    let form = { type: this.props.type };
     let keys = this.props.keys;
     let refs = Object.keys(this.refs);
 
@@ -63,7 +63,7 @@ export default class Form extends Component {
     });
 
     if(this.props.image) {
-      form[keys[this.props.image['human_file_type'  ]]] = this.state.imageData.id;
+      form[keys[this.props.image['human_file_type']]] = this.state.imageData.id;
     }
 
     if(this.props.parentId) {
@@ -82,9 +82,9 @@ export default class Form extends Component {
 
     let Inputs = inputs.map((input, index) => {
       return (
-        <div key={index} className="course-wizard-form-item">
+        <div key={index} className="course-wizard-form-item form-group">
           <div className="col-sm-4">
-            <label>{input}</label>
+            <label className="control-label">{input}</label>
           </div>
           <div className="col-sm-8">
             <input ref={input} className="form-control" type="text" />
@@ -101,9 +101,9 @@ export default class Form extends Component {
                                     })
                                   : (null);
                       return (
-                        <div key={index} className="course-wizard-form-item">
+                        <div key={index} className="course-wizard-form-item form-group">
                           <div className="col-sm-4">
-                            <label>{selection.label}</label>
+                            <label className="control-label">{selection.label}</label>
                           </div>
                           <div className="col-sm-8">
                             <select ref={selection.label} className="select optional form-control" name={selection.label}>
@@ -118,9 +118,9 @@ export default class Form extends Component {
     let Textarea = textareas
                  ? textareas.map((textarea, index) => {
                     return (
-                      <div key={index} className="course-wizard-form-item">
+                      <div key={index} className="course-wizard-form-item form-group">
                         <div className="col-sm-4">
-                          <label>{textarea.label}</label>
+                          <label className="control-label">{textarea.label}</label>
                         </div>
                         <div className="col-sm-8">
                           <textarea ref={textarea.label} className="form-control" name={textarea.label} rows={textarea.rows || 3} maxLength={140} />
@@ -139,16 +139,16 @@ export default class Form extends Component {
                      : (null);
 
     return (
-      <form className="course-wizard-form" action="">
+      <form className="course-wizard-form form-horizontal" action="">
         {Inputs}
         {Selections}
         {Textarea}
         {Image}
-        <div className="create-new-form">
+        <div className="continue-btn">
           <span>
-            {this.props.search ? <a href="javascript:void(0);" onClick={this.toggleToSearch}>Back to search</a> : null}
+            {this.props.search ? <a href="javascript:void(0);" className="btn btn-link btn-sm" tabIndex='-1' onClick={this.toggleToSearch}>Back to search</a> : null}
           </span>
-          <button className="btn btn-primary" style={{ marginLeft: '2%' }} disabled={this.state.imageUploading} onClick={this.handleSubmitClick}>Continue</button>
+          <button className="btn btn-primary btn-sm" disabled={this.state.imageUploading} onClick={this.handleSubmitClick}>Continue</button>
         </div>
         {errorMessage}
       </form>
@@ -162,11 +162,11 @@ Form.PropTypes = {
   imageUploadData: PropTypes.object.isRequired,
   inputs: PropTypes.array.isRequired,
   keys: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
   parentId: PropTypes.number,
   postForm: PropTypes.func.isRequired,
   search: PropTypes.bool.isRequired,
   selections: PropTypes.object,
   textareas: PropTypes.object,
-  toggleToSearch: PropTypes.func.isRequired
+  toggleToSearch: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired
 };

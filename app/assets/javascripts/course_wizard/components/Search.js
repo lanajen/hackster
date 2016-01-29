@@ -25,21 +25,29 @@ export default class Search extends Component {
 
     this.setState({ isLoading: true });
 
-    return getOptionsHandler({ type: this.props.name, q:input })
+    let query = {
+      type: this.props.type,
+      q: input
+    };
+
+    if (this.props.type === 'Course')
+      query.parent_id = this.props.store['university'].id;
+
+    return getOptionsHandler(query)
       .then(response => {
-        return response.map(univ => {
+        return response.map(group => {
           return {
-            value: univ.id,
-            label: univ.full_name,
-            ...univ
+            value: group.id,
+            label: group.full_name,
+            ...group
           }
         });
-      }).then(universities => {
+      }).then(groups => {
 
         this.setState({ isLoading: false });
 
         return {
-          options: universities,
+          options: groups,
           complete: true
         };
 
@@ -60,31 +68,34 @@ export default class Search extends Component {
   }
 
   render() {
-    let { value, name, search, imageUploadData } = this.props;
-    let action = this.state.value
-               ? (<button className="btn btn-success" onClick={this.handleContinueButton}>Continue</button>)
-               : (<span>
-                    Not in the list?&nbsp;<a href="javascript:void(0);" onClick={this.handleViewState.bind(this, 'form')}>Create new</a>
-                  </span>);
+    let { value, name, search, imageUploadData, type } = this.props;
+    let createNew = this.state.value
+               ? null
+               : (<div className="create-new-form">
+                    Not in the list?&nbsp;<a href="javascript:void(0);" onClick={this.handleViewState.bind(this, 'form')}>Create a new one</a>.
+                  </div>);
+
+   let continueBtn = this.state.value
+                    ? (<div className="continue-btn">
+                        <button className="btn btn-success btn-sm" onClick={this.handleContinueButton}>Continue</button>
+                      </div>)
+                    : null;
 
     let view = this.state.viewState === 'selection' && search
              ? (<div className="course-wizard-search">
+                  {createNew}
                   <Select.Async value={this.state.value}
-                                minimumInput={3}
-                                autoload={false}
+                                autoload={true}
                                 isLoading={this.state.isLoading}
                                 placeholder={`Search for a ${name}`}
                                 loadOptions={this.getOptions}
                                 onChange={this.onChange}
-                                optionRenderer={this.selectRenderer}
-                                valueRenderer={this.selectRenderer} />
-                  <div className="create-new-form">
-                    {action}
-                  </div>
+                                optionRenderer={this.selectRenderer} />
+                  {continueBtn}
                 </div>)
              : (<div className="course-wizard-search">
                   <Form { ...this.props.form }
-                        name={name}
+                        type={type}
                         search={search}
                         imageUploadData={imageUploadData}
                         toggleToSearch={this.handleViewState.bind(this, 'selection')}
@@ -94,11 +105,16 @@ export default class Search extends Component {
     return view;
   }
 
-  selectRenderer(univ) {
+  selectRenderer(group) {
+
+    let detailsText = group.city ? group.city : '';
+    detailsText += group.country ? `, ${group.country}` : '';
+    let details = detailsText !== '' ? (<div className="result-details">{detailsText}</div>) : null;
+
     return (
-      <div>
-        <span>{univ.full_name + ' '}</span>
-        <span>{univ.city ? univ.city : ''} {univ.country ? `, ${univ.country}` : ''}</span>
+      <div className="course-wizard-result">
+        <div className="result-name">{group.full_name + ' '}</div>
+        {details}
       </div>
     );
   }
@@ -110,5 +126,6 @@ Search.PropTypes = {
   imageUploadData: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   search: PropTypes.bool.isRequired,
-  value: PropTypes.object.isRequired
+  value: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired
 };

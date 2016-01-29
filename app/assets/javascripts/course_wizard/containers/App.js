@@ -8,6 +8,7 @@ import { Countries } from '../../utils/Constants';
 const Steps = [
   {
     name: 'University',
+    type: 'University',
     form: {
       inputs: ['Name', 'City'],
       selections: [{ label: 'Country', options: Countries }],
@@ -26,28 +27,22 @@ const Steps = [
   },
   {
     name: 'Course',
+    type: 'Course',
     form: {
       inputs: ['Name', 'Course #'],
       textareas: [{ label: 'Pitch', rows: 3 }],
-      image: {
-        file_type: null,
-        human_file_type: 'Cover image',
-        attribute_type: 'cover_image',
-        help_block: null,
-        model: 'base_article',
-        image_link: null
-      },
-      keys: { Name: 'full_name', ['Course #']: 'course_number', Pitch: 'mini_resume', ['Cover image']: 'cover_image_id' },
+      keys: { Name: 'full_name', ['Course #']: 'course_number', Pitch: 'mini_resume' },
       endpoint: '/api/v1/groups'
     },
     search: true
   },
   {
-    name: 'Promotion',
+    name: 'Class',
+    type: 'Promotion',
     form: {
-      inputs: ['Name'],
+      inputs: ['Year or semester'],
       image: null,
-      keys: { Name: 'full_name' },
+      keys: { 'Year or semester': 'full_name' },
       endpoint: '/api/v1/groups'
     },
     search: false
@@ -70,10 +65,10 @@ class App extends Component {
     let completed = this._isComplete();
 
     let steps = Steps.map((step, index) => {
-      let { name, form, search } = step;
+      let { name, type, form, search } = step;
       let prev = Steps[index-1];
       if( index === 0 || this.props.store[prev.name.toLowerCase()] ) {
-        return (<Step key={index} name={name} form={index > 0 ? { ...form, parentId: this.props.store[prev.name.toLowerCase()].id } : form} search={search} {...this.props} />);
+        return (<Step key={index} name={name} type={type} form={index > 0 ? { ...form, parentId: this.props.store[prev.name.toLowerCase()].id } : form} search={search} {...this.props} />);
       } else {
         return null;
       }
@@ -86,10 +81,19 @@ class App extends Component {
                         : (null);
 
     return (
-      <div className='course-wizard-wrapper'>
-        <div className="course-wizard">
-          {steps}
-          {completedButton}
+      <div className="row">
+        <div className="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+          <div className='course-wizard-wrapper box allow-overflow'>
+            <div className="box-title">
+              <h2>Create a new course page</h2>
+            </div>
+            <div className="box-content">
+              <div className="course-wizard">
+                {steps}
+                {completedButton}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

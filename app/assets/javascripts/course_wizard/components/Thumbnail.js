@@ -17,13 +17,20 @@ export default class Thumbnail extends Component {
     let views = {
       'Course': this._createCourseThumb(this.props),
       'Generic': this._createGenericThumb(this.props),
-      'Promotion': this._createPromotionThumb(this.props),
+      'Class': this._createPromotionThumb(this.props),
       'University': this._createUniversityThumb(this.props)
     };
 
     let view = views[name] ? views[name] : views['Generic'];
 
-    return view();
+    return (
+      <div>
+        {view()}
+        <div className="change-link-wrapper">
+          <a href="javascript:void(0);" onClick={this.handleChangeLinkClick}>Change</a>
+        </div>
+      </div>
+    );
   }
 
   _createUniversityThumb(props) {
@@ -33,14 +40,11 @@ export default class Thumbnail extends Component {
         <div className="course-wizard-thumbnail">
           <img src={avatar_url ? avatar_url : imageData ? imageData.dataUrl : ''} />
           <div className="thumbnail-details">
-            <a href="#">{full_name}</a>
-            <div>
+            <h4>{full_name}</h4>
+            <div className="smaller text-muted">
               <i className="fa fa-map-marker" />
               <span>{`${city}, ${country}`}</span>
             </div>
-          </div>
-          <div className="change-link-wrapper">
-            <a href="javascript:void(0);" onClick={this.handleChangeLinkClick}>Change</a>
           </div>
         </div>
       );
@@ -49,17 +53,17 @@ export default class Thumbnail extends Component {
 
   _createCourseThumb(props) {
     const { imageData, full_name, course_number, mini_resume, cover_image_url } = props.uniqueStore;
+    let courseNumber = course_number ?
+                        (<p>{course_number}</p>) : null;
+    let pitch = mini_resume ? (<p className='smaller text-muted'>{mini_resume}</p>) : null;
+
     return function() {
       return (
         <div className="course-wizard-thumbnail">
-          <img src={cover_image_url ? cover_image_url: imageData ? imageData.dataUrl : ''} />
           <div className="thumbnail-details">
-            <a href="#">{full_name}</a>
-            <div>{`Course# ${course_number || ''}`}</div>
-            <div>{`Pitch: ${mini_resume || ''}`}</div>
-          </div>
-          <div className="change-link-wrapper">
-            <a href="javascript:void(0);" onClick={this.handleChangeLinkClick}>Change</a>
+            <h4>{full_name}</h4>
+            {courseNumber}
+            {pitch}
           </div>
         </div>
       );
@@ -71,10 +75,7 @@ export default class Thumbnail extends Component {
     return function() {
       return (
         <div className="course-wizard-thumbnail">
-          <h2>{full_name}</h2>
-          <div className="change-link-wrapper">
-            <a href="javascript:void(0);" onClick={this.handleChangeLinkClick}>Change</a>
-          </div>
+          <h4>{full_name}</h4>
         </div>
       );
     }.bind(this);

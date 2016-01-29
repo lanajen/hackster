@@ -5,9 +5,8 @@ class GroupsController < ApplicationController
   respond_to :html
 
   def show
-    path = "#{@group.class.name.underscore}_path"
-    if defined?(path) and (params[:id] or @group.class.name != 'Community')
-      path = send(path, @group)
+    if params[:id] or @group.class.name != 'Community'
+      path = group_path(@group)
       redirect_to path and return if path != request.path
     end
 

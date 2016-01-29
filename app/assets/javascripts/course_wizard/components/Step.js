@@ -8,8 +8,8 @@ export default class Step extends Component {
   }
 
   render() {
-    const { actions, S3BucketURL, AWSAccessKeyId, form, search, name } = this.props;
-    const uniqueStore = this.props.store[name.toLowerCase()];
+    const { actions, S3BucketURL, AWSAccessKeyId, form, search, name, store, type } = this.props;
+    const uniqueStore = this.props.store[type.toLowerCase()];
     const imageUploadData = { S3BucketURL, AWSAccessKeyId };
 
     let body = uniqueStore
@@ -18,14 +18,16 @@ export default class Step extends Component {
                            uniqueStore={uniqueStore} />)
              : (<Search actions={actions}
                         name={name}
+                        type={type}
                         value={uniqueStore}
                         form={form}
                         search={search}
+                        store={store}
                         imageUploadData={imageUploadData}/>);
 
     return (
       <div className="course-wizard-step">
-        <h3>{name}</h3>
+        <label>What's the {name}?</label>
         {body}
       </div>
     );
@@ -40,4 +42,5 @@ Step.PropTypes = {
   S3BucketURL: PropTypes.string.isRequired,
   search: PropTypes.bool.isRequired,
   store: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired
 };

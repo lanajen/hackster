@@ -613,6 +613,9 @@ footer {
   & + .box {
     margin-top: 20px;
   }
+  &.allow-overflow {
+    overflow: visible;
+  }
 }
 .box-title {
   padding: 30px 20px 25px;
