@@ -27,7 +27,7 @@ export default class Step extends Component {
 
     return (
       <div className="course-wizard-step">
-        <label>What's the {name}?</label>
+        <label>{`What's the ${name}?`}</label>
         {body}
       </div>
     );
