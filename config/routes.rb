@@ -121,6 +121,12 @@ HackerIo::Application.routes.draw do
           end
           resources :notifications, only: [:index]
           get 'search' => 'search#index'
+          scope :review_decisions, defaults: { format: :json } do
+            post '' => 'review_decisions#create'
+          end
+          scope :review_threads, defaults: { format: :json } do
+            get '' => 'review_threads#show'
+          end
           resources :thoughts
           resources :users, only: [:index] do
             get :autocomplete, on: :collection

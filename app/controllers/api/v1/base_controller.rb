@@ -4,8 +4,8 @@ class Api::V1::BaseController < ApplicationController
   skip_before_filter :verify_authenticity_token
   skip_before_action :set_locale
   before_filter :allow_cors_requests
-  before_filter :public_api_methods, only: [:cors_preflight_check]
-  before_filter :private_api_methods, except: [:cors_preflight_check]
+  # before_filter :public_api_methods, only: [:cors_preflight_check]
+  before_filter :private_api_methods
 
   def cors_preflight_check
     head(:ok)
@@ -65,7 +65,20 @@ class Api::V1::BaseController < ApplicationController
 
     def private_api_methods
       referrer = request.referrer
-      allowed_origin = referrer.gsub(URI.parse(referrer).path, '')
-      headers['Access-Control-Allow-Origin'] = allowed_origin
+      referrer_uri = URI.parse(referrer)
+      if host_is_whitelisted?(referrer_uri.host)
+        allowed_origin = referrer_uri.scheme + '://' + referrer_uri.host
+        allowed_origin << ":#{referrer_uri.port}" if referrer_uri.port != 80
+        Rails.logger.debug 'allowed_origin: ' + allowed_origin.to_s
+        headers['Access-Control-Allow-Origin'] = allowed_origin
+        headers['Access-Control-Allow-Credentials'] = 'true'
+      end
+    rescue => e
+      Rails.logger.debug e.inspect
     end
+
+    private
+      def host_is_whitelisted? host
+        host =~ Regexp.new("#{APP_CONFIG['default_domain']}$") or host.in? WHITELISTED_HOSTS
+      end
 end

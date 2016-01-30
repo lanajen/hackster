@@ -423,6 +423,9 @@ $(function() {
                   ? new window.ActiveXObject("Microsoft.XMLHTTP")
                   : $.ajaxSettings.xhr();
           },
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data){
             _.clearErrors();
             _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');

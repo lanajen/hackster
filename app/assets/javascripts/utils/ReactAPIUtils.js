@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { getApiPath } from './Utils';
 
 module.exports = {
 
