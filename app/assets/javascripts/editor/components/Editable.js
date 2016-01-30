@@ -247,6 +247,7 @@ const Editable = React.createClass({
         } else {
           let input = document.getElementById('story_json');
           input.value = JSON.stringify(results);
+
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
           input.value = '[]';

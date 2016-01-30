@@ -31,7 +31,7 @@ const PopOver = React.createClass({
     if( e.target === ReactDOM.findDOMNode(this.refs.input) || e.target === ReactDOM.findDOMNode(this.refs.input2) ) {
       return;
     } else if(e.target !== ReactDOM.findDOMNode(this)) {
-      // this.props.unMountPopOver();
+      this.props.unMountPopOver();
     }
   },
 
@@ -41,6 +41,8 @@ const PopOver = React.createClass({
 
   handleKeyPress(version, e) {
     if(e.key === 'Enter') {
+      e.preventDefault();
+
       let value = ReactDOM.findDOMNode(this.refs.input).value;
       let text = ReactDOM.findDOMNode(this.refs.input2).value;
 
