@@ -1309,6 +1309,9 @@ $(function () {
           attachable_id: editor.modelId,
           attachable_type: editor.modelType
         },
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data){
           editor.iFile++;
           tpl = $('<div class="image" id="tmp-file-' + editor.iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
@@ -1346,6 +1349,9 @@ $(function () {
       $.ajax({
         url: Utils.getApiPath() + '/v1/files/remote_upload',
         data: { job_id: jobId },
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data){
           switch (data.status){
             case 'complete':
@@ -1898,6 +1904,9 @@ function insertEmbedTag(url, node) {
   $.ajax(Utils.getApiPath() + '/v1/embeds', {
     async: false,
     data: { url: url },
+    xhrFields: {
+      withCredentials: true
+    },
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="url" data-url="' + data.url + '">' + data.code + '</div>');
@@ -1931,6 +1940,9 @@ function insertWidget(type, modelId, modelType, node, data) {
   $.ajax(Utils.getApiPath() + '/v1/widgets', {
     async: false,
     data: data,
+    xhrFields: {
+      withCredentials: true
+    },
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
@@ -2054,14 +2066,20 @@ function loadPlaceholder(el, force) {
 function deleteFile(id) {
   $.ajax({
     url: Utils.getApiPath() + '/v1/files/' + id,
-    type: 'DELETE'
+    type: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
   })
 }
 
 function deleteWidget(id) {
   $.ajax({
     url: Utils.getApiPath() + '/v1/widgets/' + id,
-    type: 'DELETE'
+    type: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
   })
 }
 
@@ -2196,6 +2214,9 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
     url: Utils.getApiPath() + '/v1/files',
     type: 'POST',
     dataType: 'json',
+    xhrFields: {
+      withCredentials: true
+    },
     data: {
       file_url: url,
       file_type: fileType,

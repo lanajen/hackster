@@ -71,6 +71,9 @@ function loadMarkers(latLng) {
   $.ajax({
     type: 'GET',
     url: Utils.getApiPath() + '/v1/users',
+    xhrFields: {
+      withCredentials: true
+    },
     data: latLng
   }).done(function(response){
     printMarkers(response.users);
@@ -103,6 +106,9 @@ function loadThumbs(opts, preserve) {
   $.ajax({
     type: 'GET',
     url: Utils.getApiPath() + '/v1/users',
+    xhrFields: {
+      withCredentials: true
+    },
     data: opts
   }).done(function(response){
     var thumbs = _.map(response.users, function(user){

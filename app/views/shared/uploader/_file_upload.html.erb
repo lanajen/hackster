@@ -30,6 +30,9 @@ $(function(){
           dataType: 'json',
           data: {file: {name: file.name}, context: data.context},
           async: false,
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data) {
             form = $('.file_upload.<%= file_type %>');
             form.find('input[name=key]').val(data.key);
@@ -80,6 +83,9 @@ $(function(){
         dataType: 'json',
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
         async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           //id = data.id;
           //<%= file_type %>Functions.checkFileProcessed(id, data.context);

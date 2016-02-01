@@ -809,6 +809,9 @@ $select2target = null;
           type: 'GET',
           dataType: 'json',
           data: { file: {name: file.name}, context: 'no-context' },
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data) {
             form.find('input[name=key]').val(data.key);
             form.find('input[name=policy]').val(data.policy);
@@ -857,6 +860,9 @@ $select2target = null;
           url: Utils.getApiPath() + '/v1/files',
           type: 'POST',
           dataType: 'json',
+          xhrFields: {
+            withCredentials: true
+          },
           data: {
             file_url: url,
             file_type: 'document',

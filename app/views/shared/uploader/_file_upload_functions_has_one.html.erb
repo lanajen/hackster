@@ -63,6 +63,9 @@ var <%= file_type %>Functions = {
         dataType: 'json',
         data: { context: context },
         async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           processed = data.processed;
           if (!processed) {
@@ -107,6 +110,9 @@ $(function(){
       $.ajax({
         url: Utils.getApiPath() + '/v1/files/remote_upload',
         type: 'POST',
+        xhrFields: {
+          withCredentials: true
+        },
         data: {
           file_type: "<%= file_type %>",
           file_url: fileUrl
@@ -132,6 +138,9 @@ $(function(){
     $.ajax({
       url: Utils.getApiPath() + '/v1/files/remote_upload',
       data: { job_id: jobId },
+      xhrFields: {
+        withCredentials: true
+      },
       success: function(data){
         switch (data.status){
           case 'complete':

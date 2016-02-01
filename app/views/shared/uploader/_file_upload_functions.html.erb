@@ -49,6 +49,9 @@ var <%= file_type %>Functions = {
         dataType: 'json',
         data: { context: context },
         async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           processed = data.processed;
           if (!processed) {

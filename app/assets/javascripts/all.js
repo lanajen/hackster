@@ -277,6 +277,9 @@ $(function () {
       $.ajax({
         url: Utils.getApiPath() + '/v1/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
@@ -293,6 +296,9 @@ $(function () {
       $.ajax({
         url: Utils.getApiPath() + '/v1/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
