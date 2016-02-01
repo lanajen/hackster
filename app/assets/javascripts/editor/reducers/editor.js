@@ -416,6 +416,11 @@ export default function(state = initialState, action) {
 function updateComponentAtIndex(dom, json, index, depth) {
   let component = dom[index];
   component.json = json;
+
+  if(component.type === 'CE') {
+    component.html = Parser.toHtml(component.json);
+  }
+
   dom.splice(index, 1, component);
   return dom;
 }
@@ -433,6 +438,7 @@ function handleInitialDOM(json) {
       })]
     };
 
+    CE.html = Parser.toHtml(CE.json);
     json.push(CE);
   } else {
     json = json.map(item => {
@@ -447,12 +453,14 @@ function handleInitialDOM(json) {
         if(item.json.length < 1) {
           item.json.push(_createElement('p'));
         }
-
-        return {
+        let CE = {
           hash: item.hash,
           type: item.type,
           json: _sweepInitialJson(item.json)
         };
+
+        CE.html = Parser.toHtml(CE.json);
+        return CE;
       } else if(item.type === 'Carousel') {
         if(item.images.length < 1) { return null; }
         item.images[0].show = true;
@@ -549,6 +557,7 @@ function createBlockElement(dom, tag, position, storeIndex) {
   }
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -564,6 +573,7 @@ function createBlockElementWithChildren(dom, children, tag, position, storeIndex
   json.splice(position, 1, currentEl);
   json.splice(position+1, 0, newEl);
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
 
   return dom;
@@ -590,6 +600,7 @@ function transformBlockElement(dom, tag, position, cleanChildren, storeIndex) {
     component.json.push(_createElement('p'));
   }
 
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -627,6 +638,7 @@ function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
   });
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -648,6 +660,7 @@ function splitBlockElement(dom, tagType, nodes, depth, storeIndex) {
   }
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -659,7 +672,9 @@ function transformInlineToText(dom, newJson, depth, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
   json.splice(depth, 1, newJson[0]);
+
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -681,6 +696,7 @@ function handleUnorderedList(dom, toList, elements, depthData, storeIndex) {
   }
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -701,6 +717,7 @@ function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
   json.splice(parentPos, 1, parentEl);
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -723,6 +740,7 @@ function _mergeLists(dom, storeIndex) {
   }, []);
 
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -736,6 +754,7 @@ function prependCE(dom, storeIndex) {
   } else {
     let component = dom[storeIndex-1];
     component.json.push(CE.json[0]);
+    component.html = Parser.toHtml(component.json);
     dom.splice(storeIndex-1, 1, component);
   }
 
@@ -750,11 +769,13 @@ function insertCE(dom, storeIndex) {
 }
 
 function _createCE(hash, pHash) {
-  return {
+  let CE = {
     type: 'CE',
     json: [ _createEmptyParagraph(pHash || null) ],
     hash: hash || _createNewHash()
   };
+  CE.html = Parser.toHtml(CE.json);
+  return CE;
 }
 
 function _createEmptyParagraph(hash) {
@@ -832,6 +853,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     }
 
     component.json = json;
+    component.html = Parser.toHtml(component.json);
     dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, CE);
@@ -846,6 +868,7 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     }
 
     component.json = json;
+    component.html = Parser.toHtml(component.json);
     /** This will place the media block above the component. */
     dom.splice(storeIndex, 1, media);
     dom.splice(storeIndex+1, 0, component);
@@ -857,8 +880,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     let bottomDepthStart = depth+1;
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart);
-    let topCE = { type: 'CE', hash: component.hash, json: top };
-    let bottomCE = { type: 'CE', hash: _createNewHash(), json: bottom };
+    let topCE = { type: 'CE', hash: component.hash, json: top, html: Parser.toHtml(top) };
+    let bottomCE = { type: 'CE', hash: _createNewHash(), json: bottom, html: Parser.toHtml(bottom) };
 
     dom.splice(storeIndex, 1, topCE);
     dom.splice(storeIndex+1, 0, media);
@@ -973,6 +996,7 @@ function _mergeAdjacentCE(dom) {
   dom.forEach((component, index) => {
     if(index > 0 && dom[index-1].type === 'CE' && component.type === 'CE') {
       newDom[newDom.length-1].json.push(...component.json);
+      newDom[newDom.length-1].html = Parser.toHtml(newDom[newDom.length-1].json);
     } else {
       newDom.push(component);
     }
@@ -1112,6 +1136,7 @@ function handlePastedHTML(dom, html, depth, storeIndex, endDepth, cursorData) {
   let newJson = start.concat(html.json.concat(end));
 
   component.json = newJson;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
 
   return { newDom: dom, cursorPosition: { ...cursorPosition, node: cursorData.node, anchorNode: cursorData.anchorNode, offset: cursorData.offset, rootHash: component.hash } };
