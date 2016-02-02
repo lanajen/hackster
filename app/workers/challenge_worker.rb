@@ -25,6 +25,47 @@ class ChallengeWorker < BaseWorker
     NotificationCenter.notify_all :judged, :challenge, id
   end
 
+  def generate_ideas_csv challenge_id, doc_id, file_name
+    challenge = Challenge.find challenge_id
+    ideas = challenge.ideas.order(:created_at).joins(:user).includes(:address, :image, user: :avatar)
+
+    headers = ['Name', 'Description', 'Image URL']
+    headers += challenge.challenge_idea_fields.map(&:label)
+    headers += ['Submitter name', 'Submission date', 'Submission status']
+    if challenge.pre_contest_awarded?
+      headers += ['Email', 'Full name', 'Address line 1', 'Address line 2', 'Zip code', 'State', 'Country', 'Phone number']
+    end
+    rows = [headers]
+    ideas.each do |idea|
+      user = idea.user
+      output = [idea.name, ActionController::Base.helpers.strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb)]
+      output += challenge.challenge_idea_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
+      output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state]
+      if challenge.pre_contest_awarded?
+         output += [idea.won? ? user.email : '']
+        if idea.won? and address = idea.address
+          output += [address.full_name, address.address_line1, address.address_line2, address.zip, address.state, address.country, address.phone]
+        else
+          output += ['', '', '', '', '', '', '']
+        end
+      end
+      rows << output
+    end
+
+    csv_text = rows.map do |row|
+      row.map{|v| "\"#{v}\"" }.join(',')
+    end.join("\r\n")
+
+    doc = Document.find doc_id
+
+    file = StringIO.new csv_text
+    file.class_eval { attr_accessor :original_filename }
+    file.original_filename = file_name
+
+    doc.file.store! file
+    doc.save
+  end
+
   def send_address_reminder_to_idea_winners id
     challenge = Challenge.find id
 

@@ -23,8 +23,12 @@ HackerIo::Application.routes.draw do
         get 'me' => 'users#show'
         resources :announcements
         resources :build_logs
+        resources :challenges, only: [], defaults: { format: :json } do
+          get 'ideas_csv' => 'challenges#ideas_csv'
+        end
         resources :code_files, only: [:create]
         resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
+        resources :files, only: [:show], defaults: { format: :json }
         resources :flags, only: [:create]
         resources :followers, only: [:create, :index], defaults: { format: :json } do
           collection do

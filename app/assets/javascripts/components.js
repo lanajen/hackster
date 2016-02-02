@@ -5,6 +5,7 @@ require('expose?hljs!highlight.js');
 
 /** Components */
 require('expose?Comments!./comments/app');
+require('expose?ContestCsvExporter!./contest_csv_exporter/app');
 require('expose?CourseWizard!./course_wizard/containers/Root');
 require('expose?FlagButton!./flag_button/app');
 require('expose?FollowButton!./follow_button/app');

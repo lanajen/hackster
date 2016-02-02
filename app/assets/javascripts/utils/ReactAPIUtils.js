@@ -39,6 +39,26 @@ module.exports = {
     });
   },
 
+  generateCSV(url) {
+    return new Promise((resolve, reject) => {
+      request
+        .get(url)
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  getFileDetails(id) {
+    return new Promise((resolve, reject) => {
+      request
+        .get(`/api/v1/files/${id}`)
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
       request
