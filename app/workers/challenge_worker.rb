@@ -69,7 +69,7 @@ class ChallengeWorker < BaseWorker
       output += challenge.challenge_idea_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
       output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state]
       if challenge.pre_contest_awarded?
-         output += [idea.won? ? user.email : '']
+        output += [user.email]
         if idea.won? and address = idea.address
           output += [address.full_name, address.address_line1, address.address_line2, address.zip, address.state, address.country, address.phone]
         else
