@@ -26,7 +26,7 @@ const listsStore = {
   createList(name) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/lists`)
+        .post(`${getApiPath()}/private/lists`)
         .send({ group: { full_name: name } })
         .withCredentials()
         .end(function(err, res) {
@@ -38,7 +38,7 @@ const listsStore = {
   fetchInitialData(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/lists`)
+        .get(`${getApiPath()}/private/lists`)
         .query({ project_id: projectId })
         .withCredentials()
         .end(function(err, res) {

@@ -1,4 +1,4 @@
-class Api::V1::FlagsController < Api::V1::BaseController
+class Api::Private::FlagsController < Api::Private::BaseController
   def create
     @flag = Flag.new params[:flag]
 

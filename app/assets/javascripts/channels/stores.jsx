@@ -153,7 +153,7 @@ var CommentStore = Fluxxor.createStore({
     this.flux.store('thought').emit('change');
 
     $.ajax({
-      url: '/api/v1/comments',
+      url: '/api/private/comments',
       dataType: 'json',
       type: 'POST',
       data: { thought_id: thoughtId, comment: { raw_body: body } },
@@ -188,7 +188,7 @@ var CommentStore = Fluxxor.createStore({
     this.flux.store('thought').emit('change');
 
     $.ajax({
-      url: '/api/v1/likes',
+      url: '/api/private/likes',
       dataType: 'json',
       type: action,
       data: { comment_id: comment.id },
@@ -211,7 +211,7 @@ var CommentStore = Fluxxor.createStore({
     this.flux.store('thought').emit('change');
 
     $.ajax({
-      url: '/api/v1/comments/' + id,
+      url: '/api/private/comments/' + id,
       dataType: 'json',
       type: 'DELETE',
       success: function(data) {
@@ -328,7 +328,7 @@ var ThoughtStore = Fluxxor.createStore({
 
   loadThought: function(id) {
     $.ajax({
-      url: '/api/v1/thoughts/' + id,
+      url: '/api/private/thoughts/' + id,
       dataType: 'json',
       type: 'GET',
       success: function(data) {
@@ -357,7 +357,7 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
 
     $.ajax({
-      url: 'api/v1/thoughts',
+      url: 'api/private/thoughts',
       data: data,
       dataType: 'json',
       type: 'GET',
@@ -382,7 +382,7 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
 
     $.ajax({
-      url: 'api/v1/thoughts',
+      url: 'api/private/thoughts',
       data: data,
       dataType: 'json',
       type: 'GET',
@@ -421,7 +421,7 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
 
     $.ajax({
-      url: '/api/v1/thoughts',
+      url: '/api/private/thoughts',
       dataType: 'json',
       type: 'POST',
       data: { thought: { raw_body: body } },
@@ -450,7 +450,7 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
 
     $.ajax({
-      url: '/api/v1/likes',
+      url: '/api/private/likes',
       dataType: 'json',
       type: action,
       data: { thought_id: thought.id },
@@ -473,7 +473,7 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
 
     $.ajax({
-      url: '/api/v1/thoughts/' + id,
+      url: '/api/private/thoughts/' + id,
       dataType: 'json',
       type: 'DELETE',
       success: function(data) {

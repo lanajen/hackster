@@ -1,4 +1,4 @@
-class Api::V1::WidgetsController < Api::V1::BaseController
+class Api::Private::WidgetsController < Api::Private::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource except: [:create]
 

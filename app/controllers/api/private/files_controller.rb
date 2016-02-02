@@ -1,4 +1,4 @@
-class Api::V1::FilesController < Api::V1::BaseController
+class Api::Private::FilesController < Api::Private::BaseController
   before_filter :authenticate_user!, only: [:show, :destroy]
 
   def create

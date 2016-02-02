@@ -1,4 +1,4 @@
-class Api::V1::ReviewThreadsController < Api::V1::BaseController
+class Api::Private::ReviewThreadsController < Api::Private::BaseController
   before_filter :authenticate_user!
 
   def show

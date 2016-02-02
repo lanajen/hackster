@@ -839,39 +839,6 @@ $(function () {
   $('#medium-editor').on('click', '.editable.editable-activated .embed-frame[data-type="widget"] :not(.embed-actions) button', function(e){
     var btn = $(this);
     switch (btn.data('action')) {
-      // case 'delete-part':
-      //   target = btn.closest('.fields');
-      //   id = target.find('[data-attribute$="[id]"]').data('value');
-      //   deletePart(id);
-      //   target.remove();
-      //   editor.triggerInput();
-      //   break;
-
-      // case 'add-part':
-      //   $.ajax({
-      //     url: '/api/v1/parts',
-      //     data: {
-      //       part: {
-      //         partable_type: 'Widget',
-      //         partable_id: $(this).closest('.embed-frame').data('widget-id'),
-      //         quantity: 1
-      //       }
-      //     },
-      //     type: 'POST',
-      //     success: function(data){
-      //       tpl = btn.data('template');
-      //       i = btn.closest('.fields-container').find('.fields').length - 1;
-      //       tpl = tpl.replace(/replace_id/g, i);
-      //       tpl = $(tpl);
-      //       tpl.find('[data-attribute="[parts_attributes][' + i + '][id]"]').attr('data-value', data.id);
-      //       tpl.find('[data-edit-only="true"]').show();
-      //       tpl.find('[data-contenteditable="true"]').attr('contenteditable', 'true');
-      //       loadPlaceholders(tpl);
-      //       btn.closest('.fields').before(tpl);
-      //       tpl.trigger('nested:fieldAdded');
-      //     }
-      //   });
-      //   break;
 
       case 'delete-slide':
         slide = $(this).closest('.slick-slide');
@@ -1301,7 +1268,7 @@ $(function () {
 
     if (fileUrl != '') {
       $.ajax({
-        url: Utils.getApiPath() + '/v1/files/remote_upload',
+        url: Utils.getApiPath() + '/private/files/remote_upload',
         type: 'POST',
         data: {
           file_type: fileType,
@@ -1347,7 +1314,7 @@ $(function () {
   function checkRemoteFileProcessed(jobId, el) {
     window.setTimeout(function(){
       $.ajax({
-        url: Utils.getApiPath() + '/v1/files/remote_upload',
+        url: Utils.getApiPath() + '/private/files/remote_upload',
         data: { job_id: jobId },
         xhrFields: {
           withCredentials: true
@@ -1901,7 +1868,7 @@ function goToPreviousP(node, e){
 
 function insertEmbedTag(url, node) {
   editor.showLoadingBar();
-  $.ajax(Utils.getApiPath() + '/v1/embeds', {
+  $.ajax(Utils.getApiPath() + '/private/embeds', {
     async: false,
     data: { url: url },
     xhrFields: {
@@ -1937,7 +1904,7 @@ function insertWidget(type, modelId, modelType, node, data) {
   data['widget']['widgetable_type'] = modelType;
 
   editor.showLoadingBar();
-  $.ajax(Utils.getApiPath() + '/v1/widgets', {
+  $.ajax(Utils.getApiPath() + '/private/widgets', {
     async: false,
     data: data,
     xhrFields: {
@@ -2065,7 +2032,7 @@ function loadPlaceholder(el, force) {
 
 function deleteFile(id) {
   $.ajax({
-    url: Utils.getApiPath() + '/v1/files/' + id,
+    url: Utils.getApiPath() + '/private/files/' + id,
     type: 'DELETE',
     xhrFields: {
       withCredentials: true
@@ -2075,7 +2042,7 @@ function deleteFile(id) {
 
 function deleteWidget(id) {
   $.ajax({
-    url: Utils.getApiPath() + '/v1/widgets/' + id,
+    url: Utils.getApiPath() + '/private/widgets/' + id,
     type: 'DELETE',
     xhrFields: {
       withCredentials: true
@@ -2085,7 +2052,7 @@ function deleteWidget(id) {
 
 // function deletePart(id) {
 //   $.ajax({
-//     url: Utils.getApiPath() + '/v1/parts/' + id,
+//     url: Utils.getApiPath() + '/private/parts/' + id,
 //     type: 'DELETE'
 //   })
 // }
@@ -2169,7 +2136,7 @@ function uploadToS3(data, file, form) {
   $('#' + data.context).data('data', data);
 
   $.ajax({
-    url: Utils.getApiPath() + '/v1/files/signed_url',
+    url: Utils.getApiPath() + '/private/files/signed_url',
     type: 'GET',
     dataType: 'json',
     data: {file: {name: file.name}, context: data.context},
@@ -2211,7 +2178,7 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
   url = form.attr('data-url');
 
   $.ajax({
-    url: Utils.getApiPath() + '/v1/files',
+    url: Utils.getApiPath() + '/private/files',
     type: 'POST',
     dataType: 'json',
     xhrFields: {

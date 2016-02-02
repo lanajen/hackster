@@ -1,5 +1,4 @@
-class Api::V1::AnnouncementsController < Api::V1::BaseController
-  # before_filter :public_api_methods, only: [:index, :show]
+class Api::Private::AnnouncementsController < Api::Private::BaseController
 
   def index
     render json: Announcement.order(created_at: :desc).limit(10)

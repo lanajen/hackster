@@ -5,7 +5,7 @@ export default {
 
   getComments(commentable) {
     return new Promise((resolve, reject) => {
-      request(`${getApiPath()}/v1/comments`)
+      request(`${getApiPath()}/private/comments`)
         .query({ id: commentable.id })
         .query({ type: commentable.type })
         .end((err, res) => {
@@ -17,7 +17,7 @@ export default {
   deleteComment(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del(`${getApiPath()}/v1/comments/${id}`)
+        .del(`${getApiPath()}/private/comments/${id}`)
         .set('X-CSRF-Token', csrfToken)
         .withCredentials()
         .end((err, res) => {
@@ -29,7 +29,7 @@ export default {
   updateComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .put(`${getApiPath()}/v1/comments/${comment.comment.id}`)
+        .put(`${getApiPath()}/private/comments/${comment.comment.id}`)
         .set('X-CSRF-Token', csrfToken)
         .send(comment)
         .withCredentials()
@@ -42,7 +42,7 @@ export default {
   postLike(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/likes`)
+        .post(`${getApiPath()}/private/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
         .withCredentials()
@@ -55,7 +55,7 @@ export default {
   deleteLike(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del(`${getApiPath()}/v1/likes`)
+        .del(`${getApiPath()}/private/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
         .withCredentials()

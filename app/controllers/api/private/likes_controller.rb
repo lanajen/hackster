@@ -1,4 +1,4 @@
-class Api::V1::LikesController < Api::V1::BaseController
+class Api::Private::LikesController < Api::Private::BaseController
   before_filter :authenticate_user!
   before_filter :load_respectable
 

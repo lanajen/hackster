@@ -1,4 +1,4 @@
-class Api::V1::ChallengesController < Api::V1::BaseController
+class Api::Private::ChallengesController < Api::Private::BaseController
   before_filter :load_challenge
 
   def entries_csv

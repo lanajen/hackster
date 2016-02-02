@@ -5,7 +5,7 @@ import { getApiPath } from '../../utils/Utils';
 export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
-      request(`${getApiPath()}/v1/projects/${projectId}/description`)
+      request(`${getApiPath()}/private/projects/${projectId}/description`)
         .query({ id: projectId })
         .withCredentials()
         .end((err, res) => {

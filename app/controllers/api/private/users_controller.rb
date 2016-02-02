@@ -1,4 +1,4 @@
-class Api::V1::UsersController < Api::V1::BaseController
+class Api::Private::UsersController < Api::Private::BaseController
 
   def autocomplete
     users = if params[:q].present?

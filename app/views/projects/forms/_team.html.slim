@@ -122,9 +122,12 @@
         width: '100%',
 
         ajax: {
-          url: "/api/v1/users/autocomplete",
+          url: Utils.getApiPath() + "/private/users/autocomplete",
           dataType: 'json',
           delay: 250,
+          xhrFields: {
+            withCredentials: true
+          },
           data: function (params) {
             return {
               q: params.term, // search term

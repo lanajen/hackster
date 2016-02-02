@@ -70,7 +70,7 @@ function initMap() {
 function loadMarkers(latLng) {
   $.ajax({
     type: 'GET',
-    url: Utils.getApiPath() + '/v1/users',
+    url: Utils.getApiPath() + '/private/users',
     xhrFields: {
       withCredentials: true
     },
@@ -105,7 +105,7 @@ function loadThumbs(opts, preserve) {
     userList.html('<div class="user-thumb-gmap text-center"><i class="fa fa-spinner fa-spin"></i></div>');
   $.ajax({
     type: 'GET',
-    url: Utils.getApiPath() + '/v1/users',
+    url: Utils.getApiPath() + '/private/users',
     xhrFields: {
       withCredentials: true
     },

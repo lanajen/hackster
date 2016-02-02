@@ -60,7 +60,7 @@
   $(function(){
     codeEditor["#{embed.widget.id}"] = new CodeEditor("#{embed.widget.language}", "#{embed.widget.id}");
 
-    var widgetFormTpl = "<form id='widget-#{embed.widget.id}-form' class='code-widget-file-upload' action='/api/v1/widgets/#{embed.widget.id}' method='post' enctype='multipart/form-data' style='display:none;' data-widget-id='#{embed.widget.id}'>";
+    var widgetFormTpl = "<form id='widget-#{embed.widget.id}-form' class='code-widget-file-upload' action='/private/widgets/#{embed.widget.id}' method='post' enctype='multipart/form-data' style='display:none;' data-widget-id='#{embed.widget.id}'>";
     widgetFormTpl += '<input type="hidden" name="_method" value="patch">';
     widgetFormTpl += '<input type="file" name="widget[document_attributes][file]">';
     widgetFormTpl += '</form>';

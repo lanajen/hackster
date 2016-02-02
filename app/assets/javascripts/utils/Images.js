@@ -126,7 +126,7 @@ const ImageUtils = {
   getS3AuthData(fileName) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
+        .get(`${getApiPath()}/private/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
         .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res.body);
@@ -172,7 +172,7 @@ const ImageUtils = {
 
       return new Promise((resolve, reject) => {
         request
-          .post(`${getApiPath()}/v1/files`)
+          .post(`${getApiPath()}/private/files`)
           .set('X-CSRF-Token', csrfToken)
           .send(params)
           .withCredentials()
@@ -189,7 +189,7 @@ const ImageUtils = {
 
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/files/remote_upload`)
+        .post(`${getApiPath()}/private/files/remote_upload`)
         .set('X-CSRF-Token', csrfToken)
         .send(form)
         .withCredentials()
@@ -203,7 +203,7 @@ const ImageUtils = {
     return new Promise((resolve, reject) => {
       let poll = setInterval(() => {
         request
-          .get(`${getApiPath()}/v1/files/remote_upload?job_id=${jobId}`)
+          .get(`${getApiPath()}/private/files/remote_upload?job_id=${jobId}`)
           .withCredentials()
           .end((err, res) => {
             if(err) {

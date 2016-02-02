@@ -6,7 +6,7 @@ module.exports = {
   addList(name) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/lists`)
+        .post(`${getApiPath()}/private/lists`)
         .send({ group: { full_name: name } })
         .withCredentials()
         .end(function(err, res) {
@@ -18,7 +18,7 @@ module.exports = {
   addToFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/followers`)
+        .post(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
@@ -35,7 +35,7 @@ module.exports = {
   checkJob(jobId) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/jobs/${jobId}`)
+        .get(`${getApiPath()}/private/jobs/${jobId}`)
         .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -57,7 +57,7 @@ module.exports = {
   getFileDetails(id) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/files/${id}`)
+        .get(`${getApiPath()}/private/files/${id}`)
         .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -68,7 +68,7 @@ module.exports = {
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/me`)
+        .get(`${getApiPath()}/private/me`)
         .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.user);
@@ -79,7 +79,7 @@ module.exports = {
   fetchFollowing(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/followers`)
+        .get(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
         .withCredentials()
         .end(function(err, res) {
@@ -91,7 +91,7 @@ module.exports = {
   fetchLists(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/lists`)
+        .get(`${getApiPath()}/private/lists`)
         .query({ project_id: projectId })
         .withCredentials()
         .end(function(err, res) {
@@ -103,7 +103,7 @@ module.exports = {
   fetchNotifications(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/notifications`)
+        .get(`${getApiPath()}/private/notifications`)
         .set('X-CSRF-Token', csrfToken)
         .withCredentials()
         .end(function(err, res) {
@@ -115,7 +115,7 @@ module.exports = {
   fetchReviewThread(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get(`${getApiPath()}/v1/review_threads`)
+        .get(`${getApiPath()}/private/review_threads`)
         .query({ project_id: projectId })
         .withCredentials()
         .end(function(err, res) {
@@ -127,7 +127,7 @@ module.exports = {
   flagContent(flaggableType, flaggableId, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/flags`)
+        .post(`${getApiPath()}/private/flags`)
         .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
         .withCredentials()
         .end(function(err, res) {
@@ -139,7 +139,7 @@ module.exports = {
   launchJob(jobType, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/jobs`)
+        .post(`${getApiPath()}/private/jobs`)
         .send({ type: jobType, user_id: userId })
         .withCredentials()
         .end(function(err, res) {
@@ -151,7 +151,7 @@ module.exports = {
   postComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/comments`)
+        .post(`${getApiPath()}/private/comments`)
         .set('X-CSRF-Token', csrfToken)
         .send(comment)
         .withCredentials()
@@ -164,7 +164,7 @@ module.exports = {
   postDecision(decision, projectId) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/v1/review_decisions`)
+        .post(`${getApiPath()}/private/review_decisions`)
         .send({ review_decision: decision, project_id: projectId })
         .withCredentials()
         .end(function(err, res) {
@@ -176,7 +176,7 @@ module.exports = {
   removeFromFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del(`${getApiPath()}/v1/followers`)
+        .del(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
@@ -192,7 +192,7 @@ module.exports = {
 
   toggleProjectInList(requestType, listId, projectId) {
     return new Promise((resolve, reject) => {
-      request(requestType, `${getApiPath()}/v1/lists/${listId}/projects`)
+      request(requestType, `${getApiPath()}/private/lists/${listId}/projects`)
         .send({ project_id: projectId })
         .withCredentials()
         .end(function(err, res) {

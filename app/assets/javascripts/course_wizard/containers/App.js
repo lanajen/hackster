@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions';
 import Step from '../components/Step';
 import { Countries } from '../../utils/Constants';
+import { getApiPath } from '../../utils/Utils'
 
 const Steps = [
   {
@@ -21,7 +22,7 @@ const Steps = [
         image_link: null
       },
       keys: { Name: 'full_name', 'City': 'city', 'Country': 'country', 'Logo': 'avatar_id' },
-      endpoint: '/api/v1/groups'
+      endpoint: `${getApiPath()}/private/groups`
     },
     search: true
   },
@@ -32,7 +33,7 @@ const Steps = [
       inputs: ['Name', 'Course #'],
       textareas: [{ label: 'Pitch', rows: 3 }],
       keys: { Name: 'full_name', ['Course #']: 'course_number', Pitch: 'mini_resume' },
-      endpoint: '/api/v1/groups'
+      endpoint: `${getApiPath()}/private/groups`
     },
     search: true
   },
@@ -43,7 +44,7 @@ const Steps = [
       inputs: ['Year or semester'],
       image: null,
       keys: { 'Year or semester': 'full_name' },
-      endpoint: '/api/v1/groups'
+      endpoint: `${getApiPath()}/private/groups`
     },
     search: false
   }
