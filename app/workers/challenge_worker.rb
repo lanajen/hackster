@@ -25,6 +25,33 @@ class ChallengeWorker < BaseWorker
     NotificationCenter.notify_all :judged, :challenge, id
   end
 
+  def generate_entries_csv challenge_id, doc_id, file_name
+    challenge = Challenge.find challenge_id
+    entries = challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
+
+    headers = ['Project name', 'Project URL', 'Project created on', 'Authors', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
+    rows = [headers]
+
+    entries.each do |entry|
+      project = entry.project
+      row = []
+      row << project.name
+      row << "https://www.hackster.io/#{project.uri}"
+      row << project.created_at
+      row << project.users.map(&:name).to_sentence
+      row << project.product_tags_string
+      row << "#{project.checklist_completion}%"
+      row << project.impressions_count
+      row << project.respects_count
+      row << project.comments_count
+      row << project.replications_count
+      row << entry.workflow_state
+      rows << row
+    end
+
+    save_csv_to_file rows, doc_id, file_name
+  end
+
   def generate_ideas_csv challenge_id, doc_id, file_name
     challenge = Challenge.find challenge_id
     ideas = challenge.ideas.order(:created_at).joins(:user).includes(:address, :image, user: :avatar)

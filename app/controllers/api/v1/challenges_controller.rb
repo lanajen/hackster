@@ -1,16 +1,16 @@
 class Api::V1::ChallengesController < Api::V1::BaseController
   before_filter :load_challenge
 
+  def entries_csv
+    generate_response 'entries', 'generate_entries_csv'
+  end
+
   def ideas_csv
     generate_response 'ideas', 'generate_ideas_csv'
   end
 
   def participants_csv
     generate_response 'participants', 'generate_participants_csv'
-  end
-
-  def projects_csv
-    generate_response 'projects', 'generate_projects_csv'
   end
 
   private
