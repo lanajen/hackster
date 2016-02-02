@@ -6,6 +6,7 @@ export default {
       request
         .get('/api/v1/groups')
         .query(query)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body);
         });
@@ -18,6 +19,7 @@ export default {
         .post(endpoint)
         .set('X-CSRF-Token', csrfToken)
         .send({ group: form })
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body);
         });

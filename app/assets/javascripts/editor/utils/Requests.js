@@ -7,6 +7,7 @@ export default {
     return new Promise((resolve, reject) => {
       request(`${getApiPath()}/v1/projects/${projectId}/description`)
         .query({ id: projectId })
+        .withCredentials()
         .end((err, res) => {
           if(err) reject(err);
 

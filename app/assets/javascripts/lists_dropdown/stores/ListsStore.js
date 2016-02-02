@@ -28,6 +28,7 @@ const listsStore = {
       request
         .post(`${getApiPath()}/v1/lists`)
         .send({ group: { full_name: name } })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -39,6 +40,7 @@ const listsStore = {
       request
         .get(`${getApiPath()}/v1/lists`)
         .query({ project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

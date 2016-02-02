@@ -16,13 +16,18 @@
       li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
-  .pe-container
+  .pe-container style='height:100px'
     .busy-overlay
       .center-align-wrapper
         .center-align-inner
           i.fa.fa-spin.fa-refresh
 
-    #basics.pe-panel style='display:block' = render 'projects/forms/basics'
+    #loader.pe-panel.text-center style='display:block'
+      p
+        i.fa.fa-spin.fa-spinner
+      p.small Editor not loading? Try refreshing the page.
+
+    #basics.pe-panel = render 'projects/forms/basics'
     #team.pe-panel = render 'projects/forms/team'
     - unless is_whitelabel?
       #communities.pe-panel= render 'projects/forms/communities'

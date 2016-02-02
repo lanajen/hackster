@@ -13,12 +13,6 @@ class ChallengeIdeasController < ApplicationController
       format.html do
         @ideas = @ideas.paginate(page: safe_page_params, per_page: 100)
       end
-      format.csv do
-        @ideas = @ideas.includes(:address)
-        file_name = FileNameGenerator.new(@challenge.name, 'ideas')
-        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
-        headers['Content-Type'] ||= 'text/csv'
-      end
     end
   end
 

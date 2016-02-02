@@ -19,6 +19,7 @@ export default {
       request
         .del(`${getApiPath()}/v1/comments/${id}`)
         .set('X-CSRF-Token', csrfToken)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);
         });
@@ -31,6 +32,7 @@ export default {
         .put(`${getApiPath()}/v1/comments/${comment.comment.id}`)
         .set('X-CSRF-Token', csrfToken)
         .send(comment)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);
         });
@@ -43,6 +45,7 @@ export default {
         .post(`${getApiPath()}/v1/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.liked);
         });
@@ -55,6 +58,7 @@ export default {
         .del(`${getApiPath()}/v1/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.liked);
         });

@@ -333,8 +333,7 @@ const Toolbar = React.createClass({
     let sel = rangy.getSelection();
     let anchor = Utils.getAnchorNode(range.startContainer);
     anchor.setAttribute('href', href);
-    anchor.innerText = text;
-    this.props.actions.getLatestHTML(true);
+    anchor.textContent = text;
     Utils.setCursorByNode(anchor);
   },
 

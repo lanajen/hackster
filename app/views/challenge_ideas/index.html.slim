@@ -4,7 +4,7 @@ p
 h1
   | #{@challenge.name}: #{@challenge.pre_contest_label.downcase} entries (ideas)
 
-p= link_to 'Download list as CSV', challenge_admin_ideas_path(@challenge, format: :csv)
+p= react_component 'ContestCsvExporter', { url: v1_challenge_ideas_csv_path, label: 'Download list as CSV' }, {}
 
 - if @challenge.current_state >= :pre_contest_ended
   p

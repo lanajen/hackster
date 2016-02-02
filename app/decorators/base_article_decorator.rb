@@ -48,6 +48,11 @@ class BaseArticleDecorator < ApplicationDecorator
     parse_medium model.description, { print: true }
   end
 
+  def status
+    out = model.publyc? ? 'Public' : 'Private'
+    out + ' - ' + model.workflow_state.humanize
+  end
+
   def to_personnal_message
     "I just published #{model.name} on hackster.io, take a look and tell me what you think!"
   end

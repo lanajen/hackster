@@ -127,6 +127,7 @@ const ImageUtils = {
     return new Promise((resolve, reject) => {
       request
         .get(`${getApiPath()}/v1/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res.body);
         });
@@ -174,6 +175,7 @@ const ImageUtils = {
           .post(`${getApiPath()}/v1/files`)
           .set('X-CSRF-Token', csrfToken)
           .send(params)
+          .withCredentials()
           .end(function(err, res) {
             err ? reject(err) : resolve(res);
           });
@@ -190,6 +192,7 @@ const ImageUtils = {
         .post(`${getApiPath()}/v1/files/remote_upload`)
         .set('X-CSRF-Token', csrfToken)
         .send(form)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body);
         });
@@ -201,6 +204,7 @@ const ImageUtils = {
       let poll = setInterval(() => {
         request
           .get(`${getApiPath()}/v1/files/remote_upload?job_id=${jobId}`)
+          .withCredentials()
           .end((err, res) => {
             if(err) {
               clearInterval(poll);
@@ -210,7 +214,7 @@ const ImageUtils = {
               resolve(res.body);
             }
           });
-      }, 250);
+      }, 500);
     });
   },
 

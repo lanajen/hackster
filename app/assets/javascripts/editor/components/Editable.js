@@ -247,6 +247,7 @@ const Editable = React.createClass({
         } else {
           let input = document.getElementById('story_json');
           input.value = JSON.stringify(results);
+
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
           input.value = '[]';
@@ -270,7 +271,7 @@ const Editable = React.createClass({
     let dom = this.props.editor.dom || [{ type: 'CE', json: [] }];
     let content = dom.map((item, index) => {
       if(item.type === 'CE') {
-        let html = Parser.toHtml(item.json);
+        let html = item.html ? item.html : Parser.toHtml(item.json);
         return (<DropZone key={index} className="dropzone" onDrop={this.handleFilesDrop.bind(this, index)}>
                   <ContentEditable html={html}
                                    storeIndex={index}

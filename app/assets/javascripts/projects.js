@@ -284,6 +284,7 @@ $select2target = null;
     window.pe = pe;
 
     $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
+    pe.showEditorTab('#basics');
     pe.serializeForm();
 
     $('.pe-nav').on('click', 'a', function(e){

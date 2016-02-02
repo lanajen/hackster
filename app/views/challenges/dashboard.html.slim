@@ -13,7 +13,7 @@ p
   ==> pluralize_without_count @challenge.registrations_count, 'registered participant'
   - if @challenge.registrations_count > 0
     ' -
-    = link_to 'Download list as CSV', challenge_participants_path(@challenge.slug, format: :csv)
+    = react_component 'ContestCsvExporter', { url: v1_challenge_participants_csv_path, label: 'Download list as CSV' }, { tag: :span }
 
 - if @challenge.activate_pre_contest?
   p
