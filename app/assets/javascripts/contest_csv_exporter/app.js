@@ -40,18 +40,18 @@ export default class App extends Component {
 
   render() {
     let text = this.state.isWorking ?
-              (<div>
+              (<span>
                 <i className="fa fa-spin fa-spinner" />
                 <span>Preparing file...</span>
-              </div>) :
+              </span>) :
               (<a href={this.state.fileUrl ? this.state.fileUrl : ''} onClick={this.handleClick}>
                 {this.props.label}
               </a>);
 
     return (
-      <div>
+      <span>
         {text}
-      </div>
+      </span>
     );
   }
 }

@@ -25,6 +25,8 @@ HackerIo::Application.routes.draw do
         resources :build_logs
         resources :challenges, only: [], defaults: { format: :json } do
           get 'ideas_csv' => 'challenges#ideas_csv'
+          get 'participants_csv' => 'challenges#participants_csv'
+          get 'projects_csv' => 'challenges#projects_csv'
         end
         resources :code_files, only: [:create]
         resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }

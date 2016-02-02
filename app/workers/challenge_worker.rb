@@ -52,18 +52,21 @@ class ChallengeWorker < BaseWorker
       rows << output
     end
 
-    csv_text = rows.map do |row|
-      row.map{|v| "\"#{v}\"" }.join(',')
-    end.join("\r\n")
+    save_csv_to_file rows, doc_id, file_name
+  end
 
-    doc = Document.find doc_id
+  def generate_participants_csv challenge_id, doc_id, file_name
+    challenge = Challenge.find challenge_id
+    registrations = challenge.registrations.joins(:user).includes(:user).order("users.full_name ASC")
 
-    file = StringIO.new csv_text
-    file.class_eval { attr_accessor :original_filename }
-    file.original_filename = file_name
+    headers = ['Name', 'Email', 'Registration date']
+    rows = [headers]
+    registrations.each do |registration|
+      user = registration.user
+      rows << [user.name, user.email, registration.created_at.in_time_zone(PDT_TIME_ZONE)]
+    end
 
-    doc.file.store! file
-    doc.save
+    save_csv_to_file rows, doc_id, file_name
   end
 
   def send_address_reminder_to_idea_winners id
@@ -78,5 +81,20 @@ class ChallengeWorker < BaseWorker
     def expire_cache challenge
       Cashier.expire "challenge-#{challenge.id}-projects", "challenge-#{challenge.id}-status"
       FastlyWorker.perform_async 'purge', challenge.record_key
+    end
+
+    def save_csv_to_file rows, doc_id, file_name
+      csv_text = rows.map do |row|
+        row.map{|v| "\"#{v}\"" }.join(',')
+      end.join("\r\n")
+
+      doc = Document.find doc_id
+
+      file = StringIO.new csv_text
+      file.class_eval { attr_accessor :original_filename }
+      file.original_filename = file_name
+
+      doc.file.store! file
+      doc.save
     end
 end

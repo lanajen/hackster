@@ -209,7 +209,7 @@ const ImageUtils = {
               resolve(res.body);
             }
           });
-      }, 250);
+      }, 500);
     });
   },
 
