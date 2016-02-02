@@ -1,4 +1,5 @@
 class Api::BaseController < ApplicationController
+  skip_before_filter :authorize_site_access!
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
   skip_before_filter :verify_authenticity_token
