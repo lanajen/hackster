@@ -1,6 +1,7 @@
 import request from 'superagent';
 import postal from 'postal';
 import _ from 'lodash';
+import { getApiPath } from '../../utils/Utils';
 
 const channel = postal.channel('lists');
 
@@ -25,8 +26,9 @@ const listsStore = {
   createList(name) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/lists')
+        .post(`${getApiPath()}/private/lists`)
         .send({ group: { full_name: name } })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -36,8 +38,9 @@ const listsStore = {
   fetchInitialData(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/lists')
+        .get(`${getApiPath()}/private/lists`)
         .query({ project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

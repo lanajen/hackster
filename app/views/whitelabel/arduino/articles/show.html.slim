@@ -34,7 +34,7 @@ c= content_for :head do
               - if @project.publyc?
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project
                   = render partial: 'respects/article_button', locals: { respectable: @project }
-                span style="position:relative;"= react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
+                span style="position:relative;"= react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
                 a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                   i.fa.fa-share-square-o
                   span Share
@@ -48,7 +48,7 @@ c= content_for :head do
             .pull-right-desktop
               = render partial: 'respects/article_button', locals: { respectable: @project }
               - if user_signed_in?
-                span style="position:relative;"= react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
+                span style="position:relative;"= react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
               a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                 i.fa.fa-share-square-o
                 span Share

@@ -1,4 +1,4 @@
-class Api::V1::ListsController < Api::V1::BaseController
+class Api::Private::ListsController < Api::Private::BaseController
   before_filter :authenticate_user!
   before_filter :load_list, only: [:link_project, :unlink_project]
 

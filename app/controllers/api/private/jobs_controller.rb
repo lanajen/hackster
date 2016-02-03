@@ -1,4 +1,4 @@
-class Api::V1::JobsController < Api::V1::BaseController
+class Api::Private::JobsController < Api::Private::BaseController
   before_filter :authenticate_user!
 
   def show

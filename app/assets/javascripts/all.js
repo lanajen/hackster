@@ -211,32 +211,16 @@ $(function () {
 
   $('body')
     .on('ajax:complete', '#project-form-prepublish', function(){
-      if ($(this).find('[name="base_article[content_type]"]').val().length) {
+      var select = $(this).find('[name="base_article[content_type]"]');
+      if (select.val().length) {
         $('.content-type-indicator').addClass('content-type-present');
         $('.content-type-indicator').removeClass('content-type-missing');
+        $('.project-type').text(select.find('option:selected').text());
       } else {
         $('.content-type-indicator').addClass('content-type-missing');
         $('.content-type-indicator').removeClass('content-type-present');
       }
     });
-
-  // <% if Rails.env == 'dev' %>
-  //   // fix image URLS so they work on dev
-  //   $('img').each(function(i, el) {
-  //     var src = $(el).attr('src');
-  //     if (typeof(src) != 'undefined') {
-  //       src = src.replace('hackster-dev', 'halckemy');
-  //       src = src.replace('/dev/', '/production/');
-  //       $(el).attr('src', src);
-  //     }
-  //   });
-
-  //   $('[style*="background-image"]').each(function(i, el) {
-  //     var style = $(el).attr('style');
-  //     style = style.replace('hackster-dev', 'halckemy');
-  //     $(el).attr('style', style);
-  //   });
-  // <% end %>
 
   if ($('body').data('user-signed-in')) {
     doUserSignedInUpdate();
@@ -275,8 +259,11 @@ $(function () {
   $('#show-login-form, .show-simplified-signup').on('click', function(e){
     if (!$('.user-form [name="authenticity_token"]').length) {
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/private/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
@@ -291,8 +278,11 @@ $(function () {
     if (!form.find('[name="authenticity_token"]').length) {
       e.preventDefault();
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/private/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);

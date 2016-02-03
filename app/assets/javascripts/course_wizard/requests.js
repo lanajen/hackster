@@ -1,11 +1,13 @@
 import request from 'superagent';
+import { getApiPath } from '../utils/Utils'
 
 export default {
   getOptions: function(query) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/groups')
+        .get(`${getApiPath()}/private/groups`)
         .query(query)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body);
         });
@@ -18,6 +20,7 @@ export default {
         .post(endpoint)
         .set('X-CSRF-Token', csrfToken)
         .send({ group: form })
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body);
         });

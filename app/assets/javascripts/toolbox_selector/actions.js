@@ -1,5 +1,6 @@
 import request from 'superagent';
 import { addToFollowing, removeFromFollowing, fetchFollowing } from '../utils/ReactAPIUtils';
+import { getApiPath } from '../utils/Utils'
 
 export const SELECT_PARTS = 'SELECT_PARTS';
 export const REQUEST_PARTS = 'REQUEST_PARTS';
@@ -68,8 +69,9 @@ export function fetchParts(request) {
 function fetchPartsFromServer(req) {
   return new Promise((resolve, reject) => {
     request
-      .get('/api/v1/parts')
+      .get(`${getApiPath()}/private/parts`)
       .query({ q: req.query, sort: req.filter, page: req.page, image_size: 'medium', approved: true })
+      .withCredentials()
       .end(function(err, res) {
         err ? reject(err) : resolve(res);
       });

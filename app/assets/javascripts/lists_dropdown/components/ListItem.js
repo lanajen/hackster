@@ -8,7 +8,8 @@ const ListItem = React.createClass({
     return {
       isChecked: this.props.list.isInitiallyChecked,
       isLoading: false,
-      showCheckmark: false
+      showCheckmark: false,
+      checkmarkOpacity: 1
     };
   },
 
@@ -27,10 +28,13 @@ const ListItem = React.createClass({
           isChecked: !this.state.isChecked
         });
         window.setTimeout(function(){
-          $(this.refs.check.getDOMNode()).css('opacity', 0.01);
+          this.setState({
+            checkmarkOpacity: 0.01
+          });
           window.setTimeout(function(){
             this.setState({
-              showCheckmark: false
+              showCheckmark: false,
+              checkmarkOpacity: 1
             });
           }.bind(this), 500);
         }.bind(this), 2000);
@@ -49,7 +53,7 @@ const ListItem = React.createClass({
 
     let progress;
     if (this.state.showCheckmark) {
-      progress = (<i ref="check" className='fa fa-check'></i>);
+      progress = (<i ref="check" className='fa fa-check' style={{opacity: this.state.checkmarkOpacity}}></i>);
     } else if (this.state.isLoading) {
       progress = (<i className='fa fa-spinner fa-spin'></i>);
     }

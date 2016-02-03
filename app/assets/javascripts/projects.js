@@ -284,7 +284,6 @@ $select2target = null;
     window.pe = pe;
 
     $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
-    pe.showEditorTab('#basics');
     pe.serializeForm();
 
     $('.pe-nav').on('click', 'a', function(e){
@@ -303,6 +302,8 @@ $select2target = null;
     if (window.location.pathname.match(/\/projects\/[0-9]+\/edit/) != null) {
       if (hash = window.location.hash) {
         pe.showEditorTab(hash);
+      } else {
+        pe.showEditorTab('#basics');
       }
       $(window).bind('hashchange', function() {
         pe.showEditorTab(window.location.hash);
@@ -541,9 +542,12 @@ $select2target = null;
       return {
         minimumInputLength: 3,
         ajax: {
-          url: "/api/v1/parts",
+          url: Utils.getApiPath() + "/v1/parts",
           dataType: 'json',
           delay: 150,
+          xhrFields: {
+            withCredentials: true
+          },
           data: function (params) {
             return {
               q: params.term,  // search term
@@ -594,7 +598,7 @@ $select2target = null;
       $(this).find('.part_' + select.data('link-type')).show();
 
       var id = $(this).find('[name="id"]').val();
-      basePartsApiUrl = '/api/v1/parts'
+      basePartsApiUrl = Utils.getApiPath() + '/v1/parts';
       if (id.length) {
         $(this).find('form').attr('action', basePartsApiUrl + '/' + id);
         $(this).find('input[name="_method"]').val('patch');
@@ -806,10 +810,13 @@ $select2target = null;
         data.context.data('data', data);
 
         $.ajax({
-          url: '/files/signed_url',
+          url: Utils.getApiPath() + '/private/files/signed_url',
           type: 'GET',
           dataType: 'json',
           data: { file: {name: file.name}, context: 'no-context' },
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data) {
             form.find('input[name=key]').val(data.key);
             form.find('input[name=policy]').val(data.policy);
@@ -855,9 +862,12 @@ $select2target = null;
         url = form.attr('data-url');
 
         $.ajax({
-          url: '/files',
+          url: Utils.getApiPath() + '/private/files',
           type: 'POST',
           dataType: 'json',
+          xhrFields: {
+            withCredentials: true
+          },
           data: {
             file_url: url,
             file_type: 'document',

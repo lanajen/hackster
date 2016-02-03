@@ -1,5 +1,4 @@
-class Api::V1::BuildLogsController < Api::V1::BaseController
-  # before_filter :public_api_methods, only: [:index, :show]
+class Api::Private::BuildLogsController < Api::Private::BaseController
 
   def index
     render json: BuildLog.order(created_at: :desc).limit(10)

@@ -3,7 +3,7 @@
     .mg-10= render partial: 'respects/button', locals: { respectable: @project }
   .text-center style='position:relative'
     - if user_signed_in?
-      = react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
+      = react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
     = render 'projects/project_embed_button'
     - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
       = render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }

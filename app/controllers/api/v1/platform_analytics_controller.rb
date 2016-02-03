@@ -1,6 +1,5 @@
 class Api::V1::PlatformAnalyticsController < Api::V1::BaseController
   include PlatformHelper
-  skip_before_filter :authorize_access!
   before_filter :authenticate_api_user
 
   def show

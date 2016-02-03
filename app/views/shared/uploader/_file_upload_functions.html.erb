@@ -44,11 +44,14 @@ var <%= file_type %>Functions = {
 
     window.setTimeout(function() {
       $.ajax({
-        url: '/files/' + fileId,
+        url: Utils.getApiPath() + '/private/files/' + fileId,
         type: 'GET',
         dataType: 'json',
         data: { context: context },
         async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           processed = data.processed;
           if (!processed) {

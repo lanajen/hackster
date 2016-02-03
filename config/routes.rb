@@ -15,78 +15,25 @@ HackerIo::Application.routes.draw do
       }, via: :get
     end
 
-    # kept for compatibility, remove when fully migrated
-    namespace :api do
-      namespace :v1 do
-        get 'embeds' => 'embeds#show'
-        # post 'embeds' => 'embeds#create'
-        get 'me' => 'users#show'
-        resources :announcements
-        resources :build_logs
-        resources :challenges, only: [], defaults: { format: :json } do
-          get 'entries_csv' => 'challenges#entries_csv'
-          get 'ideas_csv' => 'challenges#ideas_csv'
-          get 'participants_csv' => 'challenges#participants_csv'
-        end
-        resources :code_files, only: [:create]
-        resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
-        resources :files, only: [:show], defaults: { format: :json }
-        resources :flags, only: [:create]
-        resources :followers, only: [:create, :index], defaults: { format: :json } do
-          collection do
-            delete '' => 'followers#destroy'
-          end
-        end
-        resources :groups, only: [:index, :create]
-        resources :jobs, only: [:create, :show]
-        resources :likes, only: [:create] do
-          delete '' => 'likes#destroy', on: :collection
-        end
-        scope 'mandrill/webhooks' do
-          post 'unsub' => 'mandrill_webhooks#unsub'
-        end
-        resources :projects do
-          get 'description' => 'projects#description'
-        end
-        resources :parts, except: [:new, :edit], defaults: { format: :json }
-        scope 'platforms' do
-          get ':user_name' => 'platforms#show', defaults: { format: :json }
-        end
-        resources :lists, only: [:index, :create], defaults: { format: :json } do
-          post 'projects' => 'lists#link_project', on: :member
-          delete 'projects' => 'lists#unlink_project', on: :member
-        end
-        # legacy route, replaced by global chrome_sync below
-        resources :microsoft_chrome_sync, only: [] do
-          get '' => 'chrome_sync#show', on: :collection
-          patch '' => 'chrome_sync#update', on: :collection
-        end
-        resources :notifications, only: [:index], defaults: { format: :json }
-        scope :review_decisions, defaults: { format: :json } do
-          post '' => 'review_decisions#create'
-        end
-        scope :review_threads, defaults: { format: :json } do
-          get '' => 'review_threads#show'
-        end
-        resources :thoughts
-        resources :users, only: [:index] do
-          get :autocomplete, on: :collection
-        end
-        resources :widgets, only: [:destroy, :update, :create]
-        match "*all" => "base#cors_preflight_check", via: :options
-      end
-    end
-
     constraints(ApiSite) do
-      scope module: :api, defaults: { format: :json } do
-        namespace :v1 do
+      scope module: :api, as: :api, defaults: { format: :json } do
+        namespace :private do
+          get 'csrf' => 'pages#csrf'
           get 'embeds' => 'embeds#show'
           get 'me' => 'users#show'
-          # post 'embeds' => 'embeds#create'
           resources :announcements
           resources :build_logs
-          resources :code_files, only: [:create]
+          resources :challenges, only: [], defaults: { format: :json } do
+            get 'entries_csv' => 'challenges#entries_csv'
+            get 'ideas_csv' => 'challenges#ideas_csv'
+            get 'participants_csv' => 'challenges#participants_csv'
+          end
           resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
+          resources :files, only: [:create, :show, :destroy] do
+            get 'remote_upload' => 'files#check_remote_upload', on: :collection
+            post 'remote_upload', on: :collection
+            get 'signed_url', on: :collection
+          end
           resources :flags, only: [:create]
           resources :followers, only: [:create, :index] do
             collection do
@@ -97,11 +44,35 @@ HackerIo::Application.routes.draw do
           resources :likes, only: [:create] do
             delete '' => 'likes#destroy', on: :collection
           end
+          resources :lists, only: [:index, :create] do
+            post 'projects' => 'lists#link_project', on: :member
+            delete 'projects' => 'lists#unlink_project', on: :member
+          end
+          resources :notifications, only: [:index]
+          resources :projects, except: [:show, :index] do
+            get 'description' => 'projects#description'
+          end
+          scope :review_decisions, defaults: { format: :json } do
+            post '' => 'review_decisions#create'
+          end
+          scope :review_threads, defaults: { format: :json } do
+            get '' => 'review_threads#show'
+          end
+          resources :thoughts
+          resources :users, only: [:index] do
+            get :autocomplete, on: :collection
+          end
+          resources :widgets, only: [:destroy, :update, :create]
+          match "*all" => "base#cors_preflight_check", via: :options
+        end
+
+        namespace :v1 do
+          resources :chrome_sync, only: [] do
+            get '' => 'chrome_sync#show', on: :collection
+            patch '' => 'chrome_sync#update', on: :collection
+          end
           scope 'mandrill/webhooks' do
             post 'unsub' => 'mandrill_webhooks#unsub'
-          end
-          resources :projects do
-            get 'description' => 'projects#description'
           end
           resources :parts, except: [:new, :edit]
           scope :platforms do
@@ -111,21 +82,8 @@ HackerIo::Application.routes.draw do
             end
             get ':user_name' => 'platforms#show'
           end
-          resources :lists, only: [:index, :create] do
-            post 'projects' => 'lists#link_project', on: :member
-            delete 'projects' => 'lists#unlink_project', on: :member
-          end
-          resources :chrome_sync, only: [] do
-            get '' => 'chrome_sync#show', on: :collection
-            patch '' => 'chrome_sync#update', on: :collection
-          end
-          resources :notifications, only: [:index]
+          resources :projects, only: [:show, :index]
           get 'search' => 'search#index'
-          resources :thoughts
-          resources :users, only: [:index] do
-            get :autocomplete, on: :collection
-          end
-          resources :widgets, only: [:destroy, :update, :create]
           match "*all" => "base#cors_preflight_check", via: :options
         end
       end
@@ -450,8 +408,8 @@ HackerIo::Application.routes.draw do
         get 'tools', to: redirect('platforms')
         get 'platforms' => 'platforms#index'
 
-        get 'talk' => 'channels#show'
-        get 'talk/*all' => 'channels#show'
+        # get 'talk' => 'channels#show'
+        # get 'talk/*all' => 'channels#show'
 
         get 'hardwareweekend' => 'pages#hardwareweekend'
         get 'hhw', to: redirect('/hardwareweekend')
@@ -581,6 +539,7 @@ HackerIo::Application.routes.draw do
         resources :comments, only: [:create]
       end
 
+      resources :code_files, only: [:create]
       resources :comments, only: [:edit, :update, :destroy]
 
       resources :files, only: [:create, :show, :destroy] do

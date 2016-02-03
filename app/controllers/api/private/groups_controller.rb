@@ -1,4 +1,4 @@
-class Api::V1::GroupsController < Api::V1::BaseController
+class Api::Private::GroupsController < Api::Private::BaseController
   def index
     groups = Group.where(type: params[:type]).where("groups.full_name ILIKE ?", "%#{params[:q]}%").order(:full_name)
 

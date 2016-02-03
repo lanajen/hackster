@@ -1,5 +1,4 @@
-class Api::V1::ThoughtsController < Api::V1::BaseController
-  # before_filter :public_api_methods, only: [:index, :show]
+class Api::Private::ThoughtsController < Api::Private::BaseController
 
   def index
     thoughts = Thought

@@ -1,4 +1,4 @@
-class Api::V1::FollowersController < Api::V1::BaseController
+class Api::Private::FollowersController < Api::Private::BaseController
   before_filter :authenticate_user!, only: [:create, :destroy]
   before_filter :load_followable, only: [:create, :destroy]
   respond_to :js, :html

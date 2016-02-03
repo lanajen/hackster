@@ -1,4 +1,4 @@
-class Api::V1::ReviewDecisionsController < Api::V1::BaseController
+class Api::Private::ReviewDecisionsController < Api::Private::BaseController
   before_filter :authenticate_user!
 
   def create

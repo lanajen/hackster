@@ -1,12 +1,13 @@
 import request from 'superagent';
 import Utils from './DOMUtils';
-import ImageUitls from '../../utils/Images';
+import { getApiPath } from '../../utils/Utils';
 
 export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
-      request(`/api/v1/projects/${projectId}/description`)
+      request(`${getApiPath()}/private/projects/${projectId}/description`)
         .query({ id: projectId })
+        .withCredentials()
         .end((err, res) => {
           if(err) reject(err);
 

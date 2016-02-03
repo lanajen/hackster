@@ -129,7 +129,7 @@
   = render_pe_popup 'repo', widget_class: GenericEmbedWidget, url_placeholder: 'Eg: https://sketchfab.com/models/c0541f8dbd3d42829205516bf6a71f29', url_hint: 'Supported: *', popup_style: 'repository'
   = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
 
-  form id='code-upload-form' action='/api/v1/code_files' method='post' enctype='multipart/form-data' style='display:none;'
+  form id='code-upload-form' action='/code_files' method='post' enctype='multipart/form-data' style='display:none;'
     input type="file" name="file"
 
   form#file-upload-form action="https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com" enctype="multipart/form-data" method="post" style="display:none;"

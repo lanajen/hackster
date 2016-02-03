@@ -1,4 +1,4 @@
-class Api::V1::NotificationsController < Api::V1::BaseController
+class Api::Private::NotificationsController < Api::Private::BaseController
   after_action :mark_notifications_as_read
   respond_to :js, :html
 
