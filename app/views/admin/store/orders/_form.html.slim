@@ -44,7 +44,7 @@
       label.control-label Address
     .col-sm-8
       - if @order.address
-        = @order.address.decorate.full.html_safe
+        = @order.address.decorate.full_long.html_safe
   .col-md-offset-4.col-md-8
     ==> f.button :submit, :class => 'btn-primary'
     ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_store_orders_path, :class => 'btn btn-default'

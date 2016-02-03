@@ -1,6 +1,6 @@
 = simple_form_for [@challenge, @idea], url: url_for_challenge_idea_form(@challenge, @idea), html: { class: 'widget-form' } do |f|
   = f.error_notification
-  - if @idea.errors.any? and current_user.is? :admin
+  /- if @idea.errors.any? and current_user.is? :admin
     = debug @idea.errors
 
   = f.input :name, label: 'Name of your idea or concept'
@@ -11,11 +11,26 @@
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
     = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }, required: field.required
 
+  hr
+  p
+    span Please let us know where to ship your prize if you are selected as a winner:
+    i.fa.fa-question-circle.istooltip title="We ask for addresses ahead of selecting winners in order to streamline our shipping process. If you are selected in this round, you will have to build a project with the device we send you, and we want to ensure you have enough time."
+  - @idea.build_address unless @idea.address
+  = f.simple_fields_for :address do |f_addr|
+    = f_addr.input :full_name
+    = f_addr.input :address_line1, label: 'Address line 1'
+    = f_addr.input :address_line2, label: 'Address line 2'
+    = f_addr.input :city
+    = f_addr.input :state
+    = f_addr.input :zip
+    = f_addr.input :country, input_html: { class: 'form-control' }
+    = f_addr.input :phone, hint: 'So the shipping company can call you if they have a problem.'
+
   p
     small
       ' Please note: if eligible, your idea will be made public
       = link_to 'here', challenge_ideas_path(@challenge.slug), target: '_blank', tabindex: -1
-      | .
+      | . Your address details will remain private.
 
   p
     small

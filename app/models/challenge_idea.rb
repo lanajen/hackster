@@ -12,9 +12,11 @@ class ChallengeIdea < ActiveRecord::Base
 
   hstore_column :properties, :description, :text
 
-  attr_accessible :name, :image_id, :address_id
+  attr_accessible :name, :image_id, :address_id, :address_attributes
 
-  validates :name, :description, :image_id, presence: true
+  accepts_nested_attributes_for :address
+
+  validates :name, :description, :address, :image_id, presence: true
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 
