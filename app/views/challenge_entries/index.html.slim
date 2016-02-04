@@ -4,7 +4,7 @@ p
 h1
   | #{@challenge.name}: contest entries
 
-= react_component 'ContestCsvExporter', { url: v1_challenge_entries_csv_path, label: 'Download list as CSV' }, {}
+= react_component 'ContestCsvExporter', { url: api_private_challenge_entries_csv_path, label: 'Download list as CSV' }, {}
 
 .row
   .col-xs-12= will_paginate @entries

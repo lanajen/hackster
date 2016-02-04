@@ -21,7 +21,7 @@ class Api::Private::ChallengesController < Api::Private::BaseController
 
       if doc.save
         file_name = FileNameGenerator.new(@challenge.name, label).to_s + '.csv'
-        job_id = ChallengeWorker.perform_async method_name, @challenge.id, doc.id, file_name
+        job_id = ChallengeCriticalWorker.perform_async method_name, @challenge.id, doc.id, file_name
         render json: { job_id: job_id, file_id: doc.id }
       else
         render json: doc.errors, status: :unprocessable_entity
