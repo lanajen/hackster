@@ -1,5 +1,9 @@
 module UrlHelper
 
+  def arduino_sign_in_url
+    "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/arduino?current_site=arduino&setup=true&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}"
+  end
+
   def assignment_path assignment, opts={}
     course_promotion_assignment_path params_for_assignment(assignment).merge(opts)
   end

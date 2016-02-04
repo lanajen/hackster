@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   before_action :current_platform
   # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
   before_filter :authenticate_user_from_token!
+  before_filter :ensure_valid_path_prefix
   before_action :set_locale, except: [:not_found]
   before_filter :mark_last_seen!
   before_filter :store_location_before
@@ -263,6 +264,10 @@ class ApplicationController < ActionController::Base
       "#{controller_path}##{action_name}"
     end
 
+    def ensure_valid_path_prefix
+      not_found if params[:path_prefix] and !path_prefix_valid?(params[:path_prefix])
+    end
+
     def show_badge
       if user_signed_in? and @new_badge and @badge_level
         @modal = render_to_string(partial: 'shared/modals/badge_alert', locals: { badge: @new_badge, level: @badge_level })
@@ -279,7 +284,7 @@ class ApplicationController < ActionController::Base
 
     def default_url_options(options = {})
       # pass in the locale we have in the URL because it's always the right one
-      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http') }.merge options
+      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http'), path_prefix: params[:path_prefix] }.merge options
     end
 
     def disable_flash
@@ -366,6 +371,10 @@ class ApplicationController < ActionController::Base
 
     def mark_last_seen!
       TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
+    end
+
+    def path_prefix_valid? path_prefix
+      is_whitelabel? and current_site.has_path_prefix? and current_site.path_prefix == "/#{path_prefix}"
     end
 
     def track_alias user=nil

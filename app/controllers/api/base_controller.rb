@@ -4,6 +4,7 @@ class Api::BaseController < ApplicationController
   skip_after_filter :track_landing_page
   skip_before_filter :verify_authenticity_token
   skip_before_action :set_locale
+  skip_before_filter :ensure_valid_path_prefix
   before_filter :allow_cors_requests
 
   def cors_preflight_check
