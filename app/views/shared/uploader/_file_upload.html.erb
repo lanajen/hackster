@@ -78,7 +78,7 @@ $(function(){
       url = $(this).data('url');
 
       $.ajax({
-        url: Utils.getApiPath() + '<%= signed_url_api_private_files_path(locale: nil) %>',
+        url: Utils.getApiPath() + '<%= api_private_files_path(locale: nil) %>',
         type: 'POST',
         dataType: 'json',
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
