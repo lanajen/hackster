@@ -155,9 +155,6 @@ class ApplicationController < ActionController::Base
     # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
       path = request.fullpath
-      if is_whitelabel? and current_site.has_path_prefix?
-        path = current_site.path_prefix + path
-      end
       session[request.host] ||= {}
       session[request.host][cookie_name] = path
     end
@@ -200,9 +197,6 @@ class ApplicationController < ActionController::Base
           session[:site_password] = cookies[:site_password]
         else
           path = request.fullpath
-          if is_whitelabel? and current_site.has_path_prefix?
-            path = current_site.path_prefix + path
-          end
           redirect_to site_login_path(redirect_to: path)
         end
       end
@@ -218,9 +212,6 @@ class ApplicationController < ActionController::Base
         sign_in user#, store: false
         flash.keep
         path = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
-        if is_whitelabel? and current_site.has_path_prefix?
-          path = current_site.path_prefix + path
-        end
         redirect_to path and return
       end
     end
