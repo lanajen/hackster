@@ -16,7 +16,8 @@ class ChallengeIdea < ActiveRecord::Base
 
   accepts_nested_attributes_for :address
 
-  validates :name, :description, :address, :image_id, presence: true
+  validates :name, :description, :image_id, presence: true
+  validates :address, presence: true, if: proc{|i| i.challenge.pre_contest_needs_shipping? }
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 

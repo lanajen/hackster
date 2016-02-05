@@ -1,9 +1,9 @@
 <%
-  url = project_url(project, ref: 'newsletter')
+  url = project_url(project)
   one_liner = project.one_liner.strip
   one_liner += '.' if one_liner !~ /(\.|\!)$/
   authors = (project.users.count == 1 ? project.users.first.name : project.users.map{|u| u.name.split(/ /)[0] }.to_sentence).strip
-  platforms = project.platforms.map{|p| link_to(p.name, platform_home_url(p, ref: 'newsletter'), target: '_blank').html_safe }.to_sentence
+  platforms = project.platforms.map{|p| link_to(p.name, platform_home_url(p), target: '_blank').html_safe }.to_sentence
   platforms = " With #{platforms}." if platforms.present?
   image_url = project.decorate.cover_image(:cover_thumb)
 

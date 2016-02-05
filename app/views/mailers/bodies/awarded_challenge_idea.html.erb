@@ -4,11 +4,11 @@
 
 <% if @context[:challenge].pre_contest_needs_shipping? %>
 
-  <p>To claim your reward, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= u.addresses_url(entry_id: @context[:idea].id, redirect_if_empty: true) %>"><%= u.addresses_url(entry_id: @context[:idea].id, redirect_if_empty: true) %></a></p>
+  <p>It will be shipped to you shortly at the mailing address you provided when you entered the contest.</p>
 
 <% else %>
 
-  <p>This is a virtual prize, and it will be emailed to you at this email address shortly.</p>
+  <p>We will email you shortly to arrange delivery of your prize.</p>
 
 <% end %>
 
