@@ -379,7 +379,7 @@ class Challenge < ActiveRecord::Base
 
     # cleanup Adam's autofill
     def cleanup_custom_registration_email
-      self.custom_registration_email = nil if custom_registration_email.try(:strip) == 'adamtben@outlook.com'
+      self.custom_registration_email = nil if custom_registration_email.try(:strip) == 'adamtben@outlook.com' or custom_registration_email.try(:strip) == 'adam@hackster.io'
     end
 
     def end_date_is_valid?

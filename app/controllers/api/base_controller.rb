@@ -68,7 +68,7 @@ class Api::BaseController < ApplicationController
       referrer_uri = URI.parse(referrer)
       if host_is_whitelisted?(referrer_uri.host)
         allowed_origin = referrer_uri.scheme + '://' + referrer_uri.host
-        allowed_origin << ":#{referrer_uri.port}" if referrer_uri.port != 80
+        allowed_origin << ":#{referrer_uri.port}" if referrer_uri.port != 80 and referrer_uri.port != 443
         headers['Access-Control-Allow-Origin'] = allowed_origin
         headers['Access-Control-Allow-Credentials'] = 'true'
       end

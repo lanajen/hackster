@@ -6,7 +6,7 @@ class List < Collection
   add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@group)', group: :get_started
   add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@group)', group: :get_started
   add_checklist :cover_image, 'Upload a cover image', 'cover_image.present?', goto: 'edit_group_path(@group)', group: :get_started
-  add_checklist :first_project, 'Add your first project', 'projects_count >= 1', goto: '"#{url_for(@group)}/projects/new"', group: :get_started
+  add_checklist :first_project, 'Add your first project', 'projects_count >= 1', goto: '"http://hackster.uservoice.com/knowledgebase/articles/622497"', group: :get_started
 
   def generate_user_name
     super
