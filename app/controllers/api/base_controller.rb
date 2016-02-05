@@ -71,7 +71,10 @@ class Api::BaseController < ApplicationController
         allowed_origin << ":#{referrer_uri.port}" if referrer_uri.port != 80 and referrer_uri.port != 443
         headers['Access-Control-Allow-Origin'] = allowed_origin
         headers['Access-Control-Allow-Credentials'] = 'true'
+      else
+        render status: :not_found, nothing: true
       end
     rescue URI::InvalidURIError
+      render status: :not_found, nothing: true
     end
 end
