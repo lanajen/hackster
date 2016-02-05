@@ -699,10 +699,17 @@ HackerIo::Application.routes.draw do
           end
         end
       end
-
-      get '' => 'pages#home'
-      root to: 'pages#home'
-      get '*not_found' => 'application#not_found'  # find a way to not need this
     end
+
+    constraints(ClientSite) do
+      scope module: :client, as: :client do
+        get '' => 'projects#index'
+        get 'embed' => 'projects#embed'
+      end
+    end
+
+    get '' => 'pages#home'
+    root to: 'pages#home'
+    get '*not_found' => 'application#not_found'  # find a way to not need this
   end
 end
