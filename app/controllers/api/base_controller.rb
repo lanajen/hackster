@@ -64,7 +64,7 @@ class Api::BaseController < ApplicationController
     end
 
     def private_api_methods
-      referrer = request.referrer
+      referrer = request.referrer.presence || request.headers['HTTP_ORIGIN']  # browsers don't always send the referrer for privacy reasons
       referrer_uri = URI.parse(referrer)
       if host_is_whitelisted?(referrer_uri.host)
         allowed_origin = referrer_uri.scheme + '://' + referrer_uri.host
