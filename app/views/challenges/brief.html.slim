@@ -23,6 +23,15 @@
               ul.entries-list.list-unstyled
                 - @current_entries[:pre_contest].each do |entry|
                   = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge
+
+              - if @challenge.pre_contest_end_date < Date.today
+                - if @challenge.pre_contest_awarded?
+                  p= link_to 'See the list of winners', '#pre_contest_winners', class: 'smooth-scroll'
+                - else
+                  p Winners have not been announced yet.
+              - else
+                p Winners will be announced on #{l @challenge.pre_winners_announced_date}.
+
               - if @challenge.pre_contest_in_progress? and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
 

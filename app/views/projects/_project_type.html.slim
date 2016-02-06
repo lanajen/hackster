@@ -1,0 +1,8 @@
+- if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
+  section.section-no-container
+    .info-header
+      - info = []
+      - info << content_tag(:span, @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)', class: 'project-type')
+      - info << @project.difficulty
+      - info << @project.duration
+      = info.select{|v| v.present? }.join("&nbsp;&nbsp;//&nbsp;&nbsp;").html_safe
