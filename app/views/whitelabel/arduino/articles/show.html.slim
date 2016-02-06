@@ -26,7 +26,7 @@ c= content_for :head do
       .wrapper780.protip-show
         - if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
           section.section-no-container
-            .project-type
+            .info-header
               = @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)'
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit

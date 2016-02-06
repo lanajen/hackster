@@ -24,6 +24,27 @@ class BaseArticleDecorator < ApplicationDecorator
     end
   end
 
+  def difficulty
+    BaseArticle::DIFFICULTIES.invert[model.difficulty.to_sym] if model.difficulty.present?
+  end
+
+  def duration
+    return if model.duration.blank? or model.duration.zero?
+
+    if model.duration < 1
+      h.pluralize (model.duration * 60).floor, 'minute'
+    elsif model.duration > 24
+      _duration = model.duration / 24
+      prefix = ''
+      if _duration % 1 != 0
+        prefix = 'Over '
+      end
+      out + h.pluralize(_duration.floor, 'day')
+    else
+      h.pluralize (model.duration % 1 == 0 ? model.duration.floor : model.duration), 'hour'
+    end
+  end
+
   def description mode=:normal, options={}
     options = { mode: (mode || :normal) }.merge(options)
     parse_medium model.description, options

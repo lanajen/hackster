@@ -54,7 +54,7 @@
         ul.dropdown-menu.pull-right
           div class="dropdown-caret"
           li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], type: params[:type])
-          li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', root_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', root_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', root_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', root_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', root_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])

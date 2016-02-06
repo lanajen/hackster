@@ -103,6 +103,10 @@ class BaseArticleObserver < ActiveRecord::Observer
     if (["project-#{record.id}-teaser", "project-#{record.id}-widgets"] & cache_keys).any?
       cache_keys << "project-#{record.id}-left-column"
       cache_keys << "project-#{record.id}"
+
+    # use the condition here so we only add the cache key once
+    elsif (record.changed & %w(difficulty duration)).any?
+      cache_keys << "project-#{record.id}"
     end
 
     Cashier.expire *cache_keys if cache_keys.any?

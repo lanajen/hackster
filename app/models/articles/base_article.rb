@@ -4,10 +4,10 @@ class BaseArticle < ActiveRecord::Base
 
   DEFAULT_NAME = 'Untitled'
   DIFFICULTIES = {
-    'Beginner' => :beginner,
+    'Easy' => :beginner,
     'Intermediate' => :intermediate,
     'Advanced' => :advanced,
-    'Hardcore maker' => :hardcore,
+    'Super hard' => :hardcore,
   }
   FILTERS = {
     '7days' => :last_7days,
@@ -135,6 +135,7 @@ class BaseArticle < ActiveRecord::Base
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
+  validates :duration, numericality: true, allow_blank: true
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   # before_validation :check_if_current
@@ -164,6 +165,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :challenge_id, :integer
   hstore_column :hproperties, :content_type, :string
   hstore_column :hproperties, :desc_backup, :string
+  hstore_column :hproperties, :duration, :float
   hstore_column :hproperties, :guest_twitter_handle, :string
   hstore_column :hproperties, :locked, :boolean
   hstore_column :hproperties, :review_comment, :string

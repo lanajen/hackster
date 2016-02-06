@@ -43,7 +43,10 @@
                     hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
                   div data-anchor='cover_image'
                     = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
-                  = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+                  = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to follow this article?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+                  = f.input :duration, label: 'Required time', hint: 'How long would it take someone to follow the instructions in this article?', wrapper: :addon do
+                    = f.input_field :duration
+                    span.input-group-addon hours
                   = f.input :product_tags_array, label: 'Tags', collection: (@project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags that categorize the article. We recommend avoiding tags that describe components, like for instance 'Arduino'; those can be entered in the product section below."
                   .form-group
                     .col-sm-4
