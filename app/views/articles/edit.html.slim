@@ -30,7 +30,7 @@
                 p.small.text-muted Before you publish this #{@project.identifier}, make sure that all these details are filled in:
                 = render 'projects/forms/checklist'
 
-        = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
+        = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote description-form' }, wrapper: :bootstrap3_horizontal do |f|
 
           .row
             .col-xs-12
@@ -57,26 +57,6 @@
                         ' You can always revert later.
                         = link_to 'Learn more about templates.', 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
 
-        = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote description-form' }, wrapper: :bootstrap3_horizontal do |f|
-          .row
-            .col-xs-12
-              .alert.alert-warning
-                strong> We've updated the description editor!
-                ' If you experience any issues with it, please email us directly at
-                => link_to 'admin@hackster.io', 'mailto:admin@hackster.io?subject=Need help with description editor', class: 'alert-link'
-                | with a link to your project.
-
-              .panel.panel-default data-anchor='description'
-                .panel-heading
-                  h4 Description
-                .panel-body style='padding:0'
-                  = react_component('ReactEditor', {projectId: @project.id, projectType: 'Article', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
-
-        #protip_parts= render 'projects/forms/protip_parts'
-
-        #protip_attachments= render 'projects/forms/protip_attachments'
-
-        = simple_nested_form_for @project, html: { data: { remote: true }, class: 'form-horizontal accept-file-upload remote' }, wrapper: :bootstrap3_horizontal do |f|
           .row
             .col-xs-12
               .panel.panel-default data-anchor='description'
@@ -98,6 +78,22 @@
                         .row
                           .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
                       = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
+
+          .row
+            .col-xs-12
+              .alert.alert-warning
+                strong> We've updated the description editor!
+                ' If you experience any issues with it, please email us directly at
+                => link_to 'admin@hackster.io', 'mailto:admin@hackster.io?subject=Need help with description editor', class: 'alert-link'
+                | with a link to your project.
+
+              .panel.panel-default data-anchor='description'
+                .panel-heading
+                  h4 Description
+                .panel-body style='padding:0'
+                  = react_component('ReactEditor', {projectId: @project.id, projectType: 'Article', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
+
+        #protip_parts_and_attachments= render 'projects/forms/protip_parts_and_attachments'
 
         / .row
           / .col-xs-12

@@ -285,7 +285,7 @@ class ProjectsController < ApplicationController
           @project.updater_id = current_user.id
           if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
             # ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_update, changed: changed if did_change
-            if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
+            if @panel.in? %w(hardware publish team software protip_parts_and_attachments)
               render 'projects/forms/update'
             else
               render 'projects/forms/checklist', status: :ok
