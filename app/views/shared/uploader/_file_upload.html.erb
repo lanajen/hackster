@@ -29,7 +29,6 @@ $(function(){
           type: 'GET',
           dataType: 'json',
           data: {file: {name: file.name}, context: data.context},
-          async: false,
           xhrFields: {
             withCredentials: true
           },
@@ -82,7 +81,6 @@ $(function(){
         type: 'POST',
         dataType: 'json',
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
-        async: false,
         xhrFields: {
           withCredentials: true
         },

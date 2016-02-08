@@ -5,12 +5,13 @@ class ChallengeCriticalWorker < BaseWorker
     challenge = Challenge.find challenge_id
     entries = challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
 
-    headers = ['Project name', 'Project URL', 'Project created on', 'Authors', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
+    headers = ['ID', 'Project name', 'Project URL', 'Project created on', 'Authors', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
     rows = [headers]
 
     entries.each do |entry|
       project = entry.project
       row = []
+      row << entry.id
       row << project.name
       row << "https://www.hackster.io/#{project.uri}"
       row << project.created_at
@@ -32,7 +33,7 @@ class ChallengeCriticalWorker < BaseWorker
     challenge = Challenge.find challenge_id
     ideas = challenge.ideas.order(:created_at).joins(:user).includes(:address, :image, user: :avatar)
 
-    headers = ['Name', 'Description', 'Image URL', 'Permalink']
+    headers = ['ID', 'Name', 'Description', 'Image URL', 'Permalink']
     headers += challenge.challenge_idea_fields.map(&:label)
     headers += ['Submitter name', 'Submission date', 'Submission status', 'Email']
     if challenge.pre_contest_awarded?
@@ -41,7 +42,7 @@ class ChallengeCriticalWorker < BaseWorker
     rows = [headers]
     ideas.each do |idea|
       user = idea.user
-      output = [idea.name, ActionController::Base.helpers.strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb), "https://www.hackster.io/challenges/#{challenge.slug}/ideas/#{idea.id}"]
+      output = [idea.id, idea.name, ActionController::Base.helpers.strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb), "https://www.hackster.io/challenges/#{challenge.slug}/ideas/#{idea.id}"]
       output += challenge.challenge_idea_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
       output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state, user.email]
       if challenge.pre_contest_awarded?

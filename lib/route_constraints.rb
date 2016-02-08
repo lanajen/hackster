@@ -8,6 +8,16 @@ class ApiSite
   end
 end
 
+class NotApiSite
+  def self.matches?(request)
+    if ENV['FULL_HOST'].present?
+      request.host == ENV['FULL_HOST']
+    else
+      request.subdomains[0] != 'api' or request.domain != APP_CONFIG['default_domain']
+    end
+  end
+end
+
 class MainSite
   def self.matches?(request)
     if ENV['FULL_HOST'].present?

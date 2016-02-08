@@ -42,7 +42,7 @@ class BaseArticleDecorator < ApplicationDecorator
       prefix + h.pluralize(_duration.floor, 'day')
     else
       h.pluralize (model.duration % 1 == 0 ? model.duration.floor : model.duration), 'hour'
-    end
+    end + ' to complete'
   end
 
   def description mode=:normal, options={}

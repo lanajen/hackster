@@ -1869,7 +1869,6 @@ function goToPreviousP(node, e){
 function insertEmbedTag(url, node) {
   editor.showLoadingBar();
   $.ajax(Utils.getApiPath() + '/private/embeds', {
-    async: false,
     data: { url: url },
     xhrFields: {
       withCredentials: true
@@ -1905,7 +1904,6 @@ function insertWidget(type, modelId, modelType, node, data) {
 
   editor.showLoadingBar();
   $.ajax(Utils.getApiPath() + '/private/widgets', {
-    async: false,
     data: data,
     xhrFields: {
       withCredentials: true
@@ -2134,17 +2132,18 @@ function loadTplForAttr(el, tpl, value, placeholder) {
 
 function uploadToS3(data, file, form) {
   $('#' + data.context).data('data', data);
+  var _data = data;
 
   $.ajax({
     url: Utils.getApiPath() + '/private/files/signed_url',
     type: 'GET',
     dataType: 'json',
     data: {file: {name: file.name}, context: data.context},
-    async: false,
     success: function(data) {
       form.find('input[name=key]').val(data.key);
       form.find('input[name=policy]').val(data.policy);
       form.find('input[name=signature]').val(data.signature);
+      _data.submit();
     },
     error: function(data) {
       context = decodeURIComponent($.urlParam(this.url, 'context'));
@@ -2152,7 +2151,6 @@ function uploadToS3(data, file, form) {
     }
   });
 
-  data.submit();
 }
 
 function showUploadProgress(data) {
@@ -2191,7 +2189,6 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
       attachable_id: (attachableId || editor.modelId),
       attachable_type: (attachableType || editor.modelType)
     },
-    async: false,
     success: function(data) { successCallback(data) },
     error: function(data) {
       context = decodeURIComponent($.urlParam(this.data, 'context'));

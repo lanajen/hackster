@@ -578,6 +578,10 @@ class BaseArticle < ActiveRecord::Base
     images.first
   end
 
+  def languages
+    widgets.where(type: %w(CodeWidget)).map(&:language).uniq - ['text']
+  end
+
   def license
     return @license if @license
     val = read_attribute(:license)
