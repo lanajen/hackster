@@ -316,25 +316,35 @@ class ProjectsController < ApplicationController
     authorize! params[:event], @project
 
     if current_user.is? :admin, :hackster_moderator
-      if @project.send "#{params[:event]}!"
-        if params[:event] == 'publish'
-          session[:share_modal] = 'published_share_prompt'
-          session[:share_modal_model] = 'project'
-          session[:share_modal_model_id] = @project.id
-          session[:share_modal_time] = 'after_redirect'
+      if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
+        @ok = true
+        next_url = if params[:event] == 'publish'
+          @project
         else
-          flash[:notice] = "Write-up #{params[:event]}'ed."
+          admin_projects_path(workflow_state: 'pending_review')
         end
+        redirect_to next_url
+      else
+        render :edit
+      end
+    else
+      if @project.send "#{params[:event]}!"
+        @ok = true
       else
         flash[:alert] = "Couldn't #{params[:event]} this write-up."
       end
       redirect_to @project
-    else
-      if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
-        flash[:notice] = "Write-up state changed to: #{params[:event]}."
-        redirect_to admin_projects_path(workflow_state: 'pending_review')
+    end
+
+    if @ok
+      if params[:event] == 'publish'
+        ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_status_update, workflow_state: @project.workflow_state
+        session[:share_modal] = 'published_share_prompt'
+        session[:share_modal_model] = 'project'
+        session[:share_modal_model_id] = @project.id
+        session[:share_modal_time] = 'after_redirect'
       else
-        render :edit
+        flash[:notice] = "Write-up #{params[:event]}'ed."
       end
     end
   end

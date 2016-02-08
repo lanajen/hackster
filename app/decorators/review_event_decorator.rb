@@ -5,15 +5,23 @@ class ReviewEventDecorator < ApplicationDecorator
       if model.new_project_privacy
         'made the project private'
       else
-        'published the project'
+        'made the project public'
       end
     when :project_update
       "updated the project"
     when :project_status_update
-      if model.has_user?
-        "marked the project as #{model.new_project_workflow_state}"
+      if model.new_project_workflow_state == 'pending_review'
+        if model.has_user?
+          "published the project"
+        else
+          "The project was published"
+        end
       else
-        "The project was marked as #{model.new_project_workflow_state}"
+        if model.has_user?
+          "marked the project as #{model.new_project_workflow_state}"
+        else
+          "The project was marked as #{model.new_project_workflow_state}"
+        end
       end
     when :thread_closed
       "Review thread closed automatically after decision was made"
