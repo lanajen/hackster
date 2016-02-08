@@ -34,9 +34,11 @@ const Editable = React.createClass({
     switch(this.props.projectType) {
       case 'Project':
         form = document.querySelector('form.story-form');
+        form.id = 'story-json';
         break;
       case 'Article':
         form = document.querySelector('form.description-form');
+        form.id = 'story-json';
         break;
       default:
         break;
@@ -50,22 +52,7 @@ const Editable = React.createClass({
 
     /** Binds our callback when submit button is pressed. */
     form.addEventListener('pe:submit', this.handleSubmit);
-
-    /** Append a story_json input to the hidden form. When the .pe-submit button is pressed, the value will get sent to the server. */
-    if (document.getElementById('story_json') === null) {
-      let input = document.createElement('input');
-      input.type = 'hidden';
-      input.id = 'story_json';
-      input.name = 'base_article[story_json]';
-      form.insertBefore(input, form.firstChild);
-
-      /** $.serialize() turns the form into a string.  Since we're adding a new input, unsavedChanges will force a prompt if user
-        * tries to tab navigate away without changes made.  This will update the $form so that doesn't trigger.
-        */
-      if(window.pe) {
-        window.pe.serializeForm();
-      }
-    }
+    form.addEventListener('pe:complete', this.handleSubmitComplete);
 
     if(this.props.toolbar.CEWidth === null) {
       this.props.actions.setCEWidth(ReactDOM.findDOMNode(this).offsetWidth);
@@ -77,9 +64,11 @@ const Editable = React.createClass({
     switch(this.props.projectType) {
       case 'Project':
         form = document.querySelector('form.story-form');
+        form.id = 'story-json';
         break;
       case 'Article':
         form = document.querySelector('form.description-form');
+        form.id = 'story-json';
         break;
       default:
         break;
@@ -101,13 +90,12 @@ const Editable = React.createClass({
   },
 
   componentWillReceiveProps(nextProps, nextState) {
-    /** On tab navigation: if there was any change in the editor, we alter the input#story so that window.pe
-        will see that theres a difference in the serialized vs altered form and call its prompt.
+    /** On tab navigation: if there was any change in the editor, we alter the $serializedForm so that window.pe
+        will call its prompt.
       */
     if(nextProps.editor.hasUnsavedChanges && !this.props.editor.hasUnsavedChanges) {
-      if(window && window.pe) {
-        let input = document.getElementById('story_json');
-        input.value = '[]';
+      if(window && window.pe && window.$serializedForm) {
+        window.$serializedForm += ' ';
         window.pe.showSavePanel();
       }
     }
@@ -206,6 +194,7 @@ const Editable = React.createClass({
         cleaned = Parser.concatPreBlocks(cleaned);
         cleaned = Parser.postCleanUp(cleaned);
         item.json = cleaned;
+        delete item.html;
         return Promise.resolve(item);
       } else if(item.type === 'Carousel') {
         let images = _.clone(item.images);
@@ -245,18 +234,29 @@ const Editable = React.createClass({
         if(!Array.isArray(results)) {
           this.props.actions.toggleErrorMessenger(true, 'Bummer, the project didn\'t save correctly.');
         } else {
-          let input = document.getElementById('story_json');
+          /** Appends a story_json input to the hidden form. */
+          let form = document.getElementById('story-json');
+          let input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'base_article[story_json]';
+          input.id = 'story-json-input';
           input.value = JSON.stringify(results);
+          form.insertBefore(input, form.firstChild);
 
           /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
           e.detail.form.submit();
-          input.value = '[]';
           this.props.actions.hasUnsavedChanges(false);
         }
       })
       .catch(err => {
         this.props.actions.toggleErrorMessenger(true, 'Bummer, the project didn\'t save correctly.');
       });
+  },
+
+  handleSubmitComplete(e) {
+    let form = document.getElementById('story-json');
+    let input = document.getElementById('story-json-input');
+    form.contains(input) ? form.removeChild(input) : false;
   },
 
   handlePlaceholderClick(storeIndex) {

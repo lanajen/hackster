@@ -156,7 +156,6 @@ $select2target = null;
 
       resizePeContainer: function() {
         $('.pe-container').height($('.pe-panel:visible').outerHeight());
-        // console.log('resize!');
       },
 
       discardChanges: function() {
@@ -246,7 +245,7 @@ $select2target = null;
             'pe:submit',
             {
               detail: { form: $form },
-              bubbles: true,
+              bubbles: false,
               cancelable: true
             }
           );
@@ -259,7 +258,7 @@ $select2target = null;
               'pe:submit',
               {
                 detail: { form: $dForm },
-                bubbles: true,
+                bubbles: false,
                 cancelable: true
               }
             );
@@ -319,6 +318,21 @@ $select2target = null;
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
+
+        // Custom event for React component.
+        var $form = $('#story-json');
+        if($form) {
+          var event = new CustomEvent(
+              'pe:complete',
+              {
+                detail: { xhr: xhr, status: status },
+                bubbles: false,
+                cancelable: true
+              }
+            );
+          $form[0].dispatchEvent(event);
+        }
+
         sortTable();
         $(this).trigger('pe:loaded');
       })
@@ -328,10 +342,6 @@ $select2target = null;
         $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
-        if ($('#story:visible').length) {
-          // REMOVE
-          // editor.unsavedChanges = false;
-        }
         pe.serializeForm();
         $('.fields.added').removeClass('added');
         $('.fields.removed').remove();
