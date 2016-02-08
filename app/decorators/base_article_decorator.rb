@@ -39,7 +39,7 @@ class BaseArticleDecorator < ApplicationDecorator
       if _duration % 1 != 0
         prefix = 'Over '
       end
-      out + h.pluralize(_duration.floor, 'day')
+      prefix + h.pluralize(_duration.floor, 'day')
     else
       h.pluralize (model.duration % 1 == 0 ? model.duration.floor : model.duration), 'hour'
     end
