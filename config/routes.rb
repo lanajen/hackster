@@ -40,6 +40,7 @@ HackerIo::Application.routes.draw do
               delete '' => 'followers#destroy'
             end
           end
+          resources :groups, only: [:index, :create]
           resources :jobs, only: [:create, :show]
           resources :likes, only: [:create] do
             delete '' => 'likes#destroy', on: :collection
