@@ -38,13 +38,12 @@ export default class App extends Component {
 
   handleImageUpload(file) {
     let fileData = {};
-
     this.setState({ isWorking: true });
 
     return ImageHelpers.promisifiedFileReader(file[0])
       .then(fileReaderData => {
         fileData = { ...fileReaderData };
-        return ImageHelpers.getS3AuthData(file.name || 'tmp_image_0');
+        return ImageHelpers.getS3AuthData(file[0].name || 'tmp_image_0');
       })
       .then(S3Data => {
         return ImageHelpers.postToS3(S3Data, fileData, this.props.S3BucketURL, this.props.AWSAccessKeyId);

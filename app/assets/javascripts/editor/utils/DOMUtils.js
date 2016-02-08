@@ -28,11 +28,12 @@ const Utils = {
         anchorNode: null
       };
     } else {
-      sel = rangy.getSelection();
+      sel = window.getSelection();
       let range = sel.getRangeAt(0),
           commonAncestorContainer = range.commonAncestorContainer,
           parentNode = this.getRootParentElement(range.startContainer),
           depth = this.findChildsDepthLevel(parentNode, parentNode.parentNode);
+
       return {
         sel: sel,
         range: range,

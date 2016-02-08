@@ -175,26 +175,6 @@ const ContentEditable = React.createClass({
         parentNode.appendChild(document.createElement('br'));
       }
 
-      /** On Backspace; Cleans up browser adds on specific line. */
-      // if(e.keyCode === 8
-      //    && Utils.isImmediateChildOfContentEditable(parentNode, CE)
-      //    && !parentNode.classList.contains('react-editor-carousel')
-      //    && !parentNode.classList.contains('react-editor-video')
-      //    && parentNode.nodeName !== 'UL') {
-      //   let clone = range.cloneRange();
-      //   Utils.maintainImmediateNode(parentNode);
-      //   this.emitChange();
-      //   * Chrome sets the cursor to 0, we need to reset it here at the correct position.
-      //   sel = rangy.getSelection();
-      //   range = sel.getRangeAt(0);
-      //   let el = Utils.getFirstTextNode(range.startContainer);
-      //   if(clone.startOffset <= el.length) {
-      //     range.setStart(el, clone.startOffset);
-      //     range.collapse(true);
-      //     sel.setSingleRange(range);
-      //   }
-      // }
-
       /** On Enter; Cleans up browser adds on specific line. */
       if(e.keyCode === 13 && parentNode.previousSibling && parentNode.nodeName !== 'UL') {
         Utils.maintainImmediateNode(parentNode.previousSibling);
@@ -226,7 +206,7 @@ const ContentEditable = React.createClass({
 
   handlePopOver(shouldShow) {
     if(shouldShow) {
-      let sel = rangy.getSelection();
+      let sel = window.getSelection();
       let range = sel.getRangeAt(0);
       let anchor = Utils.getAnchorNode(range.startContainer);
       if(!anchor) { return; }

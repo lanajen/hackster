@@ -187,7 +187,7 @@ const Editable = React.createClass({
 
     let promised = dom.map(item => {
       /** Its super important to clone each item!  Otherwise we mutate the state of the store and bad things happen. */
-      item = _.clone(item);
+      item = _.cloneDeep(item);
 
       if(item.type === 'CE') {
         cleaned = Parser.removeAttributes(item.json);

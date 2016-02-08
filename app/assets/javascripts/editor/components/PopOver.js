@@ -42,6 +42,7 @@ const PopOver = React.createClass({
   handleKeyPress(version, e) {
     if(e.key === 'Enter') {
       e.preventDefault();
+      e.stopPropagation();
 
       let value = ReactDOM.findDOMNode(this.refs.input).value;
       let text = ReactDOM.findDOMNode(this.refs.input2).value;
@@ -90,21 +91,24 @@ const PopOver = React.createClass({
     }
   },
 
-  getPositions() {
-    let p = Utils.getSelectionCoords();
-    let positions = {
-      x: p.x,
-      y: p.y
-    }
-    return positions;
+  getPositions(props) {
+    let { range } = props;
+    let node = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentNode;
+    let rangeDimensions = range.getBoundingClientRect ? range.getBoundingClientRect() : node.getBoundingClientRect();
+    /** getBoundingClientRect does not see text within anchor tags, so we fall back to the startContainers parent here if so. */
+    rangeDimensions = rangeDimensions.left === 0 && rangeDimensions.top === 0 ? node.getBoundingClientRect() : rangeDimensions;
+    return {
+      left: parseInt(rangeDimensions.left),
+      top: parseInt(rangeDimensions.top)
+    };
   },
 
   render: function() {
     let popOverProps = this.props.popOverProps;
-    let positions = this.getPositions();
+    let positions = this.getPositions(popOverProps);
     let styles = popOverProps.version === 'init' || popOverProps.version === 'change'
-           ? { top: ((positions.y-100) - popOverProps.parentNode.offsetTop), left: ((positions.x-110) - popOverProps.parentNode.offsetLeft) }
-           : { top: ((positions.y-100) - popOverProps.parentNode.offsetTop), left: ((positions.x-150) - popOverProps.parentNode.offsetLeft) };
+           ? { top: positions.top - 90, left: positions.left - 250/2 }
+           : { top: positions.top - 60, left: positions.left - 325/2 };
     let textValue = popOverProps.text || '';
     let version;
 
