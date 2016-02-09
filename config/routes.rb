@@ -29,6 +29,7 @@ HackerIo::Application.routes.draw do
             get 'participants_csv' => 'challenges#participants_csv'
           end
           resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
+          resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload
             post 'remote_upload', on: :collection

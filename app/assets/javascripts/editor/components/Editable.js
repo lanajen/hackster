@@ -50,6 +50,9 @@ const Editable = React.createClass({
     /** Prevents browser backspace when body is targeted. */
     window.addEventListener('keydown', this.preventBackspace);
 
+    //** Posts error logs to admin/logs. */
+    window.onerror = this.handleGlobalError;
+
     /** Binds our callback when submit button is pressed. */
     form.addEventListener('pe:submit', this.handleSubmit);
     form.addEventListener('pe:complete', this.handleSubmitComplete);
@@ -127,6 +130,22 @@ const Editable = React.createClass({
     if(this.props.editor.replaceLastInUndoStore === true) {
       this.props.actions.toggleFlag('replaceLastInUndoStore', false);
       this.props.actions.replaceLastInUndoStore(_.cloneDeep(this.props.editor));
+    }
+  },
+
+  handleGlobalError(msg, url, line, col, obj) {
+    let date = new Date();
+
+    if(msg && msg.length) {
+      this.props.actions.postErrorLog({
+        browser: this.props.browser,
+        msg: msg,
+        projectId: this.props.editor.projectId,
+        stack: obj ? obj.stack : {},
+        timeStamp: date.toTimeString(),
+        userAgent: window.navigator && window.navigator.userAgent ? window.navigator.userAgent : null
+      },
+      this.props.editor.csrfToken);
     }
   },
 
