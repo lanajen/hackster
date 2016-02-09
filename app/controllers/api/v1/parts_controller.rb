@@ -1,6 +1,8 @@
 class Api::V1::PartsController < Api::V1::BaseController
   before_filter :authenticate_platform_or_user, only: [:index]
   before_filter :authenticate_and_load_resource, only: [:show, :create, :update, :destroy]
+  skip_before_filter :public_api_methods
+  before_filter :public_or_private_api_methods
 
   def index
     @parts = if current_platform
