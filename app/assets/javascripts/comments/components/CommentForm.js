@@ -41,7 +41,12 @@ export default class CommentForm extends Component {
   handlePostClick(e) {
     e.preventDefault();
 
-    let body = ReactDOM.findDOMNode(this.refs.textarea).value;
+    let body = this.state.activeTab === 'preview'
+                ? this.state.textValue
+                : ReactDOM.findDOMNode(this.refs.textarea).value;
+
+    this.setActiveTab('write');
+
     if (body !== this.props.rawBody && body.length > 0) {
       let form = {
         comment: {
