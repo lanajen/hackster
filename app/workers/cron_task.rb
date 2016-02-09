@@ -16,6 +16,14 @@ class CronTask < BaseWorker
     end
   end
 
+  def check_if_platform_ready
+    Platform.where("CAST(hproperties -> 'hidden' AS BOOLEAN) = 't'").each do |platform|
+      if platform.members_count >= 25 and platform.projects_count >= 10
+        send_platform_ready_email_notif platform
+      end
+    end
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -175,6 +183,17 @@ class CronTask < BaseWorker
   private
     def redis
       @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
+    end
+
+    def send_platform_ready_email_notif platform
+      @message = Message.new(
+        message_type: 'generic',
+        to_email: 'alex@hackster.io'
+      )
+      @message.subject = "#{platform.name} is ready to be featured"
+      @message.body = "<p>Oh hey Alex!</p><p>Just wanted to let you know that <a href='https://www.hackster.io/#{platform.user_name}'>#{platform.name}</a> has gone over the thresholds and should be ready to be featured. It might still need some polishing though.</p>"
+      @message.body += "<p>All my love,<br>Hackster Bot</p>"
+      MailerQueue.enqueue_generic_email(@message)
     end
 
     def send_project_notifications time_frame, email_frequency
