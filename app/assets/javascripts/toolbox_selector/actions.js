@@ -69,7 +69,7 @@ export function fetchParts(request) {
 function fetchPartsFromServer(req) {
   return new Promise((resolve, reject) => {
     request
-      .get(`${getApiPath()}/private/parts`)
+      .get(`${getApiPath()}/v1/parts`)
       .query({ q: req.query, sort: req.filter, page: req.page, image_size: 'medium', approved: true })
       .withCredentials()
       .end(function(err, res) {
