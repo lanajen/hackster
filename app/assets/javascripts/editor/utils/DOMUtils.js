@@ -28,7 +28,7 @@ const Utils = {
         anchorNode: null
       };
     } else {
-      sel = window.getSelection();
+      sel = rangy.getSelection();
       let range = sel.getRangeAt(0),
           commonAncestorContainer = range.commonAncestorContainer,
           parentNode = this.getRootParentElement(range.startContainer),

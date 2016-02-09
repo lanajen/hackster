@@ -277,7 +277,7 @@ const Toolbar = React.createClass({
           let props = {
             node: anchorNode,
             parentNode: document.querySelector('.box'),
-            range: range,
+            range: window.getSelection().getRangeAt(0),
             text: sel.toString(),
             version: 'init',
             href: ''
