@@ -56,7 +56,7 @@ table.table.table-striped
               - if idea.can_mark_as_shipped?
                 = link_to content_tag(:i, '', class: 'fa fa-send-o'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_as_shipped'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Mark as shipped', data: { method: :put, confirm: 'Are you sure you want to mark this idea as "reward shipped"?', container: 'body' }
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge.slug, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
-            - if current_user.is? :admin
+            /- if current_user.is? :admin
               = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_single_idea_path(idea), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }
     - else
       td.text-center colspan=5 No ideas yet
