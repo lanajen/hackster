@@ -12,7 +12,9 @@ class Api::Private::CommentsController < Api::Private::BaseController
 
     @comments = Comment.where(commentable_type: params[:type], commentable_id: params[:id]).order(created_at: :asc).includes(user: :avatar).includes(:likes)
 
-    render json: CommentCollectionJsonDecorator.new(sort_comments(@comments)).sorted_node.to_json
+    opts = { current_site: current_site, url_opts: { path_prefix: current_site.try(:path_prefix).presence } }
+
+    render json: CommentCollectionJsonDecorator.new(sort_comments(@comments), opts).sorted_node.to_json
   end
 
   def create

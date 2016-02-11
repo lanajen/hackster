@@ -91,11 +91,16 @@ class ApplicationController < ActionController::Base
 
     return @current_site if @current_site
 
-    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_site = if request.domain == APP_CONFIG['default_domain']
-      ClientSubdomain.find_by_subdomain(request.subdomains[0])
+
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
+  end
+
+  def set_current_site domain, subdomain, host
+    if domain == APP_CONFIG['default_domain']
+      ClientSubdomain.find_by_subdomain(subdomain)
     else
-      ClientSubdomain.find_by_domain(request.host)
-    end and @current_site.enabled?
+      ClientSubdomain.find_by_domain(host)
+    end
   end
 
   def current_platform
@@ -365,7 +370,7 @@ class ApplicationController < ActionController::Base
     end
 
     def path_prefix_valid? path_prefix
-      is_whitelabel? and current_site.has_path_prefix? and current_site.path_prefix == "/#{path_prefix}"
+      is_whitelabel? and current_site.has_path_prefix? and current_site.path_prefix == path_prefix
     end
 
     def track_alias user=nil

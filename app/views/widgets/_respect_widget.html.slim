@@ -1,5 +1,5 @@
 .project-widget-with-user-thumbs
-  - cache [I18n.locale, "project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
+  - cache [I18n.locale, "project-#{@project.id}-respects", 'users', site_user_name == 'arduino'], tag: ["project-#{@project.id}-respects"] do
     .user-thumbs.clearfix
       - users.each do |user|
         - cache [I18n.locale, "user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do

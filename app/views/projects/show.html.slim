@@ -326,7 +326,7 @@
                 section.section-thumbs
                   = render 'actions'
 
-              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
