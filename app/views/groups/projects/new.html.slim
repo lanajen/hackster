@@ -35,7 +35,7 @@
                     = image_tag @project.cover_image.try(:imgix_url, :cover_mini_thumb)
 
                 .btn-group
-                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.browse-btn*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
                 - if @project.errors[:cover_image]
@@ -104,7 +104,7 @@
                     = image_tag @project.cover_image.try(:imgix_url, :cover_mini_thumb)
 
                 .btn-group
-                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.browse-btn*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
 

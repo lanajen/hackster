@@ -1229,7 +1229,7 @@ $(function () {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.file-drop a.browse', function(e) {
+  $('#medium-editor').on('click', '.file-drop a.browse-btn', function(e) {
     e.preventDefault();
   });
 
@@ -1237,7 +1237,7 @@ $(function () {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.browse', function(e) {
+  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.browse-btn', function(e) {
     // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
     $('.upload-here').removeClass('upload-here');
     $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');

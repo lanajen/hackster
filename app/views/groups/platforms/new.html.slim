@@ -24,7 +24,7 @@
                   - if @platform.avatar
                     = image_tag @platform.avatar.imgix_url(:thumb)
                 .btn-group
-                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.avatar' } }  Select picture
+                  a.btn.btn-default.btn-sm.browse-btn*{ data: { target: '.file_upload.avatar' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.avatar" } }
                     i.fa.fa-link
                 p.help-block Will be cropped to fit 1:1 format (square). 200x200px or higher recommended.
@@ -44,7 +44,7 @@
                   - if @platform.cover_image
                     = image_tag @platform.cover_image.imgix_url(:cover_mini_thumb)
                 .btn-group
-                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.browse-btn*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
                 p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
