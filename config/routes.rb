@@ -389,8 +389,6 @@ HackerIo::Application.routes.draw do
           resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
         end
 
-        resources :projects, only: [:index]
-
         resources :quotes, only: [:create]
         resources :jobs, only: [:index, :show]
 
@@ -506,6 +504,10 @@ HackerIo::Application.routes.draw do
 
       scope '(:path_prefix)', path_prefix: /projecthub/ do
         scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
+          constraints(MainSite) do
+            resources :projects, only: [:index]
+          end
+
           devise_for :users, skip: :omniauth_callbacks, controllers: {
             confirmations: 'users/confirmations',
             invitations: 'users/invitations',
