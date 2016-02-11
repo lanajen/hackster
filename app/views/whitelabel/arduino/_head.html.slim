@@ -1,8 +1,8 @@
 - unless user_signed_in?
   javascript:
-    var arduinoToken = window.localStorage.getItem("ideapp.token")
+    var arduinoToken = window.localStorage.getItem("ideapp.token");
     if (arduinoToken && arduinoToken !== "") {
-      windows.location.href = '<%= arduino_sign_in_url %>';
+      window.location.href = '<%= arduino_sign_in_url %>';
     }
 
 - content_for :html_class do
