@@ -58,9 +58,17 @@
     section#events style='background:#fafafa'
       .container
         h2 Global Chapters
-        .row
-          - @chapters.each do |chapter|
-            = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
+        - closed = false
+        - @chapters.each_with_index do |chapter, i|
+          - closed = false
+          - if (i == 0 or i % 3 == 0)
+            <div class="row">
+          = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
+          - if (i+1) % 3 == 0
+            </div>
+            - closed = true
+        - unless closed
+          </div>
 
     / section#members
       .container
