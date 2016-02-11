@@ -60,6 +60,7 @@ HackerIo::Application.routes.draw do
           scope :review_threads, defaults: { format: :json } do
             get '' => 'review_threads#show'
           end
+          resources :stats, only: [:create]
           resources :thoughts
           resources :users, only: [:index] do
             get :autocomplete, on: :collection
@@ -713,7 +714,12 @@ HackerIo::Application.routes.draw do
       end
 
       get '' => 'pages#home'
-      root to: 'pages#home'
+
+      scope '(:path_prefix)', path_prefix: /projecthub/ do
+        scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
+          root to: 'pages#home'
+        end
+      end
       get '*not_found' => 'application#not_found'  # find a way to not need this
     end
   end

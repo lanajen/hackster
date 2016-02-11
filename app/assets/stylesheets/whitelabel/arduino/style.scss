@@ -628,6 +628,14 @@ a.similar-proj-btn:hover, a.similar-proj-btn:focus, a.similar-proj-btn:active {
   margin-top: 15px;
 }
 
+code, kbd, pre, samp {
+  font-size: 14px;
+}
+.code-widget pre>span, .code-widgets pre>span {
+  font-size: 14px;
+  line-height: 20px;
+}
+
 section.protip-section-heading div.pull-right-desktop a.respect-button {
   display: block;
   margin-bottom: 25px;
