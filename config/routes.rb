@@ -383,12 +383,6 @@ HackerIo::Application.routes.draw do
         #   resources :comments, only: [:create]
         # end
 
-        resources :notifications, only: [:index] do
-          get 'edit' => 'notifications#edit', on: :collection
-          patch '' => 'notifications#update', on: :collection
-          get 'update' => 'notifications#update_from_link', on: :collection, as: :update
-        end
-
         get 's/:slug' => 'short_links#show'
 
         scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
@@ -449,7 +443,6 @@ HackerIo::Application.routes.draw do
         get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
         get 'tinyduino', to: redirect('/tinycircuits')
 
-        get 'home' => 'pages#home'
         get 'about' => 'pages#about'
         get 'business' => 'pages#business'
         # get 'help' => 'pages#help'
@@ -608,6 +601,12 @@ HackerIo::Application.routes.draw do
           end
 
           resources :messages, as: :conversations, controller: :conversations
+
+          resources :notifications, only: [:index] do
+            get 'edit' => 'notifications#edit', on: :collection
+            patch '' => 'notifications#update', on: :collection
+            get 'update' => 'notifications#update_from_link', on: :collection, as: :update
+          end
 
           get 'site/login' => 'site_logins#new', as: :site_login
           post 'site/login' => 'site_logins#create'
