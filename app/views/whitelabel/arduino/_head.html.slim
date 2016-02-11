@@ -2,7 +2,7 @@
   javascript:
     var arduinoToken = window.localStorage.getItem("ideapp.token");
     if (arduinoToken && arduinoToken !== "") {
-      window.location.href = '<%= arduino_sign_in_url %>';
+      window.location.href = "#{raw arduino_sign_in_url}";
     }
 
 - content_for :html_class do
