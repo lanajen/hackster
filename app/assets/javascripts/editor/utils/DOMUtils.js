@@ -855,6 +855,8 @@ const Utils = {
         let words = child.textContent.split(' ');
         let url = words.filter(word => { return Validator.isURL(word.trim()); })[0];
 
+        if(!url) return;
+
         if(url && !Helpers.isUrlValid(url, 'video')) {
           let href = url;
           let oldRange = range.cloneRange();
@@ -1018,7 +1020,7 @@ const Utils = {
         return el;
       } else {
         el.children.forEach(child => {
-          if(child.name === 'div' && child.attribs.class.indexOf('react-editor-image-wrapper') !== -1) {
+          if(child.name === 'div' && child.attribs.class && child.attribs.class.indexOf('react-editor-image-wrapper') !== -1) {
             imgWrapper = child;
           }
           recurse(child);
