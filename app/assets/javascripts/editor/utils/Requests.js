@@ -6,7 +6,6 @@ export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       request(`${getApiPath()}/private/projects/${projectId}/description`)
-        .query({ id: projectId })
         .withCredentials()
         .end((err, res) => {
           if(err) reject(err);

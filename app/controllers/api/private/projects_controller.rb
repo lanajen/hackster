@@ -37,12 +37,10 @@ class Api::Private::ProjectsController < Api::Private::BaseController
   end
 
   def description
-    project = BaseArticle.find params[:id]
-
-    if project.story_json.nil? and project.description.present?
-      render json: { description: project.decorate.description, story: nil }
-    elsif project.story_json.present?
-      render json: { description: nil, story: StoryJsonJsonDecorator.new(project.story_json).to_json }
+    if @project.story_json.nil? and @project.description.present?
+      render json: { description: @project.decorate.description, story: nil }
+    elsif @project.story_json.present?
+      render json: { description: nil, story: StoryJsonJsonDecorator.new(@project.story_json).to_json }
     else
       render json: { description: '', story: nil }
     end

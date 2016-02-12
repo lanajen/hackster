@@ -274,13 +274,13 @@ module ScraperStrategies
             h[i].each { |h| h.name = 'h3' }
             (i+1..4).each do |j|
               if h[j] and h[j].any?
-                h[j].each { |h| h.name = 'h4' }
+                h[j].each { |h| h.name = 'h3' }
                 (j+1..3).each do |l|
                   h[l].each { |h| h.name = 'b' } if h[l] and h[l].any?
                 end
                 break
               end
-            end if i < 4
+            end
             break
           end
         end
@@ -533,7 +533,7 @@ module ScraperStrategies
       end
 
       def title_levels
-        2..4
+        2..6
       end
 
       def traverse(node, &block)

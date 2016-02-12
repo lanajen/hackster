@@ -52,7 +52,7 @@ HackerIo::Application.routes.draw do
           end
           resources :notifications, only: [:index]
           resources :projects, except: [:show, :index] do
-            get 'description' => 'projects#description'
+            get 'description' => 'projects#description', on: :member
           end
           scope :review_decisions, defaults: { format: :json } do
             post '' => 'review_decisions#create'
