@@ -5,7 +5,9 @@
 
 .search-page
   - if params[:q].present?
-    h2 You searched for "#{params[:q]}"
+    h2
+      ' You searched for
+      em= params[:q]
     - if @results.any?
       - if @results.has_key? 'platform'
         = render partial: 'search/platforms', locals: { results: @results['platform'] }

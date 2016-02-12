@@ -91,6 +91,10 @@ class Search
           raise 'Unknown model_class type'
         end
 
+        if params[:platform_id]
+          _opts.merge! build_facets('platforms.id' => params[:platform_id])
+        end
+
         next unless model_class.in? RECOGNIZED_CLASSES
 
         _opts[:index_name] = model_class.constantize.algolia_index_name
