@@ -114,6 +114,8 @@ class ApplicationController < ActionController::Base
   def api_host
     return @api_host if @api_host
 
+    return @api_host = ENV['API_HOST'] if ENV['API_HOST'].present?
+
     @api_host = 'api.'
     if ENV['SUBDOMAIN'].present? and ENV['SUBDOMAIN'] != 'www'
       @api_host += ENV['SUBDOMAIN'] + '.'

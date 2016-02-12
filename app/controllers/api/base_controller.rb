@@ -51,8 +51,7 @@ class Api::BaseController < ApplicationController
     def current_site
       return @current_site if @current_site
 
-      return unless origin_uri
-      host = origin_uri.host
+      return unless origin_uri and host = origin_uri.host
       domain = ActionDispatch::Http::URL.extract_domain(host, 1)
       subdomains = ActionDispatch::Http::URL.extract_subdomains(host, 1)
       @current_site = set_current_site domain, subdomains[0], host

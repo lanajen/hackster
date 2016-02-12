@@ -8,7 +8,7 @@ class ClientSubdomain < Subdomain
     'English (en)' => 'en',
     'English - American (en-US)' => 'en-US',
   }
-  RESERVED_SUBDOMAINS = %w(www beta api admin)
+  RESERVED_SUBDOMAINS = %w(www beta admin) + ::API_SUBDOMAINS
 
   belongs_to :platform, inverse_of: :client_subdomain
   has_one :favicon, as: :attachable

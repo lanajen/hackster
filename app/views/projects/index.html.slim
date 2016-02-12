@@ -44,7 +44,7 @@
               li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', projects_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
               li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', projects_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
               li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
-              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', projects_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Super hard', projects_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
 
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }

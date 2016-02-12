@@ -1,9 +1,11 @@
+
+
 class ApiSite
   def self.matches?(request)
     if ENV['FULL_HOST'].present?
       request.host == ENV['FULL_HOST']
     else
-      request.subdomains[0] == 'api' and request.domain == APP_CONFIG['default_domain']
+      request.subdomains[0].in? API_SUBDOMAINS and request.domain == APP_CONFIG['default_domain']
     end
   end
 end
@@ -13,7 +15,7 @@ class NotApiSite
     if ENV['FULL_HOST'].present?
       request.host == ENV['FULL_HOST']
     else
-      request.subdomains[0] != 'api' or request.domain != APP_CONFIG['default_domain']
+      !request.subdomains[0].in? API_SUBDOMAINS or request.domain != APP_CONFIG['default_domain']
     end
   end
 end
@@ -32,7 +34,7 @@ class ClientSite
   def self.matches?(request)
     if request.domain == APP_CONFIG['default_domain']
       subdomain = request.subdomains[0]
-      !subdomain.in? (%w(api beta) + [ENV['SUBDOMAIN']])
+      !subdomain.in? (API_SUBDOMAINS + %w(beta) + [ENV['SUBDOMAIN']])
     else
       site = ClientSubdomain.find_by_domain(request.host).presence and site.enabled?
     end
