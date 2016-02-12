@@ -1,19 +1,32 @@
+.search-page {
+  h2 {
+    margin: 0 0 40px;
+    font-size: 1.3em;
+  }
+}
 .search-results {
   margin-bottom: 20px;
   h3 {
     font-size: 1.1em;
     font-weight: bold;
+    margin: 0;
     small {
       font-size: 0.9em;
     }
   }
+}
+.search-header {
+  margin-bottom: 10px;
 }
 .search-thumb {
   margin-bottom: 20px;
   padding: 10px;
   background: #fff;
   // height: 70px;
-  // overflow: hidden;
+  overflow: hidden;
+  h5 {
+    white-space: nowrap;
+  }
   img {
     width: 50px;
     height: 50px;

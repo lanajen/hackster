@@ -1,14 +1,8 @@
 .search-results
-  h3
-    span> #{pluralize results.total_size, 'result'} in components, tools and apps
-    small
-      - if results.total_size > results.page_size
-        | (showing #{results.offset} to #{results.page_size})
-      - else
-        | (showing all)
+  = render partial: 'search/results_header', locals: { results: results, category: 'components, tools and apps', type: 'Part' }
 
   .row
-    - results.models.each do |part|
+    - results[:models].each do |part|
       .col-md-4
         .media.search-thumb
           .media-left
@@ -23,5 +17,4 @@
                   => number_with_delimiter(part.owners_count)
                   | own it
 
-  - if results.total_size > results.page_size
-    = link_to 'Show all results', search_path(q: params[:q], type: 'Part', per_page: 21)
+  = render partial: 'search/results_footer', locals: { results: results }

@@ -1,7 +1,9 @@
 require 'hashie/mash'
+require 'will_paginate/array'
 
 class Search
   RESULTS_PER_PAGE = 3
+  RECOGNIZED_CLASSES = %w(BaseArticle Part Platform User)
 
   attr_accessor :params
 
@@ -22,14 +24,16 @@ class Search
     _hits = {}
 
     results.each do |batch|
-      out = Hashie::Mash.new
+      out = {}
       model_class = guess_model_class_from_index batch['index']
 
-      out.models = get_models_from_hits batch
-      out.offset = get_offset batch
-      out.total_size = batch['nbHits']
-      out.page_size = get_size batch
-      out.page = batch['page']
+      out[:models] = get_models_from_hits batch
+      out[:paginator] = paginate_models out[:models], batch['nbHits']
+      out[:offset] = get_offset batch
+      out[:page_size] = get_size batch
+      out[:max] = out[:offset] - 1 + out[:page_size]
+      out[:total_size] = batch['nbHits']
+      out[:page] = batch['page']
       _hits[model_class.underscore] = out
     end
 
@@ -39,17 +43,6 @@ class Search
   def initialize params
     @params = params
   end
-
-  # def models
-  #   return @models if @models
-
-  #   _models = {}
-  #   results.each do |batch|
-  #     _models[model_class] = get_models_from_hits batch
-  #   end
-
-  #   @models = _models
-  # end
 
   def search_opts
     @search_opts ||= build_search_opts
@@ -72,14 +65,14 @@ class Search
     end
 
     def build_search_opts
-      per_page = params[:per_page] || RESULTS_PER_PAGE
-      page = (params[:page] || 1) - 1  # algolia's first page is 0
+      params[:per_page] ||= RESULTS_PER_PAGE
+      params[:page] = params[:page] || 1
 
       global_opts = {
         attributesToRetrieve: 'id',
         query: params[:q] ? CGI::unescape(params[:q].to_s) : nil,
-        page: page,
-        hitsPerPage: per_page,
+        page: params[:page] - 1,  # algolia's first page is 0
+        hitsPerPage: params[:per_page],
       }.freeze
 
       opts = []
@@ -97,6 +90,8 @@ class Search
         else
           raise 'Unknown model_class type'
         end
+
+        next unless model_class.in? RECOGNIZED_CLASSES
 
         _opts[:index_name] = model_class.constantize.algolia_index_name
 
@@ -133,7 +128,7 @@ class Search
       elsif batch['nbPages'] > (batch['page'] + 1)
         batch['hitsPerPage']
       else
-        batch['nbHits'] - batch['nbPages'] * batch['hitsPerPage']
+        batch['nbHits'] - (batch['page'] * batch['hitsPerPage'])
       end
     end
 
@@ -147,5 +142,14 @@ class Search
         end
         mem
       end
+    end
+
+    def paginate_models models, total_size
+      models = models || []
+      models.paginate(
+        page: params[:page],
+        per_page: params[:per_page],
+        total_entries: total_size
+      )
     end
 end
