@@ -234,17 +234,15 @@ module ApplicationHelper
   end
 
   def inserts_stats_for model
-    base_url = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
-    base_url += APP_CONFIG['stats_url']
     content_for :js do
       content_tag(
         :script,
         "
         $(function(){
           $.ajax({
-            url: '#{base_url}/stats',
+            url: '#{api_private_stats_url(host: api_host, path_prefix: nil, locale: nil)}',
             data: {
-              referrer: document.referrer,
+              referrer: (document.referrer || document.origin),
               id: '#{model.id}',
               type: '#{model.model_name}',
               a: '#{action_name}',

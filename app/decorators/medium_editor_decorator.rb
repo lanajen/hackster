@@ -52,7 +52,7 @@ module MediumEditorDecorator
 
             next unless embed.provider_name
             template_append = options[:print] ? '_print' : nil
-            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed, options: options }
+            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed, options: options }, formats: [:html]
             next unless code
             code = code.try(:force_encoding, "UTF-8")  # somehow slim templates come out as ASCII
 

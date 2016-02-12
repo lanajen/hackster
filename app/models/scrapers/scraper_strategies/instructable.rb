@@ -45,7 +45,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        super + %w(.inline-ads .photoset-seemore #attachments .photoset-showmore #rich-embed-files)
+        super + %w(.inline-ads .photoset-seemore #attachments .photoset-showmore #rich-embed-files noscript)
       end
 
       def extract_title

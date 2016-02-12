@@ -124,7 +124,7 @@ const Utils = {
 
     for(let i = 0; i < node.childNodes.length; i++) {
       let child = node.childNodes[i];
-      if(child.nodeType === 1 && child.classList.contains('content-editable')) {
+      if(child.nodeType === 1 && child.classList && child.classList.contains('content-editable')) {
         bool = true
       }
 
@@ -770,13 +770,13 @@ const Utils = {
           if(index > 0 && child.previousSibling !== null && child.nodeName === child.previousSibling.nodeName
              && child.nodeName !== 'LI' && child.nodeName !== 'UL' && child.children && child.children.length < 1) {
             child.previousSibling.textContent += child.textContent;
-            node.removeChild(child);
+            if(node.contains(child)) node.removeChild(child);
           }
 
           /** Remove BR & Empty tags. */
           if((child.nodeName === 'BR' && node.textContent.length > 0) ||
              (child.nodeName !== 'BR' && child.textContent.length < 1 && child.nodeName !== 'LI' && child.nodeName !== 'UL')) {
-            node.removeChild(child);
+            if(node.contains(child)) node.removeChild(child);
           }
 
           /** Handles Chromes CE bug that adds span tags with inline styles.
@@ -785,7 +785,7 @@ const Utils = {
            */
           if(child.nodeName === 'SPAN' && child.style && child.style.length > 2 && child.previousSibling !== null) {
             child.previousSibling.innerHTML += child.innerHTML;
-            node.removeChild(child);
+            if(node.contains(child)) node.removeChild(child);
           }
 
           recurse(child);
@@ -854,6 +854,8 @@ const Utils = {
       if(child.nodeType === 3 && child.parentNode.nodeName !== 'A' && child.textContent.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/)) {
         let words = child.textContent.split(' ');
         let url = words.filter(word => { return Validator.isURL(word.trim()); })[0];
+
+        if(!url) return;
 
         if(url && !Helpers.isUrlValid(url, 'video')) {
           let href = url;
@@ -1018,7 +1020,7 @@ const Utils = {
         return el;
       } else {
         el.children.forEach(child => {
-          if(child.name === 'div' && child.attribs.class.indexOf('react-editor-image-wrapper') !== -1) {
+          if(child.name === 'div' && child.attribs.class && child.attribs.class.indexOf('react-editor-image-wrapper') !== -1) {
             imgWrapper = child;
           }
           recurse(child);

@@ -15,12 +15,15 @@
           .pull-right= link_to content_tag(:i, '', class: 'fa fa-minus'), 'javascript:void(0)', class: 'btn btn-link btn-sm toggle-review-frame', rel: 'tooltip', title: 'Minimize sidebar', data: { placement: 'bottom' }
         - if current_user.is?(:admin, :moderator, :hackster_moderator)
           div= link_to 'Moderator FAQ', 'http://hackster.uservoice.com/knowledgebase/topics/115761-project-moderation', class: 'btn btn-link btn-sm'
-          div
+          p
             strong> Project status:
             = @project.decorate.status
           - if @project.website.present?
             ' Imported from
             = link_to @project.website, @project.website, target: '_blank'
+          - if @project.assignment.present?
+            .alert.alert-warning
+              p This project is part of a university assignment. If it fits the guidelines feel free to approve it, or if it's close do give feedback. Otherwise gently reject it letting the authors know that this will not affect their grade and the project will still be visible on their profile.
       = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, userRole: (%w(admin hackster_moderator super_moderator moderator) & current_user.roles).first, isAuthor: current_user.id.in?(@project.users.pluck(:id)) }, {}
 
 = content_for :js do

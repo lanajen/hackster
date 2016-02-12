@@ -57,7 +57,7 @@
           li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', root_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', root_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', root_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
-          li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', root_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Super hard', root_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
 
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -66,10 +66,12 @@
         ul.dropdown-menu.pull-right
           div class="dropdown-caret"
           li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
-          / li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', root_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', root_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', root_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
-          / li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', root_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', root_path(type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', root_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', root_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', root_path(type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
 
   - if @projects.any?
     .row.thumb-list

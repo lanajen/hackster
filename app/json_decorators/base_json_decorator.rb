@@ -1,8 +1,10 @@
 class BaseJsonDecorator
+  include JsonDecoratorHelpers
   attr_accessor :model
 
-  def initialize model
+  def initialize model, opts={}
     @model = model
+    @opts = opts
   end
 
   private
@@ -18,9 +20,5 @@ class BaseJsonDecorator
         res[attr] = model.send attr
       end
       res
-    end
-
-    def h
-      ActionController::Base.helpers
     end
 end

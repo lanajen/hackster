@@ -4,7 +4,7 @@ class GeoUserJsonDecorator < BaseJsonDecorator
     node[:lat] = model.latitude
     node[:lng] = model.longitude
     if opts[:load_all]
-      node[:avatarUrl] = model.decorate.avatar(:mini)
+      node[:avatarUrl] = model.decorate(decorator_context).avatar(:mini)
       node[:name] = model.name
       node[:slug] = model.user_name
       node[:miniResume] = model.mini_resume

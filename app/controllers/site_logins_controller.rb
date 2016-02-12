@@ -36,6 +36,11 @@ class SiteLoginsController < ActionController::Base
     end
   end
 
+  protected
+    def default_url_options
+      { path_prefix: params[:path_prefix], locale: params[:locale] }
+    end
+
   private
     def meta_desc
       'Page protected - Please log in'

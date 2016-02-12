@@ -60,5 +60,9 @@ export default {
     redoHistoryState: null,
     undoHistoryState: null,
     replaceLastInUndoStore: null,
+  }),
+
+  Logger: keyMirror({
+    addLog: null
   })
 };

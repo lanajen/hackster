@@ -176,8 +176,12 @@ class UsersController < ApplicationController
 
     if is_whitelabel? and current_site.enable_custom_avatars?
       link = CustomAvatarHandler.new(@user).fetch(current_site.subdomain)
-      unless link.present? and test_link(link)
-        link = current_site.default_avatar_url
+      if link.present? or !test_link(link)
+        link = if @user.avatar.present?
+          @user.decorate.avatar(size, disable_whitelabel: true)
+        else
+          current_site.default_avatar_url
+        end
       end
     else
       link = @user.decorate.avatar(size)

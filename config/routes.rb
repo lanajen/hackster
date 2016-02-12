@@ -29,6 +29,7 @@ HackerIo::Application.routes.draw do
             get 'participants_csv' => 'challenges#participants_csv'
           end
           resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
+          resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload
             post 'remote_upload', on: :collection
@@ -51,7 +52,7 @@ HackerIo::Application.routes.draw do
           end
           resources :notifications, only: [:index]
           resources :projects, except: [:show, :index] do
-            get 'description' => 'projects#description'
+            get 'description' => 'projects#description', on: :member
           end
           scope :review_decisions, defaults: { format: :json } do
             post '' => 'review_decisions#create'
@@ -59,6 +60,7 @@ HackerIo::Application.routes.draw do
           scope :review_threads, defaults: { format: :json } do
             get '' => 'review_threads#show'
           end
+          resources :stats, only: [:create]
           resources :thoughts
           resources :users, only: [:index] do
             get :autocomplete, on: :collection
@@ -381,19 +383,11 @@ HackerIo::Application.routes.draw do
         #   resources :comments, only: [:create]
         # end
 
-        resources :notifications, only: [:index] do
-          get 'edit' => 'notifications#edit', on: :collection
-          patch '' => 'notifications#update', on: :collection
-          get 'update' => 'notifications#update_from_link', on: :collection, as: :update
-        end
-
         get 's/:slug' => 'short_links#show'
 
         scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
           resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
         end
-
-        resources :projects, only: [:index]
 
         resources :quotes, only: [:create]
         resources :jobs, only: [:index, :show]
@@ -447,7 +441,6 @@ HackerIo::Application.routes.draw do
         get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
         get 'tinyduino', to: redirect('/tinycircuits')
 
-        get 'home' => 'pages#home'
         get 'about' => 'pages#about'
         get 'business' => 'pages#business'
         # get 'help' => 'pages#help'
@@ -511,6 +504,10 @@ HackerIo::Application.routes.draw do
 
       scope '(:path_prefix)', path_prefix: /projecthub/ do
         scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
+          constraints(MainSite) do
+            resources :projects, only: [:index]
+          end
+
           devise_for :users, skip: :omniauth_callbacks, controllers: {
             confirmations: 'users/confirmations',
             invitations: 'users/invitations',
@@ -606,6 +603,12 @@ HackerIo::Application.routes.draw do
           end
 
           resources :messages, as: :conversations, controller: :conversations
+
+          resources :notifications, only: [:index] do
+            get 'edit' => 'notifications#edit', on: :collection
+            patch '' => 'notifications#update', on: :collection
+            get 'update' => 'notifications#update_from_link', on: :collection, as: :update
+          end
 
           get 'site/login' => 'site_logins#new', as: :site_login
           post 'site/login' => 'site_logins#create'
@@ -712,7 +715,12 @@ HackerIo::Application.routes.draw do
       end
 
       get '' => 'pages#home'
-      root to: 'pages#home'
+
+      scope '(:path_prefix)', path_prefix: /projecthub/ do
+        scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
+          root to: 'pages#home'
+        end
+      end
       get '*not_found' => 'application#not_found'  # find a way to not need this
     end
   end

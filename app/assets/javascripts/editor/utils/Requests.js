@@ -6,7 +6,6 @@ export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       request(`${getApiPath()}/private/projects/${projectId}/description`)
-        .query({ id: projectId })
         .withCredentials()
         .end((err, res) => {
           if(err) reject(err);
@@ -33,5 +32,18 @@ export default {
           }
       });
     });
+  },
+
+  postErrorLog(error, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/error_logs`)
+        .set('X-CSRF-Token', csrfToken)
+        .withCredentials()
+        .send({ error: error })
+        .end((err, res) => {
+          err ? reject('Post Error Log Error: ', err) : resolve(res.body);
+        });
+    })
   }
 };

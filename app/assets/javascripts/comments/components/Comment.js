@@ -78,7 +78,7 @@ export default class Comment extends Component {
   }
 
   render() {
-    const { avatarLink, body, raw_body, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userSlug } = this.props.comment;
+    const { avatarLink, body, raw_body, createdAt, deleted, depth, id, likingUsers, parent_id, user_id, userName, userLink } = this.props.comment;
     const { commentable } = this.props;
     let rootClass = depth === 0 ? 'comment' : 'comment comment-nested';
     let date = window ? window.moment(createdAt).fromNow() : createdAt;
@@ -139,14 +139,14 @@ export default class Comment extends Component {
                     </div>)
                  : (null);
 
-    let avatar = userSlug
-                ? (<a href={`/${userSlug}`}>
+    let avatar = userLink
+                ? (<a href={userLink}>
                     <img src={avatarLink} alt={userName} />
                   </a>)
                 : (<img src={avatarLink} alt={userName} />);
 
-    let name = userSlug
-              ? (<a href={`/${userSlug}`}>{userName}</a>)
+    let name = userLink
+              ? (<a href={userLink}>{userName}</a>)
               : userName;
 
     let manageDropdown = (<div className="dropdown comment-manage pull-right">

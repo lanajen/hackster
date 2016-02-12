@@ -491,6 +491,12 @@ class User < ActiveRecord::Base
     deliver_invitation
   end
 
+  alias_method :destroy_now, :destroy
+
+  def destroy
+    delay.destroy_now
+  end
+
   # small hack to allow single emails to be invited multiple times
   def email_changed?
     being_invited? ? false : super

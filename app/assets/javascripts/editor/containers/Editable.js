@@ -4,6 +4,7 @@ import Editable from '../components/Editable';
 import * as ToolbarActions from '../actions/toolbar';
 import * as EditorActions from '../actions/editor';
 import * as HistoryActions from '../actions/history';
+import * as LoggerActions from '../actions/logger';
 
 function mapStateToProps(state) {
   return {
@@ -14,7 +15,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(Object.assign({}, ToolbarActions, EditorActions, HistoryActions), dispatch) };
+  return { actions: bindActionCreators(Object.assign({}, ToolbarActions, EditorActions, HistoryActions, LoggerActions), dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editable);

@@ -5,7 +5,7 @@ class ReviewDecisionJsonDecorator < BaseJsonDecorator
       node[:rejection_reason] = model.decorate.rejection_reason
     end
     user = model.user
-    node[:avatarLink] = user.decorate.avatar(:mini)
+    node[:avatarLink] = user.decorate(decorator_context).avatar(:mini)
     node[:userName] = user.name
     node[:userSlug] = user.user_name
     node[:userRole] = (%w(admin hackster_moderator super_moderator moderator) & user.roles).first

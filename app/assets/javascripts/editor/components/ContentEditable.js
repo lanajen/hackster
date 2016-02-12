@@ -282,7 +282,7 @@ const ContentEditable = React.createClass({
       let hash;
 
       /** If theres text after the cursor. */
-      if((parentNode.textContent.indexOf(anchorNode.textContent) + startOffset) < parentNode.textContent.length) {
+      if(parentNode.textContent && (parentNode.textContent.indexOf(anchorNode.textContent) + startOffset) < parentNode.textContent.length) {
         hasTextAfterCursor = true;
       }
 
@@ -709,7 +709,7 @@ const ContentEditable = React.createClass({
       dataType = 'html';
     } else if(e.clipboardData && e.clipboardData.getData) {
       let clipboardDataTypes = [].slice.apply(e.clipboardData.types);
-      if(clipboardDataTypes.indexOf('text/html') === 1) {
+      if(clipboardDataTypes && clipboardDataTypes.indexOf('text/html') === 1) {
         pastedText = e.clipboardData.getData('text/html');
         dataType = 'html';
       } else {
