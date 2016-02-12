@@ -1,0 +1,12 @@
+.search-results
+  h3
+    span> #{pluralize results.total_size, 'result'} in write-ups
+    small
+      - if results.total_size > results.page_size
+        | (showing #{results.offset} to #{results.page_size})
+      - else
+        | (showing all)
+
+  .row
+    - results.models.each_with_index do |project, i|
+      = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'search', ref_id: params[:q], offset: (i + ((safe_page_params || 1) - 1) * Search::RESULTS_PER_PAGE) }

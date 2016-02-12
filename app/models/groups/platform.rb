@@ -81,6 +81,7 @@ class Platform < Collection
   hstore_column :hproperties, :platform_tags_string, :string
   hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
+  hstore_column :hproperties, :synonym_tags_string, :string
   hstore_column :hproperties, :verified, :boolean, default: false
 
   has_counter :parts, 'parts.visible.count'
@@ -88,7 +89,7 @@ class Platform < Collection
   has_counter :sub_parts, 'sub_parts.count'
   has_counter :sub_platforms, 'sub_platforms.count'
 
-  taggable :platform_tags, :product_tags
+  taggable :platform_tags, :product_tags, :synonym_tags
 
   add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@platform)', group: :get_started
   add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
@@ -102,29 +103,20 @@ class Platform < Collection
   add_checklist_family :followers, 'followers_count >= %{n}', labels: { 1 => 'Be your first follower', n: 'Reach %{n} followers' }, thresholds: [1, 25, 100, 500, 1_000, 2_500, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 25 => :featured, n: :next_level }, goto: 'create_followers_path(followable_type: "Group", followable_id: @platform.id)'
 
   # beginning of search methods
-  has_tire_index 'pryvate'
-
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 1000
-      indexes :platform_tags,       analyzer: 'snowball', boost: 500
-      indexes :mini_resume,     analyzer: 'snowball', boost: 100
-      indexes :created_at
-    end
-  end
-
   def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name.underscore,
-      mini_resume: mini_resume,
-      platform_tags: platform_tags_string,
-      created_at: created_at,
-      popularity: 1000.0,
-    }.to_json
+    super.merge!({
+      parts: parts.approved.map{|p|
+        {
+          id: p.id,
+          mpn: p.mpn,
+          name: p.name,
+        }
+      },
+      synonyms: synonym_tags_cached,
+      _tags: product_tags_cached,
+    })
   end
+  # end of search methods
 
   def self.default_permission roles=nil
     roles ||= []
@@ -136,11 +128,6 @@ class Platform < Collection
       member: 'read',
     }[roles.first.try(:to_sym)]
   end
-
-  def self.index_all
-    index.import publyc
-  end
-  # end of search methods
 
   def self.for_thumb_display
     includes(:avatar).includes(:cover_image)

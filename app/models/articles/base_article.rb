@@ -221,41 +221,56 @@ class BaseArticle < ActiveRecord::Base
   add_checklist :product_tags_string, 'Tags'
 
   # beginning of search methods
-  include TireInitialization
-  has_tire_index 'pryvate or hide or !approved?'
-
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :product_tags,    analyzer: 'snowball', boost: 50
-      indexes :platform_tags,   analyzer: 'snowball', boost: 50
-      indexes :platform_ids
-      indexes :description,     analyzer: 'snowball'
-      indexes :one_liner,       analyzer: 'snowball'
-      indexes :user_names,      analyzer: 'snowball'
-      indexes :created_at
-    end
-  end
+  include AlgoliaSearchCallbacks
+  has_algolia_index 'pryvate or hide or !approved?'
 
   def to_indexed_json
+    sanitize_config = {remove_contents: %w(script)}.merge(Sanitize::Config::RELAXED)
+    _description = Sanitize.fragment(decorate.story_json, sanitize_config) || description
+
     {
-      _id: id,
+      # for locating
+      id: id,
+      model: self.class.model_name.name,
+      objectID: algolia_id,
+
+      # for search
+      authors: users.map{ |u|
+        {
+          id: u.id,
+          name: u.name,
+        }
+      },
+      content_type: content_type,
+      description: _description,
       name: name,
-      model: self.class.model_name.to_s.underscore,
-      one_liner: one_liner,
-      description: description,
-      product_tags: product_tags_string,
-      platform_tags: platform_tags_string,
-      platform_ids: visible_platforms.pluck(:id),
-      user_name: team_members.map{ |t| t.user.try(:name) },
-      created_at: created_at,
+      pitch: one_liner,
+      parts: parts.map{|p|
+        {
+          id: p.id,
+          mpn: p.mpn,
+          name: p.name,
+        }
+      },
+      platforms: visible_platforms.map{|p|
+        {
+          id: p.id,
+          name: p.name,
+        }
+      },
+      _tags: product_tags_cached,
+
+      # for ranking
+      comments_count: comments_count,
+      impressions_count: impressions_count,
+      made_public_at: made_public_at.to_i,
       popularity: popularity_counter,
-    }.to_json
+      respects_count: respects_count,
+    }
   end
 
-  def self.index_all
-    index.import approved.indexable_and_external
+  def self.index_all limit=nil
+    algolia_batch_import approved.indexable_and_external, limit
   end
   # end of search methods
 

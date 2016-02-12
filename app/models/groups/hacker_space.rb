@@ -8,36 +8,7 @@ class HackerSpace < GeographicCommunity
   attr_accessible :irc_link, :hackerspace_org_link, :wiki_link,
     :mailing_list_link
 
-  # beginning of search methods
-  has_tire_index 'pryvate'
-
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :city,            analyzer: 'snowball'
-      indexes :country,         analyzer: 'snowball'
-      indexes :state,           analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
-      indexes :created_at
-    end
-  end
-
-  def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name.underscore,
-      city: city,
-      country: country,
-      state: state,
-      mini_resume: mini_resume,
-      private: pryvate,
-      created_at: created_at,
-    }.to_json
-  end
-  # end of search methods
+  has_algolia_index 'pryvate'
 
   def self.default_access_level
     'anyone'

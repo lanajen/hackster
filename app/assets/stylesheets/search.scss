@@ -1,23 +1,26 @@
 .search-results {
-  ul {
-    list-style: none;
-    margin: 0;
-    li {
-      margin-bottom: 20px;
-      .media-body {
-        padding-top: 20px ;
-      }
-      img {
-        margin-right: 5px;
-        width: 60px;
-        height: 60px;
-      }
-      h5 {
-        display: inline;
-      }
-      &.last {
-        margin-bottom: 0;
-      }
+  margin-bottom: 20px;
+  h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+    small {
+      font-size: 0.9em;
     }
+  }
+}
+.search-thumb {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #fff;
+  // height: 70px;
+  // overflow: hidden;
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  .stats {
+    margin-bottom: 0;
+    font-size: 0.8em;
+    color: #777;
   }
 }

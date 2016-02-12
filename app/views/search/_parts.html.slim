@@ -1,0 +1,27 @@
+.search-results
+  h3
+    span> #{pluralize results.total_size, 'result'} in components, tools and apps
+    small
+      - if results.total_size > results.page_size
+        | (showing #{results.offset} to #{results.page_size})
+      - else
+        | (showing all)
+
+  .row
+    - results.models.each do |part|
+      .col-md-4
+        .media.search-thumb
+          .media-left
+            = link_to image_tag(part.decorate.image(:part_thumb), class: 'media-object'), part
+          .member-thumb-body.media-body
+            h5.media-heading
+              = link_to part.name, part
+            .media-body
+              ul.list-inline.stats
+                li= pluralize number_with_delimiter(part.projects_count), 'project'
+                li
+                  => number_with_delimiter(part.owners_count)
+                  | own it
+
+  - if results.total_size > results.page_size
+    = link_to 'Show all results', search_path(q: params[:q], type: 'Part', per_page: 21)

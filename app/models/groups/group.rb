@@ -84,12 +84,37 @@ class Group < ActiveRecord::Base
   after_validation :add_errors_to_user_name
   before_save :ensure_invitation_token
 
-  # beginning of shared search methods
-  include TireInitialization
-  # end of search methods
-
   has_default :access_level, 'anyone' do |instance|
     instance.read_attribute(:access_level)
+  end
+
+  include AlgoliaSearchCallbacks
+
+  def self.algolia_index_name
+    "hackster_#{Rails.env}_#{self.name.underscore}"
+  end
+
+  def self.index_all limit=nil
+    algolia_batch_import publyc, limit
+  end
+
+  def to_indexed_json
+    {
+      # for locating
+      id: id,
+      model: self.class.name,
+      objectID: algolia_id,
+
+      # for searching
+      name: name,
+      pitch: mini_resume,
+
+      # for ranking
+      members_count: members_count,
+      impressions_count: impressions_count,
+      last_project_time: last_project_time.to_i,
+      projects_count: projects_count,
+    }
   end
 
   def self.default_permission

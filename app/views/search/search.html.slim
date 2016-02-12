@@ -3,7 +3,26 @@
     = auto_discovery_link_tag :rss, search_path(format: :rss, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
     = auto_discovery_link_tag :atom, search_path(format: :atom, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
 
-.search-page.row
+- if params[:q].present?
+  - if @results.any?
+    - if @results.has_key? 'platform'
+      = render partial: 'search/platforms', locals: { results: @results['platform'] }
+    - if @results.has_key? 'part'
+      = render partial: 'search/parts', locals: { results: @results['part'] }
+    / # = render partial: 'search/lists', locals: { results: @results['list'] }
+    - if @results.has_key? 'base_article'
+      = render partial: 'search/base_articles', locals: { results: @results['base_article'] }
+    / # = render partial: 'search/users', locals: { results: @results['user'] }
+    /- @results.each do |model_class, results|
+      h3
+        => "#{pluralize results.total_size, 'result'} for #{model_class}"
+        - if results.total_size > results.page_size
+          = "(showing #{results.page_size})"
+      - if results.models
+        - results.models.each_with_index do |result, i|
+          = render partial: model_class, locals: { :"#{model_class}" => result.decorate, ref: 'search', ref_id: params[:q], offset: (i + ((safe_page_params || 1) - 1) * SearchRepository::RESULTS_PER_PAGE) }
+
+/.search-page.row
   .col-xs-3
     ul.nav.nav-pills.nav-stacked
       li  class="#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)

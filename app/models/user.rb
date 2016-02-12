@@ -293,41 +293,39 @@ class User < ActiveRecord::Base
   self.per_page = 20
 
   # beginning of search methods
-  include TireInitialization
-  has_tire_index 'private or !accepted_or_not_invited?'
+  include AlgoliaSearchCallbacks
+  has_algolia_index 'private or !accepted_or_not_invited?'
 
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100, type: 'string'
-      indexes :user_name,       analyzer: 'snowball', boost: 100, type: 'string'
-      indexes :interests,       analyzer: 'snowball'
-      indexes :skills,          analyzer: 'snowball'
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :country,         analyzer: 'snowball', type: 'string'
-      indexes :city,            analyzer: 'snowball', type: 'string'
-      indexes :created_at
-    end
+  def self.index_all limit=nil
+    algolia_batch_import invitation_accepted_or_not_invited, limit
   end
 
   def to_indexed_json
     {
-      _id: id,
-      model: self.class.name.underscore,
-      name: name,
-      user_name: user_name,
+      # for locating
+      id: id,
+      model: self.class.name,
+      objectID: algolia_id,
+
+      # for searching
       city: city,
       country: country,
-      mini_resume: mini_resume,
-      interests: interest_tags_string,
-      skills: skill_tags_string,
-      created_at: created_at,
-      popularity: reputation.try(:points),
-    }.to_json
-  end
+      full_name: full_name,  # not using name so as not to give more relevance to usernames when no full name has been entered
+      interests: interest_tags_cached,
+      latitude: latitude,
+      longitude: longitude,
+      pitch: mini_resume,
+      skills: skill_tags_cached,
+      user_name: user_name,
 
-  def self.index_all
-    index.import invitation_accepted_or_not_invited
+      # for ranking
+      followers_count: followers_count,
+      impressions_count: impressions_count,
+      popularity: reputation.try(:points) || 0,
+      projects_count: projects_count,
+      reputation_count: reputation_count,
+      respects_count: respects_count,
+    }
   end
   # end of search methods
 

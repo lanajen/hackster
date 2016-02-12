@@ -7,6 +7,16 @@ class GeographicCommunity < Community
 
   attr_accessible :address, :state, :zipcode, :latitude, :longitude
 
+  def to_indexed_json
+    super.merge!({
+      city: city,
+      country: country,
+      latitude: latitude,
+      longitude: longitude,
+      state: state,
+    })
+  end
+
   def full_street_address
     locations = []
     locations << address if address.present?

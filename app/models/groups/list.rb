@@ -8,6 +8,18 @@ class List < Collection
   add_checklist :cover_image, 'Upload a cover image', 'cover_image.present?', goto: 'edit_group_path(@group)', group: :get_started
   add_checklist :first_project, 'Add your first project', 'projects_count >= 1', goto: '"http://hackster.uservoice.com/knowledgebase/articles/622497"', group: :get_started
 
+  def to_indexed_json
+    super.merge!({
+      curators: active_members.joins(:user).map{|m|
+        u = m.user
+        {
+          id: u.id,
+          name: u.name,
+        }
+      }
+    })
+  end
+
   def generate_user_name
     super
 

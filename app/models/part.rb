@@ -97,6 +97,42 @@ class Part < ActiveRecord::Base
     # end
   end
 
+  # beginning of search methods
+  include AlgoliaSearchCallbacks
+  has_algolia_index '!approved?'
+
+  def self.index_all limit=nil
+    algolia_batch_import where(workflow_state: :approved), limit
+  end
+
+  def to_indexed_json
+    {
+      # for locating
+      id: id,
+      model: self.class.model_name.name,
+      objectID: algolia_id,
+
+      # for searching
+      description: description,
+      mpn: mpn,
+      name: name,
+      pitch: one_liner,
+      platforms: [
+        platform ? {
+          id: platform.id,
+          name: platform.name,
+        } : nil
+      ].compact,
+      _tags: product_tags_cached,
+
+      # for ranking
+      impressions_count: impressions_count,
+      owners_count: owners_count,
+      projects_count: projects_count,
+    }
+  end
+  # end of search methods
+
   scope :alphabetical, -> { order name: :asc }
   scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
