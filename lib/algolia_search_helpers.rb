@@ -13,7 +13,7 @@ module AlgoliaSearchHelpers
     end
 
     def algolia_index_name
-      "hackster_#{Rails.env}_#{self.model_name.name.underscore}"
+      "#{ALGOLIA_INDEX_PREFIX}_#{self.model_name.name.underscore}"
     end
 
     def has_algolia_index no_index_condition
