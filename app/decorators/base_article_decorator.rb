@@ -17,7 +17,7 @@ class BaseArticleDecorator < ApplicationDecorator
   end
 
   def default_cover_image version=:thumb
-    if h.is_whitelabel? and h.current_site.has_default_project_cover_image?
+    if is_whitelabel? and current_site.has_default_project_cover_image?
       h.asset_url h.current_site.default_project_cover_image_file_path
     else
       h.asset_url "project_default_#{version}_image.png"

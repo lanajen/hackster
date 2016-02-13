@@ -1,0 +1,113 @@
+var client = algoliasearch("<%= ENV['ALGOLIA_APP_ID'] %>", "<%= ENV['ALGOLIA_SEARCH_KEY'] %>")
+var projects = client.initIndex("<%= BaseArticle.algolia_index_name %>");
+var platforms = client.initIndex("<%= Platform.algolia_index_name %>");
+var parts = client.initIndex("<%= Part.algolia_index_name %>");
+var users = client.initIndex("<%= User.algolia_index_name %>");
+
+function suggestionTemplate(imgUrl, heading, body) {
+  return '<div class="media">' +
+        '<div class="media-left">' +
+        '<img src="' + imgUrl + '" />' +
+        '</div>' +
+        '<div class="media-body">' +
+        '<h5 class="media-heading">' + heading + '</h5>' +
+        body +
+        '</div>' +
+        '</div>';
+}
+
+function pluralize(count, term) {
+  if (count == 1) {
+    return count + ' ' + term;
+  } else {
+    return count + ' ' + term + 's';
+  }
+}
+
+function generateFooter(a, b, term, type) {
+  var q = a.query;
+  var more = b.nbHits - b.hitsPerPage;
+  if (more <= 0) return null;
+  var url = '/search?q=' + encodeURIComponent(q) + '&type=' + type;
+  var plural = more == 1 ? '' : 's';
+  var anchor = 'View ' + more + ' other ' + term + plural + ' matching ' + '<em>' + q + '</em>';
+  return '<a class="aa-footer" href="' + url + '">' + anchor + '</a>';
+}
+
+$('#search-input').autocomplete({ debug: true }, [
+  {
+    source: $.fn.autocomplete.sources.hits(platforms, { hitsPerPage: 3 }),
+    displayKey: 'name',
+    templates: {
+      header: '<div class="aa-header">Platforms</div>',
+      footer: function(a, b){ return generateFooter(a, b, 'platform', 'Platform') },
+      suggestion: function(suggestion) {
+        var body = '<ul class="list-inline list-unstyled">' +
+                    '<li>' + pluralize(suggestion.members_count, 'follower') + '</li>' +
+                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                    '</ul>';
+
+        return suggestionTemplate(suggestion.avatar_url,
+                                  suggestion._highlightResult.name.value,
+                                  body);
+      }
+    }
+  },
+  {
+    source: $.fn.autocomplete.sources.hits(parts, { hitsPerPage: 3 }),
+    displayKey: 'name',
+    templates: {
+      header: '<div class="aa-header">Components</div>',
+      footer: function(a, b){ return generateFooter(a, b, 'component', 'Part') },
+      suggestion: function(suggestion) {
+        var body = '<ul class="list-inline list-unstyled">' +
+                    '<li>' + suggestion.owners_count + ' own it' + '</li>' +
+                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                    '</ul>';
+
+        return suggestionTemplate(suggestion.image_url,
+                                  suggestion._highlightResult.name.value,
+                                  body);
+      }
+    }
+  },
+  {
+    source: $.fn.autocomplete.sources.hits(projects, { hitsPerPage: 3 }),
+    displayKey: 'name',
+    templates: {
+      header: '<div class="aa-header">Write-ups</div>',
+      footer: function(a, b){ return generateFooter(a, b, 'write-up', 'BaseArticle') },
+      suggestion: function(suggestion) {
+        var body = '<ul class="list-inline list-unstyled">' +
+                    '<li>' + pluralize(suggestion.impressions_count, 'view') + '</li>' +
+                    '<li>' + pluralize(suggestion.respects_count, 'respect') + '</li>' +
+                    '</ul>';
+
+        return suggestionTemplate(suggestion.cover_image_url,
+                                  suggestion._highlightResult.name.value,
+                                  body);
+      }
+    }
+  },
+  {
+    source: $.fn.autocomplete.sources.hits(users, { hitsPerPage: 3 }),
+    displayKey: 'name',
+    templates: {
+      header: '<div class="aa-header">Members</div>',
+      footer: function(a, b){ return generateFooter(a, b, 'member', 'User') },
+      suggestion: function(suggestion) {
+        var body = '<ul class="list-inline list-unstyled">' +
+                    '<li>' + pluralize(suggestion.followers_count, 'follower') + '</li>' +
+                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                    '</ul>';
+
+        return suggestionTemplate(suggestion.avatar_url,
+                                  suggestion.name + ' (' + suggestion.user_name + ')',
+                                  body);
+      }
+    }
+  }
+]).on('autocomplete:selected', function(event, suggestion, dataset) {
+  console.log(suggestion, dataset);
+  window.location.href = suggestion.url;
+});

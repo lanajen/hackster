@@ -98,11 +98,11 @@ class Part < ActiveRecord::Base
   end
 
   # beginning of search methods
-  include AlgoliaSearchCallbacks
+  include AlgoliaSearchHelpers
   has_algolia_index '!approved?'
 
   def self.index_all limit=nil
-    algolia_batch_import where(workflow_state: :approved), limit
+    algolia_batch_import where(workflow_state: :approved).includes(:platform, :image), limit
   end
 
   def to_indexed_json
@@ -124,6 +124,10 @@ class Part < ActiveRecord::Base
         } : nil
       ].compact,
       _tags: product_tags_cached,
+
+      # for display
+      image_url: decorate.image(:part_thumb),
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).part_path(self),
 
       # for ranking
       impressions_count: impressions_count,

@@ -293,11 +293,11 @@ class User < ActiveRecord::Base
   self.per_page = 20
 
   # beginning of search methods
-  include AlgoliaSearchCallbacks
+  include AlgoliaSearchHelpers
   has_algolia_index 'private or !accepted_or_not_invited?'
 
   def self.index_all limit=nil
-    algolia_batch_import invitation_accepted_or_not_invited, limit
+    algolia_batch_import invitation_accepted_or_not_invited.includes(:avatar, :reputation), limit
   end
 
   def to_indexed_json
@@ -310,13 +310,18 @@ class User < ActiveRecord::Base
       # for searching
       city: city,
       country: country,
-      full_name: full_name,  # not using name so as not to give more relevance to usernames when no full name has been entered
+      full_name: full_name,
       interests: interest_tags_cached,
       latitude: latitude,
       longitude: longitude,
       pitch: mini_resume,
       skills: skill_tags_cached,
       user_name: user_name,
+
+      # for display
+      avatar_url: decorate(context: { current_site: nil }).avatar(:thumb),
+      name: name,
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).user_path(self),
 
       # for ranking
       followers_count: followers_count,

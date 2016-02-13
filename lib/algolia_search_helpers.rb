@@ -1,9 +1,9 @@
 require 'algoliasearch'
 
-module AlgoliaSearchCallbacks
+module AlgoliaSearchHelpers
   module ClassMethods
     def algolia_batch_import records, limit
-      records.limit(limit).each_slice(1_000) do |batch|
+      records.order(:id).limit(limit).each_slice(1_000) do |batch|
         algolia_index.add_objects batch.map(&:to_indexed_json)
       end
     end

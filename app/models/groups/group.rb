@@ -88,7 +88,7 @@ class Group < ActiveRecord::Base
     instance.read_attribute(:access_level)
   end
 
-  include AlgoliaSearchCallbacks
+  include AlgoliaSearchHelpers
 
   def self.algolia_index_name
     "hackster_#{Rails.env}_#{self.name.underscore}"

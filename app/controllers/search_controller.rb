@@ -42,11 +42,12 @@ class SearchController < ApplicationController
     def do_search restrict_model=nil
       if params[:q].present?
         types = params[:type].present? ? [params[:type]] : %w(BaseArticle User Platform Part)
+        per_page = params[:per_page].presence || params[:type] ? 21 : 3;
         search_opts = {
           q: params[:q],
           model_classes: types,
           page: safe_page_params,
-          per_page: params[:per_page].presence
+          per_page: per_page,
         }
 
         title "Results for #{params[:q]}"

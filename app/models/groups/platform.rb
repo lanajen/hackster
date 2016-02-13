@@ -104,7 +104,8 @@ class Platform < Collection
 
   # beginning of search methods
   def to_indexed_json
-    super.merge!({
+    super.merge({
+      avatar_url: decorate.avatar(:thumb),
       parts: parts.approved.map{|p|
         {
           id: p.id,
@@ -115,6 +116,10 @@ class Platform < Collection
       synonyms: synonym_tags_cached,
       _tags: product_tags_cached,
     })
+  end
+
+  def self.index_all limit=nil
+    algolia_batch_import publyc.includes(:avatar, :product_tags), limit
   end
   # end of search methods
 

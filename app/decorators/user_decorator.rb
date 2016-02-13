@@ -20,7 +20,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def default_avatar size=:thumb
-    if h.is_whitelabel? and h.current_site.has_default_avatar?
+    if is_whitelabel? and current_site.has_default_avatar?
       h.current_site.default_avatar_url
     else
       gravatar size

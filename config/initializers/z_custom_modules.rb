@@ -22,7 +22,7 @@ require File.join(Rails.root, 'lib/after_commit_callbacks')
 # make attr_was and attr_changed? work for attrs created using store method
 require File.join(Rails.root, 'lib/set_changes_for_stored_attributes')
 # common tire init stuff
-require File.join(Rails.root, 'lib/algolia_search_callbacks')
+require File.join(Rails.root, 'lib/algolia_search_helpers')
 # editable slug/user_name
 require File.join(Rails.root, 'lib/editable_slug')
 # heroku domains

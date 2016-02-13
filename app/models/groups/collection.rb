@@ -22,6 +22,11 @@ class Collection < Group
 
   # beginning of search methods
   has_algolia_index 'pryvate'
+  def to_indexed_json
+    super.merge({
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).group_path(self),
+    })
+  end
   # end of search methods
 
   def self.default_access_level

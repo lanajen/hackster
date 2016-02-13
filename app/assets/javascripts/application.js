@@ -14,6 +14,8 @@
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
 //= require jquery_nested_form
+//= require algoliasearch
+//= require algolia-autocomplete.js/autocomplete.jquery
 //= require js-cookie
 //= require clipboard
 //= require bitbucket-widget.min
@@ -33,5 +35,6 @@
 //= require all
 //= require mobile
 //= require home
+//= require search
 //= require bundle
 //= require react_ujs

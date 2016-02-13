@@ -221,7 +221,7 @@ class BaseArticle < ActiveRecord::Base
   add_checklist :product_tags_string, 'Tags'
 
   # beginning of search methods
-  include AlgoliaSearchCallbacks
+  include AlgoliaSearchHelpers
   has_algolia_index 'pryvate or hide or !approved?'
 
   def to_indexed_json
@@ -260,6 +260,10 @@ class BaseArticle < ActiveRecord::Base
       },
       _tags: product_tags_cached,
 
+      # for display
+      cover_image_url: decorate(context: { current_site: nil }).cover_image(:cover_mini_thumb),
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).project_path(self),
+
       # for ranking
       comments_count: comments_count,
       impressions_count: impressions_count,
@@ -270,7 +274,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.index_all limit=nil
-    algolia_batch_import approved.indexable_and_external, limit
+    algolia_batch_import indexable.includes(:cover_image, :users, :visible_platforms, :parts, :team), limit
   end
   # end of search methods
 

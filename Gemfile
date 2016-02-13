@@ -25,6 +25,8 @@ gem 'zocial-rails', '1.0.2'
 
 # bower
 source 'https://rails-assets.org' do
+  gem 'rails-assets-algoliasearch', '3.12.0'
+  gem 'rails-assets-algolia-autocomplete.js', '0.16.1'
   gem 'rails-assets-clipboard', '1.5.3'
   gem 'rails-assets-js-cookie', '2.0.3'
   gem 'rails-assets-medium-editor', '1.8.14'
