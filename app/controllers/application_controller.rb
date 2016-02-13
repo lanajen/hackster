@@ -204,7 +204,7 @@ class ApplicationController < ActionController::Base
           session[:site_password] = cookies[:site_password]
         else
           path = request.fullpath
-          redirect_to site_login_path(redirect_to: path)
+          redirect_to site_login_path(redirect_to: path), status: :unauthorized
         end
       end
     end
