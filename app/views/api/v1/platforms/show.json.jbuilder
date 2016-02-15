@@ -7,7 +7,7 @@ json.platform do
 
       json.name project.name
       json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
-      json.embed_url project_embed_url(project)
+      json.embed_url project_embed_url(project, host: APP_CONFIG['default_host'])
       json.cover_image_url project.cover_image.try(:imgix_url, :cover_thumb)
       json.one_liner project.one_liner
       json.author_names project.users.map(&:name).to_sentence
