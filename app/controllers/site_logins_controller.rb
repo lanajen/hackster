@@ -4,6 +4,7 @@ class SiteLoginsController < ActionController::Base
   helper_method :title
 
   def new
+    render status: :unauthorized
   end
 
   def create
