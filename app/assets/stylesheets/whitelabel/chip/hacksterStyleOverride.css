@@ -14,6 +14,7 @@
 .btn-primary,
 .btn-primary:hover {
   background: #EB008B;
+  border-color: #EB008B;
 }
 
 /* Featured badge */
@@ -43,4 +44,20 @@
 
 #user-nav-face {
   border-color: #EB008B !important;
+}
+
+#navigation .container {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  #navigation .container {
+    width: 83.33333%;
+  }
+}
+
+@media (min-width: 1200px) {
+  #navigation .container {
+    width: 66.66667%;
+  }
 }

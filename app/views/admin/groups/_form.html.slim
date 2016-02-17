@@ -23,7 +23,8 @@
   = f.association :course, collection: Course.all
 - when 'Platform'
   = f.input :plan, collection: Platform::PLANS
-  = f.input :synonym_tags_string, hint: 'If multiple names can be used for this platform, enter the alternatives here. For instance "Amazon Web Services" is usually referred to as "AWS".'
+  - if @group.respond_to? :synonym_tags_string
+    = f.input :synonym_tags_string, hint: 'If multiple names can be used for this platform, enter the alternatives here. For instance "Amazon Web Services" is usually referred to as "AWS".'
   = f.input :product_tags_string
   = f.input :platform_tags_string, hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
   = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"

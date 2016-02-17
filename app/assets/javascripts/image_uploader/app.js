@@ -43,7 +43,9 @@ export default class App extends Component {
     return ImageHelpers.promisifiedFileReader(file[0])
       .then(fileReaderData => {
         fileData = { ...fileReaderData };
-        return ImageHelpers.getS3AuthData(file[0].name || 'tmp_image_0');
+        let name = file[0].name || 'tmp_image_0';
+        name = name.substring(0, 254);
+        return ImageHelpers.getS3AuthData(name);
       })
       .then(S3Data => {
         return ImageHelpers.postToS3(S3Data, fileData, this.props.S3BucketURL, this.props.AWSAccessKeyId);

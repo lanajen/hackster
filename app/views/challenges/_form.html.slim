@@ -239,7 +239,7 @@
                     .col-sm-8
                       = link_to admin.user.name, admin.user
                 - else
-                  = f_admin.input :user_id, input_html: { class: 'select2' }, label: 'Admin user', collection: [], prompt: 'Select a user (type in their name)'
+                  = f_admin.input :user_id, input_html: { class: 'select2 challenge_admin_user' }, label: 'Admin user', collection: [], prompt: 'Select a user (type in their name)'
                 = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
                 .col-sm-8.col-sm-offset-4= f_admin.link_to_remove 'Remove this admin', class: 'btn btn-danger btn-xs'
             = f.link_to_add 'Add an admin', :challenge_admins, class: 'btn btn-success btn-sm'
@@ -249,7 +249,7 @@
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
-            = f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
+            /= f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
             = f.input :disable_pre_contest_winners, as: :boolean, inline_label: 'Disable pre-contest winners', label: false
             = f.input :disable_projects_phase, as: :boolean, inline_label: 'Disable projects phase', label: false
             = f.input :pre_contest_label, hint: "If you want to rename 'Pre-contest' into something else."
@@ -302,11 +302,6 @@
           down: "fa fa-arrow-down"
         },
         sideBySide: true
-      });
-
-      $("#challenge_sponsor_ids").select2({
-        tokenSeparators: [','],
-        width: '100%'
       });
 
       $('#pre_registration_start_date_dummy').on('change', function(){
@@ -371,6 +366,11 @@
         statusbar: false
       });
 
+      $("#challenge_sponsor_ids").select2({
+        tokenSeparators: [','],
+        width: '100%'
+      });
+
       var select2Options = {
         placeholder: 'Select a user',
         minimumInputLength: 3,
@@ -398,7 +398,7 @@
         }
       };
 
-      $('.select2').select2(select2Options);
+      $('.select2.challenge_admin_user').select2(select2Options);
 
       $('form').on('nested:fieldAdded', function(event){
         $(event.field).find('.select2').select2(select2Options);

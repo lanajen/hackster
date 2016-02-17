@@ -4,6 +4,7 @@ class SiteLoginsController < ActionController::Base
   helper_method :title
 
   def new
+    render status: :unauthorized
   end
 
   def create
@@ -13,7 +14,7 @@ class SiteLoginsController < ActionController::Base
       username = ENV['SITE_USERNAME']
       password = ENV['SITE_PASSWORD']
     else
-      current_site = ((request.domain == APP_CONFIG['default_domain'] && ClientSubdomain.find_by_subdomain(request.subdomains[0])) || ClientSubdomain.find_by_domain(request.host))
+      current_site = ((request.domain == APP_CONFIG['default_domain'] && ClientSubdomain.find_by_subdomain(request.subdomains[0])) || ClientSubdomain.find_by_domain(request.host))
       if current_site && current_site.enabled? && current_site.platform && current_site.platform.enable_password
         username = current_site.platform.user_name
         password = current_site.platform.http_password

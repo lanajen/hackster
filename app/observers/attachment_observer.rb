@@ -62,7 +62,7 @@ class AttachmentObserver < ActiveRecord::Observer
         Cashier.expire "challenge-#{challenge.id}-banner"
         FastlyWorker.perform_async 'purge', challenge.record_key
       when 'CoverImage'
-        Cashier.expire "challenge-#{challenge.id}-meta"
+        Cashier.expire "challenge-#{challenge.id}-meta", "challenge-#{challenge.id}-banner"
         FastlyWorker.perform_async 'purge', challenge.record_key
       end
     end

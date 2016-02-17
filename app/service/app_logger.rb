@@ -5,9 +5,20 @@ class AppLogger
 
   def initialize message, log_type, source, exception=nil
     @message, @log_type, @source, @exception = clean_message(message), log_type, source, exception
-    if exception.present?
-      @clean_backtrace = Rails.backtrace_cleaner.clean(@exception.backtrace)
-      @message = "#{@exception.inspect} // backtrace: #{@clean_backtrace.join(' - ')} // " + @message
+    if exception.present? and exception.backtrace
+      @clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
+      @message = "#{exception.inspect} // backtrace: #{@clean_backtrace.join(' - ')} // " + @message
+    end
+
+    # cache the error in redis and count how many times it happened in last 10min
+    if exception and count = redis.get(exception_key)
+      @count = count.to_i + 1
+      redis.set exception_key, @count
+      @message = "**#{@count} times in last 10min** " + @message
+    else
+      @count = 1
+      # expire the key automatically in 10 min
+      redis.setex exception_key, 6000, @count
     end
   end
 
@@ -18,7 +29,11 @@ class AppLogger
 
   def log_and_notify
     log_line = create_log
-    send_notification(log_line) if ENV['ENABLE_ERROR_NOTIF']
+
+    # send only 1 in 100 instances of errors
+    if ENV['ENABLE_ERROR_NOTIF'] and (@count - 1) % 100 == 0
+      send_notification(log_line)
+    end
   end
 
   def send_notification log_line
@@ -33,8 +48,16 @@ class AppLogger
     Rails.logger.error ""
   end
 
-  private
+  # private
     def clean_message msg
       msg.gsub /"([^"]*)password"=>"([^"]+)"/, '"' + $1.to_s + 'password"=>"FILTERED"'
+    end
+
+    def exception_key
+      @exception ? @exception.class.name.underscore : "#{@log_type}:#{@source}"
+    end
+
+    def redis
+      @redis ||= Redis::Namespace.new('app_logger', redis: RedisConn.conn)
     end
 end
