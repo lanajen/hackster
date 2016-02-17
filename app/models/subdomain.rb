@@ -16,4 +16,8 @@ class Subdomain < ActiveRecord::Base
       out
     end
   end
+
+  def uses_subdomain?
+    domain.blank?
+  end
 end

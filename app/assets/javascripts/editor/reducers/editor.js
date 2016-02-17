@@ -1114,6 +1114,7 @@ function createPlaceholderElement(dom, element, position, storeIndex) {
 
   json.splice(position, replaceLine, element);
   component.json = json;
+  component.html = Parser.toHtml(component.json);
   dom.splice(storeIndex, 1, component);
   return dom;
 }

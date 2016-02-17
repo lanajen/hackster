@@ -88,7 +88,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           when 'uid'
             is_hackster = session[:current_site].present?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
-            sign_in_and_redirect @user, event: :authentication
+            sign_in_and_redirect resource_name, @user, event: :authentication
           when 'email'#, 'name'
             session['devise.match_by'] = @user.match_by
             redirect_to edit__authorization_path(@user.id)
@@ -100,15 +100,24 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
   protected
-    def sign_in_and_redirect resource, opts={}
-      host = ClientSubdomain.find_by_subdomain(params[:current_site]).try(:host)
+    def sign_in_and_redirect resource_name, resource, opts={}
+      sign_in(resource_name, resource)
+
+      client = ClientSubdomain.find_by_subdomain(params[:current_site])
+      host = client.try(:host)
 
       # 1. flash is shown on wrong domain
       # 2. potentially use the token login option only for different domains
 
       url = user_return_to(host)
-      url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
-      url = UrlParam.new(url).add_param(:user_email, resource.email)
+      if parsed_uri = URI.parse(url) and parsed_uri.class == URI::HTTP
+        parsed_uri.port = request.port unless request.port.in? [80, 443] or request.port.present?
+        url = parsed_uri.to_s
+      end
+      if client and !client.uses_subdomain?
+        url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
+        url = UrlParam.new(url).add_param(:user_email, resource.email)
+      end
       url = UrlParam.new(url).add_param('f', '1')
       redirect_to url
     end

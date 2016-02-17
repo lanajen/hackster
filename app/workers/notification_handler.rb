@@ -145,9 +145,9 @@ class NotificationHandler
           context[:project] = commentable.project
           # if comment was posted by a project author, mail everyone else, otherwise mail project authors
           context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
-            commentable.participants - commentable.project.users
+            commentable.participants.with_subscription(notification_type, 'updated_review') - commentable.project.users.with_subscription(notification_type, 'updated_review')
           else
-            commentable.project.users
+            commentable.project.users.with_subscription(notification_type, 'updated_review')
           end
         end
       when :comment_mention
@@ -303,7 +303,7 @@ class NotificationHandler
         context[:thread] = thread = decision.review_thread
         context[:project] = thread.project
         context[:author] = author = decision.user
-        context[:users] = (thread.participants + thread.project.users).uniq - [author]
+        context[:users] = (thread.participants.with_subscription(notification_type, 'updated_review') + thread.project.users.with_subscription(notification_type, 'updated_review')).uniq - [author]
       when :thought_mention
         context[:model] = thought = context[:thought] = Thought.find context_id
         context[:author] = thought.user
