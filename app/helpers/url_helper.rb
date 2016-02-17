@@ -381,6 +381,14 @@ module UrlHelper
     review_project_url(thread.project, opts)
   end
 
+  # with the two optional prefix params (path_prefix and locale), when both are
+  # set to nil root_path originally output an empty string. That's not a valid
+  # path so we need to manually fix it up.
+  def root_path opts={}
+    out = super
+    out == '' ? '/' : out
+  end
+
   def tag_path tag, opts={}
     super CGI::escape(tag), opts
   end
