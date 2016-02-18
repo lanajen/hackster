@@ -9,17 +9,22 @@ class Api::V1::SearchController < Api::V1::BaseController
 
     if params[:q].present?
       begin
-        opts = params.dup
+        opts = {
+          q: params[:q],
+          per_page: params[:per_page],
+          page: safe_page_params,
+          model_classes: %w(BaseArticle),
+        }
         opts[:platform_id] = current_platform.id if current_platform
-        opts[:include_external] = true
-        @results = SearchRepository.new(opts).search.results
+        @search = Search.new(opts).hits['base_article']
+        @results = @search[:models]
 
-        @offset = @results.offset + 1
-        @max = @results.offset + @results.size
+        @offset = @results[:offset] + 1
+        @max = @search[:max]
 
-        @results.facets['type']['terms'].each do |term|
-          terms[term['term']] = term['count']
-        end
+        # @results.facets['type']['terms'].each do |term|
+        #   terms[term['term']] = term['count']
+        # end
 
       rescue => e
         logger.error "Error while searching for #{params[:q]}: #{e.message}"

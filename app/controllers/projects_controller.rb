@@ -583,9 +583,8 @@ class ProjectsController < ApplicationController
 
       when 'search'
         params[:q] = params[:ref_id]
-        params[:type] = 'base_article'
+        params[:model_classes] = %w(BaseArticle)
         params[:per_page] = 1
-        params[:include_external] = false
         params[:platform_id] = current_platform.id if is_whitelabel?
 
         # - first result (offset 0)
@@ -596,17 +595,17 @@ class ProjectsController < ApplicationController
 
         offset = params[:offset].to_i
         if offset == 0 and params[:dir] == 'prev'
-          offset = SearchRepository.new(params).search.results.total_count - 1
+          offset = Search.new(params).hits['base_article'][:total_size] - 1
         else
           offset += (params[:dir] == 'prev' ? -1 : 1)
         end
 
-        @results = SearchRepository.new(params.merge(offset: offset)).search.results
+        @results = Search.new(params.merge(page: offset + 1)).hits['base_article'][:models]
 
         # handle next for last result
         if !(@next = @results.first) and offset > 0
           offset = 0
-          @results = SearchRepository.new(params.merge(offset: 0)).search.results
+          @results = Search.new(params.merge(page: 1)).hits['base_article'][:models]
           @next = @results.first
         end
 

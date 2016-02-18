@@ -8,7 +8,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     if params[:q].present?
       type = params[:type] ? params[:type].capitalize + 'Part' : nil
       platform_id = params[:all_platforms] ? nil : current_platform.try(:id)
-      @parts = Part.search(q: params[:q], type: type, platform_id: platform_id, includes: [:image, platform: :avatar])
+      @parts = Part.search(q: params[:q], type: type, platform_id: platform_id, per_page: 10, includes: [:image, platform: :avatar])
 
       render 'index_search'
     else

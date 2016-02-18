@@ -154,11 +154,12 @@ class Part < ActiveRecord::Base
     # approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).includes(:platform)
 
     params = {}
-    params['platforms.id'] = opts[:platform_id] if opts[:platform_id]
     params['type'] = opts[:type] if opts[:type]
 
     search_opts = {
       q: opts[:q],
+      per_page: opts[:per_page],
+      platform_id: opts[:platform_id],
       model_classes: [
         {
           model_class: 'Part',
