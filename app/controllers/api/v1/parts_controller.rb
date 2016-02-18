@@ -5,38 +5,41 @@ class Api::V1::PartsController < Api::V1::BaseController
   before_filter :public_or_private_api_methods
 
   def index
-    @parts = if current_platform
-      current_platform.parts
-    else
-      Part
-    end
-
     if params[:q].present?
-      @parts = @parts.search(q: params[:q])
-    end
+      type = params[:type] ? params[:type].capitalize + 'Part' : nil
+      @parts = Part.search(q: params[:q], type: type, platform_id: current_platform.try(:id), includes: [:image, platform: :avatar])
 
-    if params[:type].present?
-      if params[:type].in? Part::KNOWN_TYPES
-        params[:human_type] = Part::KNOWN_TYPES[params[:type]]
-        params[:type] = params[:type].capitalize + 'Part'
-
-        @parts = @parts.where(type: params[:type])
+      render 'index_search'
+    else
+      @parts = if current_platform
+        current_platform.parts
       else
-        params[:human_type] = params[:type]
+        Part
       end
-    end
 
-    sort = params[:sort]
-    unless sort.in? Part::SORTING.keys
-      sort = Part::DEFAULT_SORT
-    end
-    @parts = @parts.send(Part::SORTING[sort])
+      if params[:type].present?
+        if params[:type].in? Part::KNOWN_TYPES
+          params[:human_type] = Part::KNOWN_TYPES[params[:type]]
+          params[:type] = params[:type].capitalize + 'Part'
 
-    if params[:approved]
-      @parts = @parts.approved
-    end
+          @parts = @parts.where(type: params[:type])
+        else
+          params[:human_type] = params[:type]
+        end
+      end
 
-    @parts = @parts.includes(:image, platform: :avatar).paginate(page: safe_page_params)
+      sort = params[:sort]
+      unless sort.in? Part::SORTING.keys
+        sort = Part::DEFAULT_SORT
+      end
+      @parts = @parts.send(Part::SORTING[sort])
+
+      if params[:approved]
+        @parts = @parts.approved
+      end
+
+      @parts = @parts.includes(:image, platform: :avatar).paginate(page: safe_page_params)
+    end
   end
 
   def create

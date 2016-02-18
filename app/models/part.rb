@@ -124,6 +124,7 @@ class Part < ActiveRecord::Base
         } : nil
       ].compact,
       _tags: product_tags_cached,
+      type: type,
 
       # for display
       image_url: decorate.image(:part_thumb),
@@ -140,17 +141,35 @@ class Part < ActiveRecord::Base
   scope :alphabetical, -> { order name: :asc }
   scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
-  def self.search params
+  def self.search opts={}
     # escape single quotes and % so it doesn't break the query
-    query = if params[:q].present?
-      params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-        "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
-      end.join(' AND ')
-    else
-      '1=1'
-    end
+    # query = if params[:q].present?
+    #   params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+    #     "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
+    #   end.join(' AND ')
+    # else
+    #   '1=1'
+    # end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).includes(:platform)
+    # approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).includes(:platform)
+
+    params = {}
+    params['platforms.id'] = opts[:platform_id] if opts[:platform_id]
+    params['type'] = opts[:type] if opts[:type]
+
+    search_opts = {
+      q: opts[:q],
+      model_classes: [
+        {
+          model_class: 'Part',
+          params: params,
+          includes: opts[:includes],
+          restrictSearchableAttributes: "name,platforms.name,mpn",
+        }
+      ]
+    }
+
+    Search.new(search_opts).hits['part']
   end
 
   def self.approved

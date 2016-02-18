@@ -53,7 +53,8 @@ class SearchController < ApplicationController
         title "Results for #{params[:q]}"
         meta_desc "Browse results for #{params[:q]}. Find hardware platforms, projects and developers on hackster.io."
         begin
-          @results = Search.new(search_opts).hits
+          @search = Search.new(search_opts)
+          @results = @search.hits
           # unless @results.total_count.zero?
           #   title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
           #   meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find hardware platforms, projects and developers on #{site_name}."

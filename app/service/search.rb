@@ -19,6 +19,12 @@ class Search
   #   ]
   # }
 
+  def has_hits?
+    @hits.map do |type, hits|
+      hits[:page_size]
+    end.sum > 0
+  end
+
   def hits
     return @hits if @hits
     _hits = {}
@@ -27,7 +33,9 @@ class Search
       out = {}
       model_class = guess_model_class_from_index batch['index']
 
-      out[:models] = get_models_from_hits batch
+      model_opts = params[:model_classes].select{|m| m.kind_of?(Hash) and m[:model_class] == model_class }.first || {}
+
+      out[:models] = get_models_from_hits batch, model_opts[:includes]
       out[:paginator] = paginate_models out[:models], batch['nbHits']
       out[:offset] = get_offset batch
       out[:page_size] = get_size batch
@@ -44,16 +52,16 @@ class Search
     @params = params
   end
 
-  def search_opts
-    @search_opts ||= build_search_opts
-  end
-
   def results
     return @results if @results
 
     Rails.logger.info "Searching for #{search_opts}"
     response = Algolia.multiple_queries search_opts
     @results = response['results']
+  end
+
+  def search_opts
+    @search_opts ||= build_search_opts
   end
 
   private
@@ -85,6 +93,7 @@ class Search
           if model_class_opts[:params]
             _opts.merge! build_facets(model_class_opts[:params])
           end
+          _opts[:restrictSearchableAttributes] = model_class_opts[:restrictSearchableAttributes] if model_class_opts[:restrictSearchableAttributes]
         when String
           model_class = model_class_opts
         else
@@ -110,13 +119,15 @@ class Search
       batch['page'] * batch['hitsPerPage'] + 1
     end
 
-    def get_models_from_hits batch
+    def get_models_from_hits batch, includes=nil
       model_class = guess_model_class_from_index batch['index']
 
       ids = batch['hits'].map{|o| o['id'] }
       if ids.any?
-        models = model_class.constantize.where(id: ids)
+        models = model_class.constantize.where(id: ids).includes(includes)
         order_models models, ids
+      else
+        []
       end
     end
 

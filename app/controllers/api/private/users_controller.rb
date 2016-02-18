@@ -3,9 +3,13 @@ class Api::Private::UsersController < Api::Private::BaseController
   def autocomplete
     users = if params[:q].present?
       begin
-        params[:type] = 'user'
-        params[:per_page] = User.per_page
-        SearchRepository.new(params).search.results
+        opts = {
+          q: params[:q],
+          model_classes: ['User'],
+          page: safe_page_params,
+          per_page: User.per_page,
+        }
+        Search.new(opts).hits['user'][:models]
       rescue => e
         []
       end
