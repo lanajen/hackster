@@ -5,13 +5,13 @@ class SearchController < ApplicationController
 
     respond_to do |format|
       format.html do
-        do_search
+        do_search params[:type]
         render
       end
       format.rss { redirect_to search_path(params.merge(format: :atom)), status: :moved_permanently }
       format.atom do
-        do_search 'base_article'
-        @projects = @results
+        do_search 'BaseArticle'
+        @projects = @results['base_article'][:models]
         render layout: false, template: 'projects/index'
       end
     end
@@ -41,8 +41,8 @@ class SearchController < ApplicationController
   private
     def do_search restrict_model=nil
       if params[:q].present?
-        types = params[:type].present? ? [params[:type]] : %w(BaseArticle User Platform Part)
-        per_page = params[:per_page].presence || params[:type] ? 21 : 3;
+        types = restrict_model.present? ? [restrict_model] : %w(BaseArticle User Platform Part)
+        per_page = params[:per_page].presence || restrict_model ? 21 : 3;
         search_opts = {
           q: params[:q],
           model_classes: types,
