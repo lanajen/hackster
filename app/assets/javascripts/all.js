@@ -585,7 +585,6 @@ function updateProjectThumbLinks() {
     offset = project.data('offset');
     $('a.project-link-with-ref', this).each(function(j, link) {
       href = link.getAttribute('href') || link.href;
-      console.log('href', href);
       link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
     });
     project.addClass('link-added');

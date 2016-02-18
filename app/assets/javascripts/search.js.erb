@@ -34,80 +34,87 @@ function generateFooter(a, b, term, type) {
   return '<a class="aa-footer" href="' + url + '">' + anchor + '</a>';
 }
 
-$('#search-input').autocomplete({}, [
-  {
-    source: $.fn.autocomplete.sources.hits(platforms, { hitsPerPage: 3 }),
-    displayKey: 'name',
-    templates: {
-      header: '<div class="aa-header">Platforms</div>',
-      footer: function(a, b){ return generateFooter(a, b, 'platform', 'Platform') },
-      suggestion: function(suggestion) {
-        var body = '<ul class="list-inline list-unstyled">' +
-                    '<li>' + pluralize(suggestion.members_count, 'follower') + '</li>' +
-                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
-                    '</ul>';
+$(function(){
+  $('#search-input').autocomplete({}, [
+    {
+      source: $.fn.autocomplete.sources.hits(platforms, { hitsPerPage: 3 }),
+      displayKey: 'name',
+      templates: {
+        header: '<div class="aa-header">Platforms</div>',
+        footer: function(a, b){ return generateFooter(a, b, 'platform', 'Platform') },
+        suggestion: function(suggestion) {
+          var body = '<ul class="list-inline list-unstyled">' +
+                      '<li>' + pluralize(suggestion.members_count, 'follower') + '</li>' +
+                      '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                      '</ul>';
 
-        return suggestionTemplate(suggestion.avatar_url,
-                                  suggestion._highlightResult.name.value,
-                                  body);
+          return suggestionTemplate(suggestion.avatar_url,
+                                    suggestion._highlightResult.name.value,
+                                    body);
+        }
+      }
+    },
+    {
+      source: $.fn.autocomplete.sources.hits(parts, { hitsPerPage: 3 }),
+      displayKey: 'name',
+      templates: {
+        header: '<div class="aa-header">Components</div>',
+        footer: function(a, b){ return generateFooter(a, b, 'component', 'Part') },
+        suggestion: function(suggestion) {
+          var body = '<ul class="list-inline list-unstyled">' +
+                      '<li>' + suggestion.owners_count + ' own it' + '</li>' +
+                      '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                      '</ul>';
+
+          return suggestionTemplate(suggestion.image_url,
+                                    suggestion._highlightResult.name.value,
+                                    body);
+        }
+      }
+    },
+    {
+      source: $.fn.autocomplete.sources.hits(projects, { hitsPerPage: 3 }),
+      displayKey: 'name',
+      templates: {
+        header: '<div class="aa-header">Write-ups</div>',
+        footer: function(a, b){ return generateFooter(a, b, 'write-up', 'BaseArticle') },
+        suggestion: function(suggestion) {
+          var body = '<ul class="list-inline list-unstyled">' +
+                      '<li>' + pluralize(suggestion.impressions_count, 'view') + '</li>' +
+                      '<li>' + pluralize(suggestion.respects_count, 'respect') + '</li>' +
+                      '</ul>';
+
+          return suggestionTemplate(suggestion.cover_image_url,
+                                    suggestion._highlightResult.name.value,
+                                    body);
+        }
+      }
+    },
+    {
+      source: $.fn.autocomplete.sources.hits(users, { hitsPerPage: 3 }),
+      displayKey: 'name',
+      templates: {
+        header: '<div class="aa-header">Members</div>',
+        footer: function(a, b){ return generateFooter(a, b, 'member', 'User') },
+        suggestion: function(suggestion) {
+          var body = '<ul class="list-inline list-unstyled">' +
+                      '<li>' + pluralize(suggestion.followers_count, 'follower') + '</li>' +
+                      '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
+                      '</ul>';
+
+          return suggestionTemplate(suggestion.avatar_url,
+                                    suggestion.name + ' (' + suggestion.user_name + ')',
+                                    body);
+        }
       }
     }
-  },
-  {
-    source: $.fn.autocomplete.sources.hits(parts, { hitsPerPage: 3 }),
-    displayKey: 'name',
-    templates: {
-      header: '<div class="aa-header">Components</div>',
-      footer: function(a, b){ return generateFooter(a, b, 'component', 'Part') },
-      suggestion: function(suggestion) {
-        var body = '<ul class="list-inline list-unstyled">' +
-                    '<li>' + suggestion.owners_count + ' own it' + '</li>' +
-                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
-                    '</ul>';
-
-        return suggestionTemplate(suggestion.image_url,
-                                  suggestion._highlightResult.name.value,
-                                  body);
-      }
+  ]).on('autocomplete:selected', function(event, suggestion, dataset) {
+    console.log(suggestion, dataset);
+    window.location.href = suggestion.url;
+  }).on('keypress', function(e){
+    var input = $(this);
+    if (e.keyCode == 13) {
+      input.closest('form').submit();
     }
-  },
-  {
-    source: $.fn.autocomplete.sources.hits(projects, { hitsPerPage: 3 }),
-    displayKey: 'name',
-    templates: {
-      header: '<div class="aa-header">Write-ups</div>',
-      footer: function(a, b){ return generateFooter(a, b, 'write-up', 'BaseArticle') },
-      suggestion: function(suggestion) {
-        var body = '<ul class="list-inline list-unstyled">' +
-                    '<li>' + pluralize(suggestion.impressions_count, 'view') + '</li>' +
-                    '<li>' + pluralize(suggestion.respects_count, 'respect') + '</li>' +
-                    '</ul>';
-
-        return suggestionTemplate(suggestion.cover_image_url,
-                                  suggestion._highlightResult.name.value,
-                                  body);
-      }
-    }
-  },
-  {
-    source: $.fn.autocomplete.sources.hits(users, { hitsPerPage: 3 }),
-    displayKey: 'name',
-    templates: {
-      header: '<div class="aa-header">Members</div>',
-      footer: function(a, b){ return generateFooter(a, b, 'member', 'User') },
-      suggestion: function(suggestion) {
-        var body = '<ul class="list-inline list-unstyled">' +
-                    '<li>' + pluralize(suggestion.followers_count, 'follower') + '</li>' +
-                    '<li>' + pluralize(suggestion.projects_count, 'project') + '</li>' +
-                    '</ul>';
-
-        return suggestionTemplate(suggestion.avatar_url,
-                                  suggestion.name + ' (' + suggestion.user_name + ')',
-                                  body);
-      }
-    }
-  }
-]).on('autocomplete:selected', function(event, suggestion, dataset) {
-  console.log(suggestion, dataset);
-  window.location.href = suggestion.url;
+  });
 });
