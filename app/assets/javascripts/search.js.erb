@@ -34,7 +34,7 @@ function generateFooter(a, b, term, type) {
   return '<a class="aa-footer" href="' + url + '">' + anchor + '</a>';
 }
 
-$('#search-input').autocomplete({ autoselect: true }, [
+$('#search-input').autocomplete({}, [
   {
     source: $.fn.autocomplete.sources.hits(platforms, { hitsPerPage: 3 }),
     displayKey: 'name',
