@@ -50,8 +50,8 @@ class BaseArticleDecorator < ApplicationDecorator
     parse_medium model.description, options
   end
 
-  def story_json mode=:normal
-    options = { mode: mode }
+  def story_json mode=:normal, options={}
+    options.merge!({ mode: mode })
     return @story_json if @story_json
 
     @story_json = if model.story_json.present?

@@ -228,7 +228,7 @@ class BaseArticle < ActiveRecord::Base
     elements = Sanitize::Config::RELAXED[:elements].dup
     elements.delete('img')
     sanitize_config = {remove_contents: %w(script style), elements: elements}
-    _description = Sanitize.fragment(decorate.story_json, sanitize_config) || description
+    _description = Sanitize.fragment(decorate.story_json(:normal, text_only: true), sanitize_config) || description
     _description = ActionController::Base.helpers.strip_tags(_description)[0..5000]
 
     {

@@ -2,6 +2,8 @@ module StoryJsonDecorator
   private
     def parse_story_json story, options={}
       story.map do |item|
+        next if options[:text_only] and item['type'] != 'CE'  # so we can get a text only version of the story
+
         case item['type']
         when 'CE'
           build_html item['json']
