@@ -7,7 +7,7 @@ class Client::SearchController < Client::BaseController
       redirect_to tag_path(params[:q].gsub(/^#/, '')) and return if params[:q] =~ /^#/
 
       begin
-        types = params[:type].present? ? [params[:type]] : %w(BaseArticle)
+        types = %w(BaseArticle)
         search_opts = {
           q: params[:q],
           model_classes: types,

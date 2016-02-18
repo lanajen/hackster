@@ -623,7 +623,9 @@ HackerIo::Application.routes.draw do
           get 'profile/edit' => 'users#edit'
           patch 'profile' => 'users#update'
 
-          get 'search' => 'search#search'
+          constraints(MainSite) do
+            get 'search' => 'search#search'
+          end
           get 'tags/:tag' => redirect('/projects/tags/%{tag}'), via: :get, as: :deprecated_tags
           get 'tags' => 'search#tags', as: :deprecated_tags2
           get 'projects/tags/:tag' => 'search#tags', as: :tag

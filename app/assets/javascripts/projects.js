@@ -562,7 +562,8 @@ $select2target = null;
             return {
               q: params.term,  // search term
               page: params.page,
-              type: partType
+              type: partType,
+              all_platforms: true
             };
           },
           processResults: function (data, page) {
