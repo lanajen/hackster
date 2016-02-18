@@ -225,8 +225,11 @@ class BaseArticle < ActiveRecord::Base
   has_algolia_index 'pryvate or hide or !approved?'
 
   def to_indexed_json
-    sanitize_config = {remove_contents: %w(script)}.merge(Sanitize::Config::RELAXED)
+    elements = Sanitize::Config::RELAXED[:elements].dup
+    elements.delete('img')
+    sanitize_config = {remove_contents: %w(script style), elements: elements}
     _description = Sanitize.fragment(decorate.story_json, sanitize_config) || description
+    _description = ActionController::Base.helpers.strip_tags(_description)[0..5000]
 
     {
       # for locating
