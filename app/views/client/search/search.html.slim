@@ -21,7 +21,7 @@
 
         .row.thumb-list
           - @results[:models].each_with_index do |project, i|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: (@alternate_results.present? ? 'www' : false), ref_id: params[:q], ref: 'search', offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_host: (@alternate_results.present? ? APP_CONFIG['default_host'] : false), ref_id: params[:q], ref: 'search', offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }
 
         .row
           .col-xs-12.text-center= will_paginate @results[:paginator]
