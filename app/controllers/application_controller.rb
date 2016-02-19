@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
   helper_method :controller_action
   helper_method :is_trackable_page?
   helper_method :api_host
+  helper_method :site_user_name
   before_filter :set_signed_in_cookie
   before_filter :set_default_response_format
 
@@ -653,6 +654,10 @@ class ApplicationController < ActionController::Base
       is_whitelabel? ? current_site.name : 'Hackster.io'
     end
 
+    def site_user_name
+      is_whitelabel? ? current_platform.user_name : 'hackster'
+    end
+
     def title title=nil
       if title
         @title = title
@@ -676,7 +681,7 @@ class ApplicationController < ActionController::Base
     end
 
     def set_view_paths
-      prepend_view_path "app/views/whitelabel/#{current_site.subdomain}" if is_whitelabel?
+      prepend_view_path "app/views/whitelabel/#{site_user_name}" if is_whitelabel?
     end
 
     def show_hello_world?

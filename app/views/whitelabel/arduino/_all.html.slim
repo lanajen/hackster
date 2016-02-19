@@ -1,5 +1,5 @@
 = content_for :head do
-  = render "whitelabel/#{current_site.subdomain}/head"
+  = render "whitelabel/#{site_user_name}/head"
   = stylesheet_link_tag 'whitelabel/arduino/application'
 
 = content_for :header do
@@ -122,6 +122,6 @@
 
 = content_for :footer do
   - unless @hide_footer
-    = render "whitelabel/#{current_site.subdomain}/footer"
+    = render "whitelabel/#{site_user_name}/footer"
   - else
     div
