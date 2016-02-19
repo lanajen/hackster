@@ -147,7 +147,7 @@ class NotificationHandler
           context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
             commentable.participants.with_subscription(notification_type, 'updated_review') - commentable.project.users.with_subscription(notification_type, 'updated_review')
           else
-            commentable.project.users.with_subscription(notification_type, 'updated_review')
+            commentable.project.users.with_subscription(notification_type, 'updated_review').reorder(nil)  # user reorder(nil) so that uniq! doesn't fail (uniq! is used down the line)
           end
         end
       when :comment_mention
