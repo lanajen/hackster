@@ -17,6 +17,8 @@ class Platform < Collection
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'PlatformMember'
   has_many :announcements, as: :threadable, dependent: :destroy
+  has_many :challenges, through: :sponsor_relations
+  has_many :sponsor_relations, dependent: :destroy, foreign_key: :group_id
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
   has_many :parts
 

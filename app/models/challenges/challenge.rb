@@ -17,7 +17,8 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
-  has_and_belongs_to_many :sponsors, class_name: 'Group', dependent: :destroy
+  has_many :sponsor_relations, dependent: :destroy
+  has_many :sponsors, through: :sponsor_relations, class_name: 'Platform'
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy

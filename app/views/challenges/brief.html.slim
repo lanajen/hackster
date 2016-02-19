@@ -197,7 +197,7 @@
               i.fa.fa-chevron-up
           .section-content
             ul.list-unstyled
-              - @challenge.ideas.won.joins(:user).order('users.full_name, users.user_name').each do |idea|
+              - @ideas.each do |idea|
                 li
                   strong=> link_to idea.user.name, idea.user
                   ' for

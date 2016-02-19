@@ -3,6 +3,7 @@ class ChallengesController < ApplicationController
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
   before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :load_ideas, only: [:show, :brief]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
   before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
@@ -193,6 +194,12 @@ class ChallengesController < ApplicationController
         { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id } }
       end
       @prizes = @challenge.prizes.includes(:image)
+    end
+
+    def load_ideas
+      if @challenge.pre_contest_awarded?
+        @ideas = @challenge.ideas.won.joins(:user).includes(:image, user: :avatar).order('users.full_name, users.user_name')
+      end
     end
 
     def load_projects

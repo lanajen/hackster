@@ -27,7 +27,6 @@ class Group < ActiveRecord::Base
 
   editable_slug :user_name
 
-  has_and_belongs_to_many :challenges, dependent: :destroy
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :featured_projects, -> { where("project_collections.workflow_state = 'featured'") }, source: :project, through: :project_collections
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
