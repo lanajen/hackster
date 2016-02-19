@@ -36,9 +36,13 @@ table.table.table-striped
         td #{project.checklist_completion}%
         td= thread.created_at.in_time_zone(PDT_TIME_ZONE).strftime("%Y-%m-%d<br>%l:%M %p").html_safe
         td
-          span= thread.workflow_state.humanize
-          - if thread.ready_for_approval?
-            i.fa.fa-flag
+          div
+            span= thread.workflow_state.humanize
+            - if thread.ready_for_approval?
+              i.fa.fa-flag
+          div
+            - thread.participants.each do |user|
+              = image_tag user.decorate.avatar(:tiny), class: 'img-circle'
         td
           - if current_user.is? :admin
             .btn-group
