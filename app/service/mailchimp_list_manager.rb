@@ -24,7 +24,7 @@ class MailchimpListManager
     end
 
     def add_subscribers_in_batches users
-      users.each_slice(1000).map do |slice|
+      users.each_slice(250).map do |slice|
         add_subscribers slice
       end.inject({}){|mem, h| mem.merge(h); h }
     end
@@ -55,7 +55,7 @@ class MailchimpListManager
     end
 
     def remove_subscribers_in_batches users
-      users.each_slice(1000).map do |slice|
+      users.each_slice(250).map do |slice|
         remove_subscribers slice
       end.inject({}){|mem, h| mem.merge(h); h }
     end
