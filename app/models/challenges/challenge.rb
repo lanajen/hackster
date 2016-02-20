@@ -18,7 +18,7 @@ class Challenge < ActiveRecord::Base
 
   belongs_to :platform
   has_many :sponsor_relations, dependent: :destroy
-  has_many :sponsors, through: :sponsor_relations, class_name: 'Platform'
+  has_many :sponsors, through: :sponsor_relations, class_name: 'Group'
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
@@ -184,11 +184,11 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.publyc
-    where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
+    where "CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
   end
 
   def self.ready
-    where "CAST(hproperties -> 'ready' AS BOOLEAN) = ?", true
+    where "CAST(challenges.hproperties -> 'ready' AS BOOLEAN) = ?", true
   end
 
   def self.starts_first
