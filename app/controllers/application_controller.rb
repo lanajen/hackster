@@ -60,7 +60,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_view_paths
   layout :current_layout
 
-
   # hoping that putting it here will only make the condition run once when the
   # app loads and not on every request
   if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']

@@ -43,6 +43,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :force_explicit_locale, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
+  hstore_column :properties, :javascript_on_logout, :string
   hstore_column :properties, :path_prefix, :string
 
   has_default :name, '%{platform.try(:name)} Projects' do |instance|
@@ -66,6 +67,10 @@ class ClientSubdomain < Subdomain
 
   def has_default_project_cover_image?
     default_project_cover_image_file_path.present?
+  end
+
+  def has_javascript_on_logout?
+    javascript_on_logout.present?
   end
 
   def has_path_prefix?
