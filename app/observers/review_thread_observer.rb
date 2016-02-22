@@ -1,6 +1,7 @@
 class ReviewThreadObserver < ActiveRecord::Observer
   def before_create record
     project = record.project
+    return unless project
 
     if project.needs_review?
       record.workflow_state = :needs_review
