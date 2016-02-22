@@ -228,13 +228,13 @@ class Challenge < ActiveRecord::Base
     if activate_pre_contest?
       @dates << { date: pre_contest_start_date, label: "#{pre_contest_label} opens" } if pre_contest_start_date
       @dates << { date: pre_contest_end_date, label: "#{pre_contest_label} closes" } if pre_contest_end_date
-      @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced" } if pre_winners_announced_date and not disable_pre_contest_winners?
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced by" } if pre_winners_announced_date and not disable_pre_contest_winners?
     end
 
     unless disable_projects_phase?
       @dates << { date: start_date, label: 'Project submissions open' } if start_date
       @dates << { date: end_date, label: 'Project submissions close' } if end_date
-      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced by' } if winners_announced_date
     end
 
     @dates
