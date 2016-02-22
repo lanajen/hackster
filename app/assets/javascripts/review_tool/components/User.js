@@ -4,11 +4,17 @@ const User = React.createClass({
   render: function() {
     const { userName, userSlug, avatarLink, user_id, userRole } = this.props;
 
-    let role = ['admin', 'hackster_moderator'].indexOf(userRole) > -1 ? ' (Hackster team)' :
-              (['super_moderator', 'moderator'].indexOf(userRole) > -1 ? ' (community moderator)' : null);
-
     if (!user_id || user_id === 0)
       return (<span />);
+
+    let role;
+    if (['admin', 'hackster_moderator'].indexOf(userRole) > -1) {
+      role = ' (Hackster team)';
+    } else if (['super_moderator'].indexOf(userRole) > -1) {
+      role = ' (super community moderator)';
+    } else if (['moderator'].indexOf(userRole) > -1) {
+      role = ' (community moderator)';
+    }
 
     return (
       <span className='user-name'>
