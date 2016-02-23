@@ -1,0 +1,8 @@
+.project-widget-with-user-thumbs
+  - cache [I18n.locale, "project-#{@project.id}-respects", 'users', 'arduino'], tag: ["project-#{@project.id}-respects"] do
+    .user-thumbs.clearfix
+      - users.each do |user|
+        - cache [I18n.locale, "user-#{user.id}-thumb", 'respect', 'arduino'], tag: ["user-#{user.id}-thumb"] do
+          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive user-img img-rounded'), user , data: { container: 'body' }, rel: 'tooltip', title: user.name
+    - if @project.respects_count > users.count
+      p.others-count and #{pluralize @project.respects_count - users.count, 'other'}
