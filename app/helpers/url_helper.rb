@@ -1,16 +1,20 @@
 module UrlHelper
 
   def arduino_sign_in_url
-    redirect_to = @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)
-    url = "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/arduino?current_site=#{current_site.subdomain}&setup=true"
-    if redirect_to.present?
-      url += "&redirect_to=#{redirect_to}"
-    end
-    url
+    omniauth_sign_in_url 'arduino'
   end
 
   def cypress_sign_in_url
-    "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/saml?current_site=cypress&setup=true&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}"
+    omniauth_sign_in_url 'saml'
+  end
+
+  def omniauth_sign_in_url provider
+    url = "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/#{provider}?current_site=#{current_site.subdomain}&setup=true"
+    redirect_to = @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)
+    if redirect_to.present?
+      url += "&redirect_to=#{CGI.escape(redirect_to)}"
+    end
+    url
   end
 
   def assignment_path assignment, opts={}
