@@ -1,7 +1,12 @@
 module UrlHelper
 
   def arduino_sign_in_url
-    "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/arduino?current_site=arduino&setup=true&redirect_to=#{@redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)}"
+    redirect_to = @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)
+    url = "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/arduino?current_site=#{site_user_name}&setup=true"
+    if redirect_to.present?
+      url += "&redirect_to=#{redirect_to}"
+    end
+    url
   end
 
   def cypress_sign_in_url

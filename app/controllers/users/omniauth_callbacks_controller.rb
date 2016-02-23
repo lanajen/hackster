@@ -86,7 +86,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         if @user
           case @user.match_by
           when 'uid'
-            is_hackster = session[:current_site].present?
+            is_hackster = params[:current_site].blank?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
             sign_in_and_redirect resource_name, @user, event: :authentication
           when 'email'#, 'name'
@@ -123,7 +123,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def after_omniauth_failure_path_for resource_name
-      site = ClientSubdomain.find_by_subdomain(params['current_site'])
+      site = ClientSubdomain.find_by_subdomain(params[:current_site])
 
       if site.try(:disable_login?)
         site.base_uri(request.scheme) + root_path

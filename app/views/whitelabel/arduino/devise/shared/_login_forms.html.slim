@@ -23,6 +23,6 @@
             .box-content= render partial: 'devise/shared/omniauth', locals: { css: 'zocial-block', autofocus: (highlight == 'connect') }
 
 = content_for :head do
-
+  - @redirect_to = user_return_to
   javascript:
-    window.location = "#{arduino_sign_in_url}"
+    window.location = "#{arduino_sign_in_url.html_safe}";

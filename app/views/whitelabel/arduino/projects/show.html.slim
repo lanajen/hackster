@@ -33,7 +33,7 @@
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
             .col-md-8.left-column
-              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-teaser", site_user_name == 'arduino'], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
 
                 - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
                 - if @winning_entry
@@ -88,7 +88,7 @@
                   .section-content.hljs-active
                     .medium-editor= @description
 
-              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                 - if @hardware_parts.any?
                   section#components.section-container.section-collapsible
                     h2.section-title
@@ -105,7 +105,7 @@
                           - @hardware_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
-              - cache [I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-tool-parts", site_user_name], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
                 - if @tool_parts.any?
                   section#tools.section-container.section-collapsible
                     h2.section-title
@@ -143,7 +143,7 @@
                       - @schematic_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-              - cache [I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
                 - if @software_parts.any?
                   section#apps.section-container.section-collapsible
                     h2.section-title
@@ -399,10 +399,11 @@
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge
 
-              a href="#similar-proj" class="similar-proj-btn smooth-scroll" data-offset=-60
-                | See similar projects
-                br
-                | you might like
+              - if @other_projects.count > 0
+                a href="#similar-proj" class="similar-proj-btn smooth-scroll" data-offset=-60
+                  | See similar projects
+                  br
+                  | you might like
 
               - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
                 section.section-thumbs.hidden-xs.hidden-sm
