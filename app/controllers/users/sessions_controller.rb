@@ -51,7 +51,8 @@ class Users::SessionsController < Devise::SessionsController
         reset_current_mixpanel_user
       end
 
-      super resource
+      out = super resource
+      UrlParam.new(out).add_param(:logged_out, '1')
     end
 
     def set_action
