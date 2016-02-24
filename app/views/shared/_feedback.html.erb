@@ -1,45 +1,29 @@
 <div id="uv-prompt" data-uv-autoprompt style="position: fixed; bottom: 5px; right: 5px"></div>
 
 <script>
-UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/xFTFtFNd8ckhCsF2fnhXaA.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+  UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/xFTFtFNd8ckhCsF2fnhXaA.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
 
-// Set colors
-UserVoice.push(['set', {
-  accent_color: '#448dd6',
-  trigger_color: 'white',
-  trigger_background_color: 'rgba(46, 49, 51, 0.6)',
-  'menu_enabled': false
-}]);
-
-// Identify the user and pass traits
-UserVoice.push(['identify', {
-  <% if user_signed_in? %>
-    email: '<%= current_user.email %>',
-    name: '<%= current_user.name %>',
-    id: '<%= current_user.id %>',
-    created_at: <%= current_user.created_at.to_i %>
-  <% end %>
-}]);
-
-// Add default trigger to the bottom-right corner of the window:
-//UserVoice.push(['addTrigger', '#uv-prompt', { mode: 'satisfaction', trigger_position: 'bottom-right' }]);
-
-// Or, use your own custom trigger:
-//UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);
-
-// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
-UserVoice.push(['autoprompt', {
-  target: '#uv-prompt',
-  position: 'top'
-}]);
-
-function showClassicWidget() {
-  UserVoice.push(['showLightbox', 'classic_widget', {
-    mode: 'full',
-    primary_color: '#cc6d00',
-    link_color: '#007dbf',
-    default_mode: 'support',
-    forum_id: 229281
+  // Set colors
+  UserVoice.push(['set', {
+    accent_color: '#448dd6',
+    trigger_color: 'white',
+    trigger_background_color: 'rgba(46, 49, 51, 0.6)',
+    'menu_enabled': false
   }]);
-}
+
+  // Identify the user and pass traits
+  <% if user_signed_in? %>
+    UserVoice.push(['identify', {
+      email: '<%= current_user.email %>',
+      name: '<%= current_user.name %>',
+      id: '<%= current_user.id %>',
+      created_at: <%= current_user.created_at.to_i %>
+    }]);
+  <% end %>
+
+  // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
+  UserVoice.push(['autoprompt', {
+    target: '#uv-prompt',
+    position: 'top'
+  }]);
 </script>
