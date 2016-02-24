@@ -2,7 +2,15 @@
 
 <p>This is to let you know that "|idea_name|", the idea you submitted to <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> was selected as a winner!</p>
 
-<p>We will send you a separate email to arrange shipping.</p>
+<% if @context[:challenge].pre_contest_needs_shipping? %>
+
+  <p>It will be shipped to you shortly at the mailing address you provided when you entered the contest.</p>
+
+<% else %>
+
+  <p>We will email you shortly to arrange delivery of your prize.</p>
+
+<% end %>
 
 <p>And don't forget, this was just the <%= @context[:challenge].pre_contest_label.downcase %>. Here's what you can win in the next phase:</p>
 <ul>

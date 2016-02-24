@@ -1,0 +1,85 @@
+@import "../../../node_modules/react-select/scss/default";
+
+.course-wizard-wrapper {
+  .course-wizard {
+    .completed-button-wrapper {
+      @include flexbox((
+        display: flex,
+        justify-content: flex-end
+      ));
+      font-size: 0.8em;
+      padding: 2% 0;
+      clear: both;
+    }
+  }
+}
+
+.course-wizard-step {
+  margin-bottom: 40px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+  & > label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  .change-link-wrapper {
+    font-size: 0.8em;
+    margin-left: 16px;
+    margin-top: 5px;
+  }
+}
+
+.course-wizard-result {
+  .result-name {
+    font-weight: bold;
+  }
+  .result-details {
+    color: #777;
+  }
+}
+
+.course-wizard-thumbnail {
+  @include flexbox((
+    display: flex
+  ));
+  padding: 20px;
+  border: 1px solid #ddd;
+
+  img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: 1em;
+    margin: 0 0 5px;
+  }
+
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .thumbnail-details {
+    @include flexbox((
+      display: flex,
+      flex-direction: column
+    ));
+    width: 100%;
+  }
+}
+
+.course-wizard-search {
+  .create-new-form {
+    font-size: 0.8em;
+    margin: 5px 0;
+  }
+  .continue-btn {
+    margin-top: 10px;
+    text-align: right;
+  }
+}

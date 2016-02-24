@@ -52,7 +52,7 @@ class GroupDecorator < UserDecorator
     end
     message += " (#{model.twitter_handle})" if model.twitter_handle
     message += " on @hacksterio"
-    message
+    message.html_safe
   end
 
   def social_share
@@ -67,7 +67,7 @@ class GroupDecorator < UserDecorator
       "Check out all the hardware projects for #{model.name}"
     end
     message += " on Hackster.io"
-    message
+    message.html_safe
   end
 
   def to_share_message

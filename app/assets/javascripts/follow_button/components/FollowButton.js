@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -88,7 +89,7 @@ const FollowButton = React.createClass({
       }
 
       this.updateStore(id, type);
-      React.findDOMNode(this.refs.button).blur();
+      ReactDOM.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
       console.log('Request Error: ' + err);
     });
@@ -115,14 +116,17 @@ const FollowButton = React.createClass({
   getClasses() {
     let classes = {
       'append': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
-      'append_sandwich': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
       'append_hacker': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
-      'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
+      'append_sandwich': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
       'community_shorter': 'follow-button btn btn-primary btn-sm btn-shorter community_shorter',
-      'text': 'follow-button btn btn-primary',
-      'text_wide': 'follow-button btn btn-primary disable-link btn-block btn-ellipsis react-button-margin-bottom',
       'part': 'follow-button btn btn-primary btn-block btn-sm',
-      'project': 'follow-button btn btn-link btn-sm'
+      'project': 'follow-button btn btn-link btn-sm',
+      'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
+      'shorter_arduino': 'follow-button btn btn-secondary btn-sm btn-shorter',
+      'text': 'follow-button btn btn-primary',
+      'text_arduino': 'follow-button btn btn-secondary',
+      'text_wide': 'follow-button btn btn-primary btn-block btn-ellipsis react-button-margin-bottom',
+      'text_wide_arduino': 'follow-button btn btn-secondary btn-block btn-ellipsis react-button-margin-bottom'
     };
     return classes;
   },

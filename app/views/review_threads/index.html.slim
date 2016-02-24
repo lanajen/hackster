@@ -1,0 +1,53 @@
+- model_class = ReviewThread
+.page-header
+  h1
+    ==> t '.title', :default => model_class.model_name.human.pluralize
+
+==> render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at status)).each do |field|
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: ReviewThread.workflow_spec.states.keys - [:new] }
+= render 'admin/shared/search_form_sort_and_submit'
+.form-group
+  label.control-label
+  .controls= link_to 'See all that need attention', reviews_path(status: :needs_attention), class: 'btn btn-link btn-sm'
+.form-group
+  label.control-label
+  .controls= link_to 'See all that need review', reviews_path(filters: { status: :needs_review }), class: 'btn btn-link btn-sm'
+
+table.table.table-striped
+  thead
+    tr
+      th colspan=2 = model_class.human_attribute_name(:project_info)
+      th= model_class.human_attribute_name(:checklist)
+      th= model_class.human_attribute_name(:date_published)
+      th= model_class.human_attribute_name(:status)
+      th
+  tbody
+    - @threads.each do |thread|
+      - project = thread.project
+      tr
+        td= image_tag project.decorate.cover_image(:cover_mini_thumb), style: 'width:60px;height:60px'
+        td
+          div= link_to project.name, review_project_path(project)
+          div
+            ' By
+            = project.users.map(&:name).to_sentence
+        td #{project.checklist_completion}%
+        td= thread.created_at.in_time_zone(PDT_TIME_ZONE).strftime("%Y-%m-%d<br>%l:%M %p").html_safe
+        td
+          div
+            span= thread.workflow_state.humanize
+            - if thread.ready_for_approval?
+              i.fa.fa-flag
+          div
+            - thread.participants.each do |user|
+              = image_tag user.decorate.avatar(:tiny), class: 'img-circle'
+        td
+          - if current_user.is? :admin
+            .btn-group
+              = link_to 'Edit as user', edit_project_path(project, show_admin_bar: 1), class: 'btn btn-default btn-xs'
+              = link_to 'Edit as admin', edit_admin_project_path(project), :class => 'btn btn-default btn-xs'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @threads

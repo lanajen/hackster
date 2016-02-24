@@ -1,0 +1,11 @@
+.project-actions
+  - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+    .mg-10= render partial: 'respects/button', locals: { respectable: @project }
+  .text-center style='position:relative'
+    - if user_signed_in?
+      = react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id, placeholder: 'New list name' }, { class: 'react-btn', style: 'display:inline-block;' })
+    = render 'projects/project_embed_button'
+    - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+      = render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
+- if @project.buy_link.present?
+  = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'

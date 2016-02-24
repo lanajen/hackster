@@ -1,0 +1,10 @@
+.search-header.clearfix
+  h3.pull-left
+    span> #{pluralize results[:total_size], 'result'} in #{category}
+    small
+      - if results[:total_size] > results[:page_size]
+        | (showing #{results[:offset]} to #{results[:max]})
+      - else
+        | (showing all)
+  - if !params[:type] and results[:total_size] > results[:page_size]
+    .pull-right= link_to 'Show more results', search_path(q: params[:q], type: type, per_page: 21)

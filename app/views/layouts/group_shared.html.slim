@@ -22,10 +22,10 @@
 
           .container.hidden-xs
             .media
-              - unless @group.type == 'List'
+              - unless @group.type.in? %w(List Promotion)
                 .media-left
                   = image_tag @group.avatar(:big), class: 'img-thumbnail'
-              .media-body class=(@group.type == 'List' ? 'no-avatar' : nil)
+              .media-body class=(@group.type.in?(%w(List Promotion)) ? 'no-avatar' : nil)
                 .clearfix
                   - begin
                     = render partial: "groups/#{@group.identifier.pluralize}/heading"

@@ -2,10 +2,11 @@ class InfoRequest
   PLANS = [
     'Starter Platform hub',
     'Professional Platform hub',
-    'Product challenge',
-    'Product tutorial',
-    # 'Product workshop',
-    'Product hackathon',
+    'Contest',
+    'Tutorial',
+    'Hackster Live',
+    'Hackathon',
+    'Workshop',
   ]
 
   REFERRALS = [

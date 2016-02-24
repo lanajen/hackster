@@ -6,6 +6,8 @@ class Groups::PartsController < ApplicationController
     authorize! :manage, @platform
 
     @parts = @platform.parts.alphabetical.with_slug.paginate(page: safe_page_params)
+
+    @parts_pending_review = @platform.parts.with_slug.where(workflow_state: :pending_review).exists?
   end
 
   def create

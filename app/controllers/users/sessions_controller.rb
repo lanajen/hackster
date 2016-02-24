@@ -24,6 +24,13 @@ class Users::SessionsController < Devise::SessionsController
     respond_with resource, location: after_sign_in_path_for(resource)
   end
 
+  def destroy
+    super
+    if is_whitelabel? and current_site.has_javascript_on_logout?
+      flash[:js] = current_site.javascript_on_logout
+    end
+  end
+
   protected
     def after_sign_in_path_for(resource)
       track_alias
@@ -44,7 +51,8 @@ class Users::SessionsController < Devise::SessionsController
         reset_current_mixpanel_user
       end
 
-      super resource
+      out = super resource
+      UrlParam.new(out).add_param(:logged_out, '1')
     end
 
     def set_action

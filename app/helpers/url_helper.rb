@@ -1,5 +1,22 @@
 module UrlHelper
 
+  def arduino_sign_in_url
+    omniauth_sign_in_url 'arduino'
+  end
+
+  def cypress_sign_in_url
+    omniauth_sign_in_url 'saml'
+  end
+
+  def omniauth_sign_in_url provider
+    url = "#{request.protocol}#{APP_CONFIG['full_host']}/users/auth/#{provider}?current_site=#{current_site.subdomain}&setup=true"
+    redirect_to = @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)
+    if redirect_to.present?
+      url += "&redirect_to=#{CGI.escape(redirect_to)}"
+    end
+    url
+  end
+
   def assignment_path assignment, opts={}
     course_promotion_assignment_path params_for_assignment(assignment).merge(opts)
   end
@@ -22,6 +39,10 @@ module UrlHelper
 
   def challenge_url challenge, opts={}
     super challenge.slug, opts
+  end
+
+  def challenge_idea_path idea, opts={}
+    super idea.challenge.slug, idea, opts
   end
 
   def new_challenge_idea_path challenge, opts={}
@@ -100,7 +121,7 @@ module UrlHelper
       when 'Community'
         community_path group, opts
       when 'Course'
-        super params_for_course(group).merge(opts)
+        # super params_for_course(group).merge(opts)
       when 'HackerSpace'
         hacker_space_path(group, opts)
       when 'Hackathon'
@@ -108,7 +129,7 @@ module UrlHelper
       when 'Promotion'
         promotion_path group, opts
       when 'University'
-        super params_for_group(group).merge(opts)
+        # super params_for_group(group).merge(opts)
       when 'Event'
         event_path group, opts
       when 'Platform'
@@ -361,8 +382,28 @@ module UrlHelper
     super platform.user_name, opts
   end
 
-  def tag_path tag
-    "/projects/tags/#{CGI::escape(tag)}"
+  def review_thread_path thread, opts={}
+    review_project_path(thread.project, opts)
+  end
+
+  def review_thread_url thread, opts={}
+    review_project_url(thread.project, opts)
+  end
+
+  # with the two optional prefix params (path_prefix and locale), when both are
+  # set to nil root_path originally output an empty string. That's not a valid
+  # path so we need to manually fix it up.
+  def root_path opts={}
+    out = super
+    out == '' ? '/' : out
+  end
+
+  def tag_path tag, opts={}
+    super CGI::escape(tag), opts
+  end
+
+  def tag_url tag, opts={}
+    super CGI::escape(tag), opts
   end
 
   def thought_path thought, opts={}
@@ -396,7 +437,25 @@ module UrlHelper
         options = params_for_project options
       end
     end
-    super options
+
+    output = super options
+
+    # hack to give arduino its path prefix
+    # if is_whitelabel? and current_site.has_path_prefix?
+    #   if output == '/'
+    #     return current_site.path_prefix
+    #   elsif output =~ /\Ahttp/
+    #     unless current_site.path_prefix.in?(output)
+    #       u = URI.parse output
+    #       u.path = current_site.path_prefix + u.path
+    #       return u.to_s
+    #     end
+    #   elsif output.start_with?('/') and !output.start_with?(current_site.path_prefix)
+    #     return current_site.path_prefix + output
+    #   end
+    # end
+
+    output
   end
 
   def url_for_wiki_page_form group, page
@@ -418,7 +477,7 @@ module UrlHelper
 
   def url_for_challenge_idea_form challenge, idea
     if idea.persisted?
-      challenge_idea_path(challenge.slug, idea.id)
+      challenge_idea_path(idea)
     else
       challenge_ideas_path(challenge.slug)
     end

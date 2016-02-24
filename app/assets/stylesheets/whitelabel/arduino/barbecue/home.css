@@ -12,7 +12,7 @@ html, body{
 #back{
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 10000;
@@ -69,10 +69,6 @@ html, body{
   fill: #80CBCD;
   transition: all ease-out .3s;
 }
-#ham > svg{
-  width: 18px;
-  height: 18px;
-}
 
 svg.logo-home-bottom {
   fill: #fff;
@@ -89,7 +85,9 @@ svg.logo-home-bottom {
 }
 
 #ham > svg {
-  fill: #ffffff;
+  width: 18px;
+  height: 18px;
+  fill: #879191;
   transition: all ease-out .3s;
   cursor: pointer;
 }
@@ -498,7 +496,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
 /* HOME */
 .grid_square img{
   flex: 5 0 0;
-  max-width: 80px;
+  width: 80px;
   margin-top: 15%;
 }
 .grid_square img.help{

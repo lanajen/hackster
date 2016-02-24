@@ -1,15 +1,17 @@
 class SearchController < ApplicationController
 
   def search
+    redirect_to tag_path(params[:q].gsub(/^#/, '')) and return if params[:q] and params[:q] =~ /^#/
+
     respond_to do |format|
       format.html do
-        do_search
+        do_search params[:type]
         render
       end
       format.rss { redirect_to search_path(params.merge(format: :atom)), status: :moved_permanently }
       format.atom do
-        do_search 'base_article'
-        @projects = @results
+        do_search 'BaseArticle'
+        @projects = @results['base_article'][:models]
         render layout: false, template: 'projects/index'
       end
     end
@@ -38,45 +40,32 @@ class SearchController < ApplicationController
 
   private
     def do_search restrict_model=nil
-      @facets = terms = {}
-      @hacker_space_label = 'Hacker spaces'
-      @people_label = 'People'
-      @projects_label = 'Projects'
-      @platforms_label = 'Platforms'
-      if restrict_model
-        params[:type] = restrict_model
-      end
-
       if params[:q].present?
+        types = restrict_model.present? ? [restrict_model] : %w(BaseArticle User Platform Part)
+        per_page = params[:per_page].presence || restrict_model ? 21 : 3;
+        search_opts = {
+          q: params[:q],
+          model_classes: types,
+          page: safe_page_params,
+          per_page: per_page,
+        }
+
         title "Results for #{params[:q]}"
         meta_desc "Browse results for #{params[:q]}. Find hardware platforms, projects and developers on hackster.io."
         begin
-          @results = SearchRepository.new(params).search.results
+          @search = Search.new(search_opts)
+          @results = @search.hits
+          # unless @results.total_count.zero?
+          #   title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
+          #   meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find hardware platforms, projects and developers on #{site_name}."
+          #   meta_desc += " Page #{safe_page_params}" if safe_page_params and safe_page_params.to_i > 1
+          #   meta_desc meta_desc
+          # end
 
-          @offset = @results.offset + 1
-          @max = @results.offset + @results.size
-          unless @results.total_count.zero?
-            title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
-            meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find hardware platforms, projects and developers on #{site_name}."
-            meta_desc += " Page #{safe_page_params}" if safe_page_params and safe_page_params.to_i > 1
-            meta_desc meta_desc
-          end
-
-          @results.facets['type']['terms'].each do |term|
-            terms[term['term']] = term['count']
-          end
-          @hacker_space_label += " <span class='badge pull-right'>#{terms['hacker_space']}</span>" if terms['hacker_space']
-          @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
-          @projects_label += " <span class='badge pull-right'>#{terms['base_article']}</span>" if terms['base_article']
-          @platforms_label += " <span class='badge pull-right'>#{terms['platform']}</span>" if terms['platform']
-          if restrict_model
-            params[:type] = nil
-          end
-
-          track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
-        rescue => e
-          logger.error "Error while searching for #{params[:q]}: #{e.message}"
-          @results = []
+          # track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
+        # rescue => e
+        #   logger.error "Error while searching for #{params[:q]}: #{e.message}"
+        #   @results = []
         end
       end
     end

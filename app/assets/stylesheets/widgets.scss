@@ -178,6 +178,8 @@
       margin-bottom: 0;
       margin-top: 3px;
       font-size: 0.8em;
+      max-height: 100px;
+      overflow-y: scroll;
     }
   }
   .preview-body {
@@ -543,13 +545,15 @@
   .user-thumbs {
     margin: 0 -5px;
   }
-  .user-img{
-    float: left;
+  .user-img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     display: inline-block;
     margin: 0 5px 10px;
+  }
+  .others-count {
+    font-size: 0.8em;
   }
 }
 

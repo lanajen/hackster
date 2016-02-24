@@ -58,11 +58,13 @@ var <%= file_type %>Functions = {
 
     window.setTimeout(function() {
       $.ajax({
-        url: '/files/' + fileId,
+        url: Utils.getApiPath() + '/private/files/' + fileId,
         type: 'GET',
         dataType: 'json',
         data: { context: context },
-        async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           processed = data.processed;
           if (!processed) {
@@ -105,8 +107,11 @@ $(function(){
 
     if (fileUrl != '') {
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/private/files/remote_upload',
         type: 'POST',
+        xhrFields: {
+          withCredentials: true
+        },
         data: {
           file_type: "<%= file_type %>",
           file_url: fileUrl
@@ -130,8 +135,11 @@ $(function(){
 <%= file_type %>Functions.checkRemoteFileProcessed = function(jobId, el, fileUrl, id) {
   window.setTimeout(function(){
     $.ajax({
-      url: '/files/remote_upload',
+      url: Utils.getApiPath() + '/private/files/remote_upload',
       data: { job_id: jobId },
+      xhrFields: {
+        withCredentials: true
+      },
       success: function(data){
         switch (data.status){
           case 'complete':

@@ -22,7 +22,7 @@ class BaseArticleObserverWorker < BaseWorker
     FastlyWorker.perform_async 'purge', record.record_key
   end
 
-  def after_update record, private_changed
+  def after_update record, private_changed, changed
     fastly_keys = []
     if private_changed
       update_counters record, [:live_projects]
@@ -39,25 +39,42 @@ class BaseArticleObserverWorker < BaseWorker
   def after_approved record
     ProjectWorker.perform_async 'update_platforms', record.id
 
+    @notify = false
     if record.made_public_at.nil?
-      record.post_new_tweet! if record.should_tweet?
-      record.made_public_at = Time.now
+      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id if record.should_tweet?  # delay to give it time to run update_platforms
+      record.update_column :made_public_at, Time.now
+      @notify = true
     elsif record.made_public_at > Time.now
-      record.post_new_tweet_at! record.made_public_at if record.should_tweet?
+      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id, record.made_public_at if record.should_tweet?
+      @notify = true
     end
 
     # actions common to both statements above
-    if record.made_public_at.nil? or record.made_public_at > Time.now
-      record.save
+    if @notify
       NotificationCenter.notify_all :approved, :base_article, record.id
     end
 
+    if record.review_thread
+      record.review_thread.update_column :workflow_state, :closed
+    end
+
     update_counters record, :approved_projects
+    log_state_change record
+  end
+
+  def after_pending_review record
+    if record.review_thread
+      record.review_thread.update_attribute :workflow_state, :needs_review
+    else
+      record.create_review_thread
+    end
+    NotificationCenter.notify_via_email :published, :base_article, record.id
   end
 
   def after_rejected record
     record.update_column :hide, true
     update_counters record, :approved_projects
+    log_state_change record
   end
 
   def perform method, record_id, *args
@@ -72,6 +89,10 @@ class BaseArticleObserverWorker < BaseWorker
   end
 
   private
+    def log_state_change record
+      ProjectWorker.perform_async 'create_review_event', record.id, record.reviewer_id, :project_status_update, workflow_state: record.workflow_state
+    end
+
     def update_counters record, type
       record.users.each{ |u| u.update_counters only: [type].flatten }
     end

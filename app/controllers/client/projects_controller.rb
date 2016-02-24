@@ -4,6 +4,7 @@ class Client::ProjectsController < Client::BaseController
   load_and_authorize_resource only: [:index]
   skip_before_filter :track_visitor, only: [:index]
   skip_after_filter :track_landing_page, only: [:index]
+  protect_from_forgery except: :embed
   respond_to :html
 
   def index
@@ -14,7 +15,7 @@ class Client::ProjectsController < Client::BaseController
       set_cache_control_headers 3600
     end
     title "Projects - Page #{safe_page_params}" if safe_page_params
-    @custom_header = template_exists?("whitelabel/#{current_site.subdomain}/all", nil, true)
+    @custom_header = template_exists?("whitelabel/#{site_user_name}/all", nil, true)
 
     load_projects platform: current_platform, disable_ideas: true
 
@@ -29,6 +30,25 @@ class Client::ProjectsController < Client::BaseController
       format.html { render layout: 'whitelabel' }
       format.atom { render layout: false }
       format.rss { redirect_to projects_path(params.merge(format: :atom)), status: :moved_permanently }
+    end
+  end
+
+  def embed
+    set_surrogate_key_header "#{current_platform.user_name}/embed"
+    set_cache_control_headers 3600
+
+    load_projects platform: current_platform
+
+    subdomain = current_site.subdomain
+    subdomain << ".#{ENV['SUBDOMAIN']}" if ENV['SUBDOMAIN'] != 'www'
+
+    respond_to do |format|
+      format.js do
+        @projects = @projects.map do |project|
+          project.project.to_js(subdomain: subdomain)
+        end.to_json
+        render "shared/embed"
+      end
     end
   end
 end

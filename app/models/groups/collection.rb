@@ -6,7 +6,7 @@ class Collection < Group
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
 
-  validates :user_name, :full_name, presence: true
+  validates :user_name, :new_user_name, :full_name, presence: true
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
@@ -21,28 +21,11 @@ class Collection < Group
   hstore_column :hproperties, :mark_new_until, :datetime
 
   # beginning of search methods
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 1000
-      indexes :mini_resume,     analyzer: 'snowball', boost: 100
-      indexes :created_at
-    end
-  end
-
+  has_algolia_index 'pryvate'
   def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name.underscore,
-      mini_resume: mini_resume,
-      created_at: created_at,
-      popularity: 1000.0,
-    }.to_json
-  end
-
-  def self.index_all
-    index.import publyc
+    super.merge({
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).group_path(self),
+    })
   end
   # end of search methods
 

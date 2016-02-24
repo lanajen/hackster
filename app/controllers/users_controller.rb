@@ -1,11 +1,13 @@
 class UsersController < ApplicationController
+  include ScraperUtils
+
   before_filter :authenticate_user!, only: [:edit, :update, :after_registration, :after_registration_save, :toolbox, :toolbox_save]
   before_filter :load_user, only: [:show, :projects_public, :projects_drafts, :projects_guest, :projects_respected, :projects_replicated, :toolbox_show, :comments]
   authorize_resource only: [:update, :edit]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
-  skip_before_filter :track_visitor, only: [:show]
-  skip_after_filter :track_landing_page, only: [:show]
+  skip_before_filter :track_visitor, only: [:show, :avatar]
+  skip_after_filter :track_landing_page, only: [:show, :avatar]
 
   def index
     title "Browse top community members"
@@ -43,12 +45,13 @@ class UsersController < ApplicationController
       else
         @private_projects.with_group(current_platform)
       end
-      @public_projects = @public_projects.with_group(current_platform)
+      @public_projects = @public_projects.with_group(current_platform, all: true)
       @public_count = @public_projects.count
       @respected_projects = @respected_projects.with_group(current_platform)
       @replicated_projects = @replicated_projects.with_group(current_platform)
+      @guest_projects = @guest_projects.with_group(current_platform)
       if @user == current_user and !current_site.hide_alternate_search_results
-        ids = @user.projects.with_group(current_platform).pluck(:id)
+        ids = @user.projects.with_group(current_platform, all: true).pluck(:id)
         @other_projects = @user.projects.where.not(id: ids).for_thumb_display
         @public_count += @other_projects.count
       end
@@ -57,6 +60,7 @@ class UsersController < ApplicationController
       @private_query = @private_query.with_group(current_platform)
       @guest_query = @guest_query.with_group(current_platform)
       @respected_query = @respected_query.with_group(current_platform)
+      @replicated_query = @replicated_query.with_group(current_platform)
     else
       @parts = @user.owned_parts.limit(3)
       @parts_count = @user.owned_parts.count
@@ -158,6 +162,32 @@ class UsersController < ApplicationController
     else
       @user.live_comments.includes(:commentable)
     end
+  end
+
+  def avatar
+    @user = User.find params[:id]
+
+    surrogate_keys = [@user.record_key, 'user/avatar']
+    surrogate_keys << current_platform.user_name if is_whitelabel?
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers 86400
+
+    size = params[:size] || :thumb
+
+    if is_whitelabel? and current_site.enable_custom_avatars?
+      link = CustomAvatarHandler.new(@user).fetch(current_site.subdomain)
+      if link.present? or !test_link(link)
+        link = if @user.avatar.present?
+          @user.decorate.avatar(size, disable_whitelabel: true)
+        else
+          current_site.default_avatar_url
+        end
+      end
+    else
+      link = @user.decorate.avatar(size)
+    end
+
+    redirect_to link
   end
 
   def redirect_to_show

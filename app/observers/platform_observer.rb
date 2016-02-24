@@ -30,7 +30,7 @@ class PlatformObserver < ActiveRecord::Observer
       Cashier.expire 'platform-index'
     end
 
-    if (record.changed & %w(full_name avatar mini_resume slug private_projects_count projects_count user_name members_count followers_count)).any?
+    if (record.changed & %w(full_name avatar cover_image mini_resume slug private_projects_count projects_count user_name members_count followers_count)).any?
       Cashier.expire "platform-#{record.id}-thumb", "platform-#{record.id}-card", 'platform-index'
     end
 

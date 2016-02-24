@@ -5,8 +5,9 @@ class RespectsController < ApplicationController
 
   def create
     @respect = Respect.create_for current_user, @respectable
-    # @project = @respect.respectable  # otherwise @project isn't updated
-    # @team_members = @respectable.users
+    if @respectable.model_name.name == 'BaseArticle'
+      @team_members = @respectable.users  # used by rewardino.rb for badges
+    end
 
     if @respect.persisted?
       session[:share_modal] = 'respected_share_prompt'
@@ -30,8 +31,9 @@ class RespectsController < ApplicationController
 
   def destroy
     @respects = Respect.destroy_for current_user, @respectable
-    # @project = @respects.first.respectable if @respects.any?  # otherwise @project isn't updated
-    # @team_members = @project.users
+    if @respectable.model_name.name == 'BaseArticle'
+      @team_members = @respectable.users  # used by rewardino.rb for badges
+    end
 
     respond_to do |format|
       format.html { redirect_to @respectable, notice: "You removed #{@respectable.name} from your respect list." }

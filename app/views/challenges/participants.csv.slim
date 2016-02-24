@@ -1,5 +1,0 @@
-- headers = ['Name', 'Email', 'Registration date']
-= CSV.generate_line headers
-- @registrations.each do |registration|
-  - user = registration.user
-  = CSV.generate_line([user.name, user.email, registration.created_at.in_time_zone(PDT_TIME_ZONE)])

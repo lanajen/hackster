@@ -13,7 +13,7 @@
         button.close data-target=popup_id &times;
         h4.text-center.popup-title Customize a component, tool or app
 
-        = simple_form_for Part.new(type: 'Part'), url: '', data: { remote: true, modal: popup_id }, html: { class: 'remote form-within-modal no-reload', id: 'parts-popup-form' } do |f|
+        = simple_form_for Part.new(type: 'Part'), url: '', data: { remote: true, modal: popup_id, 'with-credentials' => true }, html: { class: 'remote form-within-modal no-reload', id: 'parts-popup-form' } do |f|
           input.resetable type='hidden' name='id' data-field-type='id'
           input.resetable type='hidden' name='_method'
           = f.input :type, as: :hidden, input_html: { 'data-field-type' => 'type', class: 'resetable' }

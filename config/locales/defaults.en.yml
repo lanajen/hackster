@@ -200,6 +200,7 @@ en:
       long: ! '%B %d, %Y %H:%M'
       long_date: ! '%B %e, %Y'
       short: ! '%d %b %H:%M'
+      datetime: ! '%Y-%m-%d %H:%M'
       date: ! '%Y-%m-%d'
       chat: ! '%I:%M %p'
     pm: pm

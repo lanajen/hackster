@@ -4,24 +4,27 @@ class Client::SearchController < Client::BaseController
     title "#{current_platform.name} projects"
 
     if params[:q].present?
-      begin
-        opts = params.dup
-        opts[:platform_id] = current_platform.id
-        opts[:type] = 'base_article'
-        opts[:include_external] = true
-        opts[:per_page] = BaseArticle.per_page
-        @results = SearchRepository.new(opts).search.results
+      redirect_to tag_path(params[:q].gsub(/^#/, '')) and return if params[:q] =~ /^#/
 
-        if @results.empty? and !current_site.hide_alternate_search_results
-          opts = params.dup
-          opts[:type] = 'base_article'
-          opts[:per_page] = BaseArticle.per_page
-          @results = @alternate_results = SearchRepository.new(opts).search.results
+      begin
+        types = %w(BaseArticle)
+        search_opts = {
+          q: params[:q],
+          model_classes: types,
+          page: safe_page_params,
+          per_page: BaseArticle.per_page || params[:per_page].presence,
+          platform_id: current_platform.id,
+        }
+        @results = Search.new(search_opts).hits['base_article']
+
+        if @results[:models].empty? and !current_site.hide_alternate_search_results
+          search_opts.delete(:platform_id)
+          @results = @alternate_results = Search.new(search_opts).hits['base_article']
         end
 
-        track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
+        track_event 'Searched projects', { query: params[:q], result_count: @results[:total_count], type: params[:type] }
       rescue
-        @results = []
+        @results = {}
       end
     end
   end

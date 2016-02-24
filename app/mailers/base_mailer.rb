@@ -176,7 +176,7 @@ class BaseMailer < ActionMailer::Base
       plain_text = premailer.to_plain_text.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
       inline_css = premailer.to_inline_css.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
 
-      puts inline_css if Rails.env.development?
+      Rails.logger.debug inline_css if Rails.env.development?
 
       output_email = mail(headers.merge(default_headers)) do |format|
         format.text { render text: plain_text }

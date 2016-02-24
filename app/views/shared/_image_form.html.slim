@@ -5,7 +5,7 @@
   div class=(human_file_type.present? ? 'col-md-8' : '')
     span.image-preview.preview>  class=file_type  = image_tag image_link if image_link
     .btn-group
-      a.btn.btn-default.btn-sm.browse*{ data: { target: ".file_upload.#{file_type}" } }
+      a.btn.btn-default.btn-sm.browse-btn*{ data: { target: ".file_upload.#{file_type}" } }
         - if image_link.present?
           | Change picture
         - else
@@ -14,4 +14,4 @@
         i.fa.fa-link
     p.help-block= help_block
 
-= render partial: 'shared/image_form_bare', locals: { file_type: file_type, attribute_type: attribute_type, image_version: image_version, model: model }
+= render partial: 'shared/image_form_bare', locals: { file_type: file_type, human_file_type: human_file_type, attribute_type: attribute_type, image_version: image_version, model: model, help_block: help_block, image_link: image_link }

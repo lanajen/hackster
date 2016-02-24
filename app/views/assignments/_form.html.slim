@@ -6,7 +6,7 @@
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Edit promotion
+          | Edit class
         .pull-right
           ul.list-unstyled.list-inline
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
@@ -35,7 +35,7 @@
           label.control-label Assignment instructions
         .col-md-8
           span.file-preview.preview.document= @assignment.document.file_name if @assignment.document.file.present?
-          a.btn.btn-default.btn-sm.browse*{ data: { target: ".file_upload.document" } }
+          a.btn.btn-default.btn-sm.browse-btn*{ data: { target: ".file_upload.document" } }
             - if @assignment.document.file.present?
               | Change file
             - else

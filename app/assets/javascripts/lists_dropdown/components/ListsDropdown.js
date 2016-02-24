@@ -65,7 +65,7 @@ const ListsDropdown = React.createClass({
         <ul className="list-group">
           {lists}
           <li className="list-item">
-            <ListForm />
+            <ListForm placeholder={this.props.placeholder} />
           </li>
         </ul>
       </div>

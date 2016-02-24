@@ -265,7 +265,6 @@ $(function() {
             'insertCodeBlock': new InsertCodeBlock()
         }
       });
-
       _.element.addClass('editable-activated');
       $('#medium-editor, #model-editor').addClass('editor-active');
 
@@ -310,7 +309,6 @@ $(function() {
       focusEditable();
 
       callback();
-      console.log('editor activated');
       return _.self;
     },
 
@@ -351,7 +349,6 @@ $(function() {
         // _.clearErrors();
 
         callback();
-        console.log('editor disabled');
       }
       return _.self;
     },
@@ -412,14 +409,11 @@ $(function() {
       // });
       // var formData = new FormData(form[0]);
 
-      console.log('saving...');
-      console.log('mode: ' + _.saveMode);
-
       if (_.saveMode == 'auto') {
         _.showLoadingBar();
         _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-        $.ajax(_.modelUrl + '.js', {
+        $.ajax(Utils.getApiPath() + _.modelUrl + '/' + _.modelId, {
           data: formData,
           // processData: false,
           // contentType: false,
@@ -428,6 +422,9 @@ $(function() {
               return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
                   ? new window.ActiveXObject("Microsoft.XMLHTTP")
                   : $.ajaxSettings.xhr();
+          },
+          xhrFields: {
+            withCredentials: true
           },
           success: function(data){
             _.clearErrors();
@@ -459,6 +456,7 @@ $(function() {
         });
         _.lastSaved = new Date().getTime();
       } else if (_.saveMode == 'form') {
+        // console.log('saving modeldata', modelData.description);
         $('#base_article_description').val(modelData.description);
       }
     },
@@ -841,39 +839,6 @@ $(function () {
   $('#medium-editor').on('click', '.editable.editable-activated .embed-frame[data-type="widget"] :not(.embed-actions) button', function(e){
     var btn = $(this);
     switch (btn.data('action')) {
-      // case 'delete-part':
-      //   target = btn.closest('.fields');
-      //   id = target.find('[data-attribute$="[id]"]').data('value');
-      //   deletePart(id);
-      //   target.remove();
-      //   editor.triggerInput();
-      //   break;
-
-      // case 'add-part':
-      //   $.ajax({
-      //     url: '/api/v1/parts',
-      //     data: {
-      //       part: {
-      //         partable_type: 'Widget',
-      //         partable_id: $(this).closest('.embed-frame').data('widget-id'),
-      //         quantity: 1
-      //       }
-      //     },
-      //     type: 'POST',
-      //     success: function(data){
-      //       tpl = btn.data('template');
-      //       i = btn.closest('.fields-container').find('.fields').length - 1;
-      //       tpl = tpl.replace(/replace_id/g, i);
-      //       tpl = $(tpl);
-      //       tpl.find('[data-attribute="[parts_attributes][' + i + '][id]"]').attr('data-value', data.id);
-      //       tpl.find('[data-edit-only="true"]').show();
-      //       tpl.find('[data-contenteditable="true"]').attr('contenteditable', 'true');
-      //       loadPlaceholders(tpl);
-      //       btn.closest('.fields').before(tpl);
-      //       tpl.trigger('nested:fieldAdded');
-      //     }
-      //   });
-      //   break;
 
       case 'delete-slide':
         slide = $(this).closest('.slick-slide');
@@ -1264,7 +1229,7 @@ $(function () {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.file-drop a.browse', function(e) {
+  $('#medium-editor').on('click', '.file-drop a.browse-btn', function(e) {
     e.preventDefault();
   });
 
@@ -1272,7 +1237,7 @@ $(function () {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.browse', function(e) {
+  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.browse-btn', function(e) {
     // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
     $('.upload-here').removeClass('upload-here');
     $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
@@ -1303,13 +1268,16 @@ $(function () {
 
     if (fileUrl != '') {
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/private/files/remote_upload',
         type: 'POST',
         data: {
           file_type: fileType,
           file_url: fileUrl,
           attachable_id: editor.modelId,
           attachable_type: editor.modelType
+        },
+        xhrFields: {
+          withCredentials: true
         },
         success: function(data){
           editor.iFile++;
@@ -1346,8 +1314,11 @@ $(function () {
   function checkRemoteFileProcessed(jobId, el) {
     window.setTimeout(function(){
       $.ajax({
-        url: '/files/remote_upload',
+        url: Utils.getApiPath() + '/private/files/remote_upload',
         data: { job_id: jobId },
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data){
           switch (data.status){
             case 'complete':
@@ -1720,6 +1691,8 @@ function detectFileType(file) {
 
 function handleUploadErrors(dataContainer) {
   data = dataContainer.data('data');
+  if(!data) { return; }
+
   target = $('#' + data.context);
   file = data.files[0];
   showErrorBubble(file.name);
@@ -1893,20 +1866,13 @@ function goToPreviousP(node, e){
   }
 }
 
-function goToNextP(node, e){
-  e.preventDefault();
-  next = node.nextAll(elementTypes).first();
-  if (next.length) {
-    smoothScrollToIfOutOfBounds(next, -50, 200);
-    focusAtBeginningOfRange(next[0]);
-  }
-}
-
 function insertEmbedTag(url, node) {
   editor.showLoadingBar();
-  $.ajax('/api/v1/embeds', {
-    async: false,
+  $.ajax(Utils.getApiPath() + '/private/embeds', {
     data: { url: url },
+    xhrFields: {
+      withCredentials: true
+    },
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="url" data-url="' + data.url + '">' + data.code + '</div>');
@@ -1937,9 +1903,11 @@ function insertWidget(type, modelId, modelType, node, data) {
   data['widget']['widgetable_type'] = modelType;
 
   editor.showLoadingBar();
-  $.ajax('/api/v1/widgets', {
-    async: false,
+  $.ajax(Utils.getApiPath() + '/private/widgets', {
     data: data,
+    xhrFields: {
+      withCredentials: true
+    },
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
@@ -2062,21 +2030,27 @@ function loadPlaceholder(el, force) {
 
 function deleteFile(id) {
   $.ajax({
-    url: '/files/' + id,
-    type: 'DELETE'
+    url: Utils.getApiPath() + '/private/files/' + id,
+    type: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
   })
 }
 
 function deleteWidget(id) {
   $.ajax({
-    url: '/api/v1/widgets/' + id,
-    type: 'DELETE'
+    url: Utils.getApiPath() + '/private/widgets/' + id,
+    type: 'DELETE',
+    xhrFields: {
+      withCredentials: true
+    }
   })
 }
 
 // function deletePart(id) {
 //   $.ajax({
-//     url: '/api/v1/parts/' + id,
+//     url: Utils.getApiPath() + '/private/parts/' + id,
 //     type: 'DELETE'
 //   })
 // }
@@ -2158,17 +2132,18 @@ function loadTplForAttr(el, tpl, value, placeholder) {
 
 function uploadToS3(data, file, form) {
   $('#' + data.context).data('data', data);
+  var _data = data;
 
   $.ajax({
-    url: '/files/signed_url',
+    url: Utils.getApiPath() + '/private/files/signed_url',
     type: 'GET',
     dataType: 'json',
     data: {file: {name: file.name}, context: data.context},
-    async: false,
     success: function(data) {
       form.find('input[name=key]').val(data.key);
       form.find('input[name=policy]').val(data.policy);
       form.find('input[name=signature]').val(data.signature);
+      _data.submit();
     },
     error: function(data) {
       context = decodeURIComponent($.urlParam(this.url, 'context'));
@@ -2176,7 +2151,6 @@ function uploadToS3(data, file, form) {
     }
   });
 
-  data.submit();
 }
 
 function showUploadProgress(data) {
@@ -2202,9 +2176,12 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
   url = form.attr('data-url');
 
   $.ajax({
-    url: '/files',
+    url: Utils.getApiPath() + '/private/files',
     type: 'POST',
     dataType: 'json',
+    xhrFields: {
+      withCredentials: true
+    },
     data: {
       file_url: url,
       file_type: fileType,
@@ -2212,7 +2189,6 @@ function createFileOnServerAfterUpload(data, fileType, attachableId, attachableT
       attachable_id: (attachableId || editor.modelId),
       attachable_type: (attachableType || editor.modelType)
     },
-    async: false,
     success: function(data) { successCallback(data) },
     error: function(data) {
       context = decodeURIComponent($.urlParam(this.data, 'context'));

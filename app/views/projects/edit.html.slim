@@ -1,68 +1,7 @@
-- if @show_admin_bar
-  .admin-bar
-    .row
-      .col-sm-1
-        - review_details = ''
-        - if @project.review_time
-          - review_details += "Last reviewed on #{l @project.review_time}"
-        - if reviewer = User.find_by_id(@project.reviewer_id)
-          - review_details += " by #{reviewer.name}."
-        - if @project.review_comment.present?
-          - review_details += " Commented: #{@project.review_comment}"
-        span.label.label-default.istooltip title=review_details data-placement="bottom"= @project.workflow_state
-      .col-sm-8.text-center
-        = form_tag update_workflow_project_path(@project), method: :patch
-          - if @project.can_approve?
-            label>
-              input> type='radio' name='event' value='approve'
-              | Approve now
-            label>
-              input> type='radio' name='event' value='approve_later'
-              | Approve later
-            / .btn-group
-              button.btn.btn-success.btn-sm= content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve now')
-              button.btn.btn-success.btn-sm.dropdown-toggle data-toggle="dropdown"
-                span.caret
-              ul.dropdown-menu
-                li
-                  button= content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Add to queue')
-
-          - if @project.can_reject?
-            label>
-              input> type='radio' name='event' value='reject'
-              | Reject
-            / button.btn.btn-danger.btn-sm= content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject')
-          - if @project.can_mark_needs_work?
-            label>
-              input> type='radio' name='event' value='mark_needs_work'
-              | Set aside for later review
-            / button.btn.btn-warning.btn-sm= content_tag(:i, '', class: 'fa fa-clock-o') + content_tag(:span, 'Set aside for later review')
-          div style='width:150px;display: inline-block;vertical-align: top;'
-            textarea.form-control name='comment' rows=1 placeholder='Review comment (internal)'
-          input.btn.btn-sm.btn-primary type='submit' value='Submit review'
-          = link_to content_tag(:i, '', class: 'fa fa-envelope-o') + content_tag(:span, 'Email authors'), "mailto:#{@project.users.pluck(:email).join(',')}?subject=Your+project+needs+a+couple+updates&body=Hi,\n\rProject:+#{@project.name}\n\rLink:+#{project_url(@project)}", class: 'btn btn-default btn-sm', target: '_blank'
-      .col-sm-3 style='text-align: right;'
-        - if @project.checklist_completed?
-          i.fa.fa-check.text-success
-          span Checklist complete!
-        - else
-          i.fa.fa-times.text-danger
-          span
-            a.toggle-checklist> href='#'
-              strong= pluralize @project.checklist_todo.size, 'item'
-              i.fa.fa-caret-down
-            | to complete
-          .admin-checklist
-            .box
-              .box-content
-                = render 'projects/forms/checklist'
-
 .container.project-editor
   .clearfix.text-center
-    - if current_user.is? :admin, :moderator
+    - if current_user.is? :admin, :hackster_moderator
       = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
-      - unless params[:show_admin_bar]
-        = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'
       hr
     ol.pe-nav
       li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'
@@ -77,13 +16,18 @@
       li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
-  .pe-container
+  .pe-container style='height:100px'
     .busy-overlay
       .center-align-wrapper
         .center-align-inner
           i.fa.fa-spin.fa-refresh
 
-    #basics.pe-panel style='display:block' = render 'projects/forms/basics'
+    #loader.pe-panel.text-center style='display:block'
+      p
+        i.fa.fa-spin.fa-spinner
+      p.small Editor not loading? Try refreshing the page.
+
+    #basics.pe-panel = render 'projects/forms/basics'
     #team.pe-panel = render 'projects/forms/team'
     - unless is_whitelabel?
       #communities.pe-panel= render 'projects/forms/communities'
@@ -103,6 +47,8 @@
             .pe-error Error saving
             .pull-right
               = link_to 'Discard changes', @project, class: 'btn btn-link pe-discard'
-              = link_to 'Save changes', '', class: 'btn btn-primary pe-submit'
+              .btn-group
+                = link_to 'Save changes', '', class: 'btn btn-primary pe-submit'
+                = link_to content_tag(:i, '', class: 'fa fa-chevron-right'), '', class: 'btn btn-primary pe-submit next'
 
 = render 'projects/forms/part_form'

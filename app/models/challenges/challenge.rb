@@ -3,6 +3,8 @@ class Challenge < ActiveRecord::Base
   OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
   REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
+  TOKEN_PARSABLE_ATTRIBUTES = %w(description how_to_enter eligibility judging_criteria requirements rules)
+  TOKENABLE_ATTRIBUTES = %w(pre_registration_date pre_contest_start_date pre_contest_end_date pre_winners_announced_date start_date end_date winners_announced_date)
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
@@ -15,7 +17,8 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
-  has_and_belongs_to_many :sponsors, class_name: 'Group', dependent: :destroy
+  has_many :sponsor_relations, dependent: :destroy
+  has_many :sponsors, through: :sponsor_relations, class_name: 'Group'
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
@@ -45,7 +48,9 @@ class Challenge < ActiveRecord::Base
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
+  before_validation :cleanup_custom_registration_email
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
+  before_validation :clean_admins
 
   attr_accessible :new_slug, :name, :prizes_attributes, :sponsor_ids,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
@@ -94,6 +99,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :pre_contest_awarded, :boolean
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_label, :string, default: 'Pre-contest'
+  hstore_column :hproperties, :pre_contest_needs_shipping, :boolean
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
   hstore_column :hproperties, :pre_winners_announced_date, :datetime
@@ -102,6 +108,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
   hstore_column :hproperties, :teaser, :string
+  hstore_column :hproperties, :token_tags, :hash
   hstore_column :hproperties, :sponsor_link, :string
   hstore_column :hproperties, :sponsor_name, :string
   hstore_column :hproperties, :voting_start, :string, default: :end
@@ -177,11 +184,11 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.publyc
-    where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
+    where "CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
   end
 
   def self.ready
-    where "CAST(hproperties -> 'ready' AS BOOLEAN) = ?", true
+    where "CAST(challenges.hproperties -> 'ready' AS BOOLEAN) = ?", true
   end
 
   def self.starts_first
@@ -221,13 +228,13 @@ class Challenge < ActiveRecord::Base
     if activate_pre_contest?
       @dates << { date: pre_contest_start_date, label: "#{pre_contest_label} opens" } if pre_contest_start_date
       @dates << { date: pre_contest_end_date, label: "#{pre_contest_label} closes" } if pre_contest_end_date
-      @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced" } if pre_winners_announced_date and not disable_pre_contest_winners?
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced by" } if pre_winners_announced_date and not disable_pre_contest_winners?
     end
 
     unless disable_projects_phase?
       @dates << { date: start_date, label: 'Project submissions open' } if start_date
       @dates << { date: end_date, label: 'Project submissions close' } if end_date
-      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced by' } if winners_announced_date
     end
 
     @dates
@@ -365,6 +372,17 @@ class Challenge < ActiveRecord::Base
   end
 
   private
+    def clean_admins
+      challenge_admins.each do |admin|
+        challenge_admins.delete(admin) if admin.new_record? and admin.user.nil?
+      end
+    end
+
+    # cleanup Adam's autofill
+    def cleanup_custom_registration_email
+      self.custom_registration_email = nil if custom_registration_email.try(:strip) == 'adamtben@outlook.com' or custom_registration_email.try(:strip) == 'adam@hackster.io'
+    end
+
     def end_date_is_valid?
       errors.add :end_date_dummy, 'is required' and return unless end_date
       errors.add :end_date_dummy, 'must be at least 5 days in the future' and return if end_date < 5.days.from_now

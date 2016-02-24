@@ -86,15 +86,15 @@
                 li= link_to 'My projects', current_user
                 li.divider
                 li= link_to 'Messages', conversations_path
-                li.divider
-                li= link_to 'Account settings', edit_user_registration_path
-                li= link_to 'Invite friends', new_user_invitation_path
+                /li.divider
+                /li= link_to 'Account settings', edit_user_registration_path
+                /li= link_to 'Invite friends', new_user_invitation_path
                 li.divider
                 li= link_to 'Log out', destroy_user_session_path, method: :delete
 
         - else
           ul#navbar-right.clearfix style='margin-left:10px;'
-            li= link_to 'Login with Cypress', user_omniauth_authorize_url('saml', host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || params[:redirect_to] || (is_trackable_page? ? request.path : nil)), class: 'login-link btn btn-primary'
+            li= link_to 'Login with Cypress', cypress_sign_in_url, class: 'login-link btn btn-primary'
 
         .pull-right style='padding-top:11px'
           - if user_signed_in?
@@ -112,4 +112,4 @@
     = raw chrome_sync.chrome_footer(I18n.locale)
 
 = content_for :js do
-  = raw chrome_sync.head(I18n.locale)
+  = raw chrome_sync.js(I18n.locale)

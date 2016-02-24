@@ -1,9 +1,4 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
-  before_filter :public_api_methods, only: [:index, :show]
-  before_filter :authenticate_user!, only: [:create, :update, :destroy]
-  before_filter :load_and_authorize_resource, only: [:create, :update, :destroy]
-  skip_before_filter :track_visitor, only: [:index]
-  skip_after_filter :track_landing_page, only: [:index]
 
   def index
     set_surrogate_key_header 'api/projects'
@@ -51,34 +46,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def show
-    @project = BaseArticle.where(id: params[:id]).public.first!
+    @project = BaseArticle.where(id: params[:id]).publyc.first!
   end
-
-  def create
-    if project.save
-      render status: :ok, nothing: true
-    else
-      render json: project.errors, status: :unprocessable_entity
-    end
-  end
-
-  def update
-    if @project.update_attributes(params[:base_article])
-      render status: :ok, nothing: true
-    else
-      render json: { base_article: @project.errors }, status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @project.destroy
-
-    render status: :ok, nothing: true
-  end
-
-  private
-    def load_and_authorize_resource
-      @project = BaseArticle.find params[:project_id] || params[:id]
-      authorize! self.action_name, @project
-    end
 end

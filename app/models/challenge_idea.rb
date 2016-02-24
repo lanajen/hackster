@@ -4,6 +4,7 @@ class ChallengeIdea < ActiveRecord::Base
   include HstoreColumn
   include Workflow
 
+  belongs_to :address
   belongs_to :challenge, inverse_of: :ideas
   belongs_to :user
   has_many :notifications, as: :notifiable, dependent: :delete_all
@@ -11,9 +12,12 @@ class ChallengeIdea < ActiveRecord::Base
 
   hstore_column :properties, :description, :text
 
-  attr_accessible :name, :image_id
+  attr_accessible :name, :image_id, :address_id, :address_attributes
+
+  accepts_nested_attributes_for :address
 
   validates :name, :description, :image_id, presence: true
+  validates :address, presence: true, if: proc{|i| i.challenge.pre_contest_needs_shipping? }
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 
@@ -35,7 +39,9 @@ class ChallengeIdea < ActiveRecord::Base
     end
     state :won do
       event :undo_won, transitions_to: :approved
+      event :mark_as_shipped, transitions_to: :fullfilled
     end
+    state :fullfilled
     state :lost
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{triggering_event}")
@@ -56,6 +62,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   def image_id=(val)
     @image_id = val
+    attribute_will_change! :image
     self.image = Image.find_by_id(val)
   end
 

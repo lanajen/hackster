@@ -10,10 +10,10 @@ module ScraperStrategies
       end
 
       def select_article
-        text = @parsed.at_css('.body').to_s
+        text = @parsed.at_css('#main-col-body').to_s
 
         next_links = []
-        next_link = @parsed.at_css('.breadcrumb li:last-child a').try(:[], 'href')
+        next_link = @parsed.css('#next a').last.try(:[], 'href')
         next_link = normalize_link(next_link)
         current_link = @page_url
 
@@ -24,17 +24,17 @@ module ScraperStrategies
 
           content = fetch_page current_link
           doc = Nokogiri::HTML(content)
-          @page = doc.at_css('.body')
+          @page = doc.at_css('#main-col-body')
           normalize_links doc
           text += @page.to_s
-          next_link = doc.at_css('.breadcrumb li:last-child a').try(:[], 'href')
+          next_link = doc.css('#next a').last.try(:[], 'href')
         end
 
         Nokogiri::HTML::DocumentFragment.parse(text)
       end
 
       def scrape_next_page? current_link, next_link, previous_links
-        next_link.present? and !next_link.in?(previous_links) and URI(current_link).path.split('-').first == URI(next_link).path.split('-').first
+        next_link.present? and !next_link.in?(previous_links)
       end
 
       def title_levels

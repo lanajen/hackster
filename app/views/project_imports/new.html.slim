@@ -4,8 +4,12 @@
       h2 Import projects
       p.subheading
         strong> Do you have existing project logs somewhere on the web that you'd like to import to #{site_name}?
-        | Simply submit the URLs to the project pages and we'll do the rest.
+        | Simply submit the individual URLs and we'll do the rest.
     .box-content
+      - if @errors and @errors.any?
+        .alert.alert-danger
+          - @errors.each do |error|
+            p= error
       = form_tag project_imports_path, method: :post do
         .form-group
           = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control disable-on-submit', rows: 5

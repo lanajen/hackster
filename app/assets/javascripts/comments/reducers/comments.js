@@ -2,8 +2,9 @@ import { Comments } from '../constants/ActionTypes';
 
 const initialState = {
   comments: [],
+  commentUpdated: { id: null },
   fetchedInitialComments: false,
-  formData: { isLoading: false, error: null },
+  formData: { isLoading: false, error: null, id: null },
   replyBox: { show: false, id: null },
   rootCommentsToDelete: [],
   scrollTo: { scroll: false, element: null },
@@ -36,7 +37,15 @@ export default function(state = initialState, action) {
         comments: newComments,
         scrollTo: scrollTo,
         replyBox: { show: false, id: null },
-        formData: { isLoading: false, errors: null }
+        formData: { isLoading: false, errors: null, id: null }
+      };
+
+    case Comments.updateComment:
+      return {
+        ...state,
+        comments: updateComment(state.comments, action.comment),
+        formData: { isLoading: false, errors: null, id: null },
+        commentUpdated: { id: action.comment.id }
       };
 
     case Comments.removeComment:
@@ -54,10 +63,22 @@ export default function(state = initialState, action) {
         rootCommentsToDelete: state.rootCommentsToDelete.filter(id => id !== action.id)
       };
 
+    case Comments.toggleCommentUpdated:
+      return {
+        ...state,
+        commentUpdated: { id: null }
+      };
+
     case Comments.toggleFormData:
       return {
         ...state,
-        formData: { isLoading: action.isLoading, error: action.error }
+        formData: { isLoading: action.isLoading, error: action.error, id: action.id }
+      };
+
+    case Comments.toggleLikes:
+      return {
+        ...state,
+        comments: toggleLikes(state.comments, action.commentId, action.parentId, state.user.id, action.bool)
       };
 
     case Comments.toggleScrollTo:
@@ -92,27 +113,66 @@ function addComment(comments, comment) {
 }
 
 function removeComment(comments, comment) {
-  return comments.reduce((prev, curr) => {
+  return comments.reduce((acc, curr) => {
     if(curr.root.id === comment.parent_id) {
       curr.children = curr.children.filter(child => {
         return child.id !== comment.id;
       });
-      prev.push(curr);
+      acc.push(curr);
     } else if(curr.root.id === comment.id && curr.children.length > 0) {
       curr.root = { ...curr.root, deleted: true };
-      prev.push(curr);
+      acc.push(curr);
     } else if(curr.root.id !== comment.id) {
-      prev.push(curr);
+      acc.push(curr);
     }
-    return prev;
+    return acc;
   }, []);
 }
 
 function createListOfIdsToDelete(comments) {
-  return comments.reduce((prev, curr) => {
+  return comments.reduce((acc, curr) => {
     if(curr.root.deleted && curr.children.length < 1) {
-      prev.push(curr.root.id);
+      acc.push(curr.root.id);
     }
-    return prev;
+    return acc;
   }, []);
+}
+
+function toggleLikes(comments, commentId, parentId, userId, bool) {
+  return comments.map(comment => {
+    if(parentId === null && comment.root.id === commentId) {
+      comment.root.likingUsers = _addToOrRemoveFromArray(comment.root.likingUsers, bool, userId);
+    } else {
+      comment.children = comment.children.map(child => {
+        if(child.id === commentId) {
+          child.likingUsers = _addToOrRemoveFromArray(child.likingUsers, bool, userId);
+        }
+        return child;
+      });
+    }
+    return comment;
+  });
+}
+
+function _addToOrRemoveFromArray(array, bool, item) {
+  if(bool) {
+    array.push(item);
+  } else {
+    array = array.filter((x) => { return item !== x; });
+  }
+  return array;
+}
+
+function updateComment(comments, newComment) {
+  return comments.map(comment => {
+    if(newComment.parent_id) {
+      comment.children = comment.children.map(child => {
+        child = child.id === newComment.id ? newComment : child;
+        return child;
+      });
+    } else {
+      comment.root = comment.root.id === newComment.id ? newComment : comment.root;
+    }
+    return comment;
+  });
 }

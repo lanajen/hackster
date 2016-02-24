@@ -1,10 +1,18 @@
 module ProjectHelper
   def content_types_for_article article
     content_types = article.model.class::PUBLIC_CONTENT_TYPES.dup
-    if article.content_type.present? and !article.content_type.to_sym.in? content_types.values
-      content_types.merge!({ article.content_type => article.content_type })
+    if article.content_type.present? and !article.content_type.to_sym.in?(content_types.values) and article.content_type.to_sym.in?(article.model.class::CONTENT_TYPES_TO_HUMAN.keys)
+      content_types.merge!({ article.model.class::CONTENT_TYPES_TO_HUMAN[article.content_type.to_sym] => article.content_type })
     end
     content_types
+  end
+
+  def id_for_toc title
+    '#toc-' + title.downcase.gsub(/[^a-z]/, '-')
+  end
+
+  def title_for_toc title
+    raw title
   end
 
   def select_tag_for_part_join join, options={}

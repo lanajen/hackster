@@ -19,5 +19,5 @@
         ==> pluralize_without_count user.followers_count, 'follower'
 
     .wide-thumb-body-bottom
-      = render partial: 'followers/button', locals: { followable: user, button_type: 'shorter', button_partial: 'button_shorter', display_name: false }
+      = render partial: 'followers/button', locals: { followable: user, button_type: 'shorter_arduino', button_partial: 'button_shorter', display_name: false }
       / # = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'

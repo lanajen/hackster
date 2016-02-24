@@ -1,6 +1,11 @@
-.col-xs-5.col-xs-offset-3
-  .box
-    .box-title
-      h2 Hi,
-      p.subheading We just need to confirm a few details before we start:
-    .box-content= render 'form'
+/ = debug session['devise.provider_data']
+
+.authorization-container
+  .column= render "users/authorizations/social_thumbs/#{session['devise.provider']}", data: social_profile_attributes
+
+  .column style="width:400px"
+    .box
+      .box-title
+        h2 Hi,
+        p.subheading We just need to confirm a few details before we start:
+      .box-content= render 'form'

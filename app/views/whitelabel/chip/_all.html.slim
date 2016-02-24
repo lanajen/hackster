@@ -1,0 +1,83 @@
+= content_for :head do
+  = render "whitelabel/#{current_site.subdomain}/head"
+  = stylesheet_link_tag 'whitelabel/chip/application'
+
+= content_for :header do
+
+  header.container-fluid
+    .row.top-nav-full
+      .width-limit.top-nav-container
+        .logo-container
+          a href="http://getchip.com/"
+            img.rainbow-logo src="http://cdn.shopify.com/s/files/1/1065/9514/t/6/assets/rainbowChipLogo.svg?7321236719647225241" /
+        .nav-container
+          nav.row.nav-pos
+            .nav-item.nav-adj
+              a href="http://getchip.com/"  Store
+            .nav-item.nav-adj
+              a href="http://docs.getchip.com/" target="_blank"  Docs
+            .nav-item.nav-adj
+              a href="http://blog.nextthing.co/"  Blog
+            .nav-item.nav-adj.active
+              a href="http://chip.hackster.io/"  Projects
+            .nav-item.nav-adj
+              a href="https://bbs.nextthing.co/" target="_blank"  Forum
+            .nav-item.nav-adj
+              a href="https://vimeo.com/nextthingco" target="_blank"  Videos
+            .nav-item.nav-adj
+              a href="http://docs.getchip.com/#faqs" target="_blank"  FAQ
+            .nav-item.nav-adj
+              a href=("mailto:\nahoyahoy@nextthing.co?subject=C.H.I.P. S.O.S.")  Contact
+          .scroll-left.disabled
+            i.fa.fa-chevron-left
+          .scroll-right
+            i.fa.fa-chevron-right
+
+  .navbar.navbar-default.navbar-static-top#navigation
+    .navbar-in  style='position:relative;'
+      .container
+        .powered-by.pull-left
+          | projects powered by
+          = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www', locale: I18n.default_www_locale)
+
+        - if user_signed_in?
+          ul.navbar-nav.navbar-right
+            li.btn-group.navbar-btn#user-navigation-links
+              = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
+              button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
+                span.caret
+              ul.dropdown-menu#nav-user-menu
+                li= link_to 'My profile', current_user
+                li= link_to 'My projects', current_user
+                li.divider
+                li= link_to 'Messages', conversations_path
+                li.divider
+                li= link_to 'Account settings', edit_user_registration_path
+                li= link_to 'Invite friends', new_user_invitation_path
+                li.divider
+                li= link_to 'Log out', destroy_user_session_path, method: :delete
+
+        - else
+          ul#navbar-right.clearfix
+            li= link_to 'Sign up for Hackster.io', new_user_registration_path(source: 'nav'), class: 'login-link hidden-xs'
+
+            li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
+
+        .hidden-xs.pull-right style='padding-top:11px'
+          - if user_signed_in?
+            .btn-group.btn-group-default
+              = link_to 'My projects', current_user, class: 'btn btn-default'
+              = link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'btn btn-default', title: 'New project', rel: 'tooltip', data: { container: 'body', position: 'bottom' }
+          - else
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
+
+        #navbar-search.pull-right.show-on-desktop.hidden-xs
+          = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
+
+= content_for :footer do
+
+  = render "whitelabel/#{current_site.subdomain}/footer"
+
+= content_for :js do
+
+  = javascript_include_tag 'whitelabel/chip/application'

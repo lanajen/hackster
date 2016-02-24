@@ -18,6 +18,7 @@ module HackerIo
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir[ config.root.join('app', 'models', '**/') ]
     config.autoload_paths += Dir[ config.root.join('app', 'serializers', '**/') ]
+    config.autoload_paths += Dir[ config.root.join('app', 'middlewares', '**/') ]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -36,7 +37,9 @@ module HackerIo
       :order_observer, :order_line_observer, :address_observer,
       :payment_observer, :prize_observer, :challenge_registration_observer,
       :challenge_idea_observer, :faq_entry_observer,
-      :product_observer, :external_project_observer, :article_observer
+      :product_observer, :external_project_observer, :article_observer,
+      :review_decision_observer, :review_thread_observer,
+      :sponsor_relation_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -69,7 +72,7 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/media/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css channel.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
+    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/media/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css channel.js whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js whitelabel/chip/application.css whitelabel/arduino/application.css live.js )
 
     config.active_record.whitelist_attributes = false
 
@@ -98,12 +101,25 @@ module HackerIo
 
     config.middleware.use Rack::Attack
 
-    # React Browserify Transform
-    config.react.addons = true
-    config.browserify_rails.commandline_options = "-t [babelify --stage 0  --optional runtime]"
-
     # cashier tag caching
     config.cashier.adapter = :redis_store
     config.cashier.adapter.redis = RedisConn.conn
+
+    config.middleware.use "SetCookieDomain", (ENV['FULL_HOST'].present? ? nil : ENV['DEFAULT_DOMAIN'])
+
+    allowed_origins = []
+    if ENV['DEFAULT_DOMAIN']
+      default_host_regexp = Regexp.new(".+\.#{ENV['DEFAULT_DOMAIN']}")
+      allowed_origins << default_host_regexp
+    end
+    allowed_origins += ENV['ASSET_ORIGINS'].split(/,/) if ENV['ASSET_ORIGINS']
+    if allowed_origins.any?
+      config.middleware.insert_before ActionDispatch::Static, "Rack::Cors", debug: ENV['LOG_LEVEL'] == 'debug', logger: (-> { Rails.logger }) do
+        allow do
+          origins *allowed_origins
+          resource '/assets/*', headers: :any, methods: :get
+        end
+      end
+    end
   end
 end

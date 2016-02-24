@@ -44,6 +44,8 @@ class NotificationDecorator < ApplicationDecorator
         "Winners for the #{challenge.pre_contest_label.downcase} of #{challenge_link} have been announced."
       when :pre_contest_winners
         "Your idea has been selected as a winner for the #{challenge.pre_contest_label.downcase} of #{challenge_link}. Congrats!"
+      when :judged
+        "The results for #{challenge_link} are out!"
       end
     when ChallengeEntry
       entry = notifiable
@@ -62,13 +64,17 @@ class NotificationDecorator < ApplicationDecorator
       case event
       when :approved
         "Your idea '#{idea.name}' for #{challenge_link} has been approved."
-      when :winner
+      when :winner, :awarded
         "Your idea '#{idea.name}' for #{challenge_link} has won!"
       end
     when Comment
       comment = notifiable
       commentable = comment.commentable
-      author_link = h.link_to comment.user.name, comment.user
+      if user = comment.user
+        author_link = h.link_to user.name, user
+      else
+        author_link = 'Someone'
+      end
       case event
       when :new
         case commentable
@@ -80,6 +86,9 @@ class NotificationDecorator < ApplicationDecorator
           "#{author_link} commented on #{thought_link}."
         when Issue, BuildLog
           thread_link = h.link_to commentable.title, commentable
+          "#{author_link} commented on #{thread_link}."
+        when ReviewThread
+          thread_link = h.link_to "#{commentable.project.name}'s moderation conversation", commentable
           "#{author_link} commented on #{thread_link}."
         end
       when :mention
@@ -186,19 +195,19 @@ class NotificationDecorator < ApplicationDecorator
       end
     end
 
-    unless msg.present?
-      message = if notifiable
-        "Unknown notification: #{model.inspect}"
-      else
-        "Notifiable doesn't exist anymore: #{model.inspect}"
-      end
-      if ENV['ENABLE_ERROR_NOTIF']
-        log_line = LogLine.create(message: message, log_type: 'error', source: 'notification_decorator')
-        NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
-      else
-        raise message
-      end
-    end
+    # unless msg.present?
+    #   message = if notifiable
+    #     "Unknown notification: #{model.inspect}"
+    #   else
+    #     "Notifiable doesn't exist anymore: #{model.inspect}"
+    #   end
+    #   if ENV['ENABLE_ERROR_NOTIF']
+    #     log_line = LogLine.create(message: message, log_type: 'error', source: 'notification_decorator')
+    #     NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
+    #   else
+    #     raise message
+    #   end
+    # end
 
     msg.try(:html_safe)
   end

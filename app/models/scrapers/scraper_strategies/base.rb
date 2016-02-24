@@ -70,7 +70,7 @@ module ScraperStrategies
       end
 
       def clean_brs text
-        return unless text
+        return if text.blank?
 
         doc = Nokogiri::HTML text
         doc.xpath('/html/body/br').each{|el| el.remove }
@@ -165,7 +165,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr .ssba)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink #comments nav #mc_signup .mc_custom_border_hdr .crayon-plain-wrap hr .ssba)
       end
 
       def extract_code_blocks base=@article
@@ -274,13 +274,13 @@ module ScraperStrategies
             h[i].each { |h| h.name = 'h3' }
             (i+1..4).each do |j|
               if h[j] and h[j].any?
-                h[j].each { |h| h.name = 'h4' }
+                h[j].each { |h| h.name = 'h3' }
                 (j+1..3).each do |l|
                   h[l].each { |h| h.name = 'b' } if h[l] and h[l].any?
                 end
                 break
               end
-            end if i < 4
+            end
             break
           end
         end
@@ -305,7 +305,7 @@ module ScraperStrategies
           if parent.name == 'a'
             href = parent['data-fancybox-href'] || parent['href']
             parent.name = 'span'  # so that it's not parsed as an embed later on
-            src = href if href =~ /\.(png|jpg|jpeg|bmp|gif)$/ and test_link(href, 'image')
+            src = href if href =~ /\.(png|jpg|jpeg|bmp|gif)/ and test_link(href, 'image')
             break
           end
         end
@@ -319,7 +319,7 @@ module ScraperStrategies
           'img' => 'src',
         }.each do |name, attr|
           base.css(name).each do |node|
-            node[attr] = normalize_link(node[attr]) if node[attr]
+            node[attr] = normalize_link(node[attr]) if node[attr].present?
           end
         end
       end
@@ -533,7 +533,7 @@ module ScraperStrategies
       end
 
       def title_levels
-        2..4
+        2..6
       end
 
       def traverse(node, &block)

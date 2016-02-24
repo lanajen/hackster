@@ -3,7 +3,7 @@ class BaseWorker
   sidekiq_options queue: :default, retry: 5
 
   def perform method, *args
-    with_logging method do
+    with_logging method, args do
       send(method, *args)
     end
   rescue ActiveRecord::RecordNotFound, Timeout::Error => e
@@ -12,8 +12,8 @@ class BaseWorker
     log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
   end
 
-  def with_logging(method, &block)
-    log("starting...", method)
+  def with_logging(method, args=[], &block)
+    log("starting with arguments: " + args.inspect, method)
 
     time = Benchmark.ms do
       yield block
@@ -23,11 +23,11 @@ class BaseWorker
   end
 
   def log(message, method = nil)
+    message = message.gsub(/%/, '')  # cleaning up % so the line below doesn't complain of malformed string
     log_helper "%s#%s - #{message}" % [self.class.name, method]
   end
 
   def log_helper(message)
-    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-    puts "#{now} #{message}"
+    Rails.logger.debug message
   end
 end

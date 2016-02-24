@@ -26,35 +26,14 @@
 
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
-        - if @project.content_type_to_human
-          .project-type
-            = @project.content_type_to_human
+        - if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
+          .info-header
+            = @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)'
         .row
-          - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
+          - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
             .col-md-8.left-column
-              - if @project.event
-                .project-group
-                  i.fa.fa-challenge>
-                  ' This project is part of
-                  ==> link_to @project.event.name, @project.event
-
-              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
-                - if ProjectCollection.assignment_or_event_for_project?(@project.id)
-                  .project-group
-                    i.fa.fa-graduation-cap>
-                    ' This project is part of
-                    - if @project.assignment.present?
-                      - if @project.assignment.promotion.avatar
-                        ==> image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
-                      = link_to @project.assignment.to_label, assignment_path(@project.assignment)
-                    - elsif @project.event.present?
-                      - if @project.event.avatar
-                        ==> image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
-                      = link_to @project.event.name, event_path(@project.event)
-                      / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-                        span.project-award<
-                          i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+              - cache [I18n.locale, "project-#{@project.id}-teaser", site_user_name == 'arduino'], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
 
                 - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
                 - if @winning_entry
@@ -109,7 +88,7 @@
                   .section-content.hljs-active
                     .medium-editor= @description
 
-              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                 - if @hardware_parts.any?
                   section#components.section-container.section-collapsible
                     h2.section-title
@@ -126,7 +105,7 @@
                           - @hardware_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
-              - cache [I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-tool-parts", site_user_name], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
                 - if @tool_parts.any?
                   section#tools.section-container.section-collapsible
                     h2.section-title
@@ -164,7 +143,7 @@
                       - @schematic_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-              - cache [I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
                 - if @software_parts.any?
                   section#apps.section-container.section-collapsible
                     h2.section-title
@@ -315,7 +294,7 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
-              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
@@ -420,63 +399,63 @@
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge
 
-              - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other", skip_digest: true do
-                - if @other_projects.count > 0
-                  section.section-thumbs
-                    h4 Similar projects you might like
-                    - @other_projects.each_with_index do |project, i|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_small)}')"
-                        = link_to '', project_path(project, ref: 'similar', ref_id: @project.id, offset: i), class: 'link-overlay'
-                        .project-thumb-mini-inner
-                          h4= link_to project.name, project
-                          / # p= render partial: 'projects/by_team', locals: { project: project }
+              - if @other_projects.count > 0
+                a href="#similar-proj" class="similar-proj-btn smooth-scroll" data-offset=-60
+                  | See similar projects
+                  br
+                  | you might like
 
               - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
                 section.section-thumbs.hidden-xs.hidden-sm
                   h4
                     | Table of contents
-                  #project-side-nav.affixable style='top:20px' data-top=20
+                  #project-side-nav.affixable style='top:60px' data-top=60
                     #scroll-nav.section-container
                       ul.nav
                         li.active
-                          a.smooth-scroll href="#home" data-target="#home" data-offset='-40'
+                          a.smooth-scroll href="#content" data-offset='-40'
                             = @project.name
                         li
-                          a.smooth-scroll href="#about-project" data-target="#about-project"
+                          a.smooth-scroll href="#about-project"
                             | About this project
+                        - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                          - @project.toc.each do |title|
+                            li.small-toc
+                              a.smooth-scroll href=id_for_toc(title)
+                                = title_for_toc title
                         - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                           - if @hardware_parts.any?
                             li
-                              a.smooth-scroll href="#components" data-target="#components"
+                              a.smooth-scroll href="#components"
                                 | Components and supplies
                         - cache ["project-#{@project.id}-contents-tool-parts"], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
                           - if @tool_parts.any?
                             li
-                              a.smooth-scroll href="#tools" data-target="#tools"
+                              a.smooth-scroll href="#tools"
                                 | Necessary tools and machines
                         - cache ["project-#{@project.id}-contents-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                           - if @cad_widgets.any?
                             li
-                              a.smooth-scroll href="#cad" data-target="#cad"
+                              a.smooth-scroll href="#cad"
                                 | Custom parts and enclosures
                         - cache ["project-#{@project.id}-contents-schematics"], tag: ["project-#{@project.id}-schematics"], skip_digest: true do
                           - if @schematic_widgets.any?
                             li
-                              a.smooth-scroll href="#schematics" data-target="#schematics"
+                              a.smooth-scroll href="#schematics"
                                 | Schematics
                         - cache ["project-#{@project.id}-contents-software-parts"], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
                           - if @software_parts.any?
                             li
-                              a.smooth-scroll href="#apps" data-target="#apps"
+                              a.smooth-scroll href="#apps"
                                 | Apps and online services
                         - cache ["project-#{@project.id}-contents-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
                           - if @code_widgets.any?
                             li
-                              a.smooth-scroll href="#code" data-target="#code"
+                              a.smooth-scroll href="#code"
                                 | Code
                         - if (@project.build_logs_count > 0 and !@project.private_logs)
                           li
-                            a.smooth-scroll href="#logs"  data-target="#logs"
+                            a.smooth-scroll href="#logs"
                               | Build Logs
                               span.nav-count
                                 | (
@@ -484,14 +463,14 @@
                                 | )
                         - if (@project.issues_count > 0 and !@project.private_issues)
                           li
-                            a.smooth-scroll href="#issues"  data-target="#issues"
+                            a.smooth-scroll href="#issues"
                               | Issues
                               span.nav-count
                                 | (
                                 = @project.issues_count
                                 | )
                         li
-                          a.smooth-scroll href="#comments"  data-target="#comments"
+                          a.smooth-scroll href="#comments"
                             | Comments
                             span.nav-count
                               | (
@@ -505,7 +484,7 @@
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other", expires_in: 5.days do
         - if @other_projects.count > 0
-          section.other-projects
+          section.other-projects#similar-proj
             .container
               section.section-thumbs
                 h4 style='border:0' Similar projects you might like

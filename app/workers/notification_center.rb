@@ -13,10 +13,10 @@ class NotificationCenter < BaseWorker
       NotificationHandler.new(event, context_type, context_id).send(method_name, *method_args)
     end
   rescue ActiveRecord::RecordNotFound, Timeout::Error => e
-    message = "Error while working on '#{method_name}' in '#{self.class.name}' with args #{method_args}: \"#{e.message}\""
+    message = "Error while working on '#{method_name}' in '#{self.class.name}' with args `#{event}`, `#{context_type}`, `#{context_id}`, #{method_args}: \"#{e.message}\""
     AppLogger.new(message, 'error', 'worker', e).create_log
   rescue => e
-    message = "Error while working on '#{method_name}' in '#{self.class.name}' with args #{method_args}: \"#{e.message}\""
+    message = "Error while working on '#{method_name}' in '#{self.class.name}' with args `#{event}`, `#{context_type}`, `#{context_id}`, #{method_args}: \"#{e.message}\""
     AppLogger.new(message, 'error', 'worker', e).log_and_notify_with_stdout
     raise e
   end

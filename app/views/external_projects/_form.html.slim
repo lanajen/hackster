@@ -37,7 +37,7 @@
                   = hidden_field_tag 'base_article[start_date(3i)]', '1'
                   = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'base_article[start_date(2i)]' })
                 .col-md-6
-                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'base_article[start_date(1i)]' })
+                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: 2000 }, { class: 'form-control', name: 'base_article[start_date(1i)]' })
           - else
             = f.input :name, label: 'Device name'
             = f.input :one_liner, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },

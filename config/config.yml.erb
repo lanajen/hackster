@@ -1,7 +1,13 @@
 development:
+  <% if ENV['FULL_HOST'].present? %>
+  full_host: <%= ENV['FULL_HOST'] %>:5000
+  default_host: <%= ENV['FULL_HOST'] %>
+  default_domain: herokuapp.com
+  <% else %>
   full_host: <%= ENV['SUBDOMAIN'] %>.localhost.local:5000
   default_host: <%= ENV['SUBDOMAIN'] %>.localhost.local
   default_domain: localhost.local
+  <% end %>
   default_port: 5000
   port_required: true
   send_emails: <%= ENV['USE_MANDRILL'] == 'true' %>
@@ -17,14 +23,14 @@ development:
 #   send_emails: false
 
 # development:
-#   full_host: dev.hackster.io
-#   default_host: dev.hackster.io
+#   full_host: www.hackster.io:5000
+#   default_host: www.hackster.io
 #   default_domain: hackster.io
-#   default_port: 80
-#   port_required: false
+#   default_port: 5000
+#   port_required: true
 #   send_emails: <%= ENV['USE_MANDRILL'] == 'true' %>
 #   workers_running: false
-#   stats_url: dev.hackster.io
+#   stats_url: www.hackster.io
 #   use_ssl: <%= ENV['USE_SSL'] == 'true' %>
 
 test:
@@ -40,9 +46,15 @@ test:
   use_ssl: false
 
 production:
+  <% if ENV['FULL_HOST'].present? %>
+  full_host: <%= ENV['FULL_HOST'] %>
+  default_host: <%= ENV['FULL_HOST'] %>
+  default_domain: herokuapp.com
+  <% else %>
   full_host: <%= ENV['SUBDOMAIN'] %>.hackster.io
   default_host: <%= ENV['SUBDOMAIN'] %>.hackster.io
   default_domain: hackster.io
+  <% end %>
   default_port: <%= ENV['USE_SSL'] == 'true' ? 443 : 80 %>
   port_required: false
   send_emails: true

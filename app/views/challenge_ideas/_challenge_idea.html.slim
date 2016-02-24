@@ -20,5 +20,6 @@
               = string
               br
     .field Submitted on #{l idea.created_at}.
+    .field= link_to 'Permalink', idea
 
   = link_to 'View the full idea &rarr;'.html_safe, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }

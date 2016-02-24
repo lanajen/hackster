@@ -16,6 +16,14 @@ class CronTask < BaseWorker
     end
   end
 
+  def check_if_platform_ready
+    Platform.where("CAST(hproperties -> 'hidden' AS BOOLEAN) = 't'").each do |platform|
+      if platform.members_count >= 25 and platform.projects_count >= 10
+        send_platform_ready_email_notif platform
+      end
+    end
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -29,10 +37,28 @@ class CronTask < BaseWorker
   end
 
   def cleanup_buggy_unpublished
-    BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
-    BaseArticle.publyc.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
-      project.update_attribute :workflow_state, :approved
+    # bug: projects that have been approved in the past (they have a made_public_at date) should always be approved
+    BaseArticle.publyc.where.not(type: 'ExternalProject').where(workflow_state: %w(unpublished pending_review)).where.not(made_public_at: nil).each do |project|
+      project.update_column :workflow_state, :approved
     end
+    # bug: pending review projects should have a review thread in needs_review state
+    ReviewThread.where(workflow_state: :new).joins(:project).where(projects: { workflow_state: :pending_review, private: false }).update_all(workflow_state: :needs_review)
+    # bug: unbpublished projects should have a review thread in :new state so that they don't appear in the queue
+    ReviewThread.where.not(workflow_state: [:new, :closed]).joins(:project).where(projects: { workflow_state: [:unpublished, :pending_review], private: true }).update_all(workflow_state: :new)
+    # bug: multiple review threads exist for the same project
+    ReviewThread.group(:project_id).having("count(*) > 1").count.each do |project_id, count|
+      threads = ReviewThread.where(project_id: project_id).to_a
+      first = threads.first
+      threads[1..-1].each do |thread|
+        thread.comments.update_all(commentable_id: first.id)
+        thread.decisions.update_all(review_thread_id: first.id)
+        thread.events.update_all(review_thread_id: first.id)
+        thread.notifications.update_all(notifiable_id: first.id)
+        thread.delete
+      end
+    end
+    # bug: projects are approved but review threads open
+    ReviewThread.where.not(workflow_state: %w(closed)).joins(:project).where(projects: { workflow_state: :approved }).where.not(projects: { made_public_at: nil }).update_all(workflow_state: :closed)
   end
 
   def clean_invitations
@@ -44,21 +70,10 @@ class CronTask < BaseWorker
 
     triggers = Rewardino::Trigger.find_all :cron
     badges = triggers.map{|t| t.badge }
-    User.invitation_accepted_or_not_invited.each do |user|
+    User.not_hackster.invitation_accepted_or_not_invited.each do |user|
       badges.each do |badge|
         User.delay.evaluate_badge user.id, badge.code, send_notification: true
       end
-    end
-  end
-
-  def generate_user
-    UserGenerator.generate_user
-  rescue => e
-  end
-
-  def generate_users
-    15.times do
-      CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
     end
   end
 
@@ -70,7 +85,6 @@ class CronTask < BaseWorker
     CronTask.perform_in 8.minutes, 'cleanup_duplicates'
     CronTask.perform_in 10.minutes, 'clean_invitations'
     PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
-    CronTask.perform_in 14.minutes, 'evaluate_badges'
   end
 
   def launch_daily_cron
@@ -78,6 +92,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'update_mailchimp_for_challenges'
     CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
+    CronTask.perform_in 14.minutes, 'evaluate_badges'
     CacheWorker.perform_in 30.minutes, 'warm_cache'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
@@ -168,6 +183,17 @@ class CronTask < BaseWorker
   private
     def redis
       @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
+    end
+
+    def send_platform_ready_email_notif platform
+      @message = Message.new(
+        message_type: 'generic',
+        to_email: 'alex@hackster.io'
+      )
+      @message.subject = "#{platform.name} is ready to be featured"
+      @message.body = "<p>Oh hey Alex!</p><p>Just wanted to let you know that <a href='https://www.hackster.io/#{platform.user_name}'>#{platform.name}</a> has gone over the thresholds and should be ready to be featured. It might still need some polishing though.</p>"
+      @message.body += "<p>All my love,<br>Hackster Bot</p>"
+      MailerQueue.enqueue_generic_email(@message)
     end
 
     def send_project_notifications time_frame, email_frequency

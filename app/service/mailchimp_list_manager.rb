@@ -1,6 +1,8 @@
 class MailchimpListManager
+  attr_accessor :timeout_count
+
   def add users
-    add_subscribers_in_batches(users)
+    ENV['MAILCHIMP_ACTIVE'] ? add_subscribers_in_batches(users) : []
   end
 
   def initialize api_key, list_id
@@ -9,7 +11,7 @@ class MailchimpListManager
   end
 
   def remove users
-    remove_subscribers_in_batches(users)
+    ENV['MAILCHIMP_ACTIVE'] ? remove_subscribers_in_batches(users) : []
   end
 
   private
@@ -21,10 +23,19 @@ class MailchimpListManager
       successful_emails = get_email_from_users(users) - failed_emails
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
       return { success: successful_emails, fail: failed_emails }
+    rescue Net::ReadTimeout
+      timeout_count = timeout_count ? timeout_count + 1 : 1
+      if timeout_count < 3
+        puts "Timeout! Trying again... (#{timeout_count})"
+        add_subscribers users
+      else
+        puts "3 timeouts, giving up."
+        { success: [], fail: [] }
+      end
     end
 
     def add_subscribers_in_batches users
-      users.each_slice(1000).map do |slice|
+      users.each_slice(250).map do |slice|
         add_subscribers slice
       end.inject({}){|mem, h| mem.merge(h); h }
     end
@@ -55,7 +66,7 @@ class MailchimpListManager
     end
 
     def remove_subscribers_in_batches users
-      users.each_slice(1000).map do |slice|
+      users.each_slice(250).map do |slice|
         remove_subscribers slice
       end.inject({}){|mem, h| mem.merge(h); h }
     end

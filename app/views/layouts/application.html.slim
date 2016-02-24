@@ -15,8 +15,9 @@ html(lang="en")
     meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     meta(property="fb:app_id" content="414718878625776")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="api-uri" id="api-uri" content=api_host)
     title= title
-    meta(name="description" content="#{meta_desc}")
+    meta(name="description" content=meta_desc)
     = content_for :head
     - unless csrf_disabled?
       = csrf_meta_tags
@@ -24,39 +25,17 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="60x60" href="#{ asset_path 'favicons/apple-touch-icon-60x60.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="76x76" href="#{ asset_path 'favicons/apple-touch-icon-76x76.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="120x120" href="#{ asset_path 'favicons/apple-touch-icon-120x120.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="144x144" href="#{ asset_path 'favicons/apple-touch-icon-144x144.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="152x152" href="#{ asset_path 'favicons/apple-touch-icon-152x152.png?v=zXX3Bm3lo3' }"
-    link rel="apple-touch-icon" sizes="180x180" href="#{ asset_path 'favicons/apple-touch-icon-180x180.png?v=zXX3Bm3lo3' }"
-    link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-16x16.png?v=zXX3Bm3lo3" sizes="16x16' }"
-    link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-32x32.png?v=zXX3Bm3lo3" sizes="32x32' }"
-    link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-96x96.png?v=zXX3Bm3lo3" sizes="96x96' }"
-    link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-160x160.png?v=zXX3Bm3lo3" sizes="160x160' }"
-    link rel="icon" type="image/png" href="#{ asset_path 'favicons/android-chrome-192x192.png?v=zXX3Bm3lo3" sizes="192x192' }"
-    link rel="manifest" href="#{ asset_path 'favicons/manifest.json?v=zXX3Bm3lo3' }"
-    link rel="mask-icon" href="#{ asset_path 'favicons/safari-pinned-tab.svg?v=zXX3Bm3lo3' }" color="#1cacf7"
-    link rel="shortcut icon" href="#{ asset_path 'favicons/favicon.ico?v=zXX3Bm3lo3' }"
+    - cache ['favicons', '2015-12-20'] do
+      = render 'shared/favicons'
     meta name="apple-mobile-web-app-title" content="Hackster"
     meta name="application-name" content="Hackster"
-    meta name="msapplication-TileColor" content="#1cacf7"
-    meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png?v=zXX3Bm3lo3' }"
-    meta name="theme-color" content="#1cacf7"
     - if ENV['ENABLE_ANALYTICS'] and !current_user.try(:is?, :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
 
   body class=yield(:body_class) data-user-signed-in=user_signed_in?
     - unless params[:blank_frame]
-      - if user_signed_in? and !current_user.confirmed?
-        .alert.alert-flat.alert-warning.alert-smaller
-          .container
-            ' Hi! Please confirm your email address by clicking the link in the email we sent you.
-            ' Haven't received it?
-            = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
+      - if user_signed_in?
+        = render 'shared/important_notifs'
 
     #outer-wrapper
       - unless params[:blank_frame]
@@ -93,44 +72,7 @@ html(lang="en")
                               li= link_to tag, "#{link}?ref=topnav"
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
                 li= link_to 'Challenges', challenges_path, class: 'nav-link'
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    i.fa.fa-ellipsis-h
-                    / span.caret
-                  ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
-                    li= link_to 'Free Store', store_path, class: 'nav-link'
-                    li= link_to 'Curated lists', lists_path, class: 'nav-link'
-                    li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
-                    li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
-                    li= link_to 'Blog', blog_index_path, class: 'nav-link'
-                    / li.dropdown
-                      a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                        | Challenges
-                        span.caret
-                      ul#challenge-nav.dropdown-menu style="padding:5px"
-                        li
-                          div style="width:300px;"
-                            .thumb style='padding-bottom:5px'
-                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png');padding-top:50%"
-                                = link_to '', '/challenges/hardware-home', class: 'link-overlay'
-                                .thumb-image-inner
-                                  h4
-                                    ==> link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
-                                    br
-                                    a.small sponsored by Autodesk
-                                  p
-                                    strong Win a Type A Series 1 3D Printer
-                            .thumb
-                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png');padding-top:50%"
-                                = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
-                                .thumb-image-inner
-                                  h4
-                                    ==> link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
-                                    br
-                                    a.small sponsored by Microsoft
-                                  p
-                                    strong Win $5,000
-
+                li= link_to 'Live', live_path, class: 'nav-link'
 
               - if user_signed_in?
                 ul#user-navigation-links.navbar-nav.navbar-right
@@ -164,36 +106,24 @@ html(lang="en")
                 ul#navbar-right.clearfix
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle#show-login-form data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = render 'devise/shared/omniauth', css: 'icon'
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
-                  = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
-                  /
-                    - popup = capture do
-                      div style='text-align:center'
-                        ul.list-unstyled
-                          li= link_to 'New project', new_project_path
-                          li= link_to 'New article', new_project_path(base_article: { article: true })
-                        = link_to content_tag(:i, '', class: 'fa fa-question-circle'), '', title: 'Learn more about projects vs articles', rel: 'tooltip'
-                    li
-                      a.nav-link href="javascript:void(0)" data-toggle="popover" data-content=popup.gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
-                        = content_tag(:i, '', class: 'fa fa-plus')
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
+                  = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
+                  li
+                    a> href=users_stats_path rel='tooltip' title="Reputation points" data-placement='bottom'
+                      strong
+                        - if current_user.reputation
+                          = number_with_delimiter current_user.reputation_count
+                        - else
+                          | 0
 
               #navbar-search
-                = render 'shared/search_form'
+                = render 'shared/algolia_search_form'
 
       - if content_for? :no_main
         = yield :no_main
@@ -207,28 +137,44 @@ html(lang="en")
               .container= yield
 
     - unless params[:blank_frame]
-      footer.clearfix
-        .footer-nav.clearfix
-          ul.list-unstyled.list-inline.pull-left
-            li= link_to 'About', about_path
-            li= link_to 'Community', users_path
-            / # li= link_to 'Blog', '/blog'
-            li= link_to 'Hackster for business', business_path
-            / li= link_to 'Partners', '/partners'
-            / # li= link_to 'Press', '/press'
-            li= link_to 'Feedback & support', 'javascript:showClassicWidget();'
-            li= link_to 'Changelog', 'https://assembly.com/hacksterio'
-            li= link_to 'Jobs', jobs_path
-            li= link_to 'Code of Conduct', '/conduct'
-            li= link_to 'Terms', '/terms'
-            / # li= link_to 'Privacy', '/privacy'
-            / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
-            li
-          ul.list-unstyled.list-inline.pull-right
-            li= link_to content_tag(:i, '', class: 'fa fa-twitter'), 'http://www.twitter.com/hacksterio'
-            li= link_to content_tag(:i, '', class: 'fa fa-facebook'), 'http://www.facebook.com/hacksterio'
-            li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
-            li Hackster 2015
+      footer
+        .footer-nav
+          .container.clearfix
+            ul.list-unstyled.pull-left
+              li
+                h3 More cool stuff
+              li= link_to 'Community', users_path
+              li= link_to 'Curated lists', lists_path
+              li= link_to 'Free Store', store_path
+              li= link_to 'Hardware Weekend', '/hardwareweekend'
+              li= link_to 'Hacker spaces', hacker_spaces_path
+            ul.list-unstyled.pull-left
+              li
+                h3 Legal thingies
+              li= link_to 'Terms of Service', '/terms'
+              li= link_to 'Code of Conduct', '/conduct'
+              li= link_to 'Privacy Policy', '/privacy'
+            ul.list-unstyled.pull-left
+              li
+                h3 About us
+              li= link_to "Hackster's story", about_path
+              li= link_to 'Our kickass blog', '/blog'
+              li= link_to 'Hackster for business', business_path
+              li= link_to 'Help', 'https://hacksterio.freshdesk.com/support/home', target: '_blank'
+              li= link_to 'Jobs', jobs_path
+              / li= link_to 'Changelog', 'https://assembly.com/hacksterio'
+              / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
+            ul.list-unstyled.pull-left
+              li
+                h3 We're fairly social people
+              li= link_to content_tag(:i, '', class: 'fa fa-facebook') + content_tag(:span, 'Facebook'), 'https://www.facebook.com/hacksterio'
+              li= link_to content_tag(:i, '', class: 'fa fa-twitter') + content_tag(:span, 'Twitter'), 'https://www.twitter.com/hacksterio'
+              li= link_to content_tag(:i, '', class: 'fa fa-youtube') + content_tag(:span, 'Youtube'), 'https://www.youtube.com/hacksterio'
+            ul.list-unstyled.list-inline.pull-right
+              /li= link_to content_tag(:i, '', class: 'fa fa-google-plus'), 'https://plus.google.com/+HacksterIo'
+              li Hackster, Inc. #{Date.today.year}
+      - unless user_signed_in?
+        = render 'shared/modals/login_popup'
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
@@ -237,15 +183,17 @@ html(lang="en")
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
       / # = link_to 'Hardware Weekend', '/hardwareweekend', class: 'mo-nav-link'
-      = link_to 'Free Store', store_path, class: 'mo-nav-link'
       = link_to 'Challenges', challenges_path, class: 'mo-nav-link'
-      = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
+      = link_to 'Live', live_path, class: 'mo-nav-link'
+      = link_to 'Free Store', store_path, class: 'mo-nav-link'
+      /= link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
       = link_to 'Blog', blog_index_path, class: 'mo-nav-link'
       = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project").html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
-        = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'Profile and projects', current_user, class: 'mo-nav-link'
         = link_to 'Messages', conversations_path, class: 'mo-nav-link'
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
+        = link_to 'Notifications', notifications_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
         - if current_user.is? :admin
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
@@ -257,9 +205,6 @@ html(lang="en")
 
     .loading-bar
 
-    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-    javascript:
-       try{Typekit.load({async: true});}catch(e){}
     = javascript_include_tag "application"
     - unless params[:blank_frame]
       - if show_hello_world?
@@ -269,3 +214,7 @@ html(lang="en")
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
+
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+       try{Typekit.load({async: true});}catch(e){}

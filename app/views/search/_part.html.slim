@@ -1,0 +1,6 @@
+.media
+  a.media-left  href=part_path(part)
+    = image_tag part.image(:part_thumb_big), class: 'media-object'
+  .media-body
+    b>= link_to part.name, part_path(part)
+    small.text-muted part

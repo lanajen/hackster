@@ -1,0 +1,20 @@
+- server_images = Image.where(id: images.keys).map{|i| i.caption = images[:caption]; i }
+- ids = images.keys
+.embed-frame data-type="widget"
+  .figure class="image_widget"
+    .figcaption.embed-figcaption
+    .embed class="original"
+      .image-gallery-container
+        .image-gallery
+          / sorting images by position
+          - images.sort_by{|id, img| img[:position] }.each do |id, img|
+            / fetching image from server_images array by id
+            - image = server_images.select{|o| o.id.to_s == id.to_s }.first
+            / rendering image partial
+            = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid, lazyload: options[:mode] == :normal }
+
+javascript:
+  if (typeof(lightBoxImages) == 'undefined') {
+    lightBoxImages = {};
+  }
+  lightBoxImages['#{uid}'] = [#{lightbox_elements(server_images).html_safe}];

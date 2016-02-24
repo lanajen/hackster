@@ -5,21 +5,21 @@ GIT
     will_paginate (3.0.4)
 
 GIT
-  remote: https://github.com/blarralde/fastly-rails.git
+  remote: https://github.com/hacksterio/fastly-rails.git
   revision: 6a661b04f21ff4024d0a271ef526d0ae1590896e
   specs:
     fastly-rails (0.3.2)
       rails
 
 GIT
-  remote: https://github.com/blarralde/mandrill_dm.git
+  remote: https://github.com/hacksterio/mandrill_dm.git
   revision: c71cd0ccde0c659d7d41e3727daa64f49b537db0
   specs:
     mandrill_dm (1.2.0)
       mandrill-api (~> 1.0.53)
 
 GIT
-  remote: https://github.com/blarralde/omniauth-saml.git
+  remote: https://github.com/hacksterio/omniauth-saml.git
   revision: 4d92b6997488be4a1ef276f77002db825d2482ec
   branch: patch-1
   specs:
@@ -28,8 +28,8 @@ GIT
       ruby-saml (~> 1.0)
 
 GIT
-  remote: https://github.com/blarralde/pygments.rb.git
-  revision: 1e9a4144801d37ea7982de00efea8480c49dc721
+  remote: https://github.com/hacksterio/pygments.rb.git
+  revision: ce9c51cd23f19bb171e7f518bc5fd19eef939ef6
   specs:
     pygments.rb (0.6.3)
       posix-spawn (~> 0.3.6)
@@ -57,7 +57,7 @@ GIT
       thin (~> 1.5.0)
 
 GIT
-  remote: https://hackster-heroku:hacksterbitbucket123@bitbucket.org/hacksterio/omniauth-arduino.git
+  remote: https://hackster-heroku:hackstergithub123@github.com/hacksterio/omniauth-arduino.git
   revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
   specs:
     omniauth-arduino (0.0.1)
@@ -107,6 +107,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
+    algoliasearch (1.7.0)
+      httpclient (~> 2.4)
+      json (>= 1.5.1)
     ambry (0.3.1)
     arel (6.0.3)
     auto_html (1.6.3)
@@ -116,7 +119,7 @@ GEM
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
-    babel-source (5.8.26)
+    babel-source (5.8.34)
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
@@ -128,8 +131,6 @@ GEM
       will_paginate
     bootstrap3-datetimepicker-rails (3.1.3)
       momentjs-rails (>= 2.8.1)
-    browserify-rails (1.0.1)
-      railties (>= 4.0.0, < 5.0)
     buftok (0.2.0)
     builder (3.2.2)
     byebug (6.0.2)
@@ -177,6 +178,7 @@ GEM
       sprockets (< 2.13)
     connection_pool (2.0.0)
     country_select (1.1.3)
+    crass (1.0.2)
     css_parser (1.3.7)
       addressable
     customerio (0.5.1)
@@ -328,7 +330,7 @@ GEM
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
-    font-awesome-rails (4.1.0.0)
+    font-awesome-rails (4.5.0.0)
       railties (>= 3.2, < 5.0)
     foreman (0.78.0)
       thor (~> 0.19.1)
@@ -343,7 +345,6 @@ GEM
     gmaps4rails (2.1.2)
     google_visualr (2.4.0)
     hashie (3.4.3)
-    hashr (0.0.22)
     heapy (0.1.0)
     heroku-api (0.3.22)
       excon (~> 0.38)
@@ -366,7 +367,7 @@ GEM
     httpauth (0.2.1)
     httpclient (2.6.0.1)
     i18n (0.7.0)
-    imgix (0.3.1)
+    imgix (1.0.0)
       addressable
     impressionist (1.5.1)
       httpclient (~> 2.2)
@@ -427,6 +428,8 @@ GEM
     newrelic_rpm (3.12.0.288)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
+    nokogumbo (1.4.7)
+      nokogiri
     oauth (0.4.7)
     oauth2 (0.8.1)
       faraday (~> 0.8)
@@ -481,6 +484,7 @@ GEM
     rack (1.6.4)
     rack-attack (4.1.0)
       rack
+    rack-cors (0.4.0)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -497,6 +501,8 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.2.3)
       sprockets-rails
+    rails-assets-algolia-autocomplete.js (0.16.1)
+    rails-assets-algoliasearch (3.12.0)
     rails-assets-clipboard (1.5.3)
     rails-assets-fluxxor (1.5.2)
     rails-assets-js-cookie (2.0.3)
@@ -528,7 +534,7 @@ GEM
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
-    react-rails (1.3.1)
+    react-rails (1.5.0)
       babel-transpiler (>= 0.7.0)
       coffee-script-source (~> 1.8)
       connection_pool
@@ -577,8 +583,10 @@ GEM
       uuid (~> 2.3)
     rubyzip (1.1.7)
     rufus-scheduler (3.1.6)
-    sanitize (2.0.6)
+    sanitize (4.0.1)
+      crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
+      nokogumbo (~> 1.4.1)
     sass (3.4.18)
     sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -674,13 +682,6 @@ GEM
     timers (1.1.0)
     tinymce-rails (4.2.5)
       railties (>= 3.1.1)
-    tire (0.5.5)
-      activemodel (>= 3.0)
-      activesupport
-      hashr (~> 0.0.19)
-      multi_json (~> 1.3)
-      rake
-      rest-client (~> 1.6)
     twitter (5.11.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
@@ -726,13 +727,13 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (= 0.8.3)
   addressable (= 2.3.8)
+  algoliasearch (= 1.7.0)
   ambry (~> 0.3.0)
   auto_html (= 1.6.3)
   aws-sdk (= 1.33.0)
   bootstrap-sass (= 3.3.1)
   bootstrap-will_paginate (= 0.0.10)
   bootstrap3-datetimepicker-rails (= 3.1.3)
-  browserify-rails (= 1.0.1)
   byebug
   cancancan (= 1.12.0)
   capybara
@@ -756,7 +757,7 @@ DEPENDENCIES
   ffaker
   fog
   fog-aws (= 0.1.2)
-  font-awesome-rails (= 4.1.0.0)
+  font-awesome-rails (= 4.5.0.0)
   foreman
   geocoder (= 1.2.5)
   gibbon (= 1.1.1)
@@ -766,7 +767,7 @@ DEPENDENCIES
   heroku-forward (= 0.4.0)
   hirefire-resource (= 0.3.4)
   hpricot (= 0.8.6)
-  imgix (= 0.3.1)
+  imgix (= 1.0.0)
   impressionist (= 1.5.1)
   ipcat (= 2.0.1)
   jbuilder (= 2.3.0)
@@ -802,8 +803,11 @@ DEPENDENCIES
   quiet_assets
   rabl (= 0.11.6)
   rack-attack (= 4.1.0)
+  rack-cors (= 0.4.0)
   rack-timeout (= 0.3.2)
   rails (= 4.2.3)
+  rails-assets-algolia-autocomplete.js (= 0.16.1)!
+  rails-assets-algoliasearch (= 3.12.0)!
   rails-assets-clipboard (= 1.5.3)!
   rails-assets-fluxxor (= 1.5.2)!
   rails-assets-js-cookie (= 2.0.3)!
@@ -812,7 +816,7 @@ DEPENDENCIES
   rails-assets-underscore (= 1.7.0)!
   rails-observers (= 0.1.2)
   rails_12factor
-  react-rails (~> 1.0)
+  react-rails (~> 1.5)
   redcarpet (= 3.3.2)
   redis (= 3.0.6)
   redis-namespace (= 1.5.0)
@@ -821,7 +825,7 @@ DEPENDENCIES
   rspec-rails
   rspec-sidekiq
   rubyzip (= 1.1.7)
-  sanitize (= 2.0.6)
+  sanitize (= 4.0.1)
   sass-rails (= 5.0.1)
   selenium-webdriver
   shoulda-matchers
@@ -841,7 +845,6 @@ DEPENDENCIES
   text_sanitizer (= 0.1.0)
   therubyracer (= 0.12.0)
   tinymce-rails (= 4.2.5)
-  tire (= 0.5.5)
   twitter (= 5.11.0)
   uglifier (= 2.3.1)
   unicorn (= 4.7.0)

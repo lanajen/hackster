@@ -36,22 +36,30 @@ $(function(){
 	var openHome = function(){
 		expanded = true;
 
-		$('#back').show();
+		$('#back').attr('style', 'display: block !important');
 
-		var h = ($('#back').height()) - ($('#home').height());
-		$('#home').animate(
-			{'top':'0'},
-			{
-			duration: 600,
-			easing: 'easeInOutExpo',
-			start: function(){
-				$('#back').removeClass('hidden').addClass('visible');
-				$('#closeArea').removeClass('hidden').addClass('visible').attr('style', 'height:'+ h +'px');
-				$('#ham').addClass('hamBack');
-	  			$('#ham').removeClass('hamNoBack');
-			}
+		var hh = $('#home').height();
+		var h = $('#back').height() - hh;
+
+		$('#home')
+			.css('top', -hh + 'px')
+			.animate(
+				{'top':'0'},
+				{
+				duration: 600,
+				easing: 'easeInOutExpo',
+				start: function(){
+					$('#back').removeClass('hidden').addClass('visible');
+					$('#closeArea').removeClass('hidden').addClass('visible').css('height', h +'px');
+					$('#ham').addClass('hamBack').removeClass('hamNoBack');
+	  			$('.arduino-bbq').addClass('bbq-overlap');
+
+				}
 	 	});
 
+		$('body').css({
+      'overflow': 'hidden'
+		});
 	};
 
 	var closeHome = function() {
@@ -64,13 +72,17 @@ $(function(){
 			duration: duration,
 			easing: 'easeInOutExpo',
 			complete: function(){
-				$('#back').addClass('hidden');
-				$('#closeArea').addClass('hidden');
-				$('#ham').removeClass('hamBack');
-	  			$('#ham').addClass('hamNoBack');
-	  			$('#back').hide();
+				$('#back').removeClass('visible').addClass('hidden');
+				$('#closeArea').removeClass('visible').addClass('hidden');
+				$('#ham').removeClass('hamBack').addClass('hamNoBack');
+  			$('#back').hide();
+  			$('.arduino-bbq').removeClass('bbq-overlap');
 			}
 	  	});
+
+	  	$('body').css({
+		    'overflow': 'auto'
+			});
 
 	  	expanded = false;
 	};

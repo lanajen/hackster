@@ -67,7 +67,15 @@ h2.cart-title Your cart
         .store-actions.text-center
           p After you place this order you will have #{pluralize number_with_delimiter(current_order.after_points), 'point'} left to redeem.
           - if current_order.might_pay_duty?
-            p.alert.alert-danger By placing this order you understand and agree that you may have to pay import taxes on reception of the package.
+            p.alert.alert-danger
+              ' By placing this order you understand and agree that
+              strong you may have to pay import taxes on reception of the package
+              | .
+          - if current_order.high_risk?
+            p.alert.alert-danger
+              ' Please note that we have had a high number of packages lost on their way to #{current_order.address.country}. There is no tracking once the package leaves the US, and we are not responsible for lost packages. By placing this order you understand and agree that
+              strong this order is being shipped at your own risks and that Hackster, Inc. will not be responsible for losses
+              | .
           p
             - if current_order.shipping_cost_in_currency.zero?
               => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }

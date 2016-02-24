@@ -1,37 +1,26 @@
-- if params[:q].present?
+/- if params[:q].present?
   = content_for :head do
     = auto_discovery_link_tag :rss, search_path(format: :rss, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
     = auto_discovery_link_tag :atom, search_path(format: :atom, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
 
-.search-page.row
-  .col-xs-3
-    ul.nav.nav-pills.nav-stacked
-      li  class="#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)
-      li  class="#{'active' if params[:type] == 'hacker_space'} #{'disabled' unless @facets['hacker_space']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hacker_space')
-      li  class="#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
-      li  class="#{'active' if params[:type] == 'base_article'} #{'disabled' unless @facets['base_article']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'base_article')
-      li  class="#{'active' if params[:type] == 'platform'} #{'disabled' unless @facets['platform']}"  = link_to @platforms_label.html_safe, search_path(q: params[:q], type: 'platform')
-
-  .col-xs-9
-    .box
-      - if params[:q].present?
-        - if @results.any?
-          .box-title
-            b>= pluralize @results.total_count, 'result'
-            - if @results.total_count > @results.count
-              | (showing #{@offset} to #{@max})
-            - else
-              | (showing all)
-          .box-content.search-results
-            ul.list-unstyled
-              - @results.each_with_index do |result, i|
-                li  class="#{'last' if i == @results.size - 1}"
-                  - model = result.class.name.underscore
-                  = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: (i + ((safe_page_params || 1) - 1) * SearchRepository::RESULTS_PER_PAGE) }
-            .text-center= will_paginate @results
-        - else
-          .box-content.search-results
-            | No results for <i>#{params[:q]}</i>. <a href="/projects/new?base_article[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
-      - else
-        .box-content.search-results
-          | Go ahead, look something up!
+.search-page
+  - if params[:q].present?
+    h2
+      ' You searched for
+      em= params[:q]
+    - if @search.has_hits?
+      - if @results.has_key? 'platform' and @results['platform'][:models].any?
+        = render partial: 'search/platforms', locals: { results: @results['platform'] }
+      - if @results.has_key? 'part'
+        = render partial: 'search/parts', locals: { results: @results['part'] }
+      / # = render partial: 'search/lists', locals: { results: @results['list'] }
+      - if @results.has_key? 'base_article'
+        = render partial: 'search/base_articles', locals: { results: @results['base_article'] }
+      - if @results.has_key? 'user' and params[:type] == 'User'
+        = render partial: 'search/users', locals: { results: @results['user'] }
+    - else
+      .box-content.search-results
+        | No results for <i>#{params[:q]}</i>. <a href="/projects/new?base_article[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
+  - else
+    .box-content.search-results
+      | Go ahead, look something up!

@@ -22,7 +22,25 @@ class ArticlesController < ApplicationController
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware articles on Hackster.io."
     meta_desc @project_meta_desc
+
     @project = @project.decorate
+
+    # call with already loaded widgets and images
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+      @description = if @project.story_json.empty?
+        @image_widgets = @project.widgets.where(type: 'ImageWidget')
+        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+        @project.description(nil, widgets: @image_widgets, images: @images)
+      else
+        @project.story_json.html_safe
+      end
+    end
+
+    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-attachments"])
+      @widgets = @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget CadRepoWidget CadFileWidget SchematicWidget SchematicFileWidget CodeRepoWidget)).order(:position, :id)
+      @code_widgets = @widgets.select{|w| w.type.in? %w(CodeWidget) }
+      @other_widgets = @widgets.reject{|w| w.type.in? %w(CodeWidget) }
+    end
 
     @parts = @project.parts.alphabetical.includes(:image)
 
@@ -49,7 +67,7 @@ class ArticlesController < ApplicationController
     authorize! :edit, @project
     title 'Edit article'
     initialize_project
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :hackster_moderator
   end
 
   def update

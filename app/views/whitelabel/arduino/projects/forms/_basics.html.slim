@@ -1,0 +1,45 @@
+= content_for :js do
+
+  javascript:
+    $(function(){
+      $("#base_article_product_tags_array").select2({
+        tags: true,
+        tokenSeparators: [','],
+        width: '100%'
+      });
+    });
+
+= simple_nested_form_for @project, url: project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='basics'
+
+  .row
+    .col-md-8.col-md-offset-2
+      .box
+        .box-title
+          h2 Basics
+          .subheading Get started with your project
+
+  .row
+    .col-md-8.col-md-offset-2
+      = f.error_notification
+
+      .box
+        .box-content
+          = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
+          = f.input :one_liner, as: :text, input_html: { rows: 3 },
+            hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
+          div data-anchor='cover_image'
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
+          = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
+          = f.input :product_tags_array, label: 'Tags', collection: (Project::DEFAULT_TAGS + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags to categorize your project. You can specify the components you used in the hardware section, and we will automatically link your project to platforms based on those, so you do not need to add them here. Eg: avoid using tags such as 'Arduino' or 'Raspberry Pi', prefer 'Home automation' or 'Wearables'."
+          .form-group
+            .col-sm-4
+              label.control-label Template
+            .col-sm-8
+              = link_to 'Update to Article template', project_path(@project, base_article: { type: 'Article' }), class: 'btn btn-warning btn-sm', data: { method: :patch, confirm: 'This will update the template and redirect you to the project page. Any unsaved changes will be lost. Continue?' }
+              p.help-block
+                ' You can always revert later.
+                = link_to 'Learn more about templates.', 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
+
+    = render 'projects/forms/pe_save'

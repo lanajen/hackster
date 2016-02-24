@@ -11,13 +11,15 @@ class AttachmentObserver < ActiveRecord::Observer
         keys << "project-#{id}-thumb"
         Cashier.expire *keys
       when 'Image'
-        Cashier.expire "project-#{record.attachable_id}-widgets"
+        id = record.attachable_id
+        keys = []
+        keys << "project-#{id}-widgets"
+        keys << "project-#{id}-left-column"
+        keys << "project-#{id}"
+        Cashier.expire *keys
       end
     elsif record.attachable_type == 'Widget'
-      case record.type
-      when 'Image'
-        Cashier.expire "project-#{record.attachable.widgetable_id}-widgets"
-      end
+      record.attachable.touch
     elsif record.attachable_type == 'Part'
       case record.type
       when 'Image'
@@ -60,7 +62,7 @@ class AttachmentObserver < ActiveRecord::Observer
         Cashier.expire "challenge-#{challenge.id}-banner"
         FastlyWorker.perform_async 'purge', challenge.record_key
       when 'CoverImage'
-        Cashier.expire "challenge-#{challenge.id}-meta"
+        Cashier.expire "challenge-#{challenge.id}-meta", "challenge-#{challenge.id}-banner"
         FastlyWorker.perform_async 'purge', challenge.record_key
       end
     end

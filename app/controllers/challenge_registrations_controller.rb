@@ -22,7 +22,7 @@ class ChallengeRegistrationsController < ApplicationController
 
   def destroy
     @registration.destroy
-    redirect_to @challenge, notice: "You've quit #{@challenge.name}. Feel free to register again at any time."
+    redirect_to @challenge, notice: "You've left #{@challenge.name}. Feel free to register again at any time."
   end
 
   private
@@ -31,9 +31,8 @@ class ChallengeRegistrationsController < ApplicationController
     end
 
     def load_and_authorize_registration
-      @registration = ChallengeRegistration.find params[:id]
-      raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @registration.challenge_id.to_s
+      @challenge = Challenge.find params[:challenge_id]
+      @registration = @challenge.registrations.where(user_id: current_user.id).first!
       authorize! self.action_name.to_sym, @registration
-      @challenge = @registration.challenge
     end
 end

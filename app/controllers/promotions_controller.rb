@@ -6,7 +6,7 @@ class PromotionsController < ApplicationController
 
   def show
     title @promotion.name
-    meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
+    meta_desc "Join the class #{@promotion.name} on Hackster.io!"
     @project_collections = @promotion.project_collections.includes(:project).includes(project: [:users, :cover_image, :team]).order("project_collections.collectable_id DESC").paginate(page: safe_page_params, per_page: 16)
     @students = @promotion.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
     @staffs = @promotion.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles(%w(ta professor)).map(&:user).select{|u| u.invitation_token.nil? }
@@ -17,7 +17,7 @@ class PromotionsController < ApplicationController
 
   def new
     authorize! :create, Promotion
-    title "Create a new promotion"
+    title "Create a new class"
     @promotion = Promotion.new
 
     render "groups/promotions/#{self.action_name}"
@@ -68,7 +68,7 @@ class PromotionsController < ApplicationController
     else
       @promotion.build_avatar unless @promotion.avatar
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render template: 'groups/shared/edit', layout: current_layout }
         format.js { render json: { group: @promotion.errors }, status: :unprocessable_entity }
       end
     end

@@ -97,20 +97,80 @@ class Part < ActiveRecord::Base
     # end
   end
 
+  # beginning of search methods
+  include AlgoliaSearchHelpers
+  has_algolia_index '!approved?'
+
+  def self.index_all limit=nil
+    algolia_batch_import where(workflow_state: :approved).includes(:platform, :image), limit
+  end
+
+  def to_indexed_json
+    {
+      # for locating
+      id: id,
+      model: self.class.model_name.name,
+      objectID: algolia_id,
+
+      # for searching
+      description: description,
+      mpn: mpn,
+      name: name,
+      pitch: one_liner,
+      platforms: [
+        platform ? {
+          id: platform.id,
+          name: platform.name,
+        } : nil
+      ].compact,
+      _tags: product_tags_cached,
+      type: type,
+
+      # for display
+      image_url: decorate.image(:part_thumb),
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).part_path(self),
+
+      # for ranking
+      impressions_count: impressions_count,
+      owners_count: owners_count,
+      projects_count: projects_count,
+    }
+  end
+  # end of search methods
+
   scope :alphabetical, -> { order name: :asc }
   scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
-  def self.search params
+  def self.search opts={}
     # escape single quotes and % so it doesn't break the query
-    query = if params[:q].present?
-      params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-        "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
-      end.join(' AND ')
-    else
-      '1=1'
-    end
+    # query = if params[:q].present?
+    #   params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+    #     "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
+    #   end.join(' AND ')
+    # else
+    #   '1=1'
+    # end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).order('groups.full_name ASC, parts.name ASC').includes(:platform)
+    # approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).includes(:platform)
+
+    params = {}
+    params['type'] = opts[:type] if opts[:type]
+
+    search_opts = {
+      q: opts[:q],
+      per_page: opts[:per_page],
+      platform_id: opts[:platform_id],
+      model_classes: [
+        {
+          model_class: 'Part',
+          params: params,
+          includes: opts[:includes],
+          restrictSearchableAttributes: "name,platforms.name,mpn",
+        }
+      ]
+    }
+
+    Search.new(search_opts).hits['part']
   end
 
   def self.approved
@@ -184,6 +244,7 @@ class Part < ActiveRecord::Base
   end
 
   def image_id=(val)
+    attribute_will_change! :image
     self.image = Image.find_by_id(val)
   end
 
@@ -195,7 +256,7 @@ class Part < ActiveRecord::Base
   def full_name
     return @full_name if @full_name
 
-    @full_name = if platform and !name.starts_with?(platform.name)
+    @full_name = if platform and !name.downcase.starts_with?(platform.name.downcase)
       "#{platform.name} #{name}"
     else
       name

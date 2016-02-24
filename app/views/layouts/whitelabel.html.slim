@@ -1,4 +1,4 @@
-= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue; end;
+= begin; render "whitelabel/#{site_user_name}/all"; rescue => e; logger.error e.inspect unless e.kind_of? ActionView::MissingTemplate; ''; end;
 /= render "whitelabel/#{current_site.subdomain}/all"
 
 /!
@@ -16,6 +16,7 @@ html lang="en" class=content_for(:html_class)
     meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     meta(property="fb:app_id" content="414718878625776")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="api-uri" id="api-uri" content=api_host)
     title= title
     meta(name="description" content=meta_desc)
     = csrf_meta_tags
@@ -30,26 +31,8 @@ html lang="en" class=content_for(:html_class)
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
     - else
-      link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="60x60" href="#{ asset_path 'favicons/apple-touch-icon-60x60.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="76x76" href="#{ asset_path 'favicons/apple-touch-icon-76x76.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="120x120" href="#{ asset_path 'favicons/apple-touch-icon-120x120.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="144x144" href="#{ asset_path 'favicons/apple-touch-icon-144x144.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="152x152" href="#{ asset_path 'favicons/apple-touch-icon-152x152.png?v=zXX3Bm3lo3' }"
-      link rel="apple-touch-icon" sizes="180x180" href="#{ asset_path 'favicons/apple-touch-icon-180x180.png?v=zXX3Bm3lo3' }"
-      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-16x16.png?v=zXX3Bm3lo3" sizes="16x16' }"
-      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-32x32.png?v=zXX3Bm3lo3" sizes="32x32' }"
-      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-96x96.png?v=zXX3Bm3lo3" sizes="96x96' }"
-      link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-160x160.png?v=zXX3Bm3lo3" sizes="160x160' }"
-      link rel="icon" type="image/png" href="#{ asset_path 'favicons/android-chrome-192x192.png?v=zXX3Bm3lo3" sizes="192x192' }"
-      link rel="manifest" href="#{ asset_path 'favicons/manifest.json?v=zXX3Bm3lo3' }"
-      link rel="mask-icon" href="#{ asset_path 'favicons/safari-pinned-tab.svg?v=zXX3Bm3lo3' }" color="#1cacf7"
-      link rel="shortcut icon" href="#{ asset_path 'favicons/favicon.ico?v=zXX3Bm3lo3' }"
-      meta name="msapplication-TileColor" content="#1cacf7"
-      meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png?v=zXX3Bm3lo3' }"
-      meta name="theme-color" content="#1cacf7"
+      - cache ['favicons', '2015-12-20'] do
+        = render 'shared/favicons'
     meta name="apple-mobile-web-app-title" content=site_name
     meta name="application-name" content=site_name
 
@@ -62,12 +45,9 @@ html lang="en" class=content_for(:html_class)
 
   body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
-      - if user_signed_in? and current_user.simplified_signup?
-        .alert.alert-flat.alert-warning.alert-smaller
-          .container
-            ' Hi! Please confirm your email address by clicking the link in the email we've sent you.
-            ' Haven't received such email?
-            = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
+      - if !content_for?(:header) and user_signed_in?
+        = render 'shared/important_notifs'
+
       - unless user_signed_in?
         = render 'shared/modals/simplified_signup_popup'
       - if content_for? :header
@@ -102,16 +82,7 @@ html lang="en" class=content_for(:html_class)
                 ul#navbar-right.clearfix
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = render 'devise/shared/omniauth', css: 'icon'
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
@@ -124,7 +95,10 @@ html lang="en" class=content_for(:html_class)
                 = render 'shared/search_form'
 
       #main
-        = bootstrap_flash
+        - if content_for?(:bootstrap_flash)
+          = yield(:bootstrap_flash)
+        - else
+          = bootstrap_flash
         - if content_for?(:no_container)
           = yield(:no_container)
         - else
@@ -137,19 +111,14 @@ html lang="en" class=content_for(:html_class)
     - else
       footer.clearfix
         .footer-nav.clearfix
-          ul.list-unstyled.list-inline.pull-left
-            li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
-            li= link_to 'Terms', terms_url(subdomain: 'www', locale: I18n.default_www_locale)
-            li= link_to 'Privacy', privacy_url(subdomain: 'www', locale: I18n.default_www_locale)
-            li
           ul.list-unstyled.list-inline.pull-right
             li
-              ==> link_to 'Community portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              ' for
-              ==> link_to 'hardware developers', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              ' by
+              ==> link_to 'Hardware projects portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              ' powered by
               ==> link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
-              | &copy; 2015
+              | &copy; #{Date.today.year}
+    - unless user_signed_in?
+      = render 'shared/modals/login_popup'
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
@@ -166,3 +135,8 @@ html lang="en" class=content_for(:html_class)
         = link_to 'Sign up / Login', new_user_registration_path(source: 'nav'), class: 'mo-nav-link'
 
     = content_for :js
+
+    -# using flash[:js] to insert custom platform JS on logout
+    - if flash[:js].present?
+      script type='text/javascript'
+        = flash[:js].html_safe

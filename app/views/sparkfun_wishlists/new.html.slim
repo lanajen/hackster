@@ -74,7 +74,7 @@
                 bar.css('width', width.toString() + '%');
 
                 $.ajax({
-                  url: '/api/v1/jobs/' + id,
+                  url: Utils.getApiPath() + '/private/jobs/' + id,
                   data: { id: id },
                 }).done(function(response){
                   if (response.status == 'complete') {

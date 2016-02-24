@@ -20,6 +20,10 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
+        - if !is_whitelabel? and @user.is?(:moderator)
+          p.user-categories
+            i.fa.fa-certificate
+            span Moderator
         - if !is_whitelabel? and members = PlatformMember.where(user_id: @user.id).includes(:group) and members.any?
           - members.each do |member|
             p.team-widget.user-communities
@@ -30,6 +34,7 @@
                 ==> link_to platform.name, platform
                 - if platform.verified?
                   i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
+        = @user.job_availability
 
         .stats
           p

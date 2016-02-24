@@ -14,6 +14,8 @@
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
 //= require jquery_nested_form
+//= require algoliasearch
+//= require algolia-autocomplete.js/autocomplete.jquery
 //= require js-cookie
 //= require clipboard
 //= require bitbucket-widget.min
@@ -21,8 +23,8 @@
 //= require rangy-core
 //= require rangy-cssclassapplier
 //= require moment
-//= require medium-editor
 //= require placeholders
+//= require medium-editor
 //= require medium-editor-ext
 //= require gist-embed
 //= require chats
@@ -33,4 +35,6 @@
 //= require all
 //= require mobile
 //= require home
-//= require components
+//= require search
+//= require bundle
+//= require react_ujs

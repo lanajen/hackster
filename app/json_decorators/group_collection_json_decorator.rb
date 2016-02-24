@@ -1,0 +1,2 @@
+class GroupCollectionJsonDecorator < BaseCollectionJsonDecorator
+end

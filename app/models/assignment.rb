@@ -48,6 +48,10 @@ class Assignment < ActiveRecord::Base
     submit_by_date and submit_by_date < Time.now
   end
 
+  def should_lock?
+    grading_type != 'none' and private_grades
+  end
+
   def submit_by_date=(val)
     begin
       date = val.to_datetime

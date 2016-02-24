@@ -1,39 +1,39 @@
 = simple_form_for [@challenge, @idea], url: url_for_challenge_idea_form(@challenge, @idea), html: { class: 'widget-form' } do |f|
   = f.error_notification
-  - if @idea.errors.any? and current_user.is? :admin
+  /- if @idea.errors.any? and current_user.is? :admin
     = debug @idea.errors
 
   = f.input :name, label: 'Name of your idea or concept'
-  .form-group class=(@idea.errors.messages.include?(:image_id) ? 'has-error' : '')
-    label.control-label
-      abbr> title="required" *
-      | Add an image
-    .image.file-drop
-      - if @idea.image
-        = hidden_field_tag :image_id, @idea.image_id
-      div
-        span.image.image-preview.preview
-          - if @idea.image
-            = image_tag @idea.image.try(:imgix_url, :thumb)
-        .btn-group
-          a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.image' } }  Select picture
-          a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.image" } }
-            i.fa.fa-link
-    p.help-block Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.
-    - if @idea.errors.messages.include?(:image_id)
-      p.help-block= @idea.errors.messages[:image_id].to_sentence
-
-  = render partial: 'shared/image_form_bare', locals: { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea' }
+  - locals = { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea', help_block: 'Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.', errors: @idea.errors, image_data: @idea.image ? { id: @idea.image_id, image_link: @idea.image.try(:imgix_url, :thumb) } : nil }
+  = react_component('ImageUploader', { locals: locals, S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}" })
 
   = f.input :description, as: :text, input_html: { class: "text-editor" }
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
     = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }, required: field.required
 
+  - if @challenge.pre_contest_needs_shipping?
+    hr
+    p
+      span Please let us know where to ship your prize if you are selected as a winner:
+      i.fa.fa-question-circle.istooltip title="We ask for addresses ahead of selecting winners in order to streamline our shipping process. If you are selected in this round, you will have to build a project with the device we send you, and we want to ensure you have enough time."
+    - @idea.build_address unless @idea.address
+    = f.simple_fields_for :address do |f_addr|
+      = f_addr.input :full_name
+      = f_addr.input :address_line1, label: 'Address line 1'
+      = f_addr.input :address_line2, label: 'Address line 2'
+      = f_addr.input :city
+      = f_addr.input :state
+      = f_addr.input :zip
+      = f_addr.input :country, input_html: { class: 'form-control' }
+      = f_addr.input :phone, hint: 'So the shipping company can call you if they have a problem.'
+
   p
     small
       ' Please note: if eligible, your idea will be made public
       = link_to 'here', challenge_ideas_path(@challenge.slug), target: '_blank', tabindex: -1
-      | .
+      ' .
+      - if @challenge.pre_contest_needs_shipping?
+        | Your address details will remain private.
 
   p
     small

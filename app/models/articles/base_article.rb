@@ -4,14 +4,15 @@ class BaseArticle < ActiveRecord::Base
 
   DEFAULT_NAME = 'Untitled'
   DIFFICULTIES = {
-    'Beginner' => :beginner,
+    'Easy' => :beginner,
     'Intermediate' => :intermediate,
     'Advanced' => :advanced,
-    'Hardcore maker' => :hardcore,
+    'Super hard' => :hardcore,
   }
   FILTERS = {
     '7days' => :last_7days,
     '30days' => :last_30days,
+    '1year' => :last_1year,
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
     'on_hackster' => :self_hosted,
@@ -101,6 +102,7 @@ class BaseArticle < ActiveRecord::Base
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :project_collection, class_name: 'ProjectCollection'
+  has_one :review_thread, foreign_key: :project_id, inverse_of: :project, dependent: :destroy
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -118,7 +120,7 @@ class BaseArticle < ActiveRecord::Base
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :locale, :article
   attr_accessor :current, :private_changed, :needs_platform_refresh,
-    :approved_changed
+    :approved_changed, :updater_id
   accepts_nested_attributes_for :images, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, allow_destroy: true
@@ -133,6 +135,7 @@ class BaseArticle < ActiveRecord::Base
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
+  validates :duration, numericality: true, allow_blank: true
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   # before_validation :check_if_current
@@ -143,7 +146,7 @@ class BaseArticle < ActiveRecord::Base
   before_save :ensure_name
   before_create :generate_slug
   before_update :update_slug, if: proc {|p| p.name_changed? }
-  after_update :publish!, if: proc {|p| p.private_changed? and p.publyc? and p.can_publish? }
+  after_update :mark_needs_review!, if: proc {|p| p.private_changed? and p.publyc? and p.can_mark_needs_review? }
 
   taggable :product_tags, :platform_tags
 
@@ -159,13 +162,17 @@ class BaseArticle < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :hproperties, :celery_id, :string
+  hstore_column :hproperties, :challenge_id, :integer
   hstore_column :hproperties, :content_type, :string
   hstore_column :hproperties, :desc_backup, :string
+  hstore_column :hproperties, :duration, :float
   hstore_column :hproperties, :guest_twitter_handle, :string
   hstore_column :hproperties, :locked, :boolean
   hstore_column :hproperties, :review_comment, :string
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string
+  hstore_column :hproperties, :story_json, :json_object
+  hstore_column :hproperties, :toc, :array, default: []
   hstore_column :hproperties, :tweeted_at, :datetime
 
   self.per_page = 18
@@ -214,41 +221,63 @@ class BaseArticle < ActiveRecord::Base
   add_checklist :product_tags_string, 'Tags'
 
   # beginning of search methods
-  include TireInitialization
-  has_tire_index 'pryvate or hide or !approved?'
-
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :product_tags,    analyzer: 'snowball', boost: 50
-      indexes :platform_tags,   analyzer: 'snowball', boost: 50
-      indexes :platform_ids
-      indexes :description,     analyzer: 'snowball'
-      indexes :one_liner,       analyzer: 'snowball'
-      indexes :user_names,      analyzer: 'snowball'
-      indexes :created_at
-    end
-  end
+  include AlgoliaSearchHelpers
+  has_algolia_index 'pryvate or hide or !approved?'
 
   def to_indexed_json
+    elements = Sanitize::Config::RELAXED[:elements].dup
+    elements.delete('img')
+    sanitize_config = {remove_contents: %w(script style), elements: elements}
+    _description = Sanitize.fragment(decorate.story_json(:normal, text_only: true), sanitize_config) || description
+    _description = ActionController::Base.helpers.strip_tags(_description)[0..5000]
+
     {
-      _id: id,
+      # for locating
+      id: id,
+      model: self.class.model_name.name,
+      objectID: algolia_id,
+
+      # for search
+      authors: users.map{ |u|
+        {
+          id: u.id,
+          name: u.name,
+        }
+      },
+      content_type: content_type,
+      description: _description,
       name: name,
-      model: self.class.model_name.to_s.underscore,
-      one_liner: one_liner,
-      description: description,
-      product_tags: product_tags_string,
-      platform_tags: platform_tags_string,
-      platform_ids: visible_platforms.pluck(:id),
-      user_name: team_members.map{ |t| t.user.try(:name) },
-      created_at: created_at,
+      pitch: one_liner,
+      parts: parts.map{|p|
+        {
+          id: p.id,
+          mpn: p.mpn,
+          name: p.name,
+        }
+      },
+      platforms: visible_platforms.map{|p|
+        {
+          id: p.id,
+          name: p.name,
+        }
+      },
+      _tags: product_tags_cached,
+
+      # for display
+      cover_image_url: decorate(context: { current_site: nil }).cover_image(:cover_mini_thumb),
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).project_path(self),
+
+      # for ranking
+      comments_count: comments_count,
+      impressions_count: impressions_count,
+      made_public_at: made_public_at.to_i,
       popularity: popularity_counter,
-    }.to_json
+      respects_count: respects_count,
+    }
   end
 
-  def self.index_all
-    index.import approved.indexable_and_external
+  def self.index_all limit=nil
+    algolia_batch_import indexable.includes(:cover_image, :users, :visible_platforms, :parts, :team), limit
   end
   # end of search methods
 
@@ -315,6 +344,10 @@ class BaseArticle < ActiveRecord::Base
 
   def self.last_30days
     where('projects.made_public_at > ?', 30.days.ago)
+  end
+
+  def self.last_1year
+    where('projects.made_public_at > ?', 1.year.ago)
   end
 
   def self.last_created
@@ -385,8 +418,10 @@ class BaseArticle < ActiveRecord::Base
     indexable.where(wip: true).last_updated
   end
 
-  def self.with_group group
-    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
+  def self.with_group group, opts={}
+    records = joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
+    records = records.where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }) unless opts[:all] == true
+    records
   end
 
   def self.with_type content_type
@@ -417,6 +452,18 @@ class BaseArticle < ActiveRecord::Base
     @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'BaseArticle').first_or_create
   end
 
+  def extract_toc!
+    toc = if story_json.present?
+      story_json.select{|i| i['type'] == 'CE' }.map{|i| i['json'].select{|j| j['tag'] == 'h3' }.map{|j| extract_content_from_story_json(j) } }
+    elsif description.present?
+      doc = Nokogiri::HTML::DocumentFragment.parse description
+      doc.css('h3').map{|h| h.text }
+    else
+      []
+    end
+    self.toc = toc.flatten.map{|v| v.try(:gsub, /[^a-zA-Z0-9]$/, '').try(:strip) }.select{|v| v.present? }
+  end
+
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
     days = ((last_scheduled_slot - Time.now) / SECONDS_IN_A_DAY).round
@@ -441,6 +488,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def cover_image_id=(val)
+    attribute_will_change! :cover_image
     self.cover_image = CoverImage.find_by_id(val)
   end
 
@@ -552,6 +600,10 @@ class BaseArticle < ActiveRecord::Base
     images.first
   end
 
+  def languages
+    widgets.where(type: %w(CodeWidget)).map(&:language).uniq - ['text']
+  end
+
   def license
     return @license if @license
     val = read_attribute(:license)
@@ -564,6 +616,10 @@ class BaseArticle < ActiveRecord::Base
 
   def new_group_id=(val)
     project_collections.new collectable_type: 'Group', collectable_id: val
+  end
+
+  def needs_review?
+    publyc? and (pending_review? or needs_work?)
   end
 
   def security_token
@@ -617,12 +673,18 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def to_js opts={}
-    url = "http://#{APP_CONFIG['full_host']}/#{uri}"
+    protocol = APP_CONFIG['use_ssl'] ? 'https' : 'http'
+    subdomain = opts[:subdomain].presence || ENV['SUBDOMAIN']
+    domain = APP_CONFIG['default_domain']
+    domain += ':' + APP_CONFIG['default_port'].to_s if APP_CONFIG['port_required']
+    host = subdomain + '.' + domain
+    base_url = "#{protocol}://#{host}"
+    url = base_url + "/#{uri}"
     url += "?auth_token=#{security_token}" if opts[:private_url]
     {
       author: {
         name: users.first.try(:name),
-        url: "http://#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
+        url: base_url + "/#{users.first.try(:user_name)}",
       },
       name: name,
       one_liner: one_liner,
@@ -713,6 +775,14 @@ class BaseArticle < ActiveRecord::Base
     def ensure_website_protocol
       self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
       self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
+    end
+
+    def extract_content_from_story_json item
+      return item['content'] if item['content']
+
+      item['children'].map do |child|
+        extract_content_from_story_json(child)
+      end.join(' ')
     end
 
     def generate_slug

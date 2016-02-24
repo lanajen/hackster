@@ -1,0 +1,7 @@
+.social-profile-thumb.column
+  .profile-image
+    .provider
+      = image_tag 'hackster_logo_squared.png', class: 'img-circle', style: 'width:35px;height:35px'
+    = image_tag user.decorate.avatar(:big, disable_whitelabel: true), class: 'img-circle'
+  .name= user.name
+  .username= link_to user.user_name, user_url(user, host: site_host), target: '_blank'

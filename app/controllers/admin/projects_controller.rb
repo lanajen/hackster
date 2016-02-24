@@ -64,7 +64,7 @@ class Admin::ProjectsController < Admin::BaseController
 
   private
     def check_authorization_for_admin
-      raise CanCan::AccessDenied unless current_user.is? :admin, :moderator
+      raise CanCan::AccessDenied unless current_user.is? :admin, :hackster_moderator
     end
 
     def load_resource

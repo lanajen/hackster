@@ -1,4 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include ApplicationHelper
   skip_before_filter :authenticate_user!
   skip_before_filter :set_locale
   protect_from_forgery except: :saml
@@ -42,36 +43,31 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
-    session.keys.grep(/^devise\./).each { |k| session.delete(k) }
+    if params[:setup].present?
+      session.keys.grep(/^(devise|oauth)\./).each { |k| session.delete(k) }
 
-    session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
-
-    session[:redirect_host] = params[:redirect_host] if params[:redirect_host]
-    session[:redirect_to] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
-    session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
-    session[:omniauth_login_locale] = I18n.locale
-
-    puts 'session setup: ' + session.inspect
+      session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
+    end
 
     render text: 'Setup complete.', status: 404
   end
 
   def failure
-    set_flash_message :alert, :failure, kind: OmniAuth::Utils.camelize(failed_strategy.name), reason: failure_message
+    message = find_message(:failure, kind: proper_name_for_provider(failed_strategy.name), reason: failure_message)
 
     logger.error "env['omniauth.error']: " + env['omniauth.error'].inspect
 
-    redirect_to after_omniauth_failure_path_for(resource_name)
+    redirect_to after_omniauth_failure_path_for(resource_name), alert: message
   end
 
   private
     def oauthorize(kind)
-      # logger.info "request.env['omniauth.auth']: " + request.env['omniauth.auth'].to_yaml
+      # logger.debug 'session omniauth keys (oauthorize): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
+      # logger.debug 'omniauth.params (oauthorize): ' + request.env['omniauth.params'].map{ |k, v| "#{k}: #{v}" }.join(', ')
+      request.env['omniauth.params'].delete('redirect_to') if request.env['omniauth.params']['redirect_to'].in?([new_user_session_path, new_user_registration_path])
+      request.env['omniauth.params'].each{|k, v| params[k.to_sym] = v; session["oauth.#{k}"] = v }
 
-      @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
-      is_hackster = @redirect_host == APP_CONFIG['default_host']
-      params[:redirect_to] = session.delete(:redirect_to)
-      I18n.locale = session.delete(:omniauth_login_locale) || I18n.default_locale
+      I18n.locale = params[:login_locale] || I18n.default_locale
 
       omniauth_data = case kind
       when 'facebook', 'github', 'twitter', 'windowslive'
@@ -79,37 +75,62 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       else
         request.env['omniauth.auth']
       end
+      session['devise.provider_data'] = omniauth_data
+      session['devise.provider'] = kind
 
-      if session.delete(:link_accounts)
-        session['devise.provider_data'] = omniauth_data
-        session['devise.provider'] = kind
-        redirect_to update__authorizations_url(host: @redirect_host, link_accounts: true)
+      if params[:link_accounts]
+        redirect_to update__authorizations_path(link_accounts: true)
       else
-        @user = UserOauthFinder.new.find_for_oauth(kind, request.env['omniauth.auth'])
+        @user = UserOauthFinder.new.find_for_oauth(kind, omniauth_data)
 
         if @user
           case @user.match_by
           when 'uid'
+            is_hackster = params[:current_site].blank?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
-            sign_in_and_redirect @user, event: :authentication
+            sign_in_and_redirect resource_name, @user, event: :authentication
           when 'email'#, 'name'
-            session['devise.provider_data'] = omniauth_data
-            session['devise.provider'] = kind
             session['devise.match_by'] = @user.match_by
-            redirect_to edit__authorization_url(@user.id, host: @redirect_host)
+            redirect_to edit__authorization_path(@user.id)
           end
         else
-          session['devise.provider_data'] = omniauth_data
-          session['devise.provider'] = kind
-          redirect_to new__authorization_url(autosave: 1, host: @redirect_host)
+          redirect_to new__authorization_path(autosave: 1)
         end
       end
     end
 
   protected
-    def after_sign_in_path_for(resource)
-      cookies[:hackster_user_signed_in] = '1'
+    def sign_in_and_redirect resource_name, resource, opts={}
+      sign_in(resource_name, resource)
 
-      UrlParam.new(user_return_to(@redirect_host)).add_param('f', '1')
+      client = ClientSubdomain.find_by_subdomain(params[:current_site])
+      host = client.try(:host)
+
+      # 1. flash is shown on wrong domain
+      # 2. potentially use the token login option only for different domains
+
+      url = user_return_to(host)
+      if parsed_uri = URI.parse(url) and parsed_uri.class == URI::HTTP
+        parsed_uri.port = request.port unless request.port.in? [80, 443] or request.port.present?
+        url = parsed_uri.to_s
+      end
+      if client and !client.uses_subdomain?
+        url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
+        url = UrlParam.new(url).add_param(:user_email, resource.email)
+      end
+      url = UrlParam.new(url).add_param('f', '1')
+      redirect_to url
+    end
+
+    def after_omniauth_failure_path_for resource_name
+      site = ClientSubdomain.find_by_subdomain(params[:current_site])
+
+      if site.try(:disable_login?)
+        site.base_uri(request.scheme) + root_path
+      else
+        url = new_user_session_path
+        url = site.base_uri(request.scheme) + url if site
+        url
+      end
     end
 end

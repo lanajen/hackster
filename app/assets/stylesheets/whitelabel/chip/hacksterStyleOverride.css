@@ -1,0 +1,63 @@
+/* Hackster Overrides */
+
+/* Nav Bar */
+.navbar .navbar-in {
+  background: #F2F2F2;
+}
+
+/* Login button */
+#navbar-right .login-link.btn-primary, .login-link:active.btn-primary {
+  background: #EB008B;
+}
+
+/* General Buttons */
+.btn-primary,
+.btn-primary:hover {
+  background: #EB008B;
+  border-color: #EB008B;
+}
+
+/* Featured badge */
+.project-award {
+  background: #EB008B;
+}
+
+/* Pagination */
+.pagination>.active>a,
+.pagination>.active>a:hover,
+.pagination>.active>a:focus,
+.pagination>.active>span,
+.pagination>.active>span:hover,
+.pagination>.active>span:focus {
+  background-color: #EB008B;
+  border-color: #EB008B;
+}
+
+.pagination>li>a,
+.pagination>li>span {
+  color: #EB008B;
+}
+
+#user-dropdown-toggle {
+  background: #EB008B;
+}
+
+#user-nav-face {
+  border-color: #EB008B !important;
+}
+
+#navigation .container {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  #navigation .container {
+    width: 83.33333%;
+  }
+}
+
+@media (min-width: 1200px) {
+  #navigation .container {
+    width: 66.66667%;
+  }
+}

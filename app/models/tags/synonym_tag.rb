@@ -1,0 +1,2 @@
+class SynonymTag < Tag
+end

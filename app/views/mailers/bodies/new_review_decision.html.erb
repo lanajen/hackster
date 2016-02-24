@@ -1,0 +1,69 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> left <a href="<%= u.url_for([@context[:thread], only_path: false]) %>">new feedback</a> on <a href="<%= u.url_for([@context[:project], only_path: false]) %>"><%= @context[:project].name %></a>.</p>
+
+<div class="quote">
+  <p><strong>Opinion:</strong> <%= @context[:decision].decision.humanize %></p>
+  <% if @context[:decision] == 'reject' %>
+    <p><strong>Rejection reason:</strong> <%= @context[:decision].decorate.rejection_reason %></p>
+  <% end %>
+  <% if @context[:decision].feedback %>
+    <% if @context[:decision].feedback['type'].present? %>
+      <p><strong>Type:</strong> <%= @context[:decision].feedback['type'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['name'].present? %>
+      <p><strong>Name:</strong> <%= @context[:decision].feedback['name'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['one_liner'].present? %>
+      <p><strong>Pitch:</strong> <%= @context[:decision].feedback['one_liner'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['cover_image_id'].present? %>
+      <p><strong>Cover image:</strong> <%= @context[:decision].feedback['cover_image_id'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['difficulty'].present? %>
+      <p><strong>Skill level:</strong> <%= @context[:decision].feedback['difficulty'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['product_tags_string'].present? %>
+      <p><strong>Tags:</strong> <%= @context[:decision].feedback['product_tags_string'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['team'].present? %>
+      <p><strong>Team:</strong> <%= @context[:decision].feedback['team'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['communities'].present? %>
+      <p><strong>Communities:</strong> <%= @context[:decision].feedback['communities'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['story_json'].present? %>
+      <p><strong>Story/Description:</strong> <%= @context[:decision].feedback['story_json'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['hardware_parts'].present? %>
+      <p><strong>Components:</strong> <%= @context[:decision].feedback['hardware_parts'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['tool_parts'].present? %>
+      <p><strong>Tools:</strong> <%= @context[:decision].feedback['tool_parts'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['schematics'].present? %>
+      <p><strong>Schematics:</strong> <%= @context[:decision].feedback['schematics'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['cad'].present? %>
+      <p><strong>CAD:</strong> <%= @context[:decision].feedback['cad'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['code'].present? %>
+      <p><strong>Code:</strong> <%= @context[:decision].feedback['code'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['software_parts'].present? %>
+      <p><strong>Apps and online services:</strong> <%= @context[:decision].feedback['software_parts'] %></p>
+    <% end %>
+    <% if @context[:decision].feedback['general'].present? %>
+      <p><strong>General comment:</strong> <%= @context[:decision].feedback['general'] %></p>
+    <% end %>
+  <% end %>
+</div>
+
+<p>To see it, just follow <a href="<%= u.url_for([@context[:thread], only_path: false]) %>">this link</a>.</p>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

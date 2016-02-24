@@ -19,6 +19,14 @@ module ApplicationHelper
     include_word ? "#{article} #{word}" : article
   end
 
+  def asset_host_with_protocol
+    if Rails.configuration.action_controller.asset_host
+      request.protocol + Rails.configuration.action_controller.asset_host
+    else
+      ''
+    end
+  end
+
   def auto_link text
     auto_html text do
       # image
@@ -168,15 +176,11 @@ module ApplicationHelper
   end
 
   def site_host
-    is_whitelabel? ? current_site.full_domain : APP_CONFIG['default_host']
+    is_whitelabel? ? current_site.host : APP_CONFIG['default_host']
   end
 
   def site_twitter
     is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
-  end
-
-  def site_user_name
-    is_whitelabel? ? current_platform.user_name : 'hackster'
   end
 
   def time_diff_in_natural_language from_time, to_time, affix=''
@@ -213,7 +217,7 @@ module ApplicationHelper
   end
 
   def proper_name_for_provider provider
-    case provider
+    case provider.to_sym
     when :facebook, :github, :twitter
       provider.to_s.capitalize
     when :gplus
@@ -226,17 +230,15 @@ module ApplicationHelper
   end
 
   def inserts_stats_for model
-    base_url = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
-    base_url += APP_CONFIG['stats_url']
     content_for :js do
       content_tag(
         :script,
         "
         $(function(){
           $.ajax({
-            url: '#{base_url}/stats',
+            url: '#{api_private_stats_url(host: api_host, path_prefix: nil, locale: nil)}',
             data: {
-              referrer: document.referrer,
+              referrer: (document.referrer || document.origin),
               id: '#{model.id}',
               type: '#{model.model_name}',
               a: '#{action_name}',
@@ -247,6 +249,27 @@ module ApplicationHelper
         });
         ".html_safe, type: 'text/javascript')
     end unless user_signed_in?
+  end
+
+  def replace_tokens_for model, text
+    TokenParser.new(model, text).replace
+  end
+
+  def token_tags_for model, cache_key
+    return [] unless model.token_tags
+
+    attributes = case cache_key
+    when 'brief'
+      Challenge::TOKEN_PARSABLE_ATTRIBUTES
+    else
+      []
+    end
+
+    attributes.map do |attr|
+      model.token_tags[attr] || []
+    end.flatten.uniq.map do |attr|
+      "#{model.model_name.name.underscore}-#{model.id}-#{attr}"
+    end
   end
 
   def zocial_class_for_provider provider

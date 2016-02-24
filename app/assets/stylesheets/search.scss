@@ -1,23 +1,104 @@
+.search-page {
+  h2 {
+    margin: 0 0 40px;
+    font-size: 1.3em;
+  }
+}
 .search-results {
-  ul {
-    list-style: none;
+  margin-bottom: 20px;
+  h3 {
+    font-size: 1.1em;
+    font-weight: bold;
     margin: 0;
-    li {
-      margin-bottom: 20px;
-      .media-body {
-        padding-top: 20px ;
-      }
-      img {
-        margin-right: 5px;
-        width: 60px;
-        height: 60px;
-      }
-      h5 {
-        display: inline;
-      }
-      &.last {
-        margin-bottom: 0;
-      }
+    small {
+      font-size: 0.9em;
+    }
+  }
+}
+.search-header {
+  margin-bottom: 10px;
+}
+.search-thumb {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #fff;
+  // height: 70px;
+  overflow: hidden;
+  h5 {
+    white-space: nowrap;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  .stats {
+    margin-bottom: 0;
+    font-size: 0.8em;
+    color: #777;
+  }
+}
+
+
+.algolia-autocomplete {
+  width: 100%;
+}
+.algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
+  width: 100%;
+}
+.algolia-autocomplete .aa-hint {
+  color: #999;
+}
+.algolia-autocomplete .aa-dropdown-menu {
+  background-color: #fff;
+  border: 1px solid #999;
+  border-top: none;
+  max-height: calc(95vh - 60px);
+  overflow-y: scroll;
+  width: 400px;
+  max-width: 90vh;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+  cursor: pointer;
+  padding: 7px 7px;
+  font-size: 0.8em;
+  img {
+    width: 40px;
+    height: 40px;
+  }
+  h5 {
+    font-weight: bold;
+    font-size: 1em;
+  }
+  p, ul {
+    margin-bottom: 0;
+    color: #777;
+  }
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+  background-color: #B2D7FF;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
+  // font-weight: bold;
+  // font-style: normal;
+}
+.algolia-autocomplete {
+  .aa-header {
+    background: #5A97F3;
+    color: #fff;
+    padding: 1px 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+  .aa-footer {
+    padding: 2px 7px;
+    font-size: 0.7em;
+    color: #777;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    background-color: #fafafa;
+    &:hover {
+      background-color: #B2D7FF;
     }
   }
 }

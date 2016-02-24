@@ -20,6 +20,9 @@ h6, .h6 {
 .btn {
   font-size: 1em;
   font-weight: bold;
+  &.btn-lg {
+    font-size: 1.1em;
+  }
 }
 .input-group-btn .btn {
   font-size: 14px;
@@ -40,12 +43,16 @@ h6, .h6 {
   background: transparent;
   color: #666;
   border-width: 2px;
-  padding: 5px 12px;
+  padding: 4px 12px;
   &.btn-sm {
-    padding: 4px 10px;
+    padding: 3px 10px;
   }
   &.btn-xs {
     padding: 0 5px;
+    border-width: 1px;
+  }
+  &.btn-lg {
+    padding: 8px 14px;
   }
   &:hover,
   &:focus,
@@ -78,14 +85,16 @@ h6, .h6 {
 }
 .btn-primary {
   background: #208edb;
+}
+.btn-primary, .btn-success, .btn-danger, .btn-warning {
   border: 0;
 }
 .btn-success {
   background: #20daa8;
-  border: 1px solid #20daa8;
+  // border-color: #20daa8;
   &:hover {
     background: #19D2A0;
-    border-color: #19D2A0;
+    // border-color: #19D2A0;
   }
 }
 .btn-append {
@@ -165,7 +174,9 @@ h6, .h6 {
 }
 .btn:not(.btn-block) + .btn:not(.btn-block),
 .btn:not(.btn-block) + .react-btn,
-.react-btn + .btn:not(.btn-block) {
+.react-btn + .btn:not(.btn-block),
+.btn:not(.btn-block) + .btn-group,
+.btn-group + .btn:not(.btn-block), {
   margin-left: 3px;
 }
 .btn-block + .react-btn,
@@ -197,4 +208,8 @@ pre {
 }
 .text-gold {
   color: #E4D23C;
+}
+code {
+  background-color: #f2f2f2;
+  color: #777;
 }

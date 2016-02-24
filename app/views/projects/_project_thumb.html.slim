@@ -4,16 +4,16 @@
 - show_year = defined?(show_year) ? show_year : nil
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
 - col = (defined?(col) and col) ? col : 4
-- subdomain = defined?(force_subdomain) ? force_subdomain : false
+- host = defined?(force_host) ? force_host : false
 - locale = defined?(locale) ? locale : params[:locale]
-- if subdomain
-  - project_link = project_url(project, subdomain: subdomain, locale: locale)
+- if host
+  - project_link = project_url(project, host: host, locale: locale)
 - else
   - project_link = url_for(project)
 - certifier = defined?(certifier) ? certifier : nil
 
 .col-sm-6.mobile-scroll-row-item.project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="col-md-#{col} #{'has-data' if ref and ref_id}"
-  - cache [I18n.locale, "project-#{project.id}-thumb", subdomain, certifier], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
+  - cache [I18n.locale, "project-#{project.id}-thumb", host, params[:path_prefix], certifier], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
     - project = project.decorate
     div class="project-#{project.id}"
       .thumb.project-thumb
@@ -21,7 +21,7 @@
           img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif') alt=project.name
           noscript
             img.project-thumb-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
-          = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (subdomain.present? ? '_blank' : nil)
+          = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (host.present? ? '_blank' : nil)
           .thumb-image-inner-top
             .award-container
             p.description.show-on-hover

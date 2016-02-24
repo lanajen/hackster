@@ -91,7 +91,8 @@ class Ability
     end
 
     can :create, Comment do |comment|
-      @user.can? :read, comment.commentable
+      commentable = comment.commentable
+      @user.can? :read, commentable and (commentable.respond_to?(:locked) ? !commentable.locked : true)
     end
 
     can :manage, Thought do |thought|
@@ -140,7 +141,7 @@ class Ability
     end
 
     can :create, [BaseArticle, Community]
-    can [:manage, :enter_in_challenge], BaseArticle do |project|
+    can [:manage, :enter_in_challenge, :description], BaseArticle do |project|
       @user.can?(:manage, project.team) or UserRelationChecker.new(@user).is_platform_moderator?(project)
     end
     cannot :edit_locked, BaseArticle
@@ -202,11 +203,32 @@ class Ability
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
     end
+
+    can :read, ReviewThread do |thread|
+      @user.can? :manage, thread.project
+    end
+  end
+
+  def hackster_moderator
+    can :manage, BaseArticle
+    can :moderate, Group
   end
 
   def moderator
-    can :manage, BaseArticle
-    can :moderate, Group
+    can :review, BaseArticle do |project|
+      project.needs_review?
+    end
+    can :read, ReviewThread
+    can :update, ReviewThread do |thread|
+      @user.can? :review, thread.project and thread.locked == false
+    end
+    # can :update, ReviewDecision do |decision|
+    #   decision.user_id == @user.id and decision.review_thread.locked == false
+    # end
+  end
+
+  def super_moderator
+    can :approve, ReviewDecision
   end
 
   def platform

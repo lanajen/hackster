@@ -3,7 +3,7 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
-  BLACKLISTED_COUNTRIES = ['India']
+  HIGH_RISK_COUNTRIES = ['Bangladesh', 'Egypt', 'India', 'Pakistan']
   INVALID_STATES = %w(new rejected).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
@@ -84,7 +84,6 @@ class Order < ActiveRecord::Base
     validate_order_limits
     validate_products_in_stock
     validate_products_have_not_reached_limit
-    validate_country_is_not_blacklisted
 
     errors.empty?
   end
@@ -120,6 +119,10 @@ class Order < ActiveRecord::Base
     total_cost and user.reputation and total_cost <= user.reputation.redeemable_points
   end
 
+  def high_risk?
+    address and address.country.in? HIGH_RISK_COUNTRIES
+  end
+
   def might_pay_duty?
     !NO_DUTY_COUNTRIES.include? destination_country
   end
@@ -143,9 +146,9 @@ class Order < ActiveRecord::Base
       errors.add :order_lines, 'at least one item is required' unless order_lines_count.to_i > 0
     end
 
-    def validate_country_is_not_blacklisted
-      errors.add :base, "Unfortunately we cannot ship to your country. <a href='http://hackster.uservoice.com/knowledgebase/articles/790986' target='_blank'>More information.</a>".html_safe if address and address.country.in? BLACKLISTED_COUNTRIES
-    end
+    #
+    #   errors.add :base, "Unfortunately we cannot ship to your country. <a href='http://hackster.uservoice.com/knowledgebase/articles/790986' target='_blank'>More information.</a>".html_safe if address and address.country.in? BLACKLISTED_COUNTRIES
+    # end
 
     def validate_has_enough_points
       errors.add :total_cost, "You don't have enough points (#{-points_delta} missing)." unless enough_points?

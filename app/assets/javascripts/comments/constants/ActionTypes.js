@@ -8,8 +8,11 @@ export default {
     removeIdFromDeleteList: null,
     setCurrentUser: null,
     setInitialComments: null,
+    toggleCommentUpdated: null,
     toggleFormData: null,
+    toggleLikes: null,
     toggleScrollTo: null,
     triggerReplyBox: null,
+    updateComment: null,
   })
 }

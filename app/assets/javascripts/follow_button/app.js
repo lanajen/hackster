@@ -19,7 +19,7 @@ const App = React.createClass({
 
       if(document) {
         metaList = document.getElementsByTagName('meta');
-        csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
+        csrfToken = _.find(metaList, {name: 'csrf-token'}).content;
 
         this.setState({csrfToken: csrfToken});
 

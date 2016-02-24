@@ -1,12 +1,14 @@
 import request from 'superagent';
+import { getApiPath } from './Utils';
 
 module.exports = {
 
   addList(name) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/lists')
+        .post(`${getApiPath()}/private/lists`)
         .send({ group: { full_name: name } })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -16,13 +18,14 @@ module.exports = {
   addToFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/followers')
+        .post(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})
         .query({followable_type: type})
         .query({source: source})
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -32,7 +35,30 @@ module.exports = {
   checkJob(jobId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/jobs/' + jobId)
+        .get(`${getApiPath()}/private/jobs/${jobId}`)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  generateCSV(url) {
+    return new Promise((resolve, reject) => {
+      request
+        .get(`${getApiPath()}${url}`)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  getFileDetails(id) {
+    return new Promise((resolve, reject) => {
+      request
+        .get(`${getApiPath()}/private/files/${id}`)
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -42,7 +68,8 @@ module.exports = {
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/me')
+        .get(`${getApiPath()}/private/me`)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.user);
         });
@@ -52,8 +79,9 @@ module.exports = {
   fetchFollowing(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/followers')
+        .get(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -63,8 +91,9 @@ module.exports = {
   fetchLists(projectId) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/lists')
+        .get(`${getApiPath()}/private/lists`)
         .query({ project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -74,8 +103,21 @@ module.exports = {
   fetchNotifications(csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .get('/api/v1/notifications')
+        .get(`${getApiPath()}/private/notifications`)
         .set('X-CSRF-Token', csrfToken)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  fetchReviewThread(projectId) {
+    return new Promise((resolve, reject) => {
+      request
+        .get(`${getApiPath()}/private/review_threads`)
+        .query({ project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -85,8 +127,9 @@ module.exports = {
   flagContent(flaggableType, flaggableId, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/flags')
+        .post(`${getApiPath()}/private/flags`)
         .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -96,8 +139,34 @@ module.exports = {
   launchJob(jobType, userId) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/jobs')
+        .post(`${getApiPath()}/private/jobs`)
         .send({ type: jobType, user_id: userId })
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  postComment(comment, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/comments`)
+        .set('X-CSRF-Token', csrfToken)
+        .send(comment)
+        .withCredentials()
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.comment);
+        });
+    });
+  },
+
+  postDecision(decision, projectId) {
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/review_decisions`)
+        .send({ review_decision: decision, project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -107,13 +176,14 @@ module.exports = {
   removeFromFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del('/api/v1/followers')
+        .del(`${getApiPath()}/private/followers`)
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})
         .query({followable_type: type})
         .query({source: source})
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
@@ -122,12 +192,12 @@ module.exports = {
 
   toggleProjectInList(requestType, listId, projectId) {
     return new Promise((resolve, reject) => {
-      request(requestType, '/api/v1/lists/' + listId + '/projects')
+      request(requestType, `${getApiPath()}/private/lists/${listId}/projects`)
         .send({ project_id: projectId })
+        .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });
     });
   }
-
 };

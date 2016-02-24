@@ -5,7 +5,7 @@
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Edit promotion
+          | Edit class
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
@@ -16,20 +16,12 @@
 
   .row
     .col-md-6
-      = f.input :full_name, label: 'Name'
+      = f.input :full_name, label: 'Class year or semester'
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
         span.input-group-addon #{site_domain}/courses/#{@promotion.course.user_name.truncate(10)}/
         = f.input_field :user_name
-      = f.input :email
-      = f.input :mini_resume, as: :text, input_html: { rows: 4 },
-        hint: 'A short sentence, max 140 characters'
-
-      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:imgix_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
-
-      = f.input :city
-      = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
       = f.input :blog_link, label: 'Blog link'

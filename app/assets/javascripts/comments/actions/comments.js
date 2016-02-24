@@ -1,5 +1,6 @@
 import { Comments } from '../constants/ActionTypes';
 import Requests from '../utils/Requests';
+import SharedRequests from '../../utils/ReactAPIUtils';
 import { fetchCurrentUser } from '../../utils/ReactAPIUtils';
 
 export function getCurrentUser() {
@@ -21,9 +22,9 @@ export function setCurrentUser(user) {
   }
 }
 
-export function getInitialComments(commentable, csrfToken) {
+export function getInitialComments(commentable) {
   return function(dispatch) {
-    return Requests.getComments(commentable, csrfToken)
+    return Requests.getComments(commentable)
       .then(comments => {
         dispatch(setInitialComments(comments));
       })
@@ -50,9 +51,42 @@ export function addComment(comment, isReply) {
 
 export function postComment(comment, isReply, csrfToken) {
   return function(dispatch) {
-    return Requests.postComment(comment, csrfToken)
+    return SharedRequests.postComment(comment, csrfToken)
       .then(response => {
         dispatch(addComment(response, isReply));
+      })
+      .catch(err => {
+        console.log('POST ERROR', err);
+      });
+  }
+}
+
+export function toggleLikes(commentId, parentId, bool) {
+  return {
+    type: Comments.toggleLikes,
+    commentId: commentId,
+    parentId: parentId,
+    bool: bool
+  };
+}
+
+export function deleteLike(commentId, parentId, csrfToken) {
+  return function(dispatch) {
+    return Requests.deleteLike(commentId, csrfToken)
+      .then(response => {
+        dispatch(toggleLikes(commentId, parentId, response));
+      })
+      .catch(err => {
+        console.log('DEL ERROR', err);
+      });
+  }
+}
+
+export function postLike(commentId, parentId, csrfToken) {
+  return function(dispatch) {
+    return Requests.postLike(commentId, csrfToken)
+      .then(response => {
+        dispatch(toggleLikes(commentId, parentId, response));
       })
       .catch(err => {
         console.log('POST ERROR', err);
@@ -67,9 +101,9 @@ export function removeComment(comment) {
   };
 }
 
-export function deleteComment(data) {
+export function deleteComment(id, csrfToken) {
   return function(dispatch) {
-    return Requests.deleteComment(data.id, data.csrfToken)
+    return Requests.deleteComment(id, csrfToken)
       .then(response => {
         dispatch(removeComment(response));
       })
@@ -86,11 +120,18 @@ export function removeIdFromDeleteList(id) {
   };
 }
 
-export function toggleFormData(isLoading, error) {
+export function toggleCommentUpdated() {
+  return {
+    type: Comments.toggleCommentUpdated
+  };
+}
+
+export function toggleFormData(isLoading, error, id) {
   return {
     type: Comments.toggleFormData,
     isLoading: isLoading,
-    error: error
+    error: error,
+    id: id
   };
 }
 
@@ -108,4 +149,23 @@ export function triggerReplyBox(show, id) {
     show: show,
     id: id
   };
+}
+
+export function updateComment(comment) {
+  return {
+    type: Comments.updateComment,
+    comment: comment
+  };
+}
+
+export function patchComment(comment, csrfToken) {
+  return function(dispatch) {
+    return Requests.updateComment(comment, csrfToken)
+      .then(response => {
+        dispatch(updateComment(response));
+      })
+      .catch(err => {
+        console.log('UPDATE ERROR: ', err);
+      });
+  }
 }

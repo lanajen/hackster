@@ -1,0 +1,49 @@
+- @hide_footer = true
+
+.container.project-editor
+  .clearfix.text-center
+    - if current_user.is? :admin, :hackster_moderator
+      = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
+      hr
+    ol.pe-nav
+      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab-create'
+      li= link_to 'Team', '#team', id: 'team-nav', class: 'tab-create'
+      - unless is_whitelabel?
+        li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab-create'
+      li= link_to 'Story', '#story', id: 'story-nav', class: 'tab-create'
+      li= link_to 'Hardware', '#hardware', id: 'hardware-nav', class: 'tab-create'
+      li= link_to 'Software', '#software', id: 'software-nav', class: 'tab-create'
+
+    ol.pe-nav
+      li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab-create'
+      li= link_to 'Go to project', @project, class: 'tab-create'
+
+  .pe-container
+    .busy-overlay
+      .center-align-wrapper
+        .center-align-inner
+          i.fa.fa-spin.fa-refresh
+
+    #basics.pe-panel style='display:block' = render 'projects/forms/basics'
+    #team.pe-panel = render 'projects/forms/team'
+    - unless is_whitelabel?
+      #communities.pe-panel= render 'projects/forms/communities'
+    #story.pe-panel= render 'projects/forms/story'
+    #hardware.pe-panel= render 'projects/forms/hardware'
+    #software.pe-panel= render 'projects/forms/software'
+
+    #checklist-tab.pe-panel= render 'projects/forms/checklist_tab'
+
+= content_for :js do
+
+  .pe-save
+    .container
+      .row
+        .col-md-8.col-md-offset-2
+          .clearfix
+            .pe-error Error saving
+            .pull-right
+              = link_to 'Discard changes', @project, class: 'btn tab-create pe-discard'
+              = link_to content_tag(:span, 'Save and next') + content_tag(:i, '', class: 'fa fa-chevron-right'), '', class: 'btn btn-primary pe-submit next'
+
+= render 'projects/forms/part_form'

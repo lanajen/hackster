@@ -28,7 +28,7 @@ RSpec.describe 'challenges show view' do
           find_link('Register as a participant').click
         end
 
-        within '#new_user' do
+        within '#login-form' do
           fill_in "user_full_name", with: new_user.user_name
           fill_in "user_email", with: new_user.email
           click_on('Continue')
@@ -49,7 +49,7 @@ RSpec.describe 'challenges show view' do
 
     it 'has an register button that will register a user', :js => true do
       within '.group-nav' do
-        find_link('Register as a participant').click
+        find_button('Register as a participant').click
       end
       expect(page).to have_content('You\'re registered!')
     end
@@ -60,7 +60,7 @@ RSpec.describe 'challenges show view' do
       end
 
       it 'has a register button' do
-        expect(page).to have_link('Register as a participant')
+        expect(page).to have_button('Register as a participant')
       end
 
       it 'has a countdown' do
@@ -71,7 +71,7 @@ RSpec.describe 'challenges show view' do
     context 'when workflow_state is pre_contest_in_progress and user attempts to submits an idea', :js => true do
       before(:each) do
         update_challenge_workflow_state('pre_contest_in_progress', challenge)
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
         click_link('Submit an idea for the pre-contest')
       end
 
@@ -171,7 +171,7 @@ RSpec.describe 'challenges show view' do
         idea[:properties][:cfield2] = 'Normal fields are shown'
         idea.save
 
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
       end
 
       it 'does not display without approval' do
@@ -227,7 +227,7 @@ RSpec.describe 'challenges show view' do
 
       before(:each) do
         update_challenge_workflow_state('pre_contest_ended', challenge)
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
       end
 
       it 'does not display a button for idea submissions' do
@@ -243,7 +243,7 @@ RSpec.describe 'challenges show view' do
       let!(:project) { FactoryGirl.create(:project, user: user) }
 
       before(:each) do
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
         click_link('Submit an entry')
         select(project.name, :from => 'project_id')
         click_on('Enter my project into the challenge')
@@ -279,7 +279,7 @@ RSpec.describe 'challenges show view' do
 
       before(:each) do
         update_challenge_workflow_state('judging', challenge)
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
       end
 
       it 'does not display a button' do
@@ -297,7 +297,7 @@ RSpec.describe 'challenges show view' do
 
       before(:each) do
         update_challenge_workflow_state('judged', challenge)
-        click_link('Register as a participant', :match => :first)
+        click_button('Register as a participant', :match => :first)
       end
 
       it 'displays the entries' do

@@ -41,6 +41,14 @@ module Taggable
           end
         else
           after_save :"save_#{tag_type}"
+          self.send :define_method, "#{tag_type}_cached" do
+            eval "
+              @#{tag_type}_cached ||= #{tag_type}.map(&:name)
+            "
+          end
+          self.send :define_method, "#{tag_type}_array" do
+            eval "#{tag_type}_cached"
+          end
           self.send :define_method, "#{tag_type}_string" do
             eval "
               @#{tag_type}_string ||= #{tag_type}.order(:name).pluck(:name).join(', ')

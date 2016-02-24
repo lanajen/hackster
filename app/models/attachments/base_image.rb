@@ -10,7 +10,7 @@ class BaseImage < Attachment
     if BaseUploader.storage == CarrierWave::Storage::File
       file_url
     else
-      client = Imgix::Client.new(host: ENV['IMGIX_HOST'], token: ENV['IMGIX_TOKEN'], secure: true)
+      client = Imgix::Client.new(host: imgix_config[:host], token: imgix_config[:token], include_library_param: false)
       path = file_url.gsub "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", ''
       if path =~ /\.jpe?g\Z/
         extra_options.merge!({ fm: :jpg })
@@ -21,6 +21,20 @@ class BaseImage < Attachment
   end
 
   private
+    def imgix_config
+      if use_alt
+        {
+          host: ENV['IMGIX_HOST_ALT'],
+          token: ENV['IMGIX_TOKEN_ALT'],
+        }
+      else
+        {
+          host: ENV['IMGIX_HOST'],
+          token: ENV['IMGIX_TOKEN'],
+        }
+      end
+    end
+
     def opts_for_version version
       return {} unless version
 

@@ -211,32 +211,16 @@ $(function () {
 
   $('body')
     .on('ajax:complete', '#project-form-prepublish', function(){
-      if ($(this).find('[name="base_article[content_type]"]').val().length) {
+      var select = $(this).find('[name="base_article[content_type]"]');
+      if (select.val().length) {
         $('.content-type-indicator').addClass('content-type-present');
         $('.content-type-indicator').removeClass('content-type-missing');
+        $('.project-type').text(select.find('option:selected').text());
       } else {
         $('.content-type-indicator').addClass('content-type-missing');
         $('.content-type-indicator').removeClass('content-type-present');
       }
     });
-
-  // <% if Rails.env == 'dev' %>
-  //   // fix image URLS so they work on dev
-  //   $('img').each(function(i, el) {
-  //     var src = $(el).attr('src');
-  //     if (typeof(src) != 'undefined') {
-  //       src = src.replace('hackster-dev', 'halckemy');
-  //       src = src.replace('/dev/', '/production/');
-  //       $(el).attr('src', src);
-  //     }
-  //   });
-
-  //   $('[style*="background-image"]').each(function(i, el) {
-  //     var style = $(el).attr('style');
-  //     style = style.replace('hackster-dev', 'halckemy');
-  //     $(el).attr('style', style);
-  //   });
-  // <% end %>
 
   if ($('body').data('user-signed-in')) {
     doUserSignedInUpdate();
@@ -267,11 +251,19 @@ $(function () {
 
   showAlerts();
 
+  $('#show-login-form').on('click', function(e){
+    e.preventDefault();
+    openModal('#login-popup');
+  });
+
   $('#show-login-form, .show-simplified-signup').on('click', function(e){
     if (!$('.user-form [name="authenticity_token"]').length) {
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/private/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
@@ -286,8 +278,11 @@ $(function () {
     if (!form.find('[name="authenticity_token"]').length) {
       e.preventDefault();
       $.ajax({
-        url: '/csrf',
+        url: Utils.getApiPath() + '/private/csrf',
         dataType: 'text',
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(token) {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
@@ -502,17 +497,6 @@ $(function () {
     }
   });
 
-  $('a.toggle-footer').on('click', function(e){
-    e.preventDefault();
-    $(this).toggleClass('footer-affixed');
-    $('footer').toggleClass('affixed');
-    if ($(this).hasClass('footer-affixed')) {
-      $(this).css('bottom', $('footer').height());
-    } else {
-      $(this).css('bottom', 0);
-    }
-  });
-
   if ($('#signup-popup').length) {
     showSignupPopupOrNot();
   }
@@ -600,7 +584,7 @@ function updateProjectThumbLinks() {
     refId = project.data('ref-id');
     offset = project.data('offset');
     $('a.project-link-with-ref', this).each(function(j, link) {
-      href = link.href;
+      href = link.getAttribute('href') || link.href;
       link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
     });
     project.addClass('link-added');
@@ -650,7 +634,14 @@ function resetSortablePositions(target){
 }
 
 function showAlerts() {
+  var alert = $('.alert-top');
+  var right = - alert.outerWidth() - 1;
+  alert.css('right', right + 'px');
   window.setTimeout(function(){
-    $('.alert-top').removeClass('alert-hidden');
+    alert.removeClass('alert-hidden');
+    alert.css('right', '');
+    window.setTimeout(function(){
+      alert.css('right', right + 'px');
+    }, 5000);
   }, 100);
 }

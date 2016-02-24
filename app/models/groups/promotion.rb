@@ -7,32 +7,8 @@ class Promotion < Community
 
   attr_accessible :parent_id
 
-  # beginning of search methods
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
-      indexes :created_at
-    end
-  end
-
-  def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name,
-      mini_resume: mini_resume,
-      private: pryvate,
-      created_at: created_at,
-    }.to_json
-  end
-  # end of search methods
-
-  def generate_user_name
-    slug = short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
-    self.user_name = slug
+  def default_user_name
+    short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase[0...100]
   end
 
   alias_method :old_name, :name
@@ -55,5 +31,9 @@ class Promotion < Community
 
   def project_collections
     ProjectCollection.where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.where(promotion_id: id) })
+  end
+
+  def university
+    @university ||= course.try(:university)
   end
 end

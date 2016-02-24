@@ -13,6 +13,20 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 $select2containers = {};
 $select2target = null;
 
+// Polyfill for IE.  https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+(function () {
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   }
+
+  CustomEvent.prototype = window.Event.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
+
 (function ($, window, document, undefined) {
   $(function() {
     $('.show-simplified-signup').on('click', function(e) {
@@ -115,47 +129,6 @@ $select2target = null;
       }
     });
 
-    // var delayOut = 500,
-    //     delayIn = 200,
-    //     setTimeoutConstIn = {},
-    //     setTimeoutConstOut = {};
-
-    // $('.platform-card-popover').hover(function(e){
-    //   clearTimeout(setTimeoutConstOut[$(this).data('target')]);
-    //   var that = this;
-    //   setTimeoutConstIn[$(this).data('target')] = setTimeout(function(){
-    //     var target = $($(that).data('target'));
-    //     var x = $(that).offset().left;
-    //     if ((x + target.outerWidth()) > window.innerWidth) {
-    //       x = $(that).offset().left + $(that).width() - target.outerWidth();
-    //     }
-    //     var y = $(that).offset().top + $(that).outerHeight() + 3;
-    //     var $window = $(window);
-    //     if ((y + target.outerHeight()) > ($window.scrollTop() + $window.height())) {
-    //       y = $(that).offset().top - target.outerHeight() - 3;
-    //     }
-    //     target.css('top', y + 'px');
-    //     target.css('left', x + 'px');
-    //     $('.platform-card').hide();
-    //     target.fadeIn(100);
-    //   }, delayIn);
-    // }, function(e){
-    //   clearTimeout(setTimeoutConstIn[$(this).data('target')]);
-    //   var target = $($(this).data('target'));
-    //   setTimeoutConstOut[$(this).data('target')] = setTimeout(function(){
-    //     target.fadeOut(100);
-    //   }, delayOut);
-    // });
-
-    // $('.platform-card').hover(function(e){
-    //   clearTimeout(setTimeoutConstOut['#' + $(this).attr('id')]);
-    // }, function(e){
-    //   var that = this;
-    //   setTimeoutConstOut['#' + $(this).attr('id')] = setTimeout(function(){
-    //     $(that).fadeOut(100);
-    //   }, delayOut);
-    // });
-
     $serializedForm = null;
     $formContent = {};
 
@@ -183,7 +156,6 @@ $select2target = null;
 
       resizePeContainer: function() {
         $('.pe-container').height($('.pe-panel:visible').outerHeight());
-        // console.log('resize!');
       },
 
       discardChanges: function() {
@@ -250,12 +222,6 @@ $select2target = null;
           target.fadeIn(100, function(){
             if (tab == '#story') {
               $('.pe-discard').hide();
-              $.each(codeEditor, function(i, el) {
-                heightUpdateFunction("#code-editor-" + el.id, el.ace);
-              });
-            }
-            if (tab == '#story') {
-              loadSlickSlider();
             }
             target.resize(function(){ _.resizePeContainer() });
           });
@@ -266,12 +232,45 @@ $select2target = null;
         }
       },
 
-      saveChanges: function() {
+      showSavePanel: function() {
+        $('.pe-save2').hide();
+        $('.pe-save').slideDown(200);
+      },
+
+      saveChanges: function(e) {
+        var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {
-          // $('#project_description').html(editor.self.serialize()['element-0'].description);
-          editor.forceSaveModel();
+          // Custom Event passes the form to React.
+          var event = new CustomEvent(
+            'pe:submit',
+            {
+              detail: { form: $form },
+              bubbles: false,
+              cancelable: true
+            }
+          );
+          $form[0].dispatchEvent(event);
+        } else {
+          // Protip form needs seperation; React component handles posting the submit.
+          if ($('.description-form').length) {
+            var $dForm = $('.description-form');
+            var event = new CustomEvent(
+              'pe:submit',
+              {
+                detail: { form: $dForm },
+                bubbles: false,
+                cancelable: true
+              }
+            );
+            $dForm[0].dispatchEvent(event);
+          }
+          // Remove the description form from the $form array (all forms on page).
+          $form = $form.filter(function(index, f) {
+            return !f.classList.contains('description-form');
+          });
+
+          $form.submit();
         }
-        $('.pe-panel:visible form.remote').submit();
       },
 
       reload: function() {
@@ -286,7 +285,7 @@ $select2target = null;
     $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
     pe.serializeForm();
 
-    $('.pe-nav').on('click', 'a.tab', function(e){
+    $('.pe-nav').on('click', 'a', function(e){
       if (window.location.hash == $(this).attr('href')) {
         e.preventDefault();
       } else if (pe.unsavedChanges()) {
@@ -302,6 +301,8 @@ $select2target = null;
     if (window.location.pathname.match(/\/projects\/[0-9]+\/edit/) != null) {
       if (hash = window.location.hash) {
         pe.showEditorTab(hash);
+      } else {
+        pe.showEditorTab('#basics');
       }
       $(window).bind('hashchange', function() {
         pe.showEditorTab(window.location.hash);
@@ -317,6 +318,21 @@ $select2target = null;
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
+
+        // Custom event for React component.
+        var $form = $('#story-json');
+        if($form) {
+          var event = new CustomEvent(
+              'pe:complete',
+              {
+                detail: { xhr: xhr, status: status },
+                bubbles: false,
+                cancelable: true
+              }
+            );
+          $form[0].dispatchEvent(event);
+        }
+
         sortTable();
         $(this).trigger('pe:loaded');
       })
@@ -326,17 +342,23 @@ $select2target = null;
         $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
-        if ($('#story:visible').length) {
-          editor.unsavedChanges = false;
-        }
         pe.serializeForm();
         $('.fields.added').removeClass('added');
         $('.fields.removed').remove();
+        var nextTab = $('.pe-container').data('next-tab');
+        if (nextTab)
+          window.location.hash = nextTab.replace('#', '');
       });
 
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
-      pe.saveChanges();
+      $('.pe-container').data('next-tab', null);
+      if ($(this).hasClass('next')) {
+        var id = $('.pe-panel:visible').attr('id');
+        var a = $('.pe-nav a[href="#' + id + '"]').parent().next().find('a');
+        $('.pe-container').data('next-tab', a.attr('href'));
+      }
+      pe.saveChanges(e);
     });
 
     $('.pe-panel').on('input change', 'form, input, textarea, select', function(e){
@@ -530,14 +552,18 @@ $select2target = null;
       return {
         minimumInputLength: 3,
         ajax: {
-          url: "/api/v1/parts",
+          url: Utils.getApiPath() + "/v1/parts",
           dataType: 'json',
           delay: 150,
+          xhrFields: {
+            withCredentials: true
+          },
           data: function (params) {
             return {
               q: params.term,  // search term
               page: params.page,
-              type: partType
+              type: partType,
+              all_platforms: true
             };
           },
           processResults: function (data, page) {
@@ -583,7 +609,7 @@ $select2target = null;
       $(this).find('.part_' + select.data('link-type')).show();
 
       var id = $(this).find('[name="id"]').val();
-      basePartsApiUrl = '/api/v1/parts'
+      basePartsApiUrl = Utils.getApiPath() + '/v1/parts';
       if (id.length) {
         $(this).find('form').attr('action', basePartsApiUrl + '/' + id);
         $(this).find('input[name="_method"]').val('patch');
@@ -729,6 +755,7 @@ $select2target = null;
 
       add: function(e, data) {
         fileName = data.files[0].name;
+        if(!fileName) { return; }
         ext = fileName.substr(fileName.lastIndexOf('.') + 1);
         if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
           $(".code-upload-progress-container").html("<p>Images are not allowed. You can only upload files that contain code.</p>");
@@ -781,6 +808,7 @@ $select2target = null;
       limitConcurrentUploads: 1,
       fileInput: $('#file-upload-form input:file'),
       dropZone: $('#file-upload-form'),
+      pasteZone: null,
 
       add: function(e, data) {
         file = data.files[0];
@@ -793,10 +821,13 @@ $select2target = null;
         data.context.data('data', data);
 
         $.ajax({
-          url: '/files/signed_url',
+          url: Utils.getApiPath() + '/private/files/signed_url',
           type: 'GET',
           dataType: 'json',
           data: { file: {name: file.name}, context: 'no-context' },
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data) {
             form.find('input[name=key]').val(data.key);
             form.find('input[name=policy]').val(data.policy);
@@ -842,9 +873,12 @@ $select2target = null;
         url = form.attr('data-url');
 
         $.ajax({
-          url: '/files',
+          url: Utils.getApiPath() + '/private/files',
           type: 'POST',
           dataType: 'json',
+          xhrFields: {
+            withCredentials: true
+          },
           data: {
             file_url: url,
             file_type: 'document',

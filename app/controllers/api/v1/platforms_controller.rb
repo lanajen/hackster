@@ -1,12 +1,11 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
   include PlatformHelper
-  # before_filter :public_api_methods, only: [:index, :show]
   before_filter :load_platform, only: [:show]
   before_filter :load_projects, only: [:show]
 
-  def index
-    render json: Platform.order(full_name: :asc)
-  end
+  # def index
+  #   render json: Platform.order(full_name: :asc)
+  # end
 
   def show
     set_surrogate_key_header "api/platforms/#{@platform.id}/projects"

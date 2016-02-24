@@ -1,0 +1,32 @@
+- model_class = LiveChapter
+.page-header
+  h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+    small
+      ==> link_to t('.new', :default => t("helpers.links.new")), new_admin_live_chapter_path, :class => 'btn btn-primary btn-sm'
+
+==> render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at event_type)).each do |field|
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'event_type', options: LiveChapter::EVENT_TYPES }
+= render 'admin/shared/search_form_sort_and_submit'
+
+table.table.table-striped
+  thead
+    tr
+      th= model_class.human_attribute_name(:name)
+      th= model_class.human_attribute_name(:event_type)
+      th= model_class.human_attribute_name(:location)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @live_chapters.each do |live_chapter|
+      tr
+        td= live_chapter.name
+        td= live_chapter.event_type
+        td= live_chapter.decorate.location
+        td
+          ==> link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_live_chapter_path(live_chapter), :class => 'btn btn-default btn-xs'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_live_chapter_path(live_chapter.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @live_chapters

@@ -17,7 +17,12 @@ class ApplicationController < ActionController::Base
     'mobile'
 
   protect_from_forgery except: [:not_found]
+  before_action :current_site
+  before_action :current_platform
+  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
   before_filter :authenticate_user_from_token!
+  before_filter :ensure_valid_path_prefix
+  before_action :set_locale, except: [:not_found]
   before_filter :mark_last_seen!
   before_filter :store_location_before
   before_filter :track_visitor
@@ -41,6 +46,8 @@ class ApplicationController < ActionController::Base
   helper_method :returning_user?
   helper_method :controller_action
   helper_method :is_trackable_page?
+  helper_method :api_host
+  helper_method :site_user_name
   before_filter :set_signed_in_cookie
   before_filter :set_default_response_format
 
@@ -49,19 +56,18 @@ class ApplicationController < ActionController::Base
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
-  before_action :current_site
-  # before_action :force_ssl_redirect, if: :ssl_configured?  # needs to know about current_site
-  before_action :current_platform
   helper_method :current_layout
   before_filter :set_view_paths
   layout :current_layout
 
-  before_action :set_locale, except: [:not_found]
-
   # hoping that putting it here will only make the condition run once when the
   # app loads and not on every request
   if ENV['SITE_USERNAME'] and ENV['SITE_PASSWORD']
-    before_filter :authorize_access!
+    before_filter :authorize_site_access!
+  end
+
+  def authorize_site_access!
+    authorize_access! ENV['SITE_USERNAME'], ENV['SITE_PASSWORD']
   end
 
   def set_signed_in_cookie
@@ -85,11 +91,16 @@ class ApplicationController < ActionController::Base
 
     return @current_site if @current_site
 
-    redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
-      ClientSubdomain.find_by_subdomain(request.subdomains[0])
+
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
+  end
+
+  def set_current_site domain, subdomain, host
+    if domain == APP_CONFIG['default_domain']
+      ClientSubdomain.find_by_subdomain(subdomain)
     else
-      ClientSubdomain.find_by_domain(request.host)
-    end and @current_site.enabled?
+      ClientSubdomain.find_by_domain(host)
+    end
   end
 
   def current_platform
@@ -97,11 +108,13 @@ class ApplicationController < ActionController::Base
 
     return @current_platform if @current_platform
 
-    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN']) unless @current_platform = current_site.try(:platform)
   end
 
   def api_host
     return @api_host if @api_host
+
+    return @api_host = ENV['API_HOST'] if ENV['API_HOST'].present?
 
     @api_host = 'api.'
     if ENV['SUBDOMAIN'].present? and ENV['SUBDOMAIN'] != 'www'
@@ -148,8 +161,9 @@ class ApplicationController < ActionController::Base
     # logger.info 'controller: ' + params[:controller].to_s
     # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
+      path = request.fullpath
       session[request.host] ||= {}
-      session[request.host][cookie_name] = request.path
+      session[request.host][cookie_name] = path
     end
     # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end
@@ -168,11 +182,12 @@ class ApplicationController < ActionController::Base
     # puts 'params[:redirect_to]: ' + params[:redirect_to].to_s
     # puts 'session[request.host].try(:[], :user_return_to): ' + session[request.host].try(:[], :user_return_to).to_s
     if host
-      scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
+      base_uri = "#{request.scheme}://#{host}"
+      base_uri += ":#{APP_CONFIG['default_port']}" if APP_CONFIG['port_required']
       if params[:redirect_to].present?
-        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{params[:redirect_to]}"
-      elsif session[request.host].try(:[], :user_return_to).present?
-        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{session[request.host].try(:[], :user_return_to)}"
+        "#{base_uri}#{params[:redirect_to]}"
+      elsif return_to = session[host].try(:[], :user_return_to).presence
+        "#{base_uri}#{return_to}"
       else
         root_url(host: host)
       end
@@ -182,9 +197,15 @@ class ApplicationController < ActionController::Base
   end
 
   private
-    def authorize_access!
-      authenticate_or_request_with_http_basic do |username, password|
-        username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
+    def authorize_access! username, password
+      unless session[:site_username] == username && session[:site_password] == password
+        if cookies[:site_username] == username && cookies[:site_password] == password
+          session[:site_username] = cookies[:site_username]
+          session[:site_password] = cookies[:site_password]
+        else
+          path = request.fullpath
+          redirect_to site_login_path(redirect_to: path)
+        end
       end
     end
 
@@ -193,13 +214,12 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate_user_from_token!
-      user_email = params[:user_email].presence
-      user = user_email && User.find_by_email(user_email)
-
-      if user && Devise.secure_compare(user.authentication_token, params[:user_token])
+      if user = find_user_and_validate_auth_token(params[:user_email], params[:user_token])
+        cookies[:hackster_user_signed_in] = '1'
         sign_in user#, store: false
         flash.keep
-        redirect_to UrlParam.new(request.url).remove_params(%w(user_token user_email)) and return
+        path = UrlParam.new(request.fullpath).remove_params(%w(user_token user_email))
+        redirect_to path and return
       end
     end
 
@@ -242,6 +262,10 @@ class ApplicationController < ActionController::Base
       "#{controller_path}##{action_name}"
     end
 
+    def ensure_valid_path_prefix
+      not_found if params[:path_prefix] and !path_prefix_valid?(params[:path_prefix])
+    end
+
     def show_badge
       if user_signed_in? and @new_badge and @badge_level
         @modal = render_to_string(partial: 'shared/modals/badge_alert', locals: { badge: @new_badge, level: @badge_level })
@@ -258,11 +282,18 @@ class ApplicationController < ActionController::Base
 
     def default_url_options(options = {})
       # pass in the locale we have in the URL because it's always the right one
-      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http') }.merge options
+      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http'), path_prefix: params[:path_prefix] }.merge options
     end
 
     def disable_flash
       @no_flash = true
+    end
+
+    def find_user_and_validate_auth_token email, token
+      return if email.blank? or token.blank?
+
+      user = User.find_by_email(email)
+      user if user and Devise.secure_compare(user.authentication_token, token)
     end
 
     def flash_disabled?
@@ -311,7 +342,7 @@ class ApplicationController < ActionController::Base
 
       if hid and @project = BaseArticle.find_by_hid(hid[1])
         project_slug = "#{params[:user_name]}/#{params[:project_slug]}"
-        if @project.uri != project_slug
+        if @project.uri != project_slug and !request.xhr?
           redirect_to @project and return
         end
       else
@@ -338,6 +369,10 @@ class ApplicationController < ActionController::Base
 
     def mark_last_seen!
       TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
+    end
+
+    def path_prefix_valid? path_prefix
+      is_whitelabel? and current_site.has_path_prefix? and current_site.path_prefix == path_prefix
     end
 
     def track_alias user=nil
@@ -618,6 +653,10 @@ class ApplicationController < ActionController::Base
       is_whitelabel? ? current_site.name : 'Hackster.io'
     end
 
+    def site_user_name
+      is_whitelabel? ? current_platform.user_name : 'hackster'
+    end
+
     def title title=nil
       if title
         @title = title
@@ -641,7 +680,7 @@ class ApplicationController < ActionController::Base
     end
 
     def set_view_paths
-      prepend_view_path "app/views/whitelabel/#{current_site.subdomain}" if is_whitelabel?
+      prepend_view_path "app/views/whitelabel/#{site_user_name}" if is_whitelabel?
     end
 
     def show_hello_world?

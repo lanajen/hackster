@@ -1,12 +1,13 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
-  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :faq, :update]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :load_ideas, only: [:show, :brief]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :faq]
-  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :faq]
-  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :faq]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
   skip_before_filter :track_visitor, only: [:show, :brief, :projects, :ideas]
@@ -53,13 +54,6 @@ class ChallengesController < ApplicationController
       format.html do
         @participants = @challenge.registrants.includes(:avatar).reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params, per_page: 60)
       end
-      format.csv do
-        authorize! :admin, @challenge
-        @registrations = @challenge.registrations.includes(:user).order("users.full_name ASC")
-        file_name = FileNameGenerator.new(@challenge.name, 'participants')
-        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
-        headers['Content-Type'] ||= 'text/csv'
-      end
     end
   end
 
@@ -68,13 +62,18 @@ class ChallengesController < ApplicationController
     @ideas = @challenge.ideas.approved.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
   end
 
+  def idea
+    @idea = @challenge.ideas.find params[:id]
+  end
+
   def faq
     title "#{@challenge.name} FAQ"
     @faq_entries = @challenge.faq_entries.publyc.order("LOWER(threads.title) ASC")
-    # template = ERB.new
-    # template.result(binding)
     conf = YAML.load(File.new("#{Rails.root}/config/contest_faq.yml").read)
     @general_faqs = conf
+    @cache_keys = Rails.cache.fetch("challenge-#{@challenge.id}-faq-cache-tags") do
+      @faq_entries.map{|f| f.token_tags.try(:values) || [] }.flatten.uniq.map{|v| "challenge-#{@challenge.id}-#{v}"}
+    end
   end
 
   def dashboard
@@ -192,9 +191,15 @@ class ChallengesController < ApplicationController
     def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
       @link_params = Rails.cache.fetch "challenge-#{@challenge.id}-link_params", tag: ["challenge-#{@challenge.id}-sponsors"] do
-        { base_article: {platform_tags_string: @sponsors.map(&:name).join(',') } }
+        { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id } }
       end
       @prizes = @challenge.prizes.includes(:image)
+    end
+
+    def load_ideas
+      if @challenge.pre_contest_awarded?
+        @ideas = @challenge.ideas.won.joins(:user).includes(:image, user: :avatar).order('users.full_name, users.user_name')
+      end
     end
 
     def load_projects
@@ -229,7 +234,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules projects brief participants ideas faq)
+      if self.action_name.to_s.in? %w(show rules projects brief participants ideas idea faq)
         'challenge'
       else
         current_layout

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151207192941) do
+ActiveRecord::Schema.define(version: 20160122004940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,12 +65,13 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.integer  "attachable_id"
     t.string   "attachable_type", limit: 255
     t.string   "type",            limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.text     "caption"
     t.string   "title",           limit: 255
     t.integer  "position"
     t.string   "tmp_file",        limit: 255
+    t.boolean  "use_alt",                     default: false
   end
 
   add_index "attachments", ["attachable_id", "attachable_type", "type"], name: "index_attachments_on_attachable_id_and_attachable_type_and_type", using: :btree
@@ -115,6 +116,7 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.string   "workflow_state"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.integer  "address_id"
   end
 
   create_table "challenge_projects", force: :cascade do |t|
@@ -306,6 +308,7 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.datetime "end_date"
     t.hstore   "hproperties"
     t.hstore   "hcounters_cache"
+    t.boolean  "virtual",                       default: false
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
@@ -350,6 +353,20 @@ ActiveRecord::Schema.define(version: 20151207192941) do
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
+  create_table "jobs", force: :cascade do |t|
+    t.string   "url"
+    t.string   "title"
+    t.string   "employer_name"
+    t.string   "location"
+    t.integer  "platform_id"
+    t.string   "workflow_state"
+    t.integer  "clicks_count",   default: 0
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "jobs", ["platform_id"], name: "index_jobs_on_platform_id", using: :btree
+
   create_table "link_data", force: :cascade do |t|
     t.string   "title"
     t.string   "website_name"
@@ -364,6 +381,21 @@ ActiveRecord::Schema.define(version: 20151207192941) do
   end
 
   add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
+
+  create_table "live_chapters", force: :cascade do |t|
+    t.string   "event_type"
+    t.string   "link"
+    t.integer  "organizer_id",                             null: false
+    t.string   "city"
+    t.string   "country"
+    t.boolean  "virtual",                  default: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "name"
+    t.string   "one_liner",    limit: 160
+  end
+
+  add_index "live_chapters", ["organizer_id"], name: "index_live_chapters_on_organizer_id", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255
@@ -576,6 +608,11 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.datetime "updated_at",      null: false
   end
 
+  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
+  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
+  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
@@ -673,6 +710,41 @@ ActiveRecord::Schema.define(version: 20151207192941) do
 
   add_index "respects", ["respectable_id", "respectable_type"], name: "index_respects_on_respectable_id_and_respectable_type", using: :btree
   add_index "respects", ["user_id"], name: "index_respects_on_user_id", using: :btree
+
+  create_table "review_decisions", force: :cascade do |t|
+    t.integer  "user_id",          null: false
+    t.string   "decision"
+    t.hstore   "feedback"
+    t.boolean  "approved"
+    t.integer  "review_thread_id", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "review_decisions", ["review_thread_id"], name: "index_review_decisions_on_review_thread_id", using: :btree
+  add_index "review_decisions", ["user_id"], name: "index_review_decisions_on_user_id", using: :btree
+
+  create_table "review_events", force: :cascade do |t|
+    t.integer  "user_id",          default: 0, null: false
+    t.integer  "review_thread_id",             null: false
+    t.string   "event"
+    t.hstore   "meta"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "review_events", ["review_thread_id"], name: "index_review_events_on_review_thread_id", using: :btree
+  add_index "review_events", ["user_id"], name: "index_review_events_on_user_id", using: :btree
+
+  create_table "review_threads", force: :cascade do |t|
+    t.integer  "project_id",                     null: false
+    t.string   "workflow_state"
+    t.boolean  "locked",         default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "review_threads", ["project_id"], name: "index_review_threads_on_project_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
@@ -775,6 +847,7 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.boolean  "draft",                       default: false
     t.datetime "published_at"
     t.datetime "display_until"
+    t.hstore   "hproperties"
   end
 
   add_index "threads", ["draft"], name: "index_threads_on_draft", using: :btree
@@ -836,6 +909,8 @@ ActiveRecord::Schema.define(version: 20151207192941) do
     t.hstore   "hcounters_cache"
     t.hstore   "hproperties"
     t.boolean  "private",                            default: false
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

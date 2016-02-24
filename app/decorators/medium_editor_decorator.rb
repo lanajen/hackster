@@ -4,6 +4,12 @@ module MediumEditorDecorator
       if model_attribute.present?
         parsed = Nokogiri::HTML::DocumentFragment.parse model_attribute
 
+        parsed.css('h3').each do |el|
+          if el.content
+            el['id'] = 'toc-' + el.content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub(/[^a-z]/, '-')
+          end
+        end
+
         parsed.css('.embed-frame').each do |el|
           begin
             type = el['data-type']
@@ -30,7 +36,7 @@ module MediumEditorDecorator
               else
                 Widget.find_by_id el['data-widget-id']
               end
-              embed = Embed.new widget: widget
+              embed = Embed.new widget: widget, images: options[:images]
               raise "widget ID #{el['data-widget-id']} not found, widget: #{widget.inspect}" if embed.widget.nil?
 
               if options[:except]
@@ -46,7 +52,7 @@ module MediumEditorDecorator
 
             next unless embed.provider_name
             template_append = options[:print] ? '_print' : nil
-            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed, options: options }
+            code = h.render partial: "api/embeds/embed#{template_append}", locals: { embed: embed, options: options }, formats: [:html]
             next unless code
             code = code.try(:force_encoding, "UTF-8")  # somehow slim templates come out as ASCII
 
@@ -67,7 +73,8 @@ module MediumEditorDecorator
         end
         parsed.to_html.html_safe
       else
-        "<p class='paragraph--empty'><br></p>".html_safe
+        return nil;
+        # "<p class='paragraph--empty'><br></p>".html_safe
       end
     end
 end

@@ -4,6 +4,11 @@
       h2 Share your work with the community
 
     .box-content
+      p.text-center
+        ' Before you get started, check our
+        = link_to 'content guidelines', guidelines_path
+        | .
+      br
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
 
@@ -12,6 +17,7 @@
         = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence that says it all. Maximum 140 characters.'
         = f.input :product_tags_string, as: :hidden
         = f.input :platform_tags_string, as: :hidden
+        = f.input :challenge_id, as: :hidden
 
         .form-group
           .col-md-4
@@ -25,7 +31,7 @@
                   - if @project.cover_image
                     = image_tag @project.cover_image.imgix_url(:cover_mini_thumb)
                 .btn-group
-                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.browse-btn*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
             p.help-block A high quality image representing your work. It will be cropped to fit 4:3 format. 600x450px or higher recommended.
@@ -68,9 +74,9 @@
         | Enter the URL below and we'll import it.
         br
         strong> Note:
-        | We only import the URL you enter, not subsequent pages.
+        | Our bot doesn't know how to import full websites, please enter only one project or article page at a time.
         br
-        small= link_to 'Click here to import multiple pages at once.', new_project_import_path
+        = link_to 'Click here to import multiple pages at once.', new_project_import_path
 
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group

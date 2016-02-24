@@ -85,9 +85,9 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.publyc.active.ends_first
+      @challenges = Challenge.publyc.active.ends_last
 
-      @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 12)
+      @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 15)
       if @projects.any?
         @followed = current_user.follow_relations.where(follow_relations: { followable_type: %w(Group) }).includes(followable: [:avatar, :cover_image]) + current_user.follow_relations.where(follow_relations: { followable_type: %w(User) }).includes(followable: :avatar) + current_user.follow_relations.where(follow_relations: { followable_type: %w(Part) }).joins("INNER JOIN parts ON parts.id = follow_relations.followable_id").where.not(parts: { platform_id: nil }).includes(followable: [:image, :platform])
         @current_page = safe_page_params || 1
@@ -118,7 +118,7 @@ class PagesController < ApplicationController
       @last_projects = BaseArticle.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.publyc.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.publyc.active.ends_first.limit(2)
+      @challenges = Challenge.where(id: %w(22 25)) #Challenge.publyc.active.ends_first.limit(2)
 
       @typeahead_tags = Collection.publyc.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
@@ -146,11 +146,6 @@ class PagesController < ApplicationController
 
   def guidelines
     title 'Content Guidelines'
-  end
-
-  def jobs
-    title 'Jobs at Hackster'
-    meta_desc "Join the Hackster team to help more hardware developers make things."
   end
 
   def ping

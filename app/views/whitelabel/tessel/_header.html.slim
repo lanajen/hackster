@@ -36,7 +36,7 @@
   .navbar-in  style='position:relative;'
     .powered-by.pull-left
       | projects powered by
-      = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+      = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www'), style: 'margin-left:4px;'
 
     - if user_signed_in?
       ul.navbar-nav.navbar-right
@@ -58,15 +58,14 @@
       ul#navbar-right.clearfix
         li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-        li.dropdown
-          a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-            | Log in
-          .dropdown-menu style=("padding: 15px; width: 250px;")
-            = render 'devise/sessions/form'
-            hr
-            .social-icons.text-center
-              p.text-muted
-                small Or connect with your social account:
-              = render 'devise/shared/omniauth', css: 'icon'
+        li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
+
+    ul#left-nav.navbar-right.top-menu-nav
+      - if user_signed_in?
+        li= link_to 'My projects', current_user, class: 'nav-link'
+        li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
+      - else
+        li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+
     #navbar-search.pull-right.show-on-desktop
       = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }

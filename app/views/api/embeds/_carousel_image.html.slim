@@ -1,0 +1,11 @@
+.image
+  figure
+    a.embed-img href="javascript:openLightBox('#{uid}', #{i});"
+      - if lazyload and !i.zero?
+        = image_tag nil, 'data-lazy' => image.imgix_url(:headline), alt: image.title.presence
+        noscript
+          = image_tag image.imgix_url(:headline), alt: image.title.presence
+      - else
+        = image_tag image.imgix_url(:headline), alt: image.title.presence
+    - if caption.present? and caption != Image::DEFAULT_CAPTION
+      figcaption= caption

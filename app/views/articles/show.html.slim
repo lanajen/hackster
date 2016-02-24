@@ -24,14 +24,12 @@ c= content_for :head do
 
     #content.project-page class="project-#{@project.id}"
       .wrapper780.protip-show
-        - if @project.content_type_to_human
-          section.section-no-container
-            .project-type
-              = @project.content_type_to_human
+        = render 'projects/project_type'
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
             .pull-right-desktop
               - if @project.publyc?
+                span style="position:relative;"= react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
                 a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                   i.fa.fa-share-square-o
                   span Share
@@ -45,10 +43,12 @@ c= content_for :head do
               | This article is private.
           - else
             .pull-right-desktop
-              = render partial: 'respects/article_button', locals: { respectable: @project }
+              - if user_signed_in?
+                span style="position:relative;"= react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })
               a.btn.btn-link.btn-sm data-content=render('share_button').gsub('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
                 i.fa.fa-share-square-o
                 span Share
+              = render partial: 'respects/article_button', locals: { respectable: @project }
 
           .media.protip-author.pull-left-desktop
             .media-left
@@ -101,21 +101,22 @@ c= content_for :head do
               .protip-section-img
                 = image_tag @project.cover_image(:medium)
 
-          - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
+          - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+            - if @description.present?
+              section.section-container.section-no-title
+                .section-content.hljs-active
+                  .medium-editor= @description
 
-            section.section-container.section-no-title
-              .section-content.hljs-active
-                .medium-editor= @project.description
-
-          - if @project.widgets.where(type: %w(GenericEmbedWidget FileWidget CodeWidget)).exists?
-            section#team.section-container
-              h2.section-title
-                span.title
-                  ' Attachments
-              .section-content
-                = render partial: "api/embeds/code_widgets", locals: { widgets: @project.widgets.where(type: %w(CodeWidget)).order(:position, :id) }
-                - @project.widgets.where(type: %w(GenericEmbedWidget FileWidget)).order(:position, :id).each do |widget|
-                  = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+          - cache [I18n.locale, "project-#{@project.id}-attachments"], tag: ["project-#{@project.id}-attachments"], skip_digest: true do
+            - if @widgets.any?
+              section#team.section-container
+                h2.section-title
+                  span.title
+                    ' Attachments
+                .section-content
+                  = render partial: "api/embeds/code_widgets", locals: { widgets: @code_widgets }
+                  - @other_widgets.each do |widget|
+                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
           section#team.section-container
             h2.section-title

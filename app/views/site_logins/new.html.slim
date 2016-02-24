@@ -1,0 +1,40 @@
+form action=site_login_path method=:post
+  p Please log in to #{request.host}:
+  - if @error
+    .alert.alert-danger
+      p User name and password do not match.
+  .form-group
+    label.control-label for='site_username' User name
+    input.form-control type='text' name='site_username' id='site_username'
+  .form-group
+    label.control-label for='site_password' Password
+    input.form-control type='password' name='site_password' id='site_password'
+  input value="0" type="hidden" name="remember"
+  label.checkbox
+    input type='checkbox' name='remember' checked='checked'
+    | Remember for next time
+  input type='hidden' name='redirect_to' value=params[:redirect_to]
+  button.btn.btn-primary Submit
+
+= content_for :head do
+
+  css:
+    form {
+      top: 50%;
+      width: 400px;
+      margin-top: calc(-5% - 115px);
+      position: absolute;
+      left: 50%;
+      margin-left: -200px;
+      max-width: 100%;
+      padding: 5%;
+    }
+
+= content_for :js do
+
+  javascript:
+    $(function(){
+      var form = $('form')
+      var mtop = Math.min(form.height(), $(window).height()) / 2;
+      form.css('margin-top', 'calc(' + -mtop + 'px - 5%)');
+    });

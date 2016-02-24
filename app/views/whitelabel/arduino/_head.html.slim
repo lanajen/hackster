@@ -1,3 +1,10 @@
+- unless user_signed_in? or params[:logged_out]
+  javascript:
+    var arduinoToken = window.localStorage.getItem("ideapp.token");
+    if (arduinoToken && arduinoToken !== "") {
+      window.location.href = "#{raw arduino_sign_in_url}";
+    }
+
 - content_for :html_class do
   = 'arduino-html'
 
@@ -45,4 +52,8 @@ css:
     left: 0;
     margin: 0;
     padding: 0 15px;
+  }
+  .arduino-html .alert.alert-top {
+    font-size: 11.5px;
+    top: 58px;
   }

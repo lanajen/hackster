@@ -27,7 +27,6 @@ class Group < ActiveRecord::Base
 
   editable_slug :user_name
 
-  has_and_belongs_to_many :challenges, dependent: :destroy
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :featured_projects, -> { where("project_collections.workflow_state = 'featured'") }, source: :project, through: :project_collections
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
@@ -54,7 +53,7 @@ class Group < ActiveRecord::Base
   attr_accessible :avatar_attributes, :type, :email, :mini_resume, :city,
     :country, :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :access_level, :cover_image_id, :project_sorting,
-    :admin_email
+    :admin_email, :virtual
 
   attr_accessor :admin_email, :require_admin_email
 
@@ -78,18 +77,43 @@ class Group < ActiveRecord::Base
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }, allow_blank: true
   validates :email, length: { maximum: 255 }, format: { with: EMAIL_REGEXP }, allow_blank: true
-  validates :mini_resume, length: { maximum: 140 }
+  validates :mini_resume, length: { maximum: 160 }
   validate :admin_email_is_present
   before_validation :clean_members
   after_validation :add_errors_to_user_name
   before_save :ensure_invitation_token
 
-  # beginning of shared search methods
-  include TireInitialization
-  # end of search methods
-
   has_default :access_level, 'anyone' do |instance|
     instance.read_attribute(:access_level)
+  end
+
+  include AlgoliaSearchHelpers
+
+  def self.algolia_index_name
+    "hackster_#{Rails.env}_#{self.name.underscore}"
+  end
+
+  def self.index_all limit=nil
+    algolia_batch_import publyc, limit
+  end
+
+  def to_indexed_json
+    {
+      # for locating
+      id: id,
+      model: self.class.name,
+      objectID: algolia_id,
+
+      # for searching
+      name: name,
+      pitch: mini_resume,
+
+      # for ranking
+      members_count: members_count,
+      impressions_count: impressions_count,
+      last_project_time: last_project_time.to_i,
+      projects_count: projects_count,
+    }
   end
 
   def self.default_permission
@@ -113,10 +137,12 @@ class Group < ActiveRecord::Base
   end
 
   def avatar_id=(val)
+    attribute_will_change! :avatar
     self.avatar = Avatar.find_by_id(val)
   end
 
   def cover_image_id=(val)
+    attribute_will_change! :cover_image
     self.cover_image = CoverImage.find_by_id(val)
   end
 
@@ -129,7 +155,7 @@ class Group < ActiveRecord::Base
   end
 
   def default_user_name
-    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase[0...100]
   end
 
   def generate_user_name
@@ -141,7 +167,7 @@ class Group < ActiveRecord::Base
     if result = self.class.where(user_name: slug).first
       unless self == result
         # if it exists add a 1 and increment it if necessary
-        slug += '1'
+        slug = slug[0...99] + '1'
         while self.class.where(user_name: slug).first
           slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
         end

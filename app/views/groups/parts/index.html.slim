@@ -9,7 +9,13 @@ h2.text-center
   .box-title
     h2 Manage products
   .box-content
-    .mg-20= link_to 'New product', new_group_product_path(@group), class: 'btn btn-success'
+    .mg-20
+      = link_to 'New product', new_group_product_path(@group), class: 'btn btn-success'
+    - if @parts_pending_review
+      .alert.alert-warning.mg-20
+        ' You have products pending review from the Hackster team. Please check
+        => link_to 'our guidelines', 'http://hackster.uservoice.com/knowledgebase/articles/819795', class: 'alert-link'
+        ' to help us accelerate the process.
 
     table.table.table-hover
       thead

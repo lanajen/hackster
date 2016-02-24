@@ -12,7 +12,6 @@ class ProjectImportsController < ApplicationController
       send_admin_message(true) unless current_user.is? :admin
       redirect_to current_user, notice: "Our robot spiders are analyzing your page and getting ready to import it. They'll send you an email when they're done."
     else
-      flash.now[:alert] = @errors.join(' ')
       render action: 'new'
     end
   end

@@ -51,7 +51,7 @@ class MemberObserver < ActiveRecord::Observer
         # BaseMailer.enqueue_email 'request_to_join_team_rejected',
           # { context_type: :membership, context_id: record.id }
       end
-    elsif record.group.is? :platform
+    elsif record.group.class.method(:default_permission).parameters.size == 1
       if record.group_roles_mask_changed?
         permission = record.permission
         permission.update_column :action, record.group.class.default_permission(record.group_roles)

@@ -1,0 +1,18 @@
+li.award
+  h5= link_to entry.name, entry
+  p.clearfix.small
+    span.pull-left
+      strong> Status:
+      = entry.decorate.status
+    - if challenge.pre_contest_in_progress?
+      span.pull-right
+        = link_to content_tag(:i, '', class: 'fa fa-pencil') + content_tag(:span, 'Edit'), edit_challenge_idea_path(challenge.slug, entry), class: 'btn btn-default btn-xs entry-withdraw'
+        = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_single_idea_path(entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+    - elsif entry.won?
+      span style="margin-left:3px"
+        - if entry.address
+          span> Address recorded.
+          = link_to 'Edit', addresses_path(entry_id: entry.id, redirect_if_empty: true)
+        - else
+          strong> Urgent:
+          = link_to 'Add your address', addresses_path(entry_id: entry.id, redirect_if_empty: true)

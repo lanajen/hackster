@@ -7,10 +7,11 @@
       .box-content
         = simple_form_for current_user, url: notifications_path, html: { method: :patch, class: 'form-vertical widget-form', autocomplete: "off" } do |f|
           = f.error_notification
-          p
-            => link_to 'Enable all', 'javascript:enableAll()'
-            ' |
-            => link_to 'Disable all', 'javascript:disableAll()'
+          .clearfix
+            p.pull-right
+              => link_to 'Enable all', 'javascript:enableAll()'
+              ' |
+              => link_to 'Disable all', 'javascript:disableAll()'
           input name='user[email_subscriptions][]' value='' type='hidden'
           input name='user[web_subscriptions][]' value='' type='hidden'
           table.table
@@ -45,7 +46,9 @@
   javascript:
     function enableAll() {
       $('input[type=checkbox]').prop('checked', true);
+      $('#user_project_email_frequency_proxy').val('daily');
     }
     function disableAll() {
       $('input[type=checkbox]').prop('checked', false);
+      $('#user_project_email_frequency_proxy').val('never');
     }

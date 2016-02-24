@@ -70,7 +70,7 @@ class User < ActiveRecord::Base
     'Once per week' => :weekly,
     'Once per month' => :monthly,
   }
-  ROLES = %w(admin confirmed_user beta_tester moderator trusted)
+  ROLES = %w(admin confirmed_user beta_tester hackster_moderator trusted moderator super_moderator)
   SUBSCRIPTIONS = {
     email: {
       'newsletter' => 'Newsletter',
@@ -92,6 +92,8 @@ class User < ActiveRecord::Base
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
       'new_projects' => 'New projects related to a list, platform or user I follow',
+      'contest_reminder' => "Reminders that a contest I participate in is approaching a deadline",
+      'updated_review' => "A write-up I'm involved in has a new review or comment",
     },
     web: {
       'new_comment_own' => 'New comment on one of my projects',
@@ -111,8 +113,12 @@ class User < ActiveRecord::Base
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
       'new_projects' => 'New projects related to a list, platform or user I follow',
+      'contest_reminder' => "Reminders that a contest I participate in is approaching a deadline",
+      'updated_review' => "A write-up I'm involved in has a new review or comment",
     }
   }
+
+  geocoded_by :full_location
 
   editable_slug :user_name
 
@@ -175,6 +181,7 @@ class User < ActiveRecord::Base
   has_many :replicated_projects, source_type: 'BaseArticle', through: :follow_relations, source: :followable
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'BaseArticle'
+  has_many :review_decisions
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :thoughts
@@ -201,10 +208,10 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
+  # validates :email, uniqueness: { message: 'has already been taken. Are you trying to log in?' }, allow_blank: true  # change the message
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
   with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -215,6 +222,8 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
+  after_validation :geocode, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.present? }
+  after_validation :reset_geocoding, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.blank? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -254,14 +263,20 @@ class User < ActiveRecord::Base
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   store :properties, accessors: []
+  hstore_column :properties, :available_for_ft, :boolean
+  hstore_column :properties, :available_for_pt, :boolean
+  hstore_column :properties, :available_for_hire, :boolean
   hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+  hstore_column :properties, :remote_ok, :boolean
   hstore_column :properties, :toolbox_shown, :boolean
+  hstore_column :properties, :willing_to_relocate, :boolean
 
   hstore_column :hproperties, :interest_tags_string, :string
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
+  hstore_column :hproperties, :custom_avatar_urls, :hash
   hstore_column :hproperties, :skill_tags_string, :string
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
@@ -280,41 +295,44 @@ class User < ActiveRecord::Base
   self.per_page = 20
 
   # beginning of search methods
-  include TireInitialization
-  has_tire_index 'private or !accepted_or_not_invited?'
+  include AlgoliaSearchHelpers
+  has_algolia_index 'private or !accepted_or_not_invited?'
 
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100, type: 'string'
-      indexes :user_name,       analyzer: 'snowball', boost: 100, type: 'string'
-      indexes :interests,       analyzer: 'snowball'
-      indexes :skills,          analyzer: 'snowball'
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :country,         analyzer: 'snowball', type: 'string'
-      indexes :city,            analyzer: 'snowball', type: 'string'
-      indexes :created_at
-    end
+  def self.index_all limit=nil
+    algolia_batch_import invitation_accepted_or_not_invited.includes(:avatar, :reputation), limit
   end
 
   def to_indexed_json
     {
-      _id: id,
-      model: self.class.name.underscore,
-      name: name,
-      user_name: user_name,
+      # for locating
+      id: id,
+      model: self.class.name,
+      objectID: algolia_id,
+
+      # for searching
       city: city,
       country: country,
-      mini_resume: mini_resume,
-      interests: interest_tags_string,
-      skills: skill_tags_string,
-      created_at: created_at,
-      popularity: reputation.try(:points),
-    }.to_json
-  end
+      full_name: full_name,
+      interests: interest_tags_cached,
+      latitude: latitude,
+      longitude: longitude,
+      pitch: mini_resume,
+      skills: skill_tags_cached,
+      user_name: user_name,
 
-  def self.index_all
-    index.import invitation_accepted_or_not_invited
+      # for display
+      avatar_url: decorate(context: { current_site: nil }).avatar(:thumb),
+      name: name,
+      url: UrlGenerator.new(path_prefix: nil, locale: nil).user_path(self),
+
+      # for ranking
+      followers_count: followers_count,
+      impressions_count: impressions_count,
+      popularity: reputation.try(:points) || 0,
+      projects_count: projects_count,
+      reputation_count: reputation_count,
+      respects_count: respects_count,
+    }
   end
   # end of search methods
 
@@ -327,7 +345,7 @@ class User < ActiveRecord::Base
       # extract social data for omniauth
       elsif session['devise.provider_data']
         user = super.tap do |user|
-          SocialProfileBuilder.new(user).extract_from_social_profile params, session
+          SocialProfile::Builder.new(session['devise.provider'], session['devise.provider_data']).initialize_user_from_social_profile(user)
         end
         if existing_user = where(email: user.email).where('invitation_token IS NOT NULL').first
           attributes = user.attributes.select{|k,v| k.in? accessible_attributes }
@@ -349,6 +367,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.for_map opts={}
+    publyc.not_hackster.invitation_accepted_or_not_invited.with_geo_location(opts)
+  end
+
   def self.hackster
     where "users.email ILIKE '%@user.hackster.io'"
   end
@@ -367,6 +389,14 @@ class User < ActiveRecord::Base
 
   def self.top
     joins(:reputation).order('reputations.points DESC')
+  end
+
+  def self.with_geo_location opts={}
+    if opts[:sw_lat].present? and opts[:sw_lng].present? and opts[:ne_lat].present? and opts[:ne_lng].present?
+      within_bounding_box([opts[:sw_lat], opts[:sw_lng], opts[:ne_lat], opts[:ne_lng]])
+    else
+      geocoded
+    end
   end
 
   def self.with_at_least_one_action
@@ -430,6 +460,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_id=(val)
+    attribute_will_change! :avatar
     self.avatar = Avatar.find_by_id(val)
   end
 
@@ -467,6 +498,12 @@ class User < ActiveRecord::Base
     deliver_invitation
   end
 
+  alias_method :destroy_now, :destroy
+
+  def destroy
+    delay.destroy_now
+  end
+
   # small hack to allow single emails to be invited multiple times
   def email_changed?
     being_invited? ? false : super
@@ -483,6 +520,10 @@ class User < ActiveRecord::Base
       pre_contest: challenge.ideas.where(user_id: id),
       contest: challenge.entries.where(user_id: id).includes(:project),
     }
+  end
+
+  def full_location
+    [city, country].select{|v| v.present? }.join(', ')
   end
 
   # def has_access? project
@@ -556,28 +597,8 @@ class User < ActiveRecord::Base
     PlatformMember.where(group_id: platform.id, user_id: id).any?
   end
 
-  def link_to_provider provider, uid, data=nil
-    auth = {
-      name: data.name,
-      provider: provider,
-      uid: uid,
-    }
-
-    link = if data and data = data.info
-       data.urls.try(:[], provider)
-     end
-
-    if link
-      auth[:link] = link
-      link_name = case provider
-      when 'Google+'
-        'google_plus'
-      else
-        provider.to_s.underscore
-      end
-      update_attribute "#{link_name}_link", link
-    end
-    authorizations.create(auth)
+  def link_to_provider provider, data
+    SocialProfile::Builder.new(provider, data).update_user_from_social_profile(self)
   end
 
   def live_comments
@@ -609,7 +630,8 @@ class User < ActiveRecord::Base
 
   def profile_needs_care?
     # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
-    (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
+    # (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
+    default_user_name? and full_name.blank?
   end
 
   def profile_complete?
@@ -873,5 +895,9 @@ class User < ActiveRecord::Base
 
     def postpone_email_change?
       super && confirmed?
+    end
+
+    def reset_geocoding
+      self.latitude = self.longitude = nil
     end
 end

@@ -1,4 +1,4 @@
-<p>Welcome to <% if @context[:user].platform.present? and @context[:user].platform != 'hackster' %><%= ClientSubdomain.find_by_subdomain!(@context[:user].platform).name %>, powered by Hackster.io<% else %>Hackster.io<% end %>!</p>
+<p>Welcome to <% if @context[:user].platform.present? and @context[:user].platform != 'hackster' %><%= Platform.find_by_user_name!(@context[:user].platform).client_subdomain.name %>, powered by Hackster.io<% else %>Hackster.io<% end %>!</p>
 
 <p>We're so excited to have you onboard :)</p>
 

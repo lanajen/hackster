@@ -1,5 +1,5 @@
 - if @project.widgets.where(type: widget_types).exists?
-  table.table.table-decorated.table-hover#sortable
+  table.table.table-decorated.table-hover.table-sortable#sortable
     tbody
       - @project.widgets.where(type: widget_types).order(:position, :id).each do |widget|
         = f.simple_fields_for :widgets, widget do |f_widget|

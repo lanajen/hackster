@@ -72,9 +72,9 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         if event.to_sym == :ending_soon
-          context[:users] = challenge.registrants - challenge.entrants
+          context[:users] = challenge.registrants.with_subscription(notification_type, 'contest_reminder') - challenge.entrants
         elsif event.to_sym == :pre_contest_ending_soon
-          context[:users] = challenge.registrants - challenge.idea_entrants
+          context[:users] = challenge.registrants.with_subscription(notification_type, 'contest_reminder') - challenge.idea_entrants
         elsif event.to_sym == :pre_contest_awarded
           context[:users] = challenge.registrants - challenge.idea_entrants.where(challenge_ideas: { workflow_state: :won })
         elsif event.to_sym == :pre_contest_winners
@@ -140,6 +140,15 @@ class NotificationHandler
           end
           context[:users].uniq!
           context[:users] -= [author]
+        when ReviewThread
+          context[:thread] = commentable
+          context[:project] = commentable.project
+          # if comment was posted by a project author, mail everyone else, otherwise mail project authors
+          context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
+            commentable.participants.with_subscription(notification_type, 'updated_review') - commentable.project.users.with_subscription(notification_type, 'updated_review')
+          else
+            commentable.project.users.with_subscription(notification_type, 'updated_review').reorder(nil)  # user reorder(nil) so that uniq! doesn't fail (uniq! is used down the line)
+          end
         end
       when :comment_mention
         context[:model] = comment = context[:comment] = Comment.find context_id
@@ -272,8 +281,8 @@ class NotificationHandler
         case respect.respectable
         when Comment
           comment = context[:comment] = respect.respectable
-          context[:thought] = comment.commentable
-          if comment.user.subscribed_to? notification_type, 'new_like'
+          context[:commentable] = comment.commentable
+          if comment.user and comment.user.subscribed_to? notification_type, 'new_like'
             context[:user] = comment.user
           else
             context[:users] = []
@@ -289,6 +298,12 @@ class NotificationHandler
             context[:users] = []
           end
         end
+      when :review_decision
+        context[:decision] = decision = ReviewDecision.find context_id
+        context[:thread] = thread = decision.review_thread
+        context[:project] = thread.project
+        context[:author] = author = decision.user
+        context[:users] = (thread.participants.with_subscription(notification_type, 'updated_review') + thread.project.users.with_subscription(notification_type, 'updated_review')).uniq - [author]
       when :thought_mention
         context[:model] = thought = context[:thought] = Thought.find context_id
         context[:author] = thought.user

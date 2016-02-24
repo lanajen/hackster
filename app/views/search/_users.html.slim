@@ -1,0 +1,18 @@
+.search-results
+  = render partial: 'search/results_header', locals: { results: results, category: 'members', type: 'User' }
+
+  .row
+    - results[:models].each do |community|
+      .col-md-4
+        .media.search-thumb
+          .media-left
+            = link_to image_tag(community.decorate.avatar(:thumb), class: 'img-rounded media-object'), community
+          .member-thumb-body.media-body
+            h5.media-heading
+              ==> link_to community.name, community
+            .media-body
+              ul.list-inline.stats
+                li= pluralize number_with_delimiter(community.projects_count), 'project'
+                li= pluralize number_with_delimiter(community.followers_count), 'followers'
+
+  = render partial: 'search/results_footer', locals: { results: results }

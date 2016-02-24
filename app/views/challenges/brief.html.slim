@@ -11,15 +11,7 @@
                   strong.small Contest entries:
               ul.entries-list.list-unstyled
                 - @current_entries[:contest].each do |entry|
-                  - project = entry.project
-                  li.award
-                    h5= link_to project.name, project
-                    p.clearfix.small
-                      span.pull-left
-                        strong> Status:
-                        = entry.decorate.status
-                      - if @challenge.in_progress?
-                        span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+                  = render 'challenge_entries/challenge_entry_thumb', entry: entry, challenge: @challenge
               - if @challenge.in_progress? and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
 
@@ -30,22 +22,23 @@
                   strong.small #{@challenge.pre_contest_label} entries:
               ul.entries-list.list-unstyled
                 - @current_entries[:pre_contest].each do |entry|
-                  li.award
-                    h5= entry.name
-                    p.clearfix.small
-                      span.pull-left
-                        strong> Status:
-                        = entry.decorate.status
-                      - if @challenge.pre_contest_in_progress?
-                        span.pull-right
-                          = link_to content_tag(:i, '', class: 'fa fa-pencil') + content_tag(:span, 'Edit'), edit_challenge_idea_path(@challenge.slug, entry), class: 'btn btn-default btn-xs entry-withdraw'
-                          = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_single_idea_path(entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+                  = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge
+
+              - if @challenge.pre_contest_end_date < Date.today
+                - if @challenge.pre_contest_awarded?
+                  p= link_to 'See the list of winners', '#pre_contest_winners', class: 'smooth-scroll'
+                - else
+                  p Winners have not been announced yet.
+              - else
+                p Winners will be announced on #{l @challenge.pre_winners_announced_date}.
+
               - if @challenge.pre_contest_in_progress? and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
 
           - else
             p
              strong> You're registered!
+             => link_to content_tag(:i, '', class: 'fa fa-times'), challenge_registrations_path(@challenge), class: 'btn btn-danger btn-xs', data: { method: :delete }
              - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
               ' We'll let you know by email when the challenge launches.
           - if @challenge.open_for_submissions?
@@ -59,7 +52,7 @@
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
         = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.registration_open?
-        = link_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
+        = button_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
 
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
@@ -178,7 +171,7 @@
       h4 Timeline
       = render 'challenges/timeline', challenge: @challenge
 
-  - cache ["challenge-#{@challenge.id}-brief", params[:show_rules]], tag: ["challenge-#{@challenge.id}-brief"] do
+  - cache ["challenge-#{@challenge.id}-brief", params[:show_rules]], tag: ["challenge-#{@challenge.id}-brief"] + token_tags_for(@challenge, 'brief') do
 
     .col-md-8.col-md-pull-4
       section.section-container.section-collapsible
@@ -190,8 +183,8 @@
 
         .section-content.medium-editor
           - if @challenge.video
-            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video }; rescue; end;
-          = raw @challenge.description
+            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video, options: {} }; rescue; end;
+          = raw replace_tokens_for(@challenge, @challenge.description)
 
       .section-interlude
 
@@ -204,7 +197,7 @@
               i.fa.fa-chevron-up
           .section-content
             ul.list-unstyled
-              - @challenge.ideas.won.joins(:user).order('users.full_name, users.user_name').each do |idea|
+              - @ideas.each do |idea|
                 li
                   strong=> link_to idea.user.name, idea.user
                   ' for
@@ -223,23 +216,23 @@
         .section-content.medium-editor
           - if @challenge.eligibility.present?
             h3 Eligibility
-            = raw @challenge.eligibility
+            = raw replace_tokens_for(@challenge, @challenge.eligibility)
 
           - if @challenge.requirements.present?
             h3 Requirements
-            = raw @challenge.requirements
+            = raw replace_tokens_for(@challenge, @challenge.requirements)
 
           - if @challenge.judging_criteria.present?
             h3 Judging criteria
-            = raw @challenge.judging_criteria
+            = raw replace_tokens_for(@challenge, @challenge.judging_criteria)
 
           - if @challenge.how_to_enter.present?
             h3 How to enter
-            = raw @challenge.how_to_enter
+            = raw replace_tokens_for(@challenge, @challenge.how_to_enter)
 
           - if @challenge.rules.present?
             h3 Full rules
-            = raw @challenge.rules
+            = raw replace_tokens_for(@challenge, @challenge.rules)
 
 = content_for :js do
 

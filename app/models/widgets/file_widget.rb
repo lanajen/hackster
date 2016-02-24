@@ -1,7 +1,7 @@
 class FileWidget < Widget
   define_attributes [:comment]
 
-  has_one :document, as: :attachable, class_name: 'Document'
+  has_one :document, as: :attachable, class_name: 'Attachment', dependent: :destroy
 
   attr_accessible :document_attributes, :document_id
   accepts_nested_attributes_for :document, allow_destroy: true
@@ -21,7 +21,7 @@ class FileWidget < Widget
   end
 
   def document_id=(val)
-    self.document = Document.find_by_id val
+    self.document = Attachment.find_by_id val
   end
 
   def identifier

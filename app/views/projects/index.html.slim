@@ -32,6 +32,7 @@
               / li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
               li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', projects_path(by: '7days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
               li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', projects_path(by: '30days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
+              li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', projects_path(by: '1year', sort: params[:sort], difficulty: params[:difficulty], type: params[:type])
               / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
 
           .btn-group
@@ -40,10 +41,10 @@
               span.caret
             ul.dropdown-menu.pull-right
               li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', projects_path(by: params[:by], sort: params[:sort], type: params[:type])
-              li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', projects_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', projects_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
               li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', projects_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
               li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
-              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', projects_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
+              li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Super hard', projects_path(difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type])
 
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }

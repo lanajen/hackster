@@ -3,4 +3,6 @@
   .controls
     ==> select_tag :sort_by, options_for_array(@fields.keys, params[:sort_by]), class: 'form-control'
     ==> select_tag :sort_order, options_for_array(['ASC', 'DESC'], params[:sort_order]), class: 'form-control'
-= submit_tag 'Search', class: 'btn btn-default'
+.form-group
+  label.control-label
+  .controls= submit_tag 'Search', class: 'btn btn-default btn-sm'

@@ -4,16 +4,26 @@ class CommentObserverWorker < BaseWorker
   def after_commit_on_create record
     return if record.disable_notification?
 
-    if record.commentable_type.in? %w(Issue BaseArticle Thought)
+    if !record.by_guest? and record.commentable_type.in? %w(Issue BaseArticle Thought ReviewThread)
       NotificationCenter.notify_all :new, :comment, record.id
     end
     NotificationCenter.notify_all :mention, :comment_mention, record.id if record.has_mentions?
   end
 
   def after_create record
-    if record.commentable_type == 'BaseArticle'
+    case record.commentable_type
+    when 'BaseArticle'
       update_counters record
       expire_cache record
+    when 'ReviewThread'
+      thread = record.commentable
+      unless thread.closed?
+        if record.user_id.in? thread.project.users.pluck('users.id')
+          thread.update_column :workflow_state, :feedback_responded_to
+        else
+          thread.update_column :workflow_state, :feedback_given
+        end
+      end
     end
   end
 

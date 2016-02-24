@@ -64,7 +64,7 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
                   = link_to content_tag(:i, '', class: 'fa fa-star-o'), group_update_workflow_path(@group, project_collection, event: :unfeature, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Unfeature from page', rel: 'tooltip', data: { method: :patch, container: 'body' }
                 - if project_collection.can_reject?
                   = link_to content_tag(:i, '', class: 'fa fa-eye-slash'), group_update_workflow_path(@group, project_collection, event: :reject, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Hide from page', rel: 'tooltip', data: { method: :patch, container: 'body' }
-                - if @group.enable_certification?
+                - if @group.respond_to?(:enable_certification?) and @group.enable_certification?
                   - if project_collection.certified?
                     = link_to content_tag(:span, content_tag(:i, '', class: 'fa fa-certificate') + content_tag(:i, '', class: 'fa fa-ban fa-stack-1x text-danger'), class: 'fa-stack fa-stack-half'), group_update_certificate_path(@group, project_collection, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Unmark certified', rel: 'tooltip', data: { method: :patch, container: 'body' }
                   - else

@@ -13,17 +13,11 @@ class ChallengeIdeasController < ApplicationController
       format.html do
         @ideas = @ideas.paginate(page: safe_page_params, per_page: 100)
       end
-      format.csv do
-        file_name = FileNameGenerator.new(@challenge.name, 'ideas')
-        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
-        headers['Content-Type'] ||= 'text/csv'
-      end
     end
   end
 
   def show
-    @challenge = Challenge.find params[:challenge_id]
-    authorize! :admin, @challenge
+    @challenge = Challenge.find_by_slug! params[:slug]
     @idea = @challenge.ideas.find params[:id]
   end
 
@@ -101,6 +95,10 @@ class ChallengeIdeasController < ApplicationController
         'approved'
       when 'mark_won'
         'marked a winner'
+      when 'mark_as_shipped'
+        'marked as shipped'
+      when 'undo_won'
+        'unmarked as won'
       else
         "#{event}ed"
       end
@@ -114,7 +112,7 @@ class ChallengeIdeasController < ApplicationController
       @idea = ChallengeIdea.find params[:id]
       if params[:slug].present?
         raise ActiveRecord::RecordNotFound unless @idea.challenge.slug == params[:slug]
-      else
+      elsif params[:challenge_id].present?
         raise ActiveRecord::RecordNotFound unless @idea.challenge_id.to_s == params[:challenge_id]
       end
       authorize! self.action_name.to_sym, @idea
@@ -122,7 +120,7 @@ class ChallengeIdeasController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w()
+      if self.action_name.to_s.in? %w(show)
         'challenge'
       else
         current_layout

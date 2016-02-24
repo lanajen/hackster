@@ -1,10 +1,11 @@
 import request from 'superagent';
+import { getApiPath } from '../../utils/Utils';
 
 export default {
 
   getComments(commentable) {
     return new Promise((resolve, reject) => {
-      request('/api/v1/comments')
+      request(`${getApiPath()}/private/comments`)
         .query({ id: commentable.id })
         .query({ type: commentable.type })
         .end((err, res) => {
@@ -13,26 +14,53 @@ export default {
     });
   },
 
-  postComment(comment, csrfToken) {
+  deleteComment(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post('/api/v1/comments')
+        .del(`${getApiPath()}/private/comments/${id}`)
         .set('X-CSRF-Token', csrfToken)
-        .send(comment)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);
         });
     });
   },
 
-  deleteComment(id, csrfToken) {
+  updateComment(comment, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del('/api/v1/comments')
+        .put(`${getApiPath()}/private/comments/${comment.comment.id}`)
         .set('X-CSRF-Token', csrfToken)
-        .query({ id: id })
+        .send(comment)
+        .withCredentials()
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comment);
+        });
+    });
+  },
+
+  postLike(id, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/likes`)
+        .set('X-CSRF-Token', csrfToken)
+        .send({ comment_id: id })
+        .withCredentials()
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.liked);
+        });
+    });
+  },
+
+  deleteLike(id, csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .del(`${getApiPath()}/private/likes`)
+        .set('X-CSRF-Token', csrfToken)
+        .send({ comment_id: id })
+        .withCredentials()
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body.liked);
         });
     });
   }

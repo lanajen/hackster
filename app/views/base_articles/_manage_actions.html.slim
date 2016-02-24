@@ -6,7 +6,9 @@
 
   a.btn.btn-default class=btn_size href="javascript:void(0)" data-toggle="popover" data-content=render(partial: 'base_articles/publish_popup').gsub('"', "'") data-placement='bottom' data-html='true' data-container='body'
     - if @project.publyc?
-      - if @project.pending_review? or @project.unpublished?
+      - if @project.unpublished?
+        span Public - Unpublished
+      - elsif @project.pending_review?
         span Public - Pending review
       - else
         span Public
@@ -32,8 +34,11 @@
           .popup-overlay-outer
             .popup-overlay-inner
               button.close.btn-close.unselectable data-target='#project-private-share' data-effect='fade' &times;
-              p You can share your #{@project.identifier} with others while keeping it public. For this, send them the following link:
+              p You can share your #{@project.identifier} with others while keeping it private. For this, send them the following link:
               input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
 
+      li.divider
+    - else
+      li= link_to 'Moderator review', review_project_path(@project)
       li.divider
     li= link_to "Delete this #{@project.identifier}", @project, method: :delete, data: { confirm: "Are you sure you want to delete this #{@project.identifier}? There's no way to undo it!" }

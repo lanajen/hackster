@@ -7,6 +7,8 @@ class WidgetObserver < ActiveRecord::Observer
     expire record
   end
 
+  alias_method :after_touch, :after_save
+
   private
     def expire record
       keys = []
@@ -25,7 +27,7 @@ class WidgetObserver < ActiveRecord::Observer
         else
           keys << "project-#{record.project_id}-widgets"
         end
-        keys << "widget-#{record.id}"
+        keys += ["project-#{record.project_id}-attachments", "project-#{record.project_id}-left-column", "project-#{record.project_id}"]
       end
       if keys.any?
         Cashier.expire *keys

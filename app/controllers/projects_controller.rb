@@ -21,6 +21,16 @@ class ProjectsController < ApplicationController
 
     if @by and @by.in? BaseArticle::FILTERS.keys
       @projects = @projects.send(BaseArticle::FILTERS[@by])
+      @by = case @by
+      when '7days'
+        '7 days of'
+      when '30days'
+        '30 days of'
+      when '1year'
+        '12 months of'
+      else
+        @by
+      end
     end
 
     if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
@@ -85,9 +95,13 @@ class ProjectsController < ApplicationController
 
     # call with already loaded widgets and images
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
-      @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
-      @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
-      @description = @project.description(nil, widgets: @widgets, images: @images)
+      @description = if @project.story_json.empty?
+        @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+        @project.description(nil, widgets: @widgets, images: @images)
+      else
+        @project.story_json.html_safe
+      end
     end
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
@@ -226,7 +240,7 @@ class ProjectsController < ApplicationController
     title 'Edit project'
     initialize_project
     @team = @project.team
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :hackster_moderator
   end
 
   def update
@@ -235,25 +249,26 @@ class ProjectsController < ApplicationController
     respond_with @project do |format|
       format.html do
         private_was = @project.pryvate
+        type_was = @project.type
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
           if private_was != @project.pryvate
+            ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_privacy_update, privacy: @project.pryvate
             if @project.pryvate == false
-              notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
-              session[:share_modal] = 'published_share_prompt'
-              session[:share_modal_model] = 'project'
-              session[:share_modal_model_id] = @project.id
-              session[:share_modal_time] = 'after_redirect'
+              notice = "Your project is now public!"
+              notice << " If you want it to show up widely on Hackster, publish it." if @project.unpublished?
 
               track_event 'Made project public', @project.to_tracker
             elsif @project.pryvate == false
               notice = "#{@project.name} is now private again."
             end
+          elsif type_was != @project.type
+            notice = "The project template was updated."
           end
           flash[:notice] = notice
         else
           if params[:base_article].try(:[], 'private') == '0'
-            flash[:alert] = "Couldn't publish the project, please email us at help@hackster.io to get help."
+            flash[:alert] = "Couldn't make the project public, please email us at help@hackster.io to get help."
           end
         end
         redirect_to @project
@@ -262,23 +277,15 @@ class ProjectsController < ApplicationController
       format.js do
         @panel = params[:panel]
 
-        # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
-        if params[:base_article].try(:[], :widgets_attributes)
-          widgets = {}
-          params[:base_article][:widgets_attributes].each do |i, widget|
-            widgets[i] = widget if widget['id'].present?
-          end
-          all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
-          widgets.each do |i, widget|
-            unless all.include? widget['id']
-              params[:base_article][:widgets_attributes].delete(i)
-            end
-          end
-        end
-
         begin
+          # @project.assign_attributes params[:base_article]
+          # did_change = @project.changed?
+          # changed = @project.changed
+
+          @project.updater_id = current_user.id
           if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
-            if @panel.in? %w(hardware publish team software protip_attachments protip_parts)
+            # ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_update, changed: changed if did_change
+            if @panel.in? %w(hardware publish team software protip_parts_and_attachments)
               render 'projects/forms/update'
             else
               render 'projects/forms/checklist', status: :ok
@@ -303,12 +310,42 @@ class ProjectsController < ApplicationController
   end
 
   def update_workflow
-    if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
-      flash[:notice] = "Article state changed to: #{params[:event]}."
-      redirect_to admin_projects_path(workflow_state: 'pending_review')
+    not_found and return unless params[:event]
+
+    @project = BaseArticle.find params[:id]
+    authorize! params[:event], @project
+
+    if current_user.is? :admin, :hackster_moderator
+      if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
+        @ok = true
+        next_url = if params[:event] == 'publish'
+          @project
+        else
+          admin_projects_path(workflow_state: 'pending_review')
+        end
+        redirect_to next_url
+      else
+        render :edit
+      end
     else
-      # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
-      render :edit
+      if @project.send "#{params[:event]}!"
+        @ok = true
+      else
+        flash[:alert] = "Couldn't #{params[:event]} this write-up."
+      end
+      redirect_to @project
+    end
+
+    if @ok
+      if params[:event] == 'publish'
+        ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_status_update, workflow_state: @project.workflow_state
+        session[:share_modal] = 'published_share_prompt'
+        session[:share_modal_model] = 'project'
+        session[:share_modal_model_id] = @project.id
+        session[:share_modal_time] = 'after_redirect'
+      else
+        flash[:notice] = "Write-up #{params[:event]}'ed."
+      end
     end
   end
 
@@ -331,12 +368,10 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    project = BaseArticle.last
+    project = is_whitelabel? ? current_platform.projects.last : BaseArticle.last
     url = case project
     when Product
       product_path(project)
-    when ExternalProject
-      project_path(project)
     else
       url_for(project)
     end
@@ -347,11 +382,13 @@ class ProjectsController < ApplicationController
     authorize! :edit, @project
     msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    if @project.assignment.past_due? or !(deadline = @project.assignment.submit_by_date)
-      @project.locked = true
-      msg += 'The project will be locked for modifications until grades are sent out.'
-    else
-      msg += "You can still make modifications to the project until the submission deadline on #{l deadline.in_time_zone(PDT_TIME_ZONE)} PT."
+    if @project.assignment.past_due?
+      if @project.assignment.should_lock?
+        @project.locked = true
+        msg += 'The project will be locked for modifications until grades are sent out.'
+      end
+    elsif @project.assignment.submit_by_date.present?
+      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
     end
     @project.save
     redirect_to @project, notice: msg
@@ -546,9 +583,8 @@ class ProjectsController < ApplicationController
 
       when 'search'
         params[:q] = params[:ref_id]
-        params[:type] = 'base_article'
+        params[:model_classes] = %w(BaseArticle)
         params[:per_page] = 1
-        params[:include_external] = false
         params[:platform_id] = current_platform.id if is_whitelabel?
 
         # - first result (offset 0)
@@ -559,17 +595,17 @@ class ProjectsController < ApplicationController
 
         offset = params[:offset].to_i
         if offset == 0 and params[:dir] == 'prev'
-          offset = SearchRepository.new(params).search.results.total_count - 1
+          offset = Search.new(params).hits['base_article'][:total_size] - 1
         else
           offset += (params[:dir] == 'prev' ? -1 : 1)
         end
 
-        @results = SearchRepository.new(params.merge(offset: offset)).search.results
+        @results = Search.new(params.merge(page: offset + 1)).hits['base_article'][:models]
 
         # handle next for last result
         if !(@next = @results.first) and offset > 0
           offset = 0
-          @results = SearchRepository.new(params.merge(offset: 0)).search.results
+          @results = Search.new(params.merge(page: 1)).hits['base_article'][:models]
           @next = @results.first
         end
 
@@ -620,7 +656,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
+        if (!ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?) and !current_user.try(:id).in?(@project.users.pluck('users.id'))
           raise ActiveRecord::RecordNotFound
         end
       end

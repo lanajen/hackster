@@ -16,7 +16,12 @@
         .col-sm-3
           p
             strong>= number_with_delimiter @user.reputation_count
-            = pluralize_without_count @user.reputation_count, 'reputation point'
+            => pluralize_without_count @user.reputation_count, 'reputation point'
+          - if @user.reputation_count > 0
+            p
+              ' Exchange them for free hardware in the
+              = link_to 'Store', store_path
+              | !
           p
             small.text-muted
               - if @reputation_this_month.zero?

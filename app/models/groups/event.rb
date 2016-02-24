@@ -32,34 +32,13 @@ class Event < GeographicCommunity
 
   alias_method :short_name, :name
 
-  # beginning of search methods
-  tire do
-    mapping do
-      indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
-      indexes :created_at
-    end
-  end
-
-  def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name,
-      mini_resume: mini_resume,
-      private: pryvate,
-      created_at: created_at,
-    }.to_json
-  end
-  # end of search methods
-
   %w(facebook twitter linked_in google_plus github blog website youtube pinterest flickr instagram reddit).each do |link|
     define_method "#{link}_link" do
       websites["#{link}_link"].presence || hackathon.try("#{link}_link")
     end
   end
+
+  has_algolia_index 'pryvate'
 
   def self.now
     where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc, end_date: :desc)

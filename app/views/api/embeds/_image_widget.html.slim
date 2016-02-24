@@ -1,16 +1,5 @@
 .image-gallery-container
   - ids = embed.images.map(&:id)
-  select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
-    - ids.each do |id|
-      option  value=id selected='selected'
-  .file-drop
-    button.close &times;
-    .file-drop-inner  data-disable-toolbar='true'
-      .file-drop-instructions
-        ' Drag and drop images or
-        ==> link_to 'click to select some from your file system', '', class: 'browse'
-        / ' or
-        / # = link_to 'enter the URL of an image on the web', '', class: 'url'
   .image-gallery
     - embed.images.each_with_index do |image, i|
       = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget, lazyload: options[:mode] == :normal }
@@ -19,4 +8,4 @@ javascript:
   if (typeof(lightBoxImages) == 'undefined') {
     lightBoxImages = {};
   }
-  lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.widget.images).html_safe}];
+  lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.images).html_safe}];

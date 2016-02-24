@@ -3,13 +3,15 @@
 class Widget < ActiveRecord::Base
   include Privatable
 
-  belongs_to :widgetable, polymorphic: true
-  validates :name, length: { maximum: 100 }
-
   attr_accessible :properties, :type, :name, :position, :project_id, :widgetable_id,
     :widgetable_type
 
+  belongs_to :widgetable, polymorphic: true
+  validates :name, length: { maximum: 100 }
   validates :type, presence: true
+
+  before_create :set_position
+  before_save :format_position
 
   def has_name?
     name.present? and name != 'Untitled'
@@ -94,4 +96,17 @@ class Widget < ActiveRecord::Base
       widget_type: identifier,
     }
   end
+
+  private
+    def format_position
+      return unless position.present?
+
+      self.position = '0' + position if position =~ /\A[0-9]\Z/
+    end
+
+    def set_position
+      return unless widgetable
+
+      self.position = widgetable.widgets.count + 1
+    end
 end

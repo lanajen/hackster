@@ -5,6 +5,7 @@ $(function(){
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     dropZone: '.file-drop.<%= file_type %>',
+    pasteZone: null,
 
     add: function(e, data) {
       file = data.files[0];
@@ -24,11 +25,13 @@ $(function(){
         $('#' + data.context).data('data', data);
 
         $.ajax({
-          url: '<%= signed_url_files_path(locale: nil) %>',
+          url: Utils.getApiPath() + '<%= signed_url_api_private_files_path(locale: nil) %>',
           type: 'GET',
           dataType: 'json',
           data: {file: {name: file.name}, context: data.context},
-          async: false,
+          xhrFields: {
+            withCredentials: true
+          },
           success: function(data) {
             form = $('.file_upload.<%= file_type %>');
             form.find('input[name=key]').val(data.key);
@@ -74,11 +77,13 @@ $(function(){
       url = $(this).data('url');
 
       $.ajax({
-        url: '<%= files_path(locale: nil) %>',
+        url: Utils.getApiPath() + '<%= api_private_files_path(locale: nil) %>',
         type: 'POST',
         dataType: 'json',
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
-        async: false,
+        xhrFields: {
+          withCredentials: true
+        },
         success: function(data) {
           //id = data.id;
           //<%= file_type %>Functions.checkFileProcessed(id, data.context);
