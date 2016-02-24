@@ -43,7 +43,7 @@
                   ' This project is certified by
                   = @project.certifier_names(current_platform.try(:full_name)).to_sentence
 
-              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-teaser", is_whitelabel?], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
                 - unless is_whitelabel?
                   - if ProjectCollection.assignment_or_event_for_project?(@project.id)
                     .project-group
@@ -114,7 +114,7 @@
                   .section-content.hljs-active
                     .medium-editor= @description
 
-              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                 - if @hardware_parts.any?
                   section#components.section-container.section-collapsible
                     h2.section-title
@@ -131,7 +131,7 @@
                           - @hardware_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
-              - cache [I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-tool-parts", site_user_name], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
                 - if @tool_parts.any?
                   section#tools.section-container.section-collapsible
                     h2.section-title
@@ -169,7 +169,7 @@
                       - @schematic_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-              - cache [I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
                 - if @software_parts.any?
                   section#apps.section-container.section-collapsible
                     h2.section-title
@@ -410,7 +410,7 @@
                     h4 Made at
                     = link_to hacker_space.name, hacker_space_path(hacker_space)
 
-                - if @challenge_entries.exists?
+                - if !is_whitelabel? and @challenge_entries.exists?
                   section.section-thumbs
                     h4 Challenges
                     - @challenge_entries.each do |entry|

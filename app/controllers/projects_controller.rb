@@ -70,9 +70,9 @@ class ProjectsController < ApplicationController
     # categories. That way we limit the number of db queries
     @parts = @project.part_joins.includes(part: [:image, :platform])
 
-    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
-    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
-    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", is_whitelabel?]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
+    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
+    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
+    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
 
     @widgets = @project.widgets.order(:position, :id)
     unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])

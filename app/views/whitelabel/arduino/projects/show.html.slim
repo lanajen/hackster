@@ -33,17 +33,7 @@
           - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
 
             .col-md-8.left-column
-              - cache [I18n.locale, "project-#{@project.id}-teaser", site_user_name == 'arduino'], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
-
-                - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
-                - if @winning_entry
-                  .project-group
-                    span.project-award>
-                      i.fa.fa-trophy
-                    ' This project won
-                    => @winning_entry.prizes.pluck(:name).to_sentence
-                    ' in
-                    = link_to @winning_entry.challenge.name, @winning_entry.challenge
+              - cache [I18n.locale, "project-#{@project.id}-teaser", site_user_name], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
 
                 #home.project-banner style="background-image: url('#{@project.cover_image(:large)}')"
                   .project-banner-inner
@@ -260,40 +250,6 @@
                     i.fa.fa-lock>
                     | This project is private.
 
-              - if @can_edit
-                - if @project.assignment.present?
-                  section.section-thumbs
-                    h4 Assignment
-                    - if @project.assignment_submitted_at.present?
-                      p
-                        ' Submitted on
-                        = l @project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
-                    - else
-                      .alert.alert-danger.text-center
-                        span
-                          p
-                            - if @project.assignment.submit_by_date.present?
-                              i.fa.fa-exclamation-circle>
-                              - if Time.now < @project.assignment.submit_by_date
-                                ' Assignment due in
-                                b==> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
-                              - else
-                                b> Assignment submission is past due
-                                ' by
-                                ==> time_ago_in_words @project.assignment.submit_by_date
-                              | (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
-                            - else
-                              | This assignment hasn't been submitted.
-                          p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
-                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.own.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
-                  section.section-thumbs
-                    h4 Assignment
-                    .alert.alert-warning.text-center
-                      span
-                        p
-                          | It looks like you have due assignments
-                        p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
-
               - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
                 - if @project.guest_name.present?
                   section.section-thumbs
@@ -371,7 +327,7 @@
                   - @communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name, 'expire20160223'], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"], skip_digest: true do
                 - if @project.publyc?
                   - if @respecting_users.count > 0
                     section.section-thumbs
@@ -386,18 +342,6 @@
                   section.section-thumbs
                     h4 Made at
                     = link_to hacker_space.name, hacker_space_path(hacker_space)
-
-                - if @challenge_entries.exists?
-                  section.section-thumbs
-                    h4 Challenges
-                    - @challenge_entries.each do |entry|
-                      - if entry.awarded?
-                        ' Won
-                        ==> entry.prizes.pluck(:name).to_sentence
-                        ' in
-                      - else
-                        ' Participated in
-                      = link_to entry.challenge.name, entry.challenge
 
               - if @other_projects.count > 0
                 a href="#similar-proj" class="similar-proj-btn smooth-scroll" data-offset=-60
