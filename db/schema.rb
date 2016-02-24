@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160122004940) do
+ActiveRecord::Schema.define(version: 20160224231839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -509,36 +509,46 @@ ActiveRecord::Schema.define(version: 20160122004940) do
   add_index "part_relations", ["parent_part_id"], name: "index_part_relations_on_parent_part_id", using: :btree
 
   create_table "parts", force: :cascade do |t|
-    t.integer  "quantity",                        default: 1
-    t.float    "unit_price",                      default: 0.0
-    t.float    "total_cost",                      default: 0.0
-    t.string   "name",                limit: 255
-    t.string   "vendor_name",         limit: 255
-    t.string   "vendor_sku",          limit: 255
-    t.string   "vendor_link",         limit: 255
-    t.string   "partable_type",       limit: 255,                          null: false
-    t.integer  "partable_id",                                              null: false
-    t.datetime "created_at",                                               null: false
-    t.datetime "updated_at",                                               null: false
-    t.string   "mpn",                 limit: 255
+    t.integer  "quantity",                          default: 1
+    t.float    "unit_price",                        default: 0.0
+    t.float    "total_cost",                        default: 0.0
+    t.string   "name",                  limit: 255
+    t.string   "vendor_name",           limit: 255
+    t.string   "vendor_sku",            limit: 255
+    t.string   "vendor_link",           limit: 255
+    t.string   "partable_type",         limit: 255,                          null: false
+    t.integer  "partable_id",                                                null: false
+    t.datetime "created_at",                                                 null: false
+    t.datetime "updated_at",                                                 null: false
+    t.string   "mpn",                   limit: 255
     t.text     "description"
     t.integer  "position"
-    t.string   "comment",             limit: 255
+    t.string   "comment",               limit: 255
     t.text     "websites"
     t.integer  "platform_id"
-    t.boolean  "private",                         default: false
-    t.string   "product_tags_string", limit: 255
-    t.string   "workflow_state",      limit: 255
-    t.string   "slug",                limit: 255
-    t.string   "one_liner",           limit: 140
+    t.boolean  "private",                           default: false
+    t.string   "product_tags_string",   limit: 255
+    t.string   "workflow_state",        limit: 255
+    t.string   "slug",                  limit: 255
+    t.string   "one_liner",             limit: 140
     t.hstore   "counters_cache"
-    t.string   "type",                limit: 15,  default: "HardwarePart"
+    t.string   "type",                  limit: 15,  default: "HardwarePart"
     t.boolean  "generic"
-    t.integer  "impressions_count",               default: 0
+    t.integer  "impressions_count",                 default: 0
+    t.boolean  "exclude_from_platform",             default: false
   end
 
+  add_index "parts", ["exclude_from_platform"], name: "index_parts_on_exclude_from_platform", using: :btree
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
+
+  create_table "parts_platforms", force: :cascade do |t|
+    t.integer "part_id",     null: false
+    t.integer "platform_id", null: false
+  end
+
+  add_index "parts_platforms", ["part_id"], name: "index_parts_platforms_on_part_id", using: :btree
+  add_index "parts_platforms", ["platform_id"], name: "index_parts_platforms_on_platform_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
     t.string   "recipient_name"
@@ -613,6 +623,15 @@ ActiveRecord::Schema.define(version: 20160122004940) do
   add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
   add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
 
+  create_table "project_relations", force: :cascade do |t|
+    t.integer "parent_id",     null: false
+    t.integer "child_id",      null: false
+    t.string  "relation_type", null: false
+  end
+
+  add_index "project_relations", ["child_id", "relation_type"], name: "index_project_relations_on_child_id_and_relation_type", using: :btree
+  add_index "project_relations", ["parent_id", "relation_type"], name: "index_project_relations_on_parent_id_and_relation_type", using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
     t.text     "description"
@@ -655,10 +674,12 @@ ActiveRecord::Schema.define(version: 20160122004940) do
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
+    t.integer  "parent_id"
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
+  add_index "projects", ["parent_id"], name: "index_projects_on_parent_id", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree

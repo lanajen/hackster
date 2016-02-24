@@ -74,7 +74,7 @@ class BaseArticle < ActiveRecord::Base
       joins(:part).where(parts: { type: 'ToolPart' })
     end
   end
-  has_many :part_platforms, through: :parts, source: :platform do
+  has_many :part_platforms, -> { where("parts.exclude_from_platform = 'f'") }, through: :parts, source: :platform do
     # doesn't seem to want to work if we make the scope below default
     def default_scope
       reorder("groups.full_name ASC").uniq

@@ -18,6 +18,7 @@
   = f.input :platform_id, collection: Platform.order(:full_name)
   = f.input :workflow_state, collection: %w(approved rejected retired pending_review)
   = f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
+  = f.input :exclude_from_platform, inline_label: "Do not add this part's projects to the platform hub", label: false
 
 
   h3 Admin only:
