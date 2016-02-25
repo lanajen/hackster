@@ -309,7 +309,8 @@ class NotificationHandler
         context[:author] = thought.user
         context[:users] = thought.mentioned_users
       when :user
-        context[:model] = context[:user] = User.find(context_id)
+        context[:model] = context[:user] = user = User.find(context_id)
+        context[:current_platform] = Platform.find_by_user_name(user.platform)
       when :user_informal
         context[:user] = User.find(context_id)
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'

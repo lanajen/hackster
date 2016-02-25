@@ -139,6 +139,10 @@ class BaseMailer < ActionMailer::Base
       @context[:personal_message] = opts['personal_message']
       @context[:email_template] = type
       layout = type == 'new_projects' ? 'nicer_email' : 'email'
+      current_platform = opts[:current_platform] || @context[:current_platform]
+      if current_platform.present?
+        prepend_view_path "app/views/whitelabel/#{current_platform.user_name}"
+      end
       subject = render template: "mailers/subjects/#{type}"
       body = render template: "mailers/bodies/#{type}.html", locals: { u: url }, layout: layout
       premailer = Premailer.new(substitute_in(body), with_html_string: true,
