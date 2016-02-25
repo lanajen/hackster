@@ -321,7 +321,7 @@ $select2target = null;
 
         // Custom event for React component.
         var $form = $('#story-json');
-        if($form) {
+        if ($form.length) {
           var event = new CustomEvent(
               'pe:complete',
               {
