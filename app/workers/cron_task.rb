@@ -96,7 +96,7 @@ class CronTask < BaseWorker
     CacheWorker.perform_in 30.minutes, 'warm_cache'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
-    CronTask.perform_in 2.hours, 'send_daily_notifications'
+    CronTask.perform_in 14.hours, 'send_daily_notifications'  # send at 11am PT
   end
 
   def launch_weekly_cron

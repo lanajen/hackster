@@ -11,7 +11,7 @@ hourly:
     - launch_cron
 
 daily:
-  cron: "0 17 * * *"
+  cron: "0 5 * * *"
   class: "CronTask"
   args:
     - launch_daily_cron
