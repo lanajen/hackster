@@ -35,7 +35,7 @@
           - assignments = current_user.is?(:admin) ? Assignment.order(created_at: :desc) : current_user.assignments.order(created_at: :desc)
           - if assignments.any?
             = f.input :assignment_id, collection: assignments, label: 'Assignment', hint: "If you made the hack as part of a course assignment, select it above."
-          - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.now
+          - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.open.now
           - if events.any?
             = f.input :event_id, collection: events, label: 'Event', hint: "If you made the hack as part of an event, select it above."
           = f.input :hacker_space_id, collection: HackerSpace.publyc.order("LOWER(full_name) ASC"), label: 'Where did you hack this from?', hint: content_tag(:span, "Select the hacker space you worked from. ") + content_tag(:a, 'See all the hacker spaces.', href: '/hackerspaces')

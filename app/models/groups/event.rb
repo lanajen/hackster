@@ -44,8 +44,8 @@ class Event < GeographicCommunity
     where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc, end_date: :desc)
   end
 
-  def self.upcoming
-    where("groups.start_date > ?", Time.now).order(start_date: :asc)
+  def self.open
+    where(access_level: 'anyone')
   end
 
   def self.past
@@ -54,6 +54,10 @@ class Event < GeographicCommunity
 
   def self.recent
     where("groups.start_date < ? AND groups.end_date > ?", 7.days.from_now, 7.days.ago).order(start_date: :asc, end_date: :desc)
+  end
+
+  def self.upcoming
+    where("groups.start_date > ?", Time.now).order(start_date: :asc)
   end
 
   def avatar
