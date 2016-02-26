@@ -44,7 +44,7 @@
       padding-bottom: 0;
     }
     .product-illustration {
-      padding-top: 100px;
+      padding-top: 150px;
       padding-bottom: 0;
       img {
         // width: 450px;
@@ -87,6 +87,7 @@
   .cta-block {
     display: inline-block;
     text-align: center;
+    margin-bottom: 10px;
     .price, .button {
       float: none;
     }
