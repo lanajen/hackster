@@ -1,11 +1,21 @@
 -# readd condition below when site goes out of beta
 -# unless user_signed_in? or params[:logged_out]
 
+
+-# readd this to "JS to insert after loggout":
+-# window.localStorage.removeItem('ideapp.token');
+-# window.localStorage.removeItem('ideapp.uid');
+-# window.localStorage.removeItem('ideapp.email');
+
 javascript:
-  var arduinoToken = window.localStorage.getItem("ideapp.token");
-  if (arduinoToken && arduinoToken !== "") {
+  // var arduinoToken = window.localStorage.getItem("ideapp.token");
+  // if (arduinoToken && arduinoToken !== "") {
+  //   window.location.href = "#{raw arduino_sign_in_url}";
+  // }
+
+- unless user_signed_in?
+  javascript:
     window.location.href = "#{raw arduino_sign_in_url}";
-  }
 
 - content_for :html_class do
   = 'arduino-html'
