@@ -265,7 +265,7 @@ class ApplicationController < ActionController::Base
     end
 
     def ensure_valid_path_prefix
-      not_found if params[:path_prefix] and !path_prefix_valid?(params[:path_prefix])
+      not_found unless path_prefix_valid?(params[:path_prefix])
     end
 
     def show_badge
@@ -374,7 +374,12 @@ class ApplicationController < ActionController::Base
     end
 
     def path_prefix_valid? path_prefix
-      is_whitelabel? and current_site.has_path_prefix? and current_site.path_prefix == path_prefix
+      # path always valid when not a whitelabel or isn't configured with a prefix
+      if is_whitelabel? and current_site.has_path_prefix?
+        current_site.path_prefix == path_prefix
+      else
+        true
+      end
     end
 
     def track_alias user=nil
