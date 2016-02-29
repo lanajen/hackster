@@ -256,7 +256,7 @@ class ProjectsController < ApplicationController
             ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_privacy_update, privacy: @project.pryvate
             if @project.pryvate == false
               notice = "Your project is now public!"
-              notice << " If you want it to show up widely on Hackster, publish it." if @project.unpublished?
+              notice << " Is it complete and ready for prime time? Publish it." if @project.unpublished?
 
               track_event 'Made project public', @project.to_tracker
             elsif @project.pryvate == false
