@@ -542,14 +542,6 @@ ActiveRecord::Schema.define(version: 20160224231839) do
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
 
-  create_table "parts_platforms", force: :cascade do |t|
-    t.integer "part_id",     null: false
-    t.integer "platform_id", null: false
-  end
-
-  add_index "parts_platforms", ["part_id"], name: "index_parts_platforms_on_part_id", using: :btree
-  add_index "parts_platforms", ["platform_id"], name: "index_parts_platforms_on_platform_id", using: :btree
-
   create_table "payments", force: :cascade do |t|
     t.string   "recipient_name"
     t.string   "invoice_number"
@@ -622,15 +614,6 @@ ActiveRecord::Schema.define(version: 20160224231839) do
   add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
   add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
   add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
-
-  create_table "project_relations", force: :cascade do |t|
-    t.integer "parent_id",     null: false
-    t.integer "child_id",      null: false
-    t.string  "relation_type", null: false
-  end
-
-  add_index "project_relations", ["child_id", "relation_type"], name: "index_project_relations_on_child_id_and_relation_type", using: :btree
-  add_index "project_relations", ["parent_id", "relation_type"], name: "index_project_relations_on_parent_id_and_relation_type", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255
