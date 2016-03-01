@@ -318,7 +318,7 @@ class ProjectsController < ApplicationController
     if current_user.is? :admin, :hackster_moderator
       if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
         @ok = true
-        next_url = if params[:event] == 'publish'
+        next_url = if params[:event] == 'publish' or params[:event] == 'unpublish'
           @project
         else
           admin_projects_path(workflow_state: 'pending_review')
@@ -343,6 +343,8 @@ class ProjectsController < ApplicationController
         session[:share_modal_model] = 'project'
         session[:share_modal_model_id] = @project.id
         session[:share_modal_time] = 'after_redirect'
+      elsif params[:event] == 'unpublish'
+        flash[:notice] = "Write-up unpublished."
       else
         flash[:notice] = "Write-up #{params[:event]}'ed."
       end
