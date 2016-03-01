@@ -14,7 +14,7 @@ class StoryJsonJsonDecorator
         images.each do |image|
           c['images'] = c['images'].each_with_index do |img, i|
             if image.id.to_s == img['id'].to_s
-              c['images'][i]['url'] = image.decorate.file_url
+              c['images'][i]['url'] = image.decorate.file_url(:headline)
             end
           end
         end
