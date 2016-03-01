@@ -64,6 +64,7 @@ class ProjectScraper
       'community.particle.io' => :particle_forum,
       'cypress.com' => :cypress_blog,
       'developer.mbed.org' => :mbed,
+      'devpost.com' => :challengepost,
       'forum.arduino.cc' => :arduinocc,
       'fusion360.autodesk.com' => :fusion360,
       'github.com' => :github,

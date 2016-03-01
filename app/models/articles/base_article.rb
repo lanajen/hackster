@@ -185,6 +185,7 @@ class BaseArticle < ActiveRecord::Base
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
       event :mark_needs_work, transitions_to: :needs_work
+      event :unpublish, transitions_to: :unpublished
     end
     state :approved do
       event :reject, transitions_to: :rejected

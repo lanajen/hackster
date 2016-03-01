@@ -6,20 +6,6 @@
         ==> image_tag platform.avatar(:mini), class: 'img-thumb'
         = link_to platform.name, platform_home_path(platform), class: 'hidden-link'
 
-    - if user_signed_in? and platform_projects = current_user.projects.where(type: @project.type).where.not(id: current_user.projects.includes(:platform_tags).references(:tags).where('lower(tags.name) IN (?)', platform.platform_tags.pluck(:name).map{|n| n.downcase }).pluck(:id)).order("LOWER(projects.name) ASC") and platform_projects.any?
-      .col-md-8.col-md-offset-2
-        .box
-          .box-content
-            strong Want to link an existing #{@project.identifier} to #{platform.name}?
-
-            = form_tag "/groups/#{platform.id}/projects/link", method: :patch, class: 'disable-on-submit' do
-              .form-group
-                = select_tag :project_id, options_from_collection_for_select(platform_projects, :id, :name), include_blank: true, class: 'form-control'
-              = submit_tag "Link #{@project.identifier}", class: 'btn btn-primary btn-block'
-
-      .col-md-8.col-md-offset-2
-        .hr or
-
   - if params[:type]
     = render "#{@project.type.underscore.pluralize}/new_form"
   - else

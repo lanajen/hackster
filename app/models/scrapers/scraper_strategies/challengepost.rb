@@ -4,7 +4,7 @@ module ScraperStrategies
     private
       def before_parse
         tags = @parsed.css('#built-with li')
-        @project.platform_tags_string = tags.map{|a| a.text.gsub('-', ' ').titleize }.join(',')
+        # @project.product_tags_string = tags.map{|a| a.text.gsub('-', ' ').titleize }.join(',')
         @article.at_css('#built-with').try(:remove)
 
         @project.one_liner = @parsed.at_css('#app-tagline').try(:text).try(:strip).try(:truncate, 140)

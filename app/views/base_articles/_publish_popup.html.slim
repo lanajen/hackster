@@ -47,3 +47,9 @@
     .alert-msg
       ' Please select a type before publishing.
       = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/816132', target: '_blank'
+- if @project.pending_review?
+  .hr.small or
+  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
+      = hidden_field_tag :event, 'unpublish'
+      = submit_tag 'Cancel publication', class: 'btn btn-danger btn-sm btn-block'
