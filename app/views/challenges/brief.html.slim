@@ -104,7 +104,7 @@
             strong= raw @challenge.status
             - if @challenge.judging? and @challenge.winners_announced_date
               p style='margin-bottom:0'
-                strong> Winners announced on:
+                strong> Winners announced by:
                 - if @challenge.disable_projects_phase?
                   = l @challenge.pre_winners_announced_date, format: :short_date
                 - else

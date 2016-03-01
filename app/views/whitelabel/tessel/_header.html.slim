@@ -62,7 +62,7 @@
 
     ul#left-nav.navbar-right.top-menu-nav
       - if user_signed_in?
-        li= link_to 'My projects', current_user, class: 'nav-link'
+        li= link_to 'My projects', user_projects_path(current_user), class: 'nav-link'
         li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
       - else
         li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'

@@ -69,7 +69,7 @@ html lang="en" class=content_for(:html_class)
                     = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
-                      li= link_to 'My projects', current_user
+                      li= link_to 'My projects', user_projects_path(current_user)
                       li.divider
                       li= link_to 'Messages', conversations_path
                       li.divider
@@ -86,7 +86,7 @@ html lang="en" class=content_for(:html_class)
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
-                  li= link_to 'My projects', current_user, class: 'nav-link'
+                  li= link_to 'My projects', user_projects_path(current_user), class: 'nav-link'
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
                 - else
                   li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
@@ -127,7 +127,7 @@ html lang="en" class=content_for(:html_class)
       = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
-        = link_to 'My projects', current_user, class: 'mo-nav-link'
+        = link_to 'My projects', user_projects_path(current_user), class: 'mo-nav-link'
         = link_to 'Messages', conversations_path, class: 'mo-nav-link'
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
