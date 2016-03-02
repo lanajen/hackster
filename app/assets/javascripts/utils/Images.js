@@ -85,9 +85,17 @@ const ImageUtils = {
     // image.crossOrigin = 'Anonymous';
     image.onload = function(e) {
       let canvas = document.createElement('canvas'),
+          maxWidth = 580,
+          maxHeight = 430,
           width = image.width,
           height = image.height,
+          scale = Math.min((maxWidth/image.width),(maxHeight/image.height)),
           dataUrl;
+
+      if(image.width > maxWidth || image.height > maxHeight) {
+        width = (image.width * scale),
+        height = (image.height * scale)
+      }
 
       canvas.width = width;
       canvas.height = height;

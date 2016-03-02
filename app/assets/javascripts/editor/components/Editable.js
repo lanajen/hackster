@@ -201,12 +201,11 @@ const Editable = React.createClass({
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
-    let dom = JSON.parse(JSON.stringify(this.props.editor.dom));
-    let stringifiedJSON, item, cleaned;
 
-    let promised = dom.map(item => {
+    let promised = this.props.editor.dom.map(domItem => {
       /** Its super important to clone each item!  Otherwise we mutate the state of the store and bad things happen. */
-      item = _.cloneDeep(item);
+      let item = _.cloneDeep(domItem);
+      let cleaned;
 
       if(item.type === 'CE') {
         cleaned = Parser.removeAttributes(item.json);

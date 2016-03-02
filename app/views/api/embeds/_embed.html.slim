@@ -3,3 +3,5 @@
     / = embed.default_caption
   .embed  class=embed.format contenteditable="false"
     = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed, options: options }
+  - if caption.present? and caption != Image::DEFAULT_CAPTION
+    figcaption.text-center= caption
