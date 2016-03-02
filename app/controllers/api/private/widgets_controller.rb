@@ -13,7 +13,7 @@ class Api::Private::WidgetsController < Api::Private::BaseController
     end
 
     embed = Embed.new widget: @widget
-    code = render_to_string partial: "api/embeds/embed", locals: { embed: embed, options: { mode: :edit } }
+    code = render_to_string partial: "api/embeds/embed", formats: :html, locals: { embed: embed, options: { mode: :edit } }
     render json: embed.to_json.merge(code: code, widget_id: embed.widget.id, widget_type: embed.widget.type)
   end
 

@@ -17,11 +17,21 @@ section#projects-list
           ul.dropdown-menu.pull-right
             li= link_to "Submit a link", new_project_path(type: 'external')
 
-    - if user_is_current_or_admin? and @private_projects.any?
-        h2
-          ' Private projects and articles
-          = content_tag(:span, @private_projects.count, class: 'badge')
-        .thumb-list
-          .row.project-list
-            - @private_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+    ul.user-profile-nav
+      li= link_to 'Public projects', user_projects_path(@user)
+      li= link_to 'Respected projects', user_projects_respected_path(@user)
+      - unless is_whitelabel?
+        li= link_to 'Toolbox', user_toolbox_show_path(@user)
+
+    h2
+      ' Private projects and articles
+      = content_tag(:span, @private_projects.count, class: 'badge')
+    - if user_is_current_or_admin? and @private_projects.count > 0
+      .thumb-list
+        .row.project-list
+          - @private_projects.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+    - elsif user_is_current?
+      p You have no private projects.
+    - else
+      p #{@user} has no private projects.

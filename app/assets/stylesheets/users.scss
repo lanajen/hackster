@@ -204,3 +204,16 @@
     }
   }
 }
+
+.user-profile-nav {
+  padding: 0;
+  font-size: 0.8em;
+  margin-bottom: 30px;
+  margin-left: -10px;
+  list-style: none;
+  li {
+    padding-right: 10px;
+    padding-left: 10px;
+    display: inline;
+  }
+}
