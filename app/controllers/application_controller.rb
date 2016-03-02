@@ -293,7 +293,7 @@ class ApplicationController < ActionController::Base
     end
 
     def ensure_logged_in
-      if is_whitelabel? and current_site.force_login?
+      if is_whitelabel? and request.host == current_site.host and current_site.force_login?
         redirect_to new_user_session_path, notice: "Please log in to access #{current_site.name}" and return unless user_signed_in? or request.path == new_user_session_path or request.path == new_user_registration_path
       end
     end
