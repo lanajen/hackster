@@ -51,8 +51,12 @@ class Users::SessionsController < Devise::SessionsController
         reset_current_mixpanel_user
       end
 
-      out = super resource
-      UrlParam.new(out).add_param(:logged_out, '1')
+      if is_whitelabel? and current_site.has_custom_logout_url?
+        current_site.logout_redirect_url
+      else
+        out = super resource
+        UrlParam.new(out).add_param(:logged_out, '1')
+      end
     end
 
     def set_action

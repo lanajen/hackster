@@ -14,17 +14,6 @@ module SocialProfile
       'windowslive' => :windowslive,
     }
 
-    def build_authorization
-      @user.authorizations.build(
-        uid: @data.uid,
-        provider: @provider,
-        name: @user.full_name,
-        link: provider_link(@provider),
-        token: @data.credentials.token,
-        secret: @data.credentials.secret
-      )
-    end
-
     def initialize provider, data
       @provider = provider
       @data = data
@@ -51,6 +40,13 @@ module SocialProfile
       @user.password = Devise.friendly_token[0,20]
       @user.logging_in_socially = true
       @user
+    end
+
+    def update_credentials user
+      @user = user
+      if auth = fetch_authorization
+        auth.update_attribute :token, @data.credentials.token
+      end
     end
 
     def update_user_from_social_profile user
@@ -85,6 +81,21 @@ module SocialProfile
         end
       rescue => e
         logger.error "Error in extract_from_social_profile (avatar): " + e.inspect
+      end
+
+      def build_authorization
+        @user.authorizations.build(
+          uid: @data.uid,
+          provider: @provider,
+          name: @user.full_name,
+          link: provider_link(@provider),
+          token: @data.credentials.token,
+          secret: @data.credentials.secret
+        )
+      end
+
+      def fetch_authorization
+        @user.authorizations.where(provider: @provider).first
       end
 
       def provider_link provider

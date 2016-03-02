@@ -44,6 +44,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :force_explicit_locale, :boolean, default: false
   hstore_column :properties, :force_login, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
+  hstore_column :properties, :logout_redirect_url, :string
   hstore_column :properties, :javascript_on_logout, :string
   hstore_column :properties, :path_prefix, :string
 
@@ -60,6 +61,10 @@ class ClientSubdomain < Subdomain
     _base_uri = "#{scheme}://#{full_domain}"
     _base_uri << path_prefix if has_path_prefix?
     _base_uri
+  end
+
+  def has_custom_logout_url?
+    logout_redirect_url.present?
   end
 
   def has_default_avatar?

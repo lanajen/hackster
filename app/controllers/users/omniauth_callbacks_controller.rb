@@ -61,7 +61,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
-    def oauthorize(kind)
+    def oauthorize(provider)
       # logger.debug 'session omniauth keys (oauthorize): ' + session.keys.grep(/^(devise|omniauth)\./).map{ |k| "#{k}: #{session[k]}" }.join(', ')
       # logger.debug 'omniauth.params (oauthorize): ' + request.env['omniauth.params'].map{ |k, v| "#{k}: #{v}" }.join(', ')
       request.env['omniauth.params'].delete('redirect_to') if request.env['omniauth.params']['redirect_to'].in?([new_user_session_path, new_user_registration_path])
@@ -69,25 +69,32 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       I18n.locale = params[:login_locale] || I18n.default_locale
 
-      omniauth_data = case kind
+      omniauth_data = case provider
       when 'facebook', 'github', 'twitter', 'windowslive'
         request.env['omniauth.auth'].except("extra")
       else
         request.env['omniauth.auth']
       end
       session['devise.provider_data'] = omniauth_data
-      session['devise.provider'] = kind
+      session['devise.provider'] = provider
+
+      # prevent sign in if they're not arduino beta testers
+      # remove these lines when the arduino site goes public
+      # if provider == 'arduino'
+      #   redirect_to ENV['ARDUINO_UNAUTHORIZED_URL'] unless ArduinoUser.new(omniauth_data).is_beta_tester?
+      # end
 
       if params[:link_accounts]
         redirect_to update__authorizations_path(link_accounts: true)
       else
-        @user = UserOauthFinder.new.find_for_oauth(kind, omniauth_data)
+        @user = UserOauthFinder.new.find_for_oauth(provider, omniauth_data)
 
         if @user
           case @user.match_by
           when 'uid'
             is_hackster = params[:current_site].blank?
             flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
+            SocialProfile::Builder.new(provider, omniauth_data).update_credentials(@user)
             sign_in_and_redirect resource_name, @user, event: :authentication
           when 'email'#, 'name'
             session['devise.match_by'] = @user.match_by

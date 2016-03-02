@@ -44,6 +44,7 @@
       = f_sub.input :path_prefix
       = f_sub.input :default_avatar_url
       = f_sub.input :default_project_cover_image_file_path, hint: "with no slash at the beginning"
+      = f_sub.input :logout_redirect_url
       = f_sub.input :name
       = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
       = f.input :enable_certification, as: :boolean, inline_label: 'Enable project certification', label: false, hint: "Allow admins to mark projects as certified by their platform."

@@ -382,7 +382,7 @@ class ApplicationController < ActionController::Base
 
     def path_prefix_valid? path_prefix
       # path always valid when not a whitelabel or isn't configured with a prefix
-      if is_whitelabel? and current_site.has_path_prefix?
+      if is_whitelabel? and request.host == current_site.host and current_site.has_path_prefix?
         current_site.path_prefix == path_prefix
       else
         true

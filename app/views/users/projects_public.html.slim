@@ -22,6 +22,13 @@
         ' Public projects and articles
         = content_tag(:span, @public_projects.count, class: 'badge')
 
+      - if user_is_current?
+        p.smaller.text-muted
+          strong> Tip:
+          ' You can access your private and draft projects
+          = link_to 'here', user_projects_drafts_path(@user)
+          | .
+
       - if @public_projects.any?
         .thumb-list
           .row.project-list
@@ -34,9 +41,6 @@
           - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
           ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
           ' !
-        p.smaller.text-muted
-          strong> Tip:
-          | Access private projects below.
       - else
         | #{@user.name} has no public projects.
 
