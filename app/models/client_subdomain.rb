@@ -42,6 +42,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :enable_localization, :boolean, default: false
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :force_explicit_locale, :boolean, default: false
+  hstore_column :properties, :force_login, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
   hstore_column :properties, :javascript_on_logout, :string
   hstore_column :properties, :path_prefix, :string

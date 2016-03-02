@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user_from_token!
   before_filter :ensure_valid_path_prefix
   before_action :set_locale, except: [:not_found]
+  before_filter :ensure_logged_in
   before_filter :mark_last_seen!
   before_filter :store_location_before
   before_filter :track_visitor
@@ -289,6 +290,12 @@ class ApplicationController < ActionController::Base
 
     def disable_flash
       @no_flash = true
+    end
+
+    def ensure_logged_in
+      if is_whitelabel? and current_site.force_login?
+        redirect_to new_user_session_path, notice: "Please log in to access #{current_site.name}" and return unless user_signed_in? or request.path == new_user_session_path or request.path == new_user_registration_path
+      end
     end
 
     def find_user_and_validate_auth_token email, token

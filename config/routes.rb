@@ -427,6 +427,7 @@ HackerIo::Application.routes.draw do
         get 'windows10kit', to: redirect('/s/windows10kit')
 
         # platform renamings
+        get 'esp8266', to: redirect('/esp')
         get 'intel-edison', to: redirect('/intel/products/intel-edison')
         get 'intel-edison/projects', to: redirect('/intel/products/intel-edison')
         get 'intel-edison/products', to: redirect('/intel/products/intel-edison')

@@ -51,6 +51,7 @@
       = f_sub.input :enable_custom_avatars, as: :boolean, inline_label: 'Enable custom avatars', label: false
       = f_sub.input :disable_https, as: :boolean, inline_label: 'Disable forced HTTPS', label: false
       = f_sub.input :disable_login, as: :boolean, inline_label: 'Disable login', label: false
+      = f_sub.input :force_login, as: :boolean, inline_label: 'Force login', label: false, hint: "Force all users to be logged in to access the site."
       = f_sub.input :disable_onboarding_screens, as: :boolean, inline_label: 'Disable onboarding screens', label: false
       = f_sub.input :javascript_on_logout, as: :text, label: 'JS to insert on logout'
       = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: subdomain.try(:logo).try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }

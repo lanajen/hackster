@@ -37,7 +37,7 @@ class ChallengeCriticalWorker < BaseWorker
     headers += challenge.challenge_idea_fields.map(&:label)
     headers += ['Submitter name', 'Submission date', 'Submission status', 'Email']
     if challenge.pre_contest_awarded?
-      headers += ['Full name', 'Address line 1', 'Address line 2', 'Zip code', 'State', 'Country', 'Phone number']
+      headers += ['Full name', 'Address line 1', 'Address line 2', 'City', 'State', 'Zip code', 'Country', 'Phone number']
     end
     rows = [headers]
     ideas.each do |idea|
@@ -47,7 +47,7 @@ class ChallengeCriticalWorker < BaseWorker
       output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state, user.email]
       if challenge.pre_contest_awarded?
         if idea.won? and address = idea.address
-          output += [address.full_name, address.address_line1, address.address_line2, address.zip, address.state, address.country, address.phone]
+          output += [address.full_name, address.address_line1, address.address_line2, address.city, address.state, address.zip, address.country, address.phone]
         else
           output += ['', '', '', '', '', '', '']
         end
