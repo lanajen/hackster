@@ -428,6 +428,7 @@ HackerIo::Application.routes.draw do
 
         # platform renamings
         get 'esp8266', to: redirect('/esp')
+        get 'esp8266/products/esp8266-esp-01', to: redirect('/esp/products/esp8266-esp-01')
         get 'intel-edison', to: redirect('/intel/products/intel-edison')
         get 'intel-edison/projects', to: redirect('/intel/products/intel-edison')
         get 'intel-edison/products', to: redirect('/intel/products/intel-edison')

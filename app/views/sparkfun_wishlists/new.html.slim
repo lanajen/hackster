@@ -75,6 +75,9 @@
 
                 $.ajax({
                   url: Utils.getApiPath() + '/private/jobs/' + id,
+                  xhrFields: {
+                    withCredentials: true
+                  },
                   data: { id: id },
                 }).done(function(response){
                   if (response.status == 'complete') {
