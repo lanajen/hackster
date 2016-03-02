@@ -275,6 +275,9 @@ const Editable = React.createClass({
     let form = document.getElementById('story-json');
     let input = document.getElementById('story-json-input');
     form.contains(input) ? form.removeChild(input) : false;
+
+    /** Reserialize the form so pe && jQuery know we have NO unsaved changes. */
+    if(window && window.pe ) window.pe.serializeForm();
   },
 
   handlePlaceholderClick(storeIndex) {
