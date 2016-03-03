@@ -96,6 +96,7 @@ class CronTask < BaseWorker
     CacheWorker.perform_in 30.minutes, 'warm_cache'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
+    CronTask.perform_in 9.hours, 'send_new_comments_to_platform_owners'  # send at 6am PT
     CronTask.perform_in 14.hours, 'send_daily_notifications'  # send at 11am PT
   end
 
@@ -167,6 +168,12 @@ class CronTask < BaseWorker
       challenges.each do |challenge|
         NotificationCenter.notify_all :ending_soon, :challenge, challenge.id
       end
+    end
+  end
+
+  def send_new_comments_to_platform_owners
+    Platform.active_comment_notifications.each do |platform|
+      NotificationCenter.notify_via_email :comments, :platform, platform.id, 'new_comments_for_platforms'
     end
   end
 

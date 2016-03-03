@@ -31,7 +31,7 @@ class AppLogger
     log_line = create_log
 
     # send only 1 in 100 instances of errors
-    if ENV['ENABLE_ERROR_NOTIF'] and (@count - 1) % 100 == 0
+    if ENV['ENABLE_ERROR_NOTIF'] and @count == 1 or (@count - 1) % 100 == 0
       send_notification(log_line)
     end
   end

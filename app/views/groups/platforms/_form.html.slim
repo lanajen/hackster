@@ -99,6 +99,8 @@
             = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
           .col-md-6
             = f.input :hashtag, label: 'Hashtag for automatic tweets', hint: "Projects we approve are automatically tweeted from our Twitter account (@hacksterio). We add hashtags to improve discoverability. The default is #{@group.default_hashtag}."
+            = f.input :enable_new_comment_notifications, as: :boolean, inline_label: 'Enable new comment notifications', label: false, hint: "Sends a daily recap including all new comments posted to projects linked to this platform"
+            = f.input :email, label: "Email for notifications", hint: "If the above option is enabled, enter an email to send the notification to."
 
       - if @platform.pro?
         .tab-pane.fade#whitelabel role='tabpanel'

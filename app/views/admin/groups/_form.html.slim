@@ -29,6 +29,7 @@
   = f.input :platform_tags_string, hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
   = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
   = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
+  = f.input :enable_new_comment_notifications, as: :boolean, inline_label: 'Enable new comment notifications', label: false, hint: "Sends a daily recap of all new comments posted to projects linked to this platform"
   = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
   = f.input :disclaimer, as: :text, input_html: { rows: 4 }
 

@@ -62,7 +62,7 @@ module Taggable
           end
           self.send :define_method, "#{tag_type}_string=" do |val|
             eval "
-              val = val.split(',').map{|s| s.gsub(/^#/, '') }.strip.join(',')
+              val = val.split(',').map{|s| s.gsub(/^#/, '').strip }.join(',')
               @#{tag_type}_string_was = #{tag_type}_string
               @#{tag_type}_string = val
             "

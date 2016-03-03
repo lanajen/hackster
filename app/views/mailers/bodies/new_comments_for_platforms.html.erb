@@ -1,0 +1,16 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that there are new comments for projects linked to |platform_name|:</p>
+
+<br>
+<% @context[:comments].each do |comment| %>
+  <p>Posted by <a href="<%= u.user_url(comment.user) %>"><%= comment.user.name %></a> to <a href="<%= u.project_url(comment.commentable, anchor: 'comments') %>"><%= comment.commentable.name %></a> on <%= l comment.created_at %>:</p>
+  <p class="quote"><%= strip_tags(comment.body).truncate(150) %></p>
+  <br>
+<% end %>
+
+<p>Cheers,<br> The Hackster.io team</p>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? Disable it from your platform's settings.
+</p>

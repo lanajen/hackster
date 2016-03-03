@@ -71,6 +71,7 @@ class Platform < Collection
   hstore_column :hproperties, :enable_certification, :boolean
   hstore_column :hproperties, :enable_chat, :boolean
   hstore_column :hproperties, :enable_moderators, :boolean
+  hstore_column :hproperties, :enable_new_comment_notifications, :boolean
   hstore_column :hproperties, :enable_parts, :boolean
   hstore_column :hproperties, :enable_password, :boolean
   hstore_column :hproperties, :enable_products, :boolean
@@ -124,6 +125,10 @@ class Platform < Collection
     algolia_batch_import publyc.includes(:avatar, :product_tags), limit
   end
   # end of search methods
+
+  def self.active_comment_notifications
+    where "CAST(groups.hproperties -> 'enable_new_comment_notifications' AS BOOLEAN) = ?", false
+  end
 
   def self.default_permission roles=nil
     roles ||= []
