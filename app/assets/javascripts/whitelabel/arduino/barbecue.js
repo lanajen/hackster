@@ -87,7 +87,7 @@ $(function(){
 	  	expanded = false;
 	};
 
-	$('#toggleNav').click(function(){
+	$('.toggleNav').click(function(){
 		if(expanded) {
 			closeHome();
 		} else {
