@@ -80,6 +80,12 @@ class BaseArticle < ActiveRecord::Base
       reorder("groups.full_name ASC").uniq
     end
   end
+  has_many :part_secondary_platforms, -> { where("parts.exclude_from_platform = 'f'") }, through: :parts, source: :platforms do
+    # doesn't seem to want to work if we make the scope below default
+    def default_scope
+      reorder("groups.full_name ASC").uniq
+    end
+  end
   has_many :project_collections, dependent: :destroy, foreign_key: :project_id do
     def certified
       where "CAST(project_collections.properties -> 'certified' AS BOOLEAN) = ?", true
@@ -168,6 +174,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :duration, :float
   hstore_column :hproperties, :guest_twitter_handle, :string
   hstore_column :hproperties, :locked, :boolean
+  hstore_column :hproperties, :platform, :string
   hstore_column :hproperties, :review_comment, :string
   hstore_column :hproperties, :review_time, :datetime
   hstore_column :hproperties, :reviewer_id, :string

@@ -16,6 +16,7 @@
   = f.input :libraries_link, label: 'Link to code libraries page'
   = f.input :datasheet_link, label: 'Link to datasheet'
   = f.input :platform_id, collection: Platform.order(:full_name)
+  = f.association :platforms, label: 'Secondary platforms', as: :check_boxes, collection: Platform.order(:full_name), wrapper_html: { style: 'max-height: 300px; overflow-y: scroll' }
   = f.input :workflow_state, collection: %w(approved rejected retired pending_review)
   = f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
   = f.input :exclude_from_platform, inline_label: "Do not add this part's projects to the platform hub", label: false
@@ -27,12 +28,12 @@
   / = f.simple_fields_for :child_part_relations do |f_sub|
     = f_sub.input :child_part_id, label: 'Component' do
       .row
-        .col-xs-10= f_sub.input_field :child_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
+        .col-xs-10= f_sub.input_field :child_part_id, as: :select, collection: Part.approved.sorted_by_full_name, wrapper: false, label_method: :full_name
         .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
   = f.simple_fields_for :parent_part_relations do |f_sub|
     = f_sub.input :parent_part_id, label: 'Used in' do
       .row
-        .col-xs-10= f_sub.input_field :parent_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
+        .col-xs-10= f_sub.input_field :parent_part_id, as: :select, collection: Part.approved.sorted_by_full_name, wrapper: false, label_method: :full_name
         .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
   = f.link_to_add 'Add component that uses it', :parent_part_relations, class: 'btn btn-link btn-sm'
 

@@ -10,7 +10,7 @@ class PartObserverWorker < BaseWorker
   end
 
   def after_update record, changed
-    if 'platform_id'.in? changed or (record.platform_id.present? and 'private'.in? changed)
+    if (%w(platform_id platform_ids) & changed).any? or (record.platform_id.present? and 'private'.in? changed)
       record.projects.each do |project|
         project.update_counters only: [record.identifier.pluralize.to_sym]
         ProjectWorker.perform_async 'update_platforms', project.id

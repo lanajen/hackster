@@ -67,7 +67,7 @@ class Admin::PartsController < Admin::BaseController
     end
 
     attributes = @parts.inject({}) do |mem, part|
-      part.attributes.delete_if{|k, v| k.in? %w(id quantity total_cost partable_type partable_id created_at updated_at position comment websites private counters_cache workflow_state) or v.blank? }.merge mem
+      part.attributes.delete_if{|k, v| k.in? %w(id quantity total_cost partable_type partable_id created_at updated_at position comment websites private counters_cache workflow_state impressions_count) or v.blank? }.merge mem
     end
 
     @part = Part.new attributes
@@ -87,6 +87,7 @@ class Admin::PartsController < Admin::BaseController
         part_joins.update_all(part_id: @part.id)
         @part.update_counters only: [:projects, :all_projects]
         Part.where(id: params[:merge_parts].to_a - [@part.id.to_s]).update_all(workflow_state: :retired)
+        PartObserverWorker.perform_async 'after_update', @part.id, %w(platform_id name)
       end
     end
 end

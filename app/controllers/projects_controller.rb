@@ -212,6 +212,7 @@ class ProjectsController < ApplicationController
 
     if current_platform
       @project.platform_tags_string = current_platform.name
+      @project.platform = current_platform.user_name
     end
 
     if current_user

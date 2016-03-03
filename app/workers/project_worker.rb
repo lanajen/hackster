@@ -28,7 +28,7 @@ class ProjectWorker < BaseWorker
     else
       # merge platform_tags (for back compatibility) and platforms from parts
       platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase }).uniq
-      platforms += project.part_platforms.default_scope
+      platforms += project.part_platforms.default_scope + project.part_secondary_platforms.default_scope
       project.platforms = platforms.uniq
 
       project.sub_platforms.each do |sub_platform|

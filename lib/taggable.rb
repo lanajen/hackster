@@ -20,6 +20,12 @@ module Taggable
               #{tag_type}_string.present? ? #{tag_type}_string.split(',').map{ |s| s.strip } : []
             "
           end
+          self.send :define_method, "#{tag_type}_string=" do |val|
+            eval "
+              val = val.split(',').map{|s| s.gsub(/^#/, '').strip }.join(',')
+              super val
+            "
+          end
           self.send :define_method, "#{tag_type}_array" do
             eval "#{tag_type}_cached"
           end
@@ -56,6 +62,7 @@ module Taggable
           end
           self.send :define_method, "#{tag_type}_string=" do |val|
             eval "
+              val = val.split(',').map{|s| s.gsub(/^#/, '') }.strip.join(',')
               @#{tag_type}_string_was = #{tag_type}_string
               @#{tag_type}_string = val
             "

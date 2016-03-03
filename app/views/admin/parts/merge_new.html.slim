@@ -42,7 +42,7 @@ h3 Or choose an existing one to merge into
   .form-group
     .col-md-4
       label.control-label Part
-    .col-md-8= select_tag :id, options_from_collection_for_select(Part.approved.order(:name), :id, :full_name), class: 'form-control'
+    .col-md-8= select_tag :id, options_from_collection_for_select(Part.approved.sorted_by_full_name, :id, :full_name), class: 'form-control'
   select name='merge_parts[]' multiple='multiple' style='display:none'
     - @parts.each do |part|
       option value=part.id selected='selected'

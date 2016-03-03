@@ -26,6 +26,7 @@ class Part < ActiveRecord::Base
   belongs_to :platform
   has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
   has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
+  has_and_belongs_to_many :platforms, join_table: :parts_platforms
   has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :follow_relations, as: :followable
@@ -45,7 +46,8 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id, :part_joins_attributes,
     :part_join_ids, :workflow_state, :slug, :one_liner, :position,
     :child_part_relations_attributes, :parent_part_relations_attributes, :type,
-    :link, :image_url, :tags, :should_generate_slug, :generic, :exclude_from_platform
+    :link, :image_url, :tags, :should_generate_slug, :generic, :exclude_from_platform,
+    :platform_ids
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
