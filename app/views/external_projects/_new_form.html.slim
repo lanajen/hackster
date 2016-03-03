@@ -21,7 +21,6 @@
           - else
             = f.input :guest_name, label: 'Who should be credited for this hack?'
         = f.input :product_tags_string, as: :hidden
-        = f.input :platform_tags_string, as: :hidden
 
         .cover_image.file-drop.form-group  class="#{'has-error' if @project.errors[:cover_image].present?}"
           - if @project.cover_image

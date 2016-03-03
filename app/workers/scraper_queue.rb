@@ -22,7 +22,7 @@ class ScraperQueue < BaseWorker
     log_error e, clean_backtrace, message
   end
 
-  def scrape_project page_url, user_id, platform_tags_string=nil, product_tags_string=nil
+  def scrape_project page_url, user_id, platform=nil, product_tags_string=nil
     @message = Message.new(
       to_email: User.find(user_id).email,
       message_type: 'generic'
@@ -38,7 +38,7 @@ class ScraperQueue < BaseWorker
         @project.build_team
         @project.team.members.new(user_id: user_id)
         @project.build_logs.each{|p| p.user_id = user_id }
-        @project.platform_tags_string = ((@project.platform_tags_string.try(:split, ',') || []) + platform_tags_string.try(:split, ',')).join(',') if platform_tags_string.present?
+        @project.platform = platform
         @project.product_tags_string = ((@project.product_tags_string.try(:split, ',') || []) + product_tags_string.try(:split, ',')).join(',') if product_tags_string.present?
         messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
         raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save

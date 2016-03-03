@@ -18,7 +18,6 @@
         = f.input :name, label: 'What is it called?'
         = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'A short sentence, max 140 characters'
         = f.input :product_tags_string, as: :hidden
-        = f.input :platform_tags_string, as: :hidden
         = f.input :challenge_id, as: :hidden
 
         .form-group
@@ -59,6 +58,5 @@
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group
           = text_field_tag :urls, params[:urls], placeholder: 'Project log URL', class: 'form-control'
-          = hidden_field_tag :platform_tags_string, params[:base_article].try(:[], :platform_tags_string)
           = hidden_field_tag :product_tags_string, params[:base_article].try(:[], :product_tags_string)
         = submit_tag 'Import project', class: 'btn btn-primary btn-block'

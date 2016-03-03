@@ -14,7 +14,6 @@
 
         = f.input :type, as: :hidden
         = f.input :product_tags_string, as: :hidden
-        = f.input :platform_tags_string, as: :hidden
 
         .form-group
           .col-xs-12
@@ -57,6 +56,5 @@
       = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
         .form-group
           = text_field_tag :urls, params[:urls], placeholder: 'Page URL', class: 'form-control'
-          = hidden_field_tag :platform_tags_string, params[:base_article].try(:[], :platform_tags_string)
           = hidden_field_tag :product_tags_string, params[:base_article].try(:[], :product_tags_string)
         = submit_tag 'Import page', class: 'btn btn-primary btn-block'
