@@ -87,7 +87,7 @@ const ContentEditable = React.createClass({
         if(parentNode !== null && !blockEls[parentNode.nodeName]) {
 
           if(node.parentNode !== null) {
-            node.parentNode.removeChild(node);
+            // node.parentNode.removeChild(node);
           }
         }
 
@@ -99,9 +99,9 @@ const ContentEditable = React.createClass({
             if(child.nodeName !== 'LI' && child.textContent.length > 0 && child.textContent.match(/^[\u21B5|\s+]{1}$/) === null) {
               let li = document.createElement('li');
               li.textContent = child.textContent;
-              node.replaceChild(li, child);
+              // node.replaceChild(li, child);
             } else if(child.nodeName !== 'LI' && (child.textContent.match(/^[\u21B5|\s+]{1}$/) !== null || child.textContent.length < 1)) {
-              node.removeChild(child);
+              // node.removeChild(child);
             }
           });
         }
@@ -706,7 +706,7 @@ const ContentEditable = React.createClass({
     if(window.clipboardData && window.clipboardData.getData) {
       /** IE */
       pastedText = window.clipboardData.getData('Text');
-      dataType = 'html';
+      dataType = 'text';
     } else if(e.clipboardData && e.clipboardData.getData) {
       let clipboardDataTypes = [].slice.apply(e.clipboardData.types);
       if(clipboardDataTypes && clipboardDataTypes.indexOf('text/html') === 1) {
