@@ -1,2 +1,2 @@
 .embed-frame
-  = render partial: "api/embeds/embed", locals: { embed: embed, caption: caption, options: options }
+  = render partial: "api/embeds/embed", locals: { embed: embed, caption: local_assigns[:caption], options: options }

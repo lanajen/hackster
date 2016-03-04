@@ -247,7 +247,7 @@ class NotificationHandler
         context[:user] = User.new full_name: payment.recipient_name, email: payment.recipient_email
       when :platform
         platform = context[:platform] = Platform.find context_id
-        comments = context[:comments] = Comment.joins("INNER JOIN projects ON projects.id = comments.commentable_id AND comments.commentable_type = 'BaseArticle'").joins("INNER JOIN project_collections ON project_collections.project_id = projects.id AND project_collections.collectable_id = %i AND project_collections.collectable_type = 'Group'" % platform.id).where("comments.created_at < ?", 24.hours.ago).order(:created_at)
+        comments = context[:comments] = Comment.joins(:user).joins("INNER JOIN projects ON projects.id = comments.commentable_id AND comments.commentable_type = 'BaseArticle'").joins("INNER JOIN project_collections ON project_collections.project_id = projects.id AND project_collections.collectable_id = %i AND project_collections.collectable_type = 'Group'" % platform.id).where("comments.created_at > ?", 24.hours.ago).order(:created_at)
         if comments.exists? and platform.email.present?
           context[:user] = platform
         else

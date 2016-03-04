@@ -127,7 +127,7 @@ class Platform < Collection
   # end of search methods
 
   def self.active_comment_notifications
-    where "CAST(groups.hproperties -> 'enable_new_comment_notifications' AS BOOLEAN) = ?", false
+    where "CAST(groups.hproperties -> 'enable_new_comment_notifications' AS BOOLEAN) = ?", true
   end
 
   def self.default_permission roles=nil
