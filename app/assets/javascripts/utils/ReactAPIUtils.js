@@ -15,11 +15,10 @@ module.exports = {
     });
   },
 
-  addToFollowing(id, type, source, csrfToken) {
+  addToFollowing(id, type, source) {
     return new Promise((resolve, reject) => {
       request
         .post(`${getApiPath()}/private/followers`)
-        .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})
@@ -76,11 +75,10 @@ module.exports = {
     });
   },
 
-  fetchFollowing(csrfToken) {
+  fetchFollowing() {
     return new Promise((resolve, reject) => {
       request
         .get(`${getApiPath()}/private/followers`)
-        .set('X-CSRF-Token', csrfToken)
         .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -100,11 +98,10 @@ module.exports = {
     });
   },
 
-  fetchNotifications(csrfToken) {
+  fetchNotifications() {
     return new Promise((resolve, reject) => {
       request
         .get(`${getApiPath()}/private/notifications`)
-        .set('X-CSRF-Token', csrfToken)
         .withCredentials()
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
@@ -148,11 +145,10 @@ module.exports = {
     });
   },
 
-  postComment(comment, csrfToken) {
+  postComment(comment) {
     return new Promise((resolve, reject) => {
       request
         .post(`${getApiPath()}/private/comments`)
-        .set('X-CSRF-Token', csrfToken)
         .send(comment)
         .withCredentials()
         .end((err, res) => {
@@ -173,11 +169,10 @@ module.exports = {
     });
   },
 
-  removeFromFollowing(id, type, source, csrfToken) {
+  removeFromFollowing(id, type, source) {
     return new Promise((resolve, reject) => {
       request
         .del(`${getApiPath()}/private/followers`)
-        .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})

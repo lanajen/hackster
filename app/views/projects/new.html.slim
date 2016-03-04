@@ -6,6 +6,10 @@
         ==> image_tag platform.avatar(:mini), class: 'img-thumb'
         = link_to platform.name, platform_home_path(platform), class: 'hidden-link'
 
+    .col-md-8.col-md-offset-2
+      .alert.alert-info.text-center
+        p Want to link an existing project to the #{platform.name} channel? List one of #{platform.name}'s products as a component or app.
+
   - if params[:type]
     = render "#{@project.type.underscore.pluralize}/new_form"
   - else
