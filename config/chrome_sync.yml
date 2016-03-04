@@ -12,3 +12,11 @@ cypress:
     - !ruby/symbol chrome_header
     - !ruby/symbol head
     - !ruby/symbol js
+chip:
+  prefix: 'chip_chrome'
+  default_locale: 'en'
+  attributes:
+    - !ruby/symbol header
+    - !ruby/symbol footer
+    - !ruby/symbol head
+    - !ruby/symbol js
