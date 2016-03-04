@@ -85,6 +85,7 @@ class Api::BaseController < ApplicationController
         allowed_origin << ":#{origin_uri.port}" unless origin_uri.port.to_s.in? %w(80 443)
         headers['Access-Control-Allow-Origin'] = allowed_origin
         headers['Access-Control-Allow-Credentials'] = 'true'
+        headers['Access-Control-Expose-Headers'] = 'X-Alert,X-Alert-ID'
       else
         render status: :not_found, nothing: true
       end

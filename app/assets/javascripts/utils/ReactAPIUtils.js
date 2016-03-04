@@ -19,7 +19,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       request
         .post(`${getApiPath()}/private/followers`)
-        .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})
         .query({followable_type: type})
@@ -173,7 +172,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       request
         .del(`${getApiPath()}/private/followers`)
-        .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
         .query({followable_id: id})
         .query({followable_type: type})
