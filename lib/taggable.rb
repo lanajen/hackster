@@ -12,18 +12,14 @@ module Taggable
         attr_accessible :"#{tag_type}_string", :"#{tag_type}_array"
         has_many tag_type, -> { order(name: :asc) }, as: :taggable, dependent: :destroy
 
+        before_save :"clean_#{tag_type}_string", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
+
         if "#{tag_type}_string".in? all_column_names or :"#{tag_type}_string".in? self.instance_methods
           before_save :"format_#{tag_type}_string", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           after_save :"save_#{tag_type}", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           self.send :define_method, "#{tag_type}_cached" do
             eval "
               #{tag_type}_string.present? ? #{tag_type}_string.split(',').map{ |s| s.strip } : []
-            "
-          end
-          self.send :define_method, "#{tag_type}_string=" do |val|
-            eval "
-              val = val.split(',').map{|s| s.gsub(/^#/, '').strip }.join(',')
-              super val
             "
           end
           self.send :define_method, "#{tag_type}_array" do
@@ -62,7 +58,6 @@ module Taggable
           end
           self.send :define_method, "#{tag_type}_string=" do |val|
             eval "
-              val = val.split(',').map{|s| s.gsub(/^#/, '').strip }.join(',')
               @#{tag_type}_string_was = #{tag_type}_string
               @#{tag_type}_string = val
             "
@@ -79,6 +74,11 @@ module Taggable
           end
         end
 
+        self.send :define_method, "clean_#{tag_type}_string" do
+          eval "
+            self.#{tag_type}_string = #{tag_type}_string.split(',').map{|s| s.gsub(/^#/, '').strip }.join(',')
+          "
+        end
         self.send :define_method, "save_#{tag_type}" do
           eval "
             tags = #{tag_type}_string.split(',').map{ |s| s.strip }
