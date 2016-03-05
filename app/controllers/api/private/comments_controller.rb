@@ -1,6 +1,5 @@
 class Api::Private::CommentsController < Api::Private::BaseController
   before_filter :authenticate_user!, :except => [:index]
-  protect_from_forgery only: [:create, :destroy]
   include WidgetsHelper
 
   def index
