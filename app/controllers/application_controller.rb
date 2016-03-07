@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
   def set_current_site domain, subdomain, host
     if domain == APP_CONFIG['default_domain']
       site = ClientSubdomain.find_by_subdomain(subdomain)
-      site.host == host ? site : nil
+      site.present? and site.host == host ? site : nil
     else
       ClientSubdomain.find_by_domain(host)
     end
