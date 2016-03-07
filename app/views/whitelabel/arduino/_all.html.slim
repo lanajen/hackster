@@ -73,7 +73,7 @@
             li
               = link_to content_tag(:button, 'My projects'), current_user
             li
-              = link_to content_tag(:button, 'Sign Out'), destroy_user_session_path, method: :delete
+              = link_to content_tag(:button, 'Sign Out'), 'javascript:void(0)', id: 'sign-out-link'
     - else
       a class="login-link" href=arduino_sign_in_url Sign In
 
@@ -113,10 +113,7 @@
       }
     });
   = javascript_include_tag 'whitelabel/arduino/application'
-  javascript:
-    $(function() {
-      $(".ellipsis").dotdotdot();
-    });
+  = button_to 'Sign out', destroy_user_session_path, method: :delete, form: { id: 'sign-out-form', class: 'hidden' }
 
 = content_for :footer do
   - unless @hide_footer
