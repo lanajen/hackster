@@ -86,6 +86,7 @@ HackerIo::Application.routes.draw do
             get ':user_name' => 'platforms#show'
           end
           resources :projects, only: [:show, :index]
+          resources :users, only: [:show]
           get 'search' => 'search#index'
           match "*all" => "base#cors_preflight_check", via: :options
         end
