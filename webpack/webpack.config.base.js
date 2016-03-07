@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = {
-  entry: ['babel-polyfill', __dirname + '../../app/assets/javascripts/components.js'],
+  entry: ['babel-polyfill', __dirname + '/../app/assets/javascripts/components.js'],
   output: {
-    path: __dirname + '../../app/assets/javascripts',
+    path: __dirname + '/../app/assets/javascripts',
     filename: 'bundle.js'
   },
   module: {
