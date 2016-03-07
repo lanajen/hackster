@@ -371,9 +371,15 @@ const ContentEditable = React.createClass({
 
         case 'UL':
           let li = Utils.getListItemFromTextNode(anchorNode);
-          if((anchorNode.nodeName === 'LI'|| li.nodeName === 'LI') && li.textContent.length < 1) {
+
+          if(li && (anchorNode.nodeName === 'LI'|| li.nodeName === 'LI') && li.textContent.length < 1) {
             this.preventEvent(e);
             this.props.actions.removeListItemFromList(depth, Utils.getListItemPositions(li, li, li.parentNode)[0], this.props.storeIndex);
+            this.createBlockElement('p', depth, true, this.props.storeIndex);
+          } else if(!parentNode.children.length) {
+            // UL has no list items; Create a paragraph and let the parser clean up the UL.
+            this.preventEvent(e);
+            this.props.actions.toggleErrorMessenger(true, 'We added a list item to your list for you.', 'success');
             this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;

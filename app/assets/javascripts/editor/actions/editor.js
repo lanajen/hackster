@@ -376,11 +376,13 @@ export function splitBlockElement(tagType, nodes, depth, storeIndex) {
   };
 }
 
-export function toggleErrorMessenger(show, msg) {
+export function toggleErrorMessenger(show, msg, msgType) {
+  msgType = msgType || 'error';
   return {
     type: Editor.toggleErrorMessenger,
     show: show,
-    msg: msg
+    msg: msg,
+    msgType: msgType
   };
 }
 

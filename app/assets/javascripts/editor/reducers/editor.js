@@ -28,7 +28,7 @@ const initialState = {
   showImageToolbar: false,
   imageToolbarData: {},
   isDataLoading: false,
-  errorMessenger: { show: false, msg: '' },
+  errorMessenger: { show: false, msg: '', type: '' },
   lastMediaHash: null,
   isIE: false,
   updateComponent: null,
@@ -351,7 +351,7 @@ export default function(state = initialState, action) {
       };
 
     case Editor.toggleErrorMessenger:
-      let errorMessenger = { show: action.show, msg: action.msg, actionIcon: 'x' }
+      let errorMessenger = { show: action.show, msg: action.msg, type: action.msgType };
       return {
         ...state,
         errorMessenger: errorMessenger

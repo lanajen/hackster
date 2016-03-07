@@ -1618,6 +1618,16 @@ const Utils = {
 
         return item;
       } else if(item.tag === 'ul') {
+        if(!item.children.length && item.content.length > 0) {
+          item.children.push({
+            tag: 'li',
+            attribs: {},
+            children: [],
+            content: item.content
+          });
+          item.content = '';
+        }
+
         item.children = item.children.map(child => {
           if(child.children && !child.children.length && child.content && child.content.length <= 1 && (child.content === '\n' || child.content === ' ')) {
             return null;

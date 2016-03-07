@@ -121,6 +121,16 @@ export default {
 
   cleanTree(json) {
     return json.map(item => {
+      if(item.tag === 'ul' && !item.children.length && item.content.length > 0) {
+        item.children.push({
+          tag: 'li',
+          attribs: {},
+          children: [],
+          content: item.content
+        });
+        item.content = '';
+      }
+
       item.children = this.cleanBlockElementChildren(item.children);
       return item;
     });
