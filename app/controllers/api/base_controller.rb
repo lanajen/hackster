@@ -30,6 +30,10 @@ class Api::BaseController < ApplicationController
       end
     end
 
+    def authenticated_as_platform?
+      current_platform and @authenticated_as_platform
+    end
+
     def authenticate_platform_or_user
       if request.headers['Authorization'].present?
         authenticate_api_user
@@ -73,6 +77,7 @@ class Api::BaseController < ApplicationController
     def load_platform username
       @current_platform = Platform.find_by_api_username! username
       @current_ability = @current_platform.ability
+      @authenticated_as_platform = true
     end
 
     def host_is_whitelisted? host
