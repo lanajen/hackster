@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://hackster-heroku:hackstergithub123@github.com/hacksterio/omniauth-arduino.git
-  revision: 4d210d3debce19d1ff04d48462ac1bc1a4dc3e28
+  revision: e06c96d13a1157e2f1356f76fac42749c3ad0805
   specs:
     omniauth-arduino (0.0.1)
       omniauth (~> 1.0)
@@ -438,9 +438,9 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.2)
     oj (2.14.0)
-    omniauth (1.2.2)
+    omniauth (1.3.1)
       hashie (>= 1.2, < 4)
-      rack (~> 1.0)
+      rack (>= 1.0, < 3)
     omniauth-facebook (1.5.1)
       omniauth-oauth2 (~> 1.1.0)
     omniauth-github (1.1.2)

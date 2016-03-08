@@ -23,8 +23,6 @@ class ArduinoUser
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
       ).read
 
-      false
-
     rescue OpenURI::HTTPError
       # 500 error or something alike
     end
