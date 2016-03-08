@@ -7,8 +7,7 @@ class ConversationObserver < ActiveRecord::Observer
       elsif record.errors[:subject]
         message += " Duplicate subjects in last 24 hours."
       end
-      log_line = LogLine.create(message: message, log_type: 'spam_filter', source: 'conversation')
-      NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+      AppLogger.new(message, 'spam_filter', 'conversation').log_and_notify(:info)
     end
   end
 

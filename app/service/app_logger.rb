@@ -27,17 +27,17 @@ class AppLogger
     log_and_notify
   end
 
-  def log_and_notify
+  def log_and_notify level=:error
     log_line = create_log
 
     # send only 1 in 100 instances of errors
     if ENV['ENABLE_ERROR_NOTIF'] and @count == 1 or (@count - 1) % 100 == 0
-      send_notification(log_line)
+      send_notification(log_line, level)
     end
   end
 
-  def send_notification log_line
-    NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
+  def send_notification log_line, level
+    NotificationCenter.notify_via_email nil, :log_line, log_line.id, "#{level}_notification"
   end
 
   def write_to_stdout
