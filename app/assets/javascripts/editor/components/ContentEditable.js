@@ -629,7 +629,7 @@ const ContentEditable = React.createClass({
 
     this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, ReactDOM.findDOMNode(this).getAttribute('data-hash'));
 
-    /** Set current storeIndex */
+    /** Set current storeIndex. */
     if(this.props.editor.currentStoreIndex !== this.props.storeIndex) {
       this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     }
