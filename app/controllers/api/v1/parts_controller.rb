@@ -72,7 +72,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     end
 
     def load_and_authorize_resource
-      if current_platform
+      if authenticated_as_platform?
         @part = if params[:id].present?
           current_platform.parts.where(parts: { id: params[:id ]}).first!
         else

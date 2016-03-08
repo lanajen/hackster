@@ -14,7 +14,8 @@ module ScraperStrategies
 
           authors.each_with_index do |author, i|
             name = author.text.gsub(/said\.\.\./, '').strip
-            body = bodies[i].inner_html
+            body = bodies[i].try(:inner_html)
+            next unless body.present?
             created_at = DateTime.parse footers[i].text.strip
             body = ReverseMarkdown.convert body
             c = @project.comments.new raw_body: body, guest_name: name

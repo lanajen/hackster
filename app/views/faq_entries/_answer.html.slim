@@ -6,4 +6,4 @@
   .faq-answer
     = raw answer
     .back-to-top
-      = link_to 'back to top', "javascript:smoothScrollTo('#faq', -80)"
+      = link_to 'back to top', "#faq", class: 'smooth-scroll', data: { offset: -80 }

@@ -36,7 +36,7 @@ class ClientSite
       subdomain = request.subdomains[0]
       !subdomain.in? (API_SUBDOMAINS + %w(beta) + [ENV['SUBDOMAIN']])
     else
-      site = ClientSubdomain.find_by_domain(request.host).presence and site.enabled?
+      site = ClientSubdomain.find_by_domain(request.host).presence and site.enabled? and site.host == request.host
     end
   end
 end
