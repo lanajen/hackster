@@ -149,7 +149,7 @@ class SitemapController < ApplicationController
     end
 
     def parts_query
-      Part.approved
+      Part.approved.with_slug.has_platform.order(updated_at: :desc)
     end
 
     def parts_pages offset=0
