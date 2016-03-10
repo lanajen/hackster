@@ -142,7 +142,7 @@ c= content_for :head do
                 - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user).try(:decorate)
                   .member-thumb.posted-by
                     ' Posted by
-                    => link_to image_tag(poster.avatar(:mini), class: 'img-circle'), poster
+                    => link_to image_tag(poster.avatar(:large), class: 'img-circle'), poster
                     = link_to poster.name, poster
               - else
                 - @project.team_members.each do |member|
