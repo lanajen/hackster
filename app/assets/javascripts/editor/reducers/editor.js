@@ -839,21 +839,24 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     * Else we need to splice the content of the CE by depth.
    */
   if(depth === json.length-1) {
-    let currNode = json.length === 1 && mediaType === 'Carousel' ? json[0] : json.pop();
+    let currNode = json.pop();
     let CE = {
       type: 'CE',
       json: [ _createElement('p', {
         attribs: { 'data-hash': _createNewHash() },
-        children: mediaType === 'Carousel' && currNode.children.length ? currNode.children : [ _createElement('br') ]
+        children: (mediaType === 'Carousel' && (currNode.content.length || currNode.children.length)) ? [currNode] : [ _createElement('br') ]
       })],
       hash: _createNewHash()
     };
+
     if(json.length < 1) {
       json.push( _createEmptyParagraph() );
     }
 
     component.json = json;
     component.html = Parser.toHtml(component.json);
+    CE.html = Parser.toHtml(CE.json);
+
     dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex+1, 0, media);
     dom.splice(storeIndex+2, 0, CE);
@@ -877,7 +880,8 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     newNodeForCursor = Parser.toLiveHtml(newNodeForCursor);
     cursorPosition = { ...cursorPosition, node: newNodeForCursor, anchorNode: newNodeForCursor, rootHash: component.hash };
   } else {
-    let bottomDepthStart = depth+1;
+    // If the mediaType is a video, ignore the current line.
+    let bottomDepthStart = mediaType === 'Video'? depth+1 : depth;
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart);
     let topCE = { type: 'CE', hash: component.hash, json: top, html: Parser.toHtml(top) };
