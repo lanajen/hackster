@@ -28,5 +28,6 @@ class ArduinoUser
     rescue OpenURI::HTTPError
       # 500 error or something alike
       Rails.logger.debug "Failed getting Arduino user_info for `#{user_name}`"
+      false
     end
 end
