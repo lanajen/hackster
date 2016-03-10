@@ -75,7 +75,7 @@ module.exports = {
 
   getVideoData(url) {
     let urlToMatch = url.replace(/youtu\.be/, 'youtube');
-    let type = urlToMatch.match(/(autodesk|circuits|channel9|codebender|instagram|kickstarter|mp4|sketchfab|snip2code|vimeo|vine|upverter|ustream|youtube)/);
+    let type = urlToMatch.match(/(channel9|instagram|kickstarter|mp4|vimeo|vine|ustream|youtube)/);
     let service = type !== null ? type[0] : null;
 
     if (!service) { return null; }

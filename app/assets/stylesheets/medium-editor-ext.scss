@@ -527,6 +527,18 @@ code.gist {
     width: 500px;
   }
 }
+
+.medium-editor {
+  .code-widget {
+    .highlight {
+      pre {
+        overflow: auto;
+        white-space: pre;
+        max-height: none;
+      }
+    }
+  }
+}
 // .remote_file_upload {
 //   display: none;
 //   position: fixed;
