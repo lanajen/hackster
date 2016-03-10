@@ -22,15 +22,10 @@ class TweetBuilder
     tags = @project.platforms.map do |platform|
       TwitterHandle.new(platform.twitter_link).handle.presence || platform.hashtag
     end
-    if tags.any?
-      tag_phrase = " #{tags.join(' ')}"
-      message << tag_phrase if (size + tag_phrase.size) < MAX_SIZE
-      size = get_size(message, true)
-    end
+    tags += @project.product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
 
-    # we add tags until character limit is reached
-    tags = @project.product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
     if tags.any?
+      tags.uniq!
       tags.each do |tag|
         new_size = size + tag.size + 1
         if new_size < MAX_SIZE
@@ -60,10 +55,9 @@ class TweetBuilder
       else
         user = @project.users.first
         if user
-          output << " by #{user.name.strip}"
-          if handle = TwitterHandle.new(user.twitter_link).handle.presence
-            output << " (#{handle})"
-          end
+          output << " by "
+          handle = TwitterHandle.new(user.twitter_link).handle
+          output << (handle.present? ? handle : user.name.strip)
         end
       end
 
