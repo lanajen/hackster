@@ -1,4 +1,4 @@
-- url = url_for([@followable, only_path: false])
+- url = url_for([@followable, only_path: false, host: APP_CONFIG['default_host']])
 - message = @followable.decorate.social_share
 - twitter_message = @followable.decorate.twitter_share
 - image = @followable.avatar.try(:imgix_url)
