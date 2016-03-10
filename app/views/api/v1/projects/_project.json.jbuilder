@@ -1,6 +1,7 @@
 json.id project.id
 json.name project.name
-json.type project.type
+json.template project.type
+json.content_type project.content_type
 json.one_liner project.one_liner
 json.tags project.product_tags_string
 json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
