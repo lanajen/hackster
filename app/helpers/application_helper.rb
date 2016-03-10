@@ -179,6 +179,10 @@ module ApplicationHelper
     is_whitelabel? ? current_site.host : APP_CONFIG['default_host']
   end
 
+  def site_root_url
+    root_url(host: site_host, path_prefix: current_site.path_prefix.presence)
+  end
+
   def site_twitter
     is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
   end

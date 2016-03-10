@@ -59,7 +59,7 @@ c= content_for :head do
                 span
                   .media-object style="height:40px;width:1px"
               - else
-                = link_to image_tag(@author.avatar(:medium), alt: @author.name, class: 'img-circle media-object'), @author
+                = link_to image_tag(@author.avatar(:large), alt: @author.name, class: 'img-circle media-object'), @author
             .media-body
               .media-heading
                 - if @project.guest_name.present?
@@ -180,7 +180,7 @@ c= content_for :head do
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
+              = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this article? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.', cache_version: 'arduino' }
 
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do

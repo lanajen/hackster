@@ -78,8 +78,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['devise.provider_data'] = omniauth_data
       session['devise.provider'] = provider
 
-      Rails.logger.debug "omniauth_data: #{omniauth_data.inspect}"
-
       # prevent sign in if they're not arduino beta testers
       # remove these lines when the arduino site goes public
       if provider == 'arduino'

@@ -39,7 +39,7 @@ html(lang="en")
       - unless @no_flash
         = bootstrap_flash
       header
-        .cancel-login= link_to "&larr; Cancel log in and return to #{site_name}".html_safe, root_url(host: site_host)
+        .cancel-login= link_to "&larr; Cancel log in and return to #{site_name}".html_safe, site_root_url
         .header-inner
           - if is_whitelabel?
             .site-logo= current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name

@@ -8,4 +8,4 @@
       ' or
       ==> link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: commentable.class.model_name.to_s.underscore, id: commentable.id, source: 'popup')
       | to comment.
-  = react_component('Comments', { commentable: { id: commentable.id, type: commentable.class.model_name.name }, placeholder: placeholder })
+  = react_component('Comments', { commentable: { id: commentable.id, type: commentable.class.model_name.name }, placeholder: placeholder, cacheVersion: local_assigns[:cache_version] })

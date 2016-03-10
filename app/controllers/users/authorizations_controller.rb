@@ -100,6 +100,9 @@ class Users::AuthorizationsController < Users::RegistrationsController
         orig_path
       else
         url = "#{request.scheme}://#{current_site.full_domain}"
+        if current_site.has_path_prefix? and !orig_path.starts_with? "/#{current_site.path_prefix}"
+          url << "/#{current_site.path_prefix}"
+        end
         # logger.debug 'base_uri: ' + url.to_s
         url << orig_path
       end

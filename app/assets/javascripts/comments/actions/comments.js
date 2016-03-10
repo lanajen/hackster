@@ -22,9 +22,9 @@ export function setCurrentUser(user) {
   }
 }
 
-export function getInitialComments(commentable) {
+export function getInitialComments(commentable, cacheVersion) {
   return function(dispatch) {
-    return Requests.getComments(commentable)
+    return Requests.getComments(commentable, cacheVersion)
       .then(comments => {
         dispatch(setInitialComments(comments));
       })

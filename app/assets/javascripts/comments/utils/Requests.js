@@ -3,11 +3,12 @@ import { getApiPath } from '../../utils/Utils';
 
 export default {
 
-  getComments(commentable) {
+  getComments(commentable, cacheVersion) {
     return new Promise((resolve, reject) => {
       request(`${getApiPath()}/private/comments`)
         .query({ id: commentable.id })
         .query({ type: commentable.type })
+        .query(cacheVersion && cacheVersion.length ? { v: cacheVersion } : {})
         .end((err, res) => {
           err ? reject(err) : resolve(res.body.comments);
         });

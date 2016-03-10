@@ -13,7 +13,7 @@ class CommentsContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getInitialComments(this.props.commentable);
+    this.props.actions.getInitialComments(this.props.commentable, this.props.cacheVersion);
     this.props.actions.getCurrentUser();
   }
 
@@ -40,8 +40,13 @@ class CommentsContainer extends Component {
 
 CommentsContainer.PropTypes = {
   commentable: PropTypes.object.isRequired,
-  placeholder: PropTypes.string.isRequired
+  placeholder: PropTypes.string.isRequired,
+  cacheVersion: PropTypes.string
 };
+
+CommentsContainer.defaultProps = {
+  cacheVersion: ''
+}
 
 function mapStateToProps(state) {
   return {
