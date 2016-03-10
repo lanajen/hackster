@@ -103,7 +103,7 @@ module ScraperStrategies
       end
 
       def extract_title
-        @parsed.at_css('.headline h2').text.strip
+        @parsed.at_css('h1').text.strip
       end
 
       def select_article
