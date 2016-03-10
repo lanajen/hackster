@@ -8,6 +8,7 @@ class ArduinoUser
 
   def is_beta_tester?
     if user_info = get_user_info(@user_name, @token)
+      Rails.logger.debug "Arduino user_info: #{user_info.inspect}"
       parsed_info = JSON.parse user_info
       parsed_info.try(:[], 'services').try(:[], 'create').try(:[], 'enabled') == true
     end
@@ -15,6 +16,7 @@ class ArduinoUser
 
   private
     def get_user_info user_name, token
+      Rails.logger.debug "Fetching Arduino user_info for `#{user_name}` (token: `#{token}`)"
       url = BASE_API_URL + user_name + '?app=create'
       token_header = "Token #{token}"
       resp = open(url,
@@ -25,5 +27,6 @@ class ArduinoUser
 
     rescue OpenURI::HTTPError
       # 500 error or something alike
+      Rails.logger.debug "Failed getting Arduino user_info for `#{user_name}`"
     end
 end
