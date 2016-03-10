@@ -1,4 +1,7 @@
 class TweetBuilder
+  MAX_SIZE = 140
+  URL_SIZE = 23  # links are shortened to 22 characters, + 1 for space
+
   def initialize project
     @project = project
   end
@@ -10,47 +13,27 @@ class TweetBuilder
 
     message << @project.name.gsub(/\.$/, '')
 
-    if @project.guest_name.present?
-      message << " by #{@project.guest_name}"
-    elsif @project.team_members_count > 1
-      if @project.team.name.present?
-        message << " by #{@project.team.name}"
-      else
-        message << " by #{@project.team_members_count} developers"
-      end
-    else
-      user = @project.users.first
-      if user
-        message << " by #{user.name}"
-        if link = user.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
-          message << " (@#{handle})"
-        end
-      end
-    end
+    message << generate_authors
 
-    size = message.size + 23
+    size = get_size(message)
+
+    message << " #{url}"
 
     tags = @project.platforms.map do |platform|
-      out = platform.hashtag
-      if link = platform.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
-        out << " (@#{handle})"
-      end
-      out
+      TwitterHandle.new(platform.twitter_link).handle.presence || platform.hashtag
     end
     if tags.any?
-      tag_phrase = " with #{tags.to_sentence}"
-      message << tag_phrase if (size + tag_phrase.size) < 140
-      size = message.size + 23
+      tag_phrase = " #{tags.join(' ')}"
+      message << tag_phrase if (size + tag_phrase.size) < MAX_SIZE
+      size = get_size(message, true)
     end
-
-    message << " hackster.io/#{@project.uri}"  # links are shortened to 22 characters
 
     # we add tags until character limit is reached
     tags = @project.product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
     if tags.any?
       tags.each do |tag|
         new_size = size + tag.size + 1
-        if new_size < 140
+        if new_size < MAX_SIZE
           message << " #{tag}"
           size += " #{tag}".size
         else
@@ -61,4 +44,39 @@ class TweetBuilder
 
     message
   end
+
+  private
+    def generate_authors
+      output = ''
+
+      if @project.guest_name.present?
+        output << " by #{@project.guest_name.strip}"
+      elsif @project.team_members_count > 1
+        if @project.team.name.present?
+          output << " by #{@project.team.name.strip}"
+        else
+          output << " by #{@project.team_members_count} developers"
+        end
+      else
+        user = @project.users.first
+        if user
+          output << " by #{user.name.strip}"
+          if handle = TwitterHandle.new(user.twitter_link).handle.presence
+            output << " (#{handle})"
+          end
+        end
+      end
+
+      output
+    end
+
+    def get_size message, url_included=false
+      size = message.size + URL_SIZE
+      size -= url.size - 1 if url_included
+      size
+    end
+
+    def url
+      "hackster.io/#{@project.uri}"
+    end
 end
