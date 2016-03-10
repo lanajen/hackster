@@ -66,8 +66,8 @@ const App = React.createClass({
             <SearchContainer filter={request.filter} onFilterChange={this.handleOnFilterChange} onSearch={this.handleOnSearch} />
           </div>
           <div className="col-md-6">
-            <a href='/users/registration/toolbox_save' className="btn btn-primary">Done!</a>
-            <a href={this.props.nextLink} className="btn btn-link btn-sm">I'll do this later</a>
+            <a href={this.props.doneLink} className="btn btn-primary">{"Done!"}</a>
+            <a href={this.props.nextLink} className="btn btn-link btn-sm">{"I'll do this later"}</a>
           </div>
         </div>
         <PartsContainer isFetching={isFetching} parts={parts} nextPage={nextPage} currentPage={currentPage} fetchNextPage={this.handleFetchNextPage} handlePartClick={this.handlePartClick} query={request.query} />
@@ -109,5 +109,10 @@ function getPartsFromIds(partsById = {}, partIds = [], followedPartIds = []) {
     return part;
   });
 }
+
+App.PropTypes = {
+  doneLink: PropTypes.string.isRequired,
+  nextLink: PropTypes.string.isRequired
+};
 
 export default connect(mapStateToProps)(App);
