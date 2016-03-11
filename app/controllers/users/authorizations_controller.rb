@@ -100,6 +100,8 @@ class Users::AuthorizationsController < Users::RegistrationsController
         orig_path
       else
         url = "#{request.scheme}://#{current_site.full_domain}"
+        # when path is generated from main domain, path_prefix isn't added, so
+        # we need to add it manually
         if current_site.has_path_prefix? and !orig_path.starts_with? "/#{current_site.path_prefix}"
           url << "/#{current_site.path_prefix}"
         end
