@@ -5,6 +5,8 @@ class Api::Private::ReviewThreadsController < Api::Private::BaseController
     thread = ReviewThread.where(project_id: params[:project_id]).first_or_create
     authorize! :read, thread
 
-    render json: { thread: ReviewThreadJsonDecorator.new(thread).node }
+    opts = { show_unapproved: current_user.is?(:admin, :hackster_moderator, :moderator, :super_moderator) }
+
+    render json: { thread: ReviewThreadJsonDecorator.new(thread).node(opts) }
   end
 end

@@ -23,7 +23,7 @@ class ReviewDecisionObserver < ActiveRecord::Observer
       record.review_thread.update_column :workflow_state, workflow_state
     end
 
-    NotificationCenter.notify_all :new, :review_decision, record.id
+    NotificationCenter.notify_all :new, :review_decision, record.id if record.decision == 'needs_work' or record.approved
   end
 
   def after_update record

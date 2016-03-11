@@ -1,7 +1,11 @@
 class ReviewThreadJsonDecorator < BaseJsonDecorator
-  def node
+  def node opts={}
     node = hash_for(%w(id workflow_state locked))
-    node[:decisions] = ReviewDecisionCollectionJsonDecorator.new(model.decisions).node
+
+    decisions = model.decisions
+    decisions = decisions.publyc unless opts[:show_unapproved]
+
+    node[:decisions] = ReviewDecisionCollectionJsonDecorator.new(decisions).node
     node[:comments] = CommentCollectionJsonDecorator.new(model.comments).node
     node[:events] = ReviewEventCollectionJsonDecorator.new(model.events).node
     node

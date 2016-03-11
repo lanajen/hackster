@@ -49,6 +49,10 @@ class ReviewDecision < ActiveRecord::Base
     where approved: true
   end
 
+  def self.publyc
+    where("review_decisions.decision = 'needs_work' OR review_decisions.approved = 't'")
+  end
+
   private
     # def has_at_least_one_field_selected
     #   errors.add :base, 'at least one field needs to be selected' unless (FEEDBACK_FIELDS.keys + %i(no_changes_needed rejection_reason)).select{|f| send(f).present? }.any?
