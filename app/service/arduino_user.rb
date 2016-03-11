@@ -25,9 +25,13 @@ class ArduinoUser
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
       ).read
 
-    rescue OpenURI::HTTPError
+    rescue OpenURI::HTTPError => e
       # 500 error or something alike
-      Rails.logger.debug "Failed getting Arduino user_info for `#{user_name}`"
+      AppLogger.new("Failed getting Arduino user_info for `#{user_name}`",
+        'http_error',
+        'arduino',
+        e).log.stdout
+
       false
     end
 end

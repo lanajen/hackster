@@ -1,7 +1,10 @@
 class AppLogger
   def create_log
     LogLine.create(message: @message, log_type: @log_type, source: @source)
+    self
   end
+
+  alias_method :log, :create_log
 
   def initialize message, log_type, source, exception=nil
     @message, @log_type, @source, @exception = clean_message(message), log_type, source, exception
@@ -38,17 +41,23 @@ class AppLogger
 
   def send_notification log_line, level
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, "#{level}_notification"
+    self
   end
+
+  alias_method :notify, :send_notification
 
   def write_to_stdout
     Rails.logger.error ""
     Rails.logger.error "Exception: #{@exception.inspect}"
     Rails.logger.error ""
-    @clean_backtrace.each { |line| Rails.logger.error "Backtrace: " + line }
+    @clean_backtrace.each { |line| Rails.logger.error "Backtrace: " + line } if @clean_backtrace
     Rails.logger.error ""
+    self
   end
 
-  # private
+  alias_method :stdout, :write_to_stdout
+
+  private
     def clean_message msg
       msg.gsub /"([^"]*)password"=>"([^"]+)"/, '"' + $1.to_s + 'password"=>"FILTERED"'
     end
