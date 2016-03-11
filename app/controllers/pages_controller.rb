@@ -1,6 +1,8 @@
 class PagesController < ApplicationController
   skip_before_filter :track_visitor, only: [:home, :hardwareweekend]
   skip_after_filter :track_landing_page, only: [:home, :hardwareweekend]
+  before_filter :require_no_authentication, only: :arduino_unauthorized
+  skip_before_filter :ensure_logged_in, only: [:arduino_unauthorized]
 
   def about
     meta_desc 'What is Hackster.io?'
@@ -10,6 +12,10 @@ class PagesController < ApplicationController
   def achievements
     title 'What are achievements?'
     meta_desc 'What are achievements?'
+  end
+
+  def arduino_unauthorized
+    render layout: false
   end
 
   def business

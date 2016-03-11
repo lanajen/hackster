@@ -505,6 +505,13 @@ HackerIo::Application.routes.draw do
       end
       # end MainSite
 
+      # just for arduino
+      constraints(ClientSite) do
+        scope ':path_prefix', path_prefix: /projecthub/ do
+          get 'unauthorized' => 'pages#arduino_unauthorized', as: :arduino_unauthorized
+        end
+      end
+
       scope '(:path_prefix)', path_prefix: /projecthub/ do
         scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
           constraints(MainSite) do
