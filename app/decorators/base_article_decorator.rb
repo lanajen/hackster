@@ -61,6 +61,10 @@ class BaseArticleDecorator < ApplicationDecorator
     end
   end
 
+  def story
+    story_json.present? ? story_json : description
+  end
+
   def name_not_default
     model.name == BaseArticle::DEFAULT_NAME ? nil : model.name
   end

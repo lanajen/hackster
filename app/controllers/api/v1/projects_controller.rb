@@ -47,5 +47,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def show
     @project = BaseArticle.where(id: params[:id]).publyc.first!
+    @with_details = true
+
+    set_surrogate_key_header "api/projects/#{@project.id}"
+    set_cache_control_headers
   end
 end

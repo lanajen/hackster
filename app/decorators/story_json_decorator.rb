@@ -75,16 +75,16 @@ module StoryJsonDecorator
       def embed_html data, type, options
         case type
         when 'Carousel'
-          h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash], options: options }
+          h.render partial: "api/embeds/carousel", locals: { images: data[:images], uid: data[:hash], options: options }, formats: :html
         when 'Url'
           embed = Embed.new url: data[:url], default_caption: data[:caption]
-          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, caption: data[:caption], options: options }
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, caption: data[:caption], options: options }, formats: :html
         when 'File'
           embed = Embed.new file_id: data[:id]
-          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }, formats: :html
         when 'Widget'
           embed = Embed.new widget_id: data[:id]
-          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }
+          h.render partial: "api/embeds/embed_frame", locals: { embed: embed, options: options }, formats: :html
         else
           ''
         end
