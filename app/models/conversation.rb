@@ -11,7 +11,7 @@ class Conversation < ActiveRecord::Base
   after_create :create_message
   after_update :create_reply
 
-  attr_accessor :recipient_id, :sender_id, :body, :is_spam
+  attr_accessor :recipient_id, :sender_id, :body, :is_spam, :spammer
   attr_accessible :subject, :recipient_id, :sender_id, :body
 
   def self.for user
@@ -94,15 +94,17 @@ class Conversation < ActiveRecord::Base
 
         # errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at help@hackster.io if you believe this is a mistake."
         self.is_spam = true
+        self.spammer = sender
       end
     end
 
     def subject_is_unique
       return if sender.is? :admin, :trusted
 
-      if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
+      if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).count >= 5
         # errors.add :subject, 'has already been used recently. No spam please!'
         self.is_spam = true
+        self.spammer = sender
       end
     end
   end

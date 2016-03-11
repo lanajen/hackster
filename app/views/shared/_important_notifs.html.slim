@@ -1,4 +1,4 @@
-- if !current_user.confirmed?
+- if !current_user.is? :confirmed_user
   .alert.alert-flat.alert-warning.alert-smaller
     .container
       ' Hi! Please confirm your email address by clicking the link in the email we sent you.

@@ -56,6 +56,7 @@ class Ability
   end
 
   def confirmed_user
+    can :create, Conversation
   end
 
   def member
@@ -207,6 +208,10 @@ class Ability
     can :read, ReviewThread do |thread|
       @user.can? :manage, thread.project
     end
+  end
+
+  def spammer
+    cannot :create, Conversation
   end
 
   def hackster_moderator

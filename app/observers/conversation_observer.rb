@@ -11,5 +11,13 @@ class ConversationObserver < ActiveRecord::Observer
     end
   end
 
+  def after_validation record
+    if record.is_spam
+      spammer = record.spammer
+      spammer.roles += ['spammer']
+      spammer.save
+    end
+  end
+
   alias_method :after_update, :after_create
 end

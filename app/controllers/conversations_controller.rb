@@ -26,6 +26,8 @@ class ConversationsController < ApplicationController
   end
 
   def new
+    authorize! :create, Conversation
+
     @conversation = Conversation.new
     if params[:recipient_id] and params[:recipient_id].to_i != current_user.id and @recipient = User.find_by_id(params[:recipient_id])
       title "New message to #{@recipient.name}"
@@ -33,9 +35,14 @@ class ConversationsController < ApplicationController
     else
       redirect_to conversations_path, alert: "We couldn't find a member to contact!" and return
     end
+
+  rescue CanCan::AccessDenied
+    rescue_from_access_denied
   end
 
   def create
+    authorize! :create, Conversation
+
     @conversation = Conversation.new(params[:conversation])
     @conversation.sender_id = current_user.id
 
@@ -45,6 +52,9 @@ class ConversationsController < ApplicationController
       @recipient = User.find_by_id @conversation.recipient_id
       render :new
     end
+
+  rescue CanCan::AccessDenied
+    rescue_from_access_denied
   end
 
   def update
@@ -71,5 +81,16 @@ class ConversationsController < ApplicationController
   private
     def load_conversation
       @conversation = Conversation.find params[:id]
+    end
+
+    def rescue_from_access_denied
+      if !current_user.is? :confirmed_user
+        flash[:notice] = "You need to confirm your email address before you can send private messages. Please email help@hackster.io if you need assistance."
+      elsif current_user.is? :spammer
+        flash[:alert] = "Your account has been put on hold because of abusive behavior. Please email help@hackster.io to resolve this issue."
+      else
+        flash[:alert] = "You don't seem to be able to create new conversations. Please email help@hackster.io for assistance."
+      end
+      redirect_to conversations_path
     end
 end
