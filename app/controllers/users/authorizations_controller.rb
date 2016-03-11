@@ -96,7 +96,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       current_site = ClientSubdomain.find_by_subdomain(current_site_name)
       return orig_path unless current_site
 
-      url = if URI.parse(orig_path).class == URI::HTTP
+      url = if URI.parse(orig_path).class.in? [URI::HTTP, URI::HTTPS]
         orig_path
       else
         url = "#{request.scheme}://#{current_site.full_domain}"
