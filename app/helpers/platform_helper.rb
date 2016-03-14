@@ -88,7 +88,8 @@ module PlatformHelper
       @projects = if @by == 'featured'
         @projects.featured
       else
-        @projects.merge(BaseArticle.send(BaseArticle::FILTERS[@by]))
+        opts = { user: user_signed_in? ? current_user : nil }
+        @projects.merge(BaseArticle.send(BaseArticle::FILTERS[@by], opts))
       end
     end
 

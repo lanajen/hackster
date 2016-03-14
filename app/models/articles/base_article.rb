@@ -16,6 +16,7 @@ class BaseArticle < ActiveRecord::Base
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
     'on_hackster' => :self_hosted,
+    'toolbox' => :in_toolbox,
     'wip' => :wip,
   }
   PUBLIC_STATES = %w(pending_review approved rejected)
@@ -313,11 +314,12 @@ class BaseArticle < ActiveRecord::Base
     where(type: 'ExternalProject')
   end
 
-  def self.featured
+  def self.featured opts={}
     indexable.where(featured: true).order(featured_date: :desc)
   end
 
-  def self.featured_by_collection collectable_type, collectable_id
+  def self.featured_by_collection opts={}
+    collectable_type, collectable_id = opts[:collectable_type], opts[:collectable_id]
     indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
     # where(project_collections: { workflow_state: 'featured' })
   end
@@ -342,19 +344,24 @@ class BaseArticle < ActiveRecord::Base
     where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.workflow_state <> 'rejected')")#.magic_sort
   end
 
+  def self.in_toolbox opts={}
+    user = opts[:user]
+    indexable.joins(:parts).where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr ON fr.followable_id = parts.id AND fr.followable_type = 'Part'").where("fr.user_id = ?", user.id)
+  end
+
   def self.live
     publyc
   end
 
-  def self.last_7days
+  def self.last_7days opts={}
     where('projects.made_public_at > ?', 7.days.ago)
   end
 
-  def self.last_30days
+  def self.last_30days opts={}
     where('projects.made_public_at > ?', 30.days.ago)
   end
 
-  def self.last_1year
+  def self.last_1year opts={}
     where('projects.made_public_at > ?', 1.year.ago)
   end
 
@@ -410,7 +417,7 @@ class BaseArticle < ActiveRecord::Base
     approved.where("projects.made_public_at > ?", Time.now).order(:made_public_at)
   end
 
-  def self.self_hosted
+  def self.self_hosted opts={}
     where(type: 'Project')
   end
 
@@ -422,7 +429,7 @@ class BaseArticle < ActiveRecord::Base
     joins(:project_collections).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
   end
 
-  def self.wip
+  def self.wip opts={}
     indexable.where(wip: true).last_updated
   end
 
