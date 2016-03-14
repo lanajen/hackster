@@ -2,7 +2,7 @@ class ArduinoUser
   BASE_API_URL = "#{ENV['ARDUINO_API_HOST']}/create/user/"
 
   def initialize data
-    @user_name = data.info.id
+    @user_name = data.uid
     @token = data.credentials.token
   end
 
