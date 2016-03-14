@@ -26,6 +26,8 @@ class ChallengeEntry < ActiveRecord::Base
     state :new do
       event :approve, transitions_to: :qualified
       event :disqualify, transitions_to: :unqualified
+      event :give_award, transitions_to: :awarded
+      event :give_no_award, transitions_to: :unawarded
     end
     state :unqualified do
       event :approve, transitions_to: :qualified
