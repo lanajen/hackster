@@ -458,6 +458,51 @@ div#user-profile-box div.user-info a.follow-button + a {
   border-bottom: 3px solid black;
 }
 
+/* POPOVER SHARE */
+section.protip-section-heading .btn:last-child {
+  margin-right: 5px;
+}
+.popover.bottom {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.react-btn a.btn-link {
+  margin-right: 15px;
+}
+.popover-content {
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.7px;
+  border-top: 3px solid #20A3A8;
+  background-color: #F7F7F7;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+  padding: 0;
+}
+.sharing-actions ul li {
+  margin-bottom: 0;
+}
+.sharing-actions ul li a {
+  font-weight: 400;
+  color: #434F54;
+  font-family: 'Typonine Sans Pro';
+  font-size: 13.5px;
+  line-height: 20px;
+  padding: 8px 10px;
+}
+.sharing-actions ul li a:hover {
+  background-color: #dae3e3;
+}
+.popover.bottom>.arrow {
+  margin-left: -5px;
+  border-bottom-color: #20A3A8;
+  top: -14px;
+  border-width: 8px;
+}
+.popover.bottom>.arrow:after {
+  border-bottom-color: transparent;
+}
+/* END POPOVER SHARE */
 
 
 /* COMMENTS FORM */
