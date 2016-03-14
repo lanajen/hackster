@@ -11,7 +11,7 @@ json.license do
     json.abbr project.license.abbr
   end
 end
-json.tags project.product_tags_string
+json.tags project.product_tags_cached
 json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
 json.cover_image_url project.decorate.cover_image(:cover_thumb)
 json.published_at project.made_public_at
