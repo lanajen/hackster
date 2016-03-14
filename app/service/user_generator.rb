@@ -23,7 +23,8 @@ class UserGenerator
         user_name: user_name,
       }
       u = User.new
-      u.skip_confirmation!
+      u.skip_email_confirmation!
+      u.skip_welcome_email!
       u.assign_attributes user_data
       u.save
       u.unsubscribe_from_all

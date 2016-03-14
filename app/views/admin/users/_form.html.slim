@@ -46,4 +46,5 @@
 .col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn-primary'
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn btn-default'
-  = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_user_path(@user.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+  - if @user.persisted?
+    = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_user_path(@user.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'

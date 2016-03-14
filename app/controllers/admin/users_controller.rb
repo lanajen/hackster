@@ -19,7 +19,9 @@ class Admin::UsersController < Admin::BaseController
 
   def create
     @user = User.new(params[:user])
-    @user.skip_confirmation!
+    @user.skip_email_confirmation!
+    @user.skip_welcome_email!
+    @user.skip_password!
 
     if @user.save
       redirect_to admin_users_path, :notice => 'New user created'

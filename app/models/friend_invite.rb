@@ -27,7 +27,8 @@ class FriendInvite < ActiveRecord::Base
     self.users = users.select do |user|
       unless user.email.blank?
         user.new_invitation = true
-        user.skip_confirmation!
+        user.skip_email_confirmation!
+        user.skip_welcome_email!
       end
     end
   end

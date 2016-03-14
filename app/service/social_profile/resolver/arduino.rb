@@ -6,6 +6,7 @@ module SocialProfile::Resolver
         email: info.email,
         image_url: "https://dcw9y8se13llu.cloudfront.net/avatars/#{data.uid}.jpg",
         custom_image_url: "https://dcw9y8se13llu.cloudfront.net/avatars/#{data.uid}.jpg",
+        skip_email_confirmation: true,
       }
     end
   end

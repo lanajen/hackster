@@ -4,7 +4,10 @@ class UserObserver < ActiveRecord::Observer
       record.create_reputation
       unless record.invited_to_sign_up?
         advertise_new_user record unless record.simplified_signup?
-        record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
+        record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_email_confirmation
+        if record.skip_email_confirmation
+          record.confirm!
+        end
       end
     end
   end
@@ -97,7 +100,7 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def advertise_new_user record
-      NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
+      NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_welcome_email
     end
 
     def expire record

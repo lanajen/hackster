@@ -193,9 +193,9 @@ class User < ActiveRecord::Base
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
-  attr_accessor :email_confirmation, :skip_registration_confirmation,
+  attr_accessor :email_confirmation, :skip_email_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
-    :logging_in_socially, :skip_password
+    :logging_in_socially, :skip_password, :skip_welcome_email
   attr_writer :override_devise_notification, :override_devise_model,
     :invitation_message
   attr_accessible :email_confirmation, :password, :password_confirmation,
@@ -204,7 +204,8 @@ class User < ActiveRecord::Base
     :first_name, :last_name, :invitation_code, :categories,
     :invitation_limit, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :type, :avatar_id, :enable_sharing,
-    :email_subscriptions, :web_subscriptions, :project_email_frequency_proxy
+    :email_subscriptions, :web_subscriptions, :project_email_frequency_proxy,
+    :skip_welcome_email
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
@@ -212,7 +213,7 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
+  with_options unless: proc { |u| u.skip_email_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
@@ -695,8 +696,12 @@ class User < ActiveRecord::Base
     encrypted_password.blank? and confirmed_at.nil?
   end
 
-  def skip_confirmation!
-    self.skip_registration_confirmation = true
+  def skip_email_confirmation!
+    self.skip_email_confirmation = true
+  end
+
+  def skip_welcome_email!
+    self.skip_welcome_email = true
   end
 
   def skip_password!
@@ -704,7 +709,7 @@ class User < ActiveRecord::Base
   end
 
   def simplify_signup!
-    skip_confirmation!
+    skip_email_confirmation!
     skip_password!
     generate_user_name
     @override_devise_notification = 'confirmation_instructions_simplified_signup'
