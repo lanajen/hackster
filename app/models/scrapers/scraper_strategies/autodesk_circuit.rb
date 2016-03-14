@@ -3,7 +3,7 @@ module ScraperStrategies
 
     private
       def after_parse
-        @widgets << SchematicWidget.new(url: @page_url, name: 'Autodesk 123 Circuits Schematics')
+        @widgets << SchematicWidget.new(url: @page_url, name: 'Autodesk 123 Circuits Schematics', comment: @page_url)
 
         super
       end
