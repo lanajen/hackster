@@ -9,9 +9,11 @@ class CodeWidget < Widget
 
   ACE_PYGMENTS_TRANSLATIONS = {
     'c_cpp' => 'cpp',
+    'scratch' => 'text'
   }
 
   ACE_LANGUAGES = {
+    'text' => 'Plain text',
     'abap' => 'ABAP',
     'actionscript' => 'ActionScript',
     'ada' => 'ADA',
@@ -98,6 +100,7 @@ class CodeWidget < Widget
     'scala' => 'Scala',
     'smarty' => 'Smarty',
     'scheme' => 'Scheme',
+    'scratch' => 'Scratch',
     'scss' => 'SCSS',
     'sh' => 'SH',
     'sjs' => 'SJS',
@@ -109,7 +112,6 @@ class CodeWidget < Widget
     'svg' => 'SVG',
     'tcl' => 'Tcl',
     'tex' => 'Tex',
-    'text' => 'Text',
     'textile' => 'Textile',
     'toml' => 'Toml',
     'twig' => 'Twig',

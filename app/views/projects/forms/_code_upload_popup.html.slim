@@ -1,4 +1,4 @@
-= f_widget.input :language, collection: CodeWidget::ALL_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
+= f_widget.input :language, collection: CodeWidget::ALL_LANGUAGES.invert.sort, input_html: { 'data-field-type' => 'language', class: 'resetable' }
 = f_widget.input :raw_code, as: :text, wrapper_html: { class: 'hidden' }, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
 .form-group
   label.control-label Code

@@ -104,7 +104,7 @@
       - if !is_whitelabel? and @lists and @lists.any?
         hr
         h2
-          ' Curated lists
+          ' Bookmarks
           = content_tag(:span, @lists.count, class: 'badge')
         .row
           - @lists.each do |list|
