@@ -344,11 +344,11 @@ Rewardino::Event.create!({
   compute_method: -> (event, user, date) {
     date = nil
     event.points.each do |conf|
-      models = Impression.where(impressionable_type: 'BaseArticle').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where(projects: { id: user.projects.own.where("projects.impressions_count >= ?", conf[:every]).pluck(:id) }).order(:created_at)
+      models = ProjectImpression.joins("INNER JOIN projects ON projects.id = project_impressions.project_id").where(projects: { id: user.projects.own.where("projects.impressions_count >= ?", conf[:every]).pluck(:id) }).order(:created_at)
       # models = models.where("#{event.model_table}.#{event.date_method} > ?", date) if date
-      models.group_by(&:impressionable_id).each do |id, group|
+      models.group_by(&:project_id).each do |id, group|
 
-        project = group.first.impressionable
+        project = group.first.project
         next unless user_count = project.team_members_count and user_count > 0
         points = (conf[:points] / user_count).ceil.to_i
 
@@ -369,8 +369,8 @@ Rewardino::Event.create!({
 
 Rewardino::Event.create!({
   code: :liked_thought,
-  name: 'Post liked',
-  description: "One of your posts was liked one more time and reached a new threashold",
+  name: 'Comment liked',
+  description: "One of your comments was liked one more time and reached a new threashold",
   points: [
     { every: 1, limit: 10, points: 5 },
   ],
