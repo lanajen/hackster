@@ -56,6 +56,7 @@ class ProjectScraper
       'wordpress' => :wordpress,
     }
     KNOWN_HOSTS = {
+      '123d.circuits.io' => :autodesk_circuit,
       '1sheeld.com' => :onesheeld,
       'iot-hackseries.s3-website-us-west-2.amazonaws.com' => :aws_hackday,
       'blogspot.com' => :blogspot,
