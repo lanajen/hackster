@@ -4,7 +4,7 @@ class Api::Private::FollowersController < Api::Private::BaseController
   respond_to :js, :html
 
   def index
-    init_following = { user: [], group: [], project: [], part: [] }
+    init_following = { user: [], group: [], basearticle: [], part: [] }
     @following = if user_signed_in?
       current_user.follow_relations.select(:followable_id, :followable_type).inject(init_following) do |h, f|
         case f.followable_type
@@ -13,7 +13,7 @@ class Api::Private::FollowersController < Api::Private::BaseController
         when 'Group'
           h[:group] << f.followable_id
         when 'BaseArticle'
-          h[:project] << f.followable_id
+          h[:basearticle] << f.followable_id
         when 'Part'
           h[:part] << f.followable_id
         end
