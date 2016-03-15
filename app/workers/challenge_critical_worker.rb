@@ -44,7 +44,8 @@ class ChallengeCriticalWorker < BaseWorker
       user = idea.user
       output = [idea.id, idea.name, ActionController::Base.helpers.strip_tags(idea.description).gsub(/"/, '""'), idea.image.try(:imgix_url, :thumb), "https://www.hackster.io/challenges/#{challenge.slug}/ideas/#{idea.id}"]
       output += challenge.challenge_idea_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
-      output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state, user.email]address = idea.address
+      output += [user.name, idea.created_at.in_time_zone(PDT_TIME_ZONE), idea.workflow_state, user.email]
+      address = idea.address
       output += [address.full_name, address.address_line1, address.address_line2, address.city, address.state, address.zip, address.country, address.phone]
       rows << output
     end
