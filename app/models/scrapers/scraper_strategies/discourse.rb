@@ -21,8 +21,12 @@ module ScraperStrategies
         end
       end
 
+      def crap_list
+        super + %w(.meta)
+      end
+
       def extract_title
-        @parsed.at_css('#main-outlet h2').text.strip
+        @parsed.at_css('#main-outlet h2').try(:text).try(:strip) || @parsed.at_css('#main-outlet h1').text.strip
       end
 
       def emoji_to_text
@@ -39,7 +43,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('#main-outlet .post')
+        @parsed.at_css('#main-outlet .post') || @parsed.at_css('#main-outlet .topic-body .contents')
       end
   end
 end
