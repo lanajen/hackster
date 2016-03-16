@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: https://github.com/hacksterio/mandrill_dm.git
-  revision: c71cd0ccde0c659d7d41e3727daa64f49b537db0
+  revision: ecd75235398f954b234bc65c0eb3937ac7fcae1a
   specs:
     mandrill_dm (1.2.0)
       mandrill-api (~> 1.0.53)
@@ -223,7 +223,7 @@ GEM
     erubis (2.7.0)
     escape (0.0.4)
     eventmachine (1.0.5)
-    excon (0.45.4)
+    excon (0.48.0)
     execjs (2.6.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)

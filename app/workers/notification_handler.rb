@@ -26,8 +26,22 @@ class NotificationHandler
   def notify_via_email template=nil, opts={}
     @template = template
     if context = get_context_for('email')
-      # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
-      BaseMailer.deliver_email(context, find_template, opts).deliver_now! if context.present?
+      # using deliver_now below is required as of rails 4.2
+      if context.present?
+        if context.include? :users
+          return if context[:users].empty?
+          context[:users] = context[:users].uniq
+          users_copy = context[:users].dup
+          users_copy.each_slice(1000) do |users|
+            context[:users] = users
+            BulkMailer.deliver_email(users, context, find_template, opts).deliver_now!
+          end
+        elsif context.include? :user
+          SingleMailer.deliver_email(context[:user], context, find_template, opts).deliver_now!
+        else
+          NotificationMailer.deliver_email(nil, context, find_template, opts).deliver_now!
+        end
+      end
     end
   end
 
