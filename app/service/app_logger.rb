@@ -1,7 +1,6 @@
 class AppLogger
   def create_log
     LogLine.create(message: @message, log_type: @log_type, source: @source)
-    self
   end
 
   alias_method :log, :create_log

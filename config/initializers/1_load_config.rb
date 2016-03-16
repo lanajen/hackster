@@ -25,7 +25,7 @@ SLOGAN = 'Hackster is a community dedicated to learning hardware, from beginner 
 SLOGAN_NO_BRAND = 'The community dedicated to learning hardware.'
 # where hardware comes to life
 URL_REGEXP = /\A((https?:\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?(\/.*)?)\Z/ix
-EMAIL_REGEXP = /\A[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+\Z/
+EMAIL_REGEXP = /\A[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.(?:[a-zA-Z0-9\-]+\.?)*[a-zA-Z]+\Z/
 
 if Rails.env == 'development'
   if ENV['UPLOAD'] == 'dev'

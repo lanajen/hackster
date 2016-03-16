@@ -180,7 +180,7 @@ module ApplicationHelper
   end
 
   def site_root_url
-    root_url(host: site_host, path_prefix: current_site.path_prefix.presence)
+    root_url(host: site_host, path_prefix: current_site.try(:path_prefix).presence)
   end
 
   def site_twitter

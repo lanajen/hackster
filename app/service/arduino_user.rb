@@ -40,7 +40,7 @@ class ArduinoUser
       AppLogger.new("Failed to get Arduino user_info for `#{user_name}`, token `#{token}`, failed #{failed_count} times",
         'http_error',
         'arduino',
-        e).log.stdout
+        e).stdout.log
 
       # retry on 500
       if e.message =~ /500/ and failed_count < MAX_TRIES
