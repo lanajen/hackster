@@ -31,7 +31,7 @@
     <li><strong>Project submissions close:</strong> <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
   <% end %>
   <% if @context[:challenge].winners_announced_date %>
-    <li><strong>Winners announced:</strong> <%= l @context[:challenge].winners_announced_date, format: :short_date %></li>
+    <li><strong>Winners announced by:</strong> <%= l @context[:challenge].winners_announced_date, format: :short_date %></li>
   <% end %>
 </ol>
 
