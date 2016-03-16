@@ -18,7 +18,7 @@
             h2.user-name= @user.user_name
             ul
               li
-                span.number>= @user.projects_count
+                span.number>= @user.live_projects_count
                 = pluralize_without_count @user.projects_count, 'project'
               li
                 span.number>= @user.followers_count

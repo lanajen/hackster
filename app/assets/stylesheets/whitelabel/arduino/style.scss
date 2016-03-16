@@ -417,7 +417,7 @@ div#user-profile-box div.user-info a.follow-button + a {
 .protip-section-title ul.protip-parts li span {
   position: absolute;
   left: 95px;
-  margin: 20px 0;
+  margin: 8px 15px;
 }
 .protip-section-title ul.protip-parts li {
   font-size: 14px;
@@ -430,11 +430,17 @@ div#user-profile-box div.user-info a.follow-button + a {
   float: left;
   border-right: 1px solid #d4d4d4;
   padding-right: 25px;
+  padding: 10px 0;
+  background-image: asset-url("whitelabel/arduino/icon-components-placeholder.svg");
+  background-repeat: no-repeat;
+  background-size: 21px;
+  background-position: 30px 50%;
 }
 .protip-section-title ul.protip-parts li:nth-child(even) {
   border-right: none;
   padding-right: 0;
   padding-left: 25px;
+  background-position: 56px 50%;
 }
 .protip-section-title ul.protip-parts li:nth-child(even) span {
   left: 120px;
@@ -503,6 +509,33 @@ section.protip-section-heading .btn:last-child {
   border-bottom-color: transparent;
 }
 /* END POPOVER SHARE */
+
+.document-widget .file {
+  background: #ecf1f1;
+  border: none;
+  padding: 30px;
+}
+.document-widget .file a {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.document-widget .file i {
+  margin-right: 15px;
+}
+.document-widget .file span {
+  letter-spacing: 1px;
+}
+
+/* PLACEHOLDER COMPONENTS */
+table.sortable-table tr.fields.part-row td.part-img {
+  background-image: asset-url("whitelabel/arduino/icon-components-placeholder.svg");
+  background-repeat: no-repeat;
+  background-size: 21px;
+  background-position: 50%;
+}
+ul.list-inline.protip-parts i.fa-circle-o {
+  display: none;
+}
 
 
 /* COMMENTS FORM */
