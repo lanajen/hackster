@@ -57,6 +57,9 @@ class UsersController < ApplicationController
         @public_count += @other_projects.count
       end
 
+      @parts = @user.owned_parts.where(platform_id: current_platform.id).limit(3)
+      @parts_count = @user.owned_parts.where(platform_id: current_platform.id).count
+
       @public_query = @public_query.with_group(current_platform, all: true)
       @private_query = @private_query.with_group(current_platform)
       @guest_query = @guest_query.with_group(current_platform)
