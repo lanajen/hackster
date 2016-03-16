@@ -32,29 +32,34 @@
         .user-projects
           ul
             li
-              a.smooth-scroll href="#public-proj"
+              a.smooth-scroll href="#public-proj" data-offset=-130
                 | Public projects and articles
                 span.proj-number= @public_count
             - if user_is_current_or_admin?
               li
-                a.smooth-scroll href="#private-proj"
+                a.smooth-scroll href="#private-proj" data-offset=-130
                   | Private projects and articles
                   span.proj-number= @private_count
-            - if @guest_projects.any?
+            - if @guest_count > 0
               li
-                a.smooth-scroll href="#guest-proj"
+                a.smooth-scroll href="#guest-proj" data-offset=-130
                   | Guest projects
                   span.proj-number= @guest_count
+            - if @parts_count > 0
+              li
+                a.smooth-scroll href="#toolbox" data-offset=-130
+                  | Toolbox
+                  span.proj-number= @parts_count
             li
-              a.smooth-scroll href="#replicated-proj"
+              a.smooth-scroll href="#replicated-proj" data-offset=-130
                 | Replicated projects
                 span.proj-number= @replicated_count
             li
-              a.smooth-scroll href="#respected-proj"
+              a.smooth-scroll href="#respected-proj" data-offset=-130
                 | Respected projects and articles
                 span.proj-number= @respected_count
             li
-              a.smooth-scroll href="#comments"
+              a.smooth-scroll href="#comments" data-offset=-130
                 | Comments
                 span.proj-number= @comments_count
 
@@ -126,7 +131,7 @@
             - @guest_projects.each_with_index do |project, i|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
-      / # - if (@parts.any? or user_is_current?)
+      - if @parts.any? or user_is_current?
         hr
         .clearfix
           h2.pull-left#toolbox
