@@ -1,5 +1,6 @@
 class ArduinoUser
   BASE_API_URL = "#{ENV['ARDUINO_API_HOST']}/create/user/"
+  MAX_TRIES = 3
 
   def initialize data
     @user_name = data.uid
@@ -23,7 +24,7 @@ class ArduinoUser
   end
 
   private
-    def get_user_info user_name, token
+    def get_user_info user_name, token, failed_count=0
       Rails.logger.debug "Fetching Arduino user_info for `#{user_name}` (token: `#{token}`)"
 
       url = BASE_API_URL + user_name + '?app=create'
@@ -36,11 +37,17 @@ class ArduinoUser
 
     rescue OpenURI::HTTPError => e
       # 500 error or something alike
-      AppLogger.new("Failed to get Arduino user_info for `#{user_name}`",
+      AppLogger.new("Failed to get Arduino user_info for `#{user_name}`, token `#{token}`, failed #{failed_count} times",
         'http_error',
         'arduino',
         e).log.stdout
 
-      nil
+      # retry on 500
+      if e.message =~ /500/ and failed_count < MAX_TRIES
+        sleep 1
+        get_user_info user_name, token, failed_count + 1
+      else
+        nil
+      end
     end
 end
