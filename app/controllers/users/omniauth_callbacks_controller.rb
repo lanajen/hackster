@@ -110,13 +110,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protected
     def sign_in_and_redirect resource_name, resource, opts={}
-      sign_in(resource_name, resource)
-
       client = ClientSubdomain.find_by_subdomain(params[:current_site])
       host = client.try(:host)
 
       # 1. flash is shown on wrong domain
-      # 2. potentially use the token login option only for different domains
 
       url = user_return_to(host)
       if parsed_uri = URI.parse(url) and parsed_uri.class == URI::HTTP
@@ -126,7 +123,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if client and !client.uses_subdomain?
         url = UrlParam.new(url).add_param(:user_token, resource.authentication_token)
         url = UrlParam.new(url).add_param(:user_email, resource.email)
+      else
+        sign_in(resource_name, resource)
       end
+
       url = UrlParam.new(url).add_param('f', '1')
       redirect_to url
     end
