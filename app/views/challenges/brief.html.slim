@@ -19,20 +19,21 @@
               - if @current_entries[:contest].any?
                 hr
                 p
-                  strong.small #{@challenge.pre_contest_label} entries:
+                  strong.small
+                    - if @challenge.activate_pre_contest?
+                      | #{@challenge.pre_contest_label} entries:
+                    - else
+                      | Applications for free hardware:
               ul.entries-list.list-unstyled
                 - @current_entries[:pre_contest].each do |entry|
                   = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge
 
-              - if @challenge.pre_contest_end_date < Date.today
-                - if @challenge.pre_contest_awarded?
-                  p= link_to 'See the list of winners', '#pre_contest_winners', class: 'smooth-scroll'
-                - else
-                  p Winners have not been announced yet.
+              - if @challenge.pre_contest_awarded?
+                p= link_to "See the list of #{@challenge.pre_contest_label.downcase} winners", challenge_idea_winners_path(@challenge.slug)
               - else
-                p Winners will be announced on #{l @challenge.pre_winners_announced_date}.
+                p Winners have not been announced yet.
 
-              - if @challenge.pre_contest_in_progress? and @challenge.allow_multiple_entries?
+              - if @challenge.workflow_state == 'pre_contest_in_progress' and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
 
           - else
@@ -42,17 +43,24 @@
              - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
               ' We'll let you know by email when the challenge launches.
           - if @challenge.open_for_submissions?
-            - if @challenge.pre_contest_in_progress?
-              - if @challenge.idea_survey_link.present?
-                = link_to "Submit an idea for the #{@challenge.pre_contest_label.downcase}", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
-              - elsif @current_entries[:pre_contest].empty?
-                = link_to "Submit an idea for the #{@challenge.pre_contest_label.downcase}", new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
-            - elsif @current_entries[:contest].empty?
-              = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+            = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
         = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.registration_open?
         = button_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
+
+      - if @challenge.open_for_submissions? and @challenge.activate_free_hardware?
+        - if @challenge.free_hardware_end_date.blank? or @challenge.free_hardware_end_date > Time.now
+          p
+            ' Need hardware to complete your submission? We are giving away up to #{@challenge.free_hardware_quantity} free
+            => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
+            ' devices. Applications
+            - if @challenge.free_hardware_end_date
+              ' are open until #{l @challenge.free_hardware_end_date} PT and
+            ' will be reviewed on a first come, first served basis.
+            strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
+        - else
+          p Applications to receive free hardware have closed on #{l @challenge.free_hardware_end_date} PT.
 
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
@@ -67,30 +75,18 @@
         - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
 
           - if @challenge.open_for_submissions?
-            - if @challenge.pre_contest_in_progress?
-              - date = @challenge.pre_contest_end_date
-              p
-                strong #{@challenge.pre_contest_label}
-            - else
-              - date = @challenge.end_date
             p
               ' Submissions close in
-              strong>= react_component('TimeLeft', { timestamp: date.to_i }, { tag: 'span' })
+              strong>= react_component('TimeLeft', { timestamp: @challenge.end_date.to_i }, { tag: 'span' })
             p style="font-size:11px"
-              ' Ends on #{l date.in_time_zone(PDT_TIME_ZONE)} PT
+              ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
 
           - else
-            - if @challenge.pre_contest_pending?
-              - date = @challenge.pre_contest_start_date
-              - phrase = "#{@challenge.pre_contest_label} opens in"
-            - else
-              - date = @challenge.start_date
-              - phrase = 'Project submissions open in'
             p
-              => phrase
-              strong>= react_component('TimeLeft', { timestamp: date.to_i }, { tag: 'span' })
+              ' Project submissions open in
+              strong>= react_component('TimeLeft', { timestamp: @challenge.start_date.to_i }, { tag: 'span' })
             p style="font-size:11px"
-              ' Opens on #{l date.in_time_zone(PDT_TIME_ZONE)} PT
+              ' Opens on #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
 
         - elsif @challenge.voting_active?
           p.status
@@ -105,10 +101,7 @@
             - if @challenge.judging? and @challenge.winners_announced_date
               p style='margin-bottom:0'
                 strong> Winners announced by:
-                - if @challenge.disable_projects_phase?
-                  = l @challenge.pre_winners_announced_date, format: :short_date
-                - else
-                  = l @challenge.winners_announced_date, format: :short_date
+                = l @challenge.winners_announced_date, format: :short_date
 
       - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
         section.section-thumbs
@@ -188,24 +181,6 @@
 
       .section-interlude
 
-      - if @challenge.pre_contest_awarded?
-        section.section-container.section-collapsible#pre_contest_winners class=(params[:show_pre_contest_winners] ? '' : 'section-toggled')
-          h2.section-title
-            a.title.title-toggle href=''
-              ' #{@challenge.pre_contest_label} winners
-              i.fa.fa-chevron-down
-              i.fa.fa-chevron-up
-          .section-content
-            ul.list-unstyled
-              - @ideas.each do |idea|
-                li
-                  strong=> link_to idea.user.name, idea.user
-                  ' for
-                  = link_to idea.name, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }
-                  .hide= render 'challenge_ideas/challenge_idea', idea: idea
-
-        .section-interlude
-
       section.section-container.section-collapsible#rules class=(params[:show_rules] ? '' : 'section-toggled')
         h2.section-title
           a.title.title-toggle href=''
@@ -233,22 +208,3 @@
           - if @challenge.rules.present?
             h3 Full rules
             = raw replace_tokens_for(@challenge, @challenge.rules)
-
-= content_for :js do
-
-  .popup-overlay.modal-popup id='challenge-idea-popup' data-width=600
-    .popup-overlay-bg
-    .popup-overlay-outer
-      .popup-overlay-inner.text-left style='padding:40px 40px 30px'
-        button.close data-target='#challenge-idea-popup' &times;
-
-        .challenge-idea
-
-        a.close-btn href='javascript:void(0)' data-target='#challenge-idea-popup' Close
-
-  javascript:
-    $('#challenge-idea-popup').on('modal:opening', function(e){
-      var btn = $(e.relatedTarget);
-      var html = btn.next('.hide').find('.challenge-idea').html();
-      $(this).find('.challenge-idea').html(html);
-    });

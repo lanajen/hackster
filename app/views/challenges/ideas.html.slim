@@ -7,7 +7,7 @@
       .alert.alert-info
         p
           ' Winners have been announced!
-          = link_to 'Find out who won.', challenge_path(@challenge, anchor: 'pre_contest_winners', show_pre_contest_winners: 1), class: 'alert-link'
+          = link_to 'Find out who won.', challenge_idea_winners_path(@challenge.slug), class: 'alert-link'
     - if @ideas.any?
       .row.challenge-idea-thumbs
         - @ideas.each do |idea|

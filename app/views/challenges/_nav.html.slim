@@ -13,7 +13,7 @@
     = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, number_with_delimiter(@challenge.registrations_count)), challenge_participants_path(@challenge.slug), role: 'presentation'
   - if @challenge.ideas_count > 0
     = active_li_link_to content_tag(:span, "Ideas") + content_tag(:small, number_with_delimiter(@challenge.ideas_count)), challenge_ideas_path(@challenge.slug), role: 'presentation'
-  - if !@challenge.workflow_state.in? %w(new pre_registration pre_contest_in_progress pre_contest_ended) and !@challenge.disable_projects_phase?
+  - if !@challenge.workflow_state.in? %w(new pre_registration) and !@challenge.disable_projects_phase?
     = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, number_with_delimiter(@challenge.projects_count)), challenge_projects_path(@challenge.slug), role: 'presentation'
 
 = active_li_link_to 'FAQ', challenge_faq_path(@challenge.slug), role: 'presentation'

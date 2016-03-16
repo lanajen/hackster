@@ -1,0 +1,37 @@
+.row
+  .col-md-8
+    - cache ["challenge-#{@challenge.id}-idea-winners"], tag: ["challenge-#{@challenge.id}-idea-winnners"] do
+
+      section.section-container.section-collapsible#pre_contest_winners
+        h2.section-title
+          a.title.title-toggle href=''
+            ' #{@challenge.pre_contest_label} winners
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
+        .section-content
+          ul.list-unstyled
+            - @ideas.each do |idea|
+              li
+                strong=> link_to idea.user.name, idea.user
+                ' for
+                = link_to idea.name, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }
+                .hide= render 'challenge_ideas/challenge_idea', idea: idea
+
+= content_for :js do
+
+  .popup-overlay.modal-popup id='challenge-idea-popup' data-width=600
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left style='padding:40px 40px 30px'
+        button.close data-target='#challenge-idea-popup' &times;
+
+        .challenge-idea
+
+        a.close-btn href='javascript:void(0)' data-target='#challenge-idea-popup' Close
+
+  javascript:
+    $('#challenge-idea-popup').on('modal:opening', function(e){
+      var btn = $(e.relatedTarget);
+      var html = btn.next('.hide').find('.challenge-idea').html();
+      $(this).find('.challenge-idea').html(html);
+    });

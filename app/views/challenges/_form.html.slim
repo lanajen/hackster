@@ -35,40 +35,20 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          /
-            = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
-            #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
-              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when developers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
-                #datepicker.input-group
-                  = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
-                  span.input-group-addon
-                    i.fa.fa-calendar
-              = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
-
-          = f.input :activate_pre_contest, as: :boolean, inline_label: 'Enable pre-contest', label: false, hint: "This will allow participants to submit ideas to win hardware which they can use to enter the contest."
-          #pre_contest_settings style=(@challenge.activate_pre_contest ? '' : 'display:none')
-            / # = f.input :idea_survey_link, label: 'Idea form link', hint: 'The link to the form where ideas for the pre-contest will be collected.'
-            = f.input :pre_contest_start_date_dummy, label: 'Pre-contest start date', wrapper_html: { id: 'pre_contest_start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to submit ideas for the pre-contest starting this date. Times are PT (-08)." do
+          = f.input :activate_free_hardware, as: :boolean, inline_label: 'Allow participants to apply for hardware', label: false, hint: "This will allow participants to submit ideas to receive hardware which they can use to enter the contest."
+          #free_hardware_settings style=(@challenge.activate_free_hardware ? '' : 'display:none')
+            = f.input :free_hardware_label, label: 'Product name', hint: 'Keep it short and sweet! Just the name of the product that participants can receive, nothing else.'
+            = f.input :free_hardware_link, label: 'Product web page', hint: 'A page where participants can learn more about this product.'
+            = f.input :free_hardware_quantity, label: 'Quantity', hint: 'How many units are available?'
+            = f.input :free_hardware_end_date_dummy, label: 'Application deadline', wrapper_html: { id: 'free_hardware_end_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to apply for free hardware until this date. Times are PT (-08)." do
               #datepicker.input-group
-                = f.input_field :pre_contest_start_date_dummy, as: :string, label: false
+                = f.input_field :free_hardware_end_date_dummy, as: :string, label: false
                 span.input-group-addon
                   i.fa.fa-calendar
-            = f.input :pre_contest_start_date, as: :hidden, input_html: { id: 'pre_contest_start_date' }
-            = f.input :pre_contest_end_date_dummy, label: 'Pre-contest end date', wrapper_html: { id: 'pre_contest_end_date_dummy', class: 'datetimepicker' }, hint: "The deadline to enter the pre-contest. Times are PT (-08)." do
-              #datepicker.input-group
-                = f.input_field :pre_contest_end_date_dummy, as: :string, label: false
-                span.input-group-addon
-                  i.fa.fa-calendar
-            = f.input :pre_contest_end_date, as: :hidden, input_html: { id: 'pre_contest_end_date' }
-            = f.input :pre_winners_announced_date_dummy, label: 'Pre-contest winners announcement date', wrapper_html: { id: 'pre_winners_announced_date_dummy', class: 'datetimepicker' }, hint: "The date when you plan on announcing winners of the pre-contest. Only the date will show (not time). Times are PT (-08)." do
-              #datepicker.input-group
-                = f.input_field :pre_winners_announced_date_dummy, as: :string, label: false
-                span.input-group-addon
-                  i.fa.fa-calendar
-            = f.input :pre_winners_announced_date, as: :hidden, input_html: { id: 'pre_winners_announced_date' }
+            = f.input :free_hardware_end_date, as: :hidden, input_html: { id: 'free_hardware_end_date' }
             .form-group
               .col-md-4
-                label.control-label Extra fields for pre-contest
+                label.control-label Extra fields for the hardware application
                 .help-block.text-right If you want more than a name, image and description.
               .col-md-8
                 table#sortable.table.table-sortable
@@ -88,7 +68,6 @@
                           = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
                     tr.sortable-disabled
                       td colspan=4 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
-          = f.input :pre_contest_needs_shipping, as: :boolean, inline_label: "Collect mailing address from pre-contest participants", hint: "If winners are to receive a physical prize, enable this option to automatically collect their mailing address."
           = f.input :after_submit_idea_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit an idea. Leave room for the URL! Default: '#{@challenge.default_after_submit_idea_tweet}'", label: "Tweet after idea submitted"
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
@@ -249,10 +228,6 @@
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
-            /= f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
-            = f.input :disable_pre_contest_winners, as: :boolean, inline_label: 'Disable pre-contest winners', label: false
-            = f.input :disable_projects_phase, as: :boolean, inline_label: 'Disable projects phase', label: false
-            = f.input :pre_contest_label, hint: "If you want to rename 'Pre-contest' into something else."
 
       .panel.panel-default
         .panel-heading
@@ -262,9 +237,7 @@
           .form-group
             .col-md-8.col-md-offset-4
               - case @challenge.workflow_state.to_sym
-              / - when :new
-                = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
-              - when :pre_registration, :in_progress, :pre_contest_in_progress, :pre_contest_ended
+              - when :pre_registration, :in_progress
                 = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
               - when :judging
                 - if current_user.is? :admin
@@ -304,15 +277,6 @@
         sideBySide: true
       });
 
-      $('#pre_registration_start_date_dummy').on('change', function(){
-        $('#pre_registration_start_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
-      });
-      $('#pre_contest_start_date_dummy').on('change', function(){
-        $('#pre_contest_start_date').val($('#pre_contest_start_date_dummy').data("DateTimePicker").getDate());
-      });
-      $('#pre_contest_end_date_dummy').on('change', function(){
-        $('#pre_contest_end_date').val($('#pre_contest_end_date_dummy').data("DateTimePicker").getDate());
-      });
       $('#start_date_dummy').on('change', function(){
         $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
       });
@@ -322,11 +286,11 @@
       $('#winners_announced_date_dummy').on('change', function(){
         $('#winners_announced_date').val($('#winners_announced_date_dummy').data("DateTimePicker").getDate());
       });
-      $('#pre_winners_announced_date_dummy').on('change', function(){
-        $('#pre_winners_announced_date').val($('#pre_winners_announced_date_dummy').data("DateTimePicker").getDate());
-      });
       $('#voting_end_date_dummy').on('change', function(){
         $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+      });
+      $('#free_hardware_end_date_dummy').on('change', function(){
+        $('#free_hardware_end_date').val($(this).data("DateTimePicker").getDate());
       });
 
       $('#challenge_activate_voting').on('change', function(){
@@ -343,11 +307,11 @@
           $('#pre_registration_settings').slideUp();
         }
       });
-      $('#challenge_activate_pre_contest').on('change', function(){
+      $('#challenge_activate_free_hardware').on('change', function(){
         if ($(this).is(':checked')) {
-          $('#pre_contest_settings').slideDown();
+          $('#free_hardware_settings').slideDown();
         } else {
-          $('#pre_contest_settings').slideUp();
+          $('#free_hardware_settings').slideUp();
         }
       });
       $('#challenge_activate_mailchimp_sync').on('change', function(){

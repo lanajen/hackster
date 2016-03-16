@@ -8,10 +8,10 @@
 
 <p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> to learn more about the requirements.</p>
 
-<% if @context[:challenge].activate_pre_contest? %>
-  <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
-<% else %>
-  <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
+<p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT to submit your entry. Good luck!</p>
+
+<% if @context[:challenge].activate_free_hardware? %>
+  If you need hardware to enter the contest, we are giving away <%= @context[:challenge].free_hardware_quantity %> free <%= @context[:challenge].free_hardware_label %> devices. Grants come on a first-come, first-served basis, so please apply as early as possible. <a href="<%= u.new_challenge_idea_url(@context[:challenge]) %>">Apply now</a>.
 <% end %>
 
 <p>Finally, here is the timeline:</p>
@@ -21,19 +21,11 @@
       <li><strong>Registrations open:</strong> <%= l @context[:challenge].pre_registration_start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
     <% end %>
   <% end %>
-  <% if @context[:challenge].activate_pre_contest %>
-    <% if @context[:challenge].pre_contest_start_date %>
-      <li><strong>Pre-contest opens:</strong> <%= l @context[:challenge].pre_contest_start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
-    <% end %>
-    <% if @context[:challenge].pre_contest_end_date %>
-      <li><strong>Pre-contest closes:</strong> <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
-    <% end %>
-    <% if @context[:challenge].pre_winners_announced_date %>
-      <li><strong>Pre-contest winners announced:</strong> <%= l @context[:challenge].pre_winners_announced_date, format: :short_date %></li>
-    <% end %>
-  <% end %>
   <% if @context[:challenge].start_date %>
     <li><strong>Project submissions open:</strong> <%= l @context[:challenge].start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+  <% end %>
+  <% if @context[:challenge].activate_free_hardware? and @context[:challenge].free_hardware_end_date %>
+    <li><strong>Deadline to apply for free hardware:</strong> <%= l @context[:challenge].free_hardware_end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
   <% end %>
   <% if @context[:challenge].end_date %>
     <li><strong>Project submissions close:</strong> <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>

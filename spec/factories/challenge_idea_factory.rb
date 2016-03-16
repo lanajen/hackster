@@ -7,12 +7,14 @@ FactoryGirl.define do
       challenge nil
       user nil
       image nil
+      address nil
     end
 
     after(:build) do |idea, evaluator|
       idea.challenge = evaluator.challenge
       idea.user = evaluator.user
       idea.image = evaluator.image || create(:image)
+      idea.address = evaluator.address || create(:address)
     end
 
     after(:create) do |idea|

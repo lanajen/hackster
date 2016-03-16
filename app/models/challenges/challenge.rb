@@ -47,6 +47,10 @@ class Challenge < ActiveRecord::Base
   validates :teaser, :custom_tweet, :after_submit_idea_tweet, length: { maximum: 140 }
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
+  with_options if: proc{ |c| c.activate_free_hardware? } do |c|
+    c.validates :free_hardware_label, :free_hardware_link, :free_hardware_quantity, presence: true
+    c.validates :free_hardware_quantity, numericality: { only_integer: true }, allow_blank: true
+  end
   before_validation :assign_new_slug
   before_validation :cleanup_custom_registration_email
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
@@ -57,18 +61,19 @@ class Challenge < ActiveRecord::Base
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
-    :pre_winners_announced_date_dummy
+    :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
-    :pre_winners_announced_date_dummy
+    :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy
 
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
   hstore_column :hproperties, :activate_banners, :boolean, default: true
   hstore_column :hproperties, :activate_mailchimp_sync, :boolean
-  hstore_column :hproperties, :activate_pre_contest, :boolean
+  hstore_column :hproperties, :activate_pre_contest, :boolean  # legacy
+  hstore_column :hproperties, :activate_free_hardware, :boolean
   hstore_column :hproperties, :activate_pre_registration, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :after_submit_idea_tweet, :string, default: 'I just submitted an idea to %{name}. You should too!'
@@ -81,14 +86,18 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
-  hstore_column :hproperties, :disable_pre_contest_winners, :boolean
+  hstore_column :hproperties, :disable_pre_contest_winners, :boolean  # legacy
   hstore_column :hproperties, :disable_projects_phase, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
-  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit an entry'
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit your final entry'
+  hstore_column :hproperties, :free_hardware_label, :string
+  hstore_column :hproperties, :free_hardware_link, :string
+  hstore_column :hproperties, :free_hardware_quantity, :integer
+  hstore_column :hproperties, :free_hardware_end_date, :datetime
   hstore_column :hproperties, :how_to_enter, :string
-  hstore_column :hproperties, :idea_survey_link, :string
+  # hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
   hstore_column :hproperties, :mailchimp_api_key, :string
   hstore_column :hproperties, :mailchimp_list_id, :string
@@ -96,13 +105,12 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
-  hstore_column :hproperties, :pre_contest_awarded, :boolean
-  hstore_column :hproperties, :pre_contest_end_date, :datetime
-  hstore_column :hproperties, :pre_contest_label, :string, default: 'Pre-contest'
-  hstore_column :hproperties, :pre_contest_needs_shipping, :boolean
-  hstore_column :hproperties, :pre_contest_start_date, :datetime
+  hstore_column :hproperties, :pre_contest_awarded, :boolean  # legacy
+  hstore_column :hproperties, :pre_contest_end_date, :datetime  # legacy
+  hstore_column :hproperties, :pre_contest_label, :string, default: 'Pre-contest'  # legacy
+  hstore_column :hproperties, :pre_contest_start_date, :datetime  # legacy
   hstore_column :hproperties, :pre_registration_start_date, :datetime
-  hstore_column :hproperties, :pre_winners_announced_date, :datetime
+  hstore_column :hproperties, :pre_winners_announced_date, :datetime  # legacy
   hstore_column :hproperties, :project_ideas, :boolean
   hstore_column :hproperties, :ready, :boolean
   hstore_column :hproperties, :requirements, :string
@@ -126,22 +134,22 @@ class Challenge < ActiveRecord::Base
     state :new do
       event :pre_launch, transitions_to: :pre_registration
       event :launch_contest, transitions_to: :in_progress
-      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
+      # event :launch_pre_contest, transitions_to: :pre_contest_in_progress
     end
     state :pre_registration do
       event :launch_contest, transitions_to: :in_progress
-      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
+      # event :launch_pre_contest, transitions_to: :pre_contest_in_progress
       event :take_offline, transitions_to: :new
     end
-    state :pre_contest_in_progress do
-      event :end_pre_contest_fully, transitions_to: :judging
-      event :end_pre_contest, transitions_to: :pre_contest_ended
-      event :take_offline, transitions_to: :new
-    end
-    state :pre_contest_ended do
-      event :launch_contest, transitions_to: :in_progress
-      event :take_offline, transitions_to: :new
-    end
+    # state :pre_contest_in_progress do
+    #   event :end_pre_contest_fully, transitions_to: :judging
+    #   event :end_pre_contest, transitions_to: :pre_contest_ended
+    #   event :take_offline, transitions_to: :new
+    # end
+    # state :pre_contest_ended do
+    #   event :launch_contest, transitions_to: :in_progress
+    #   event :take_offline, transitions_to: :new
+    # end
     state :in_progress do
       event :cancel, transitions_to: :canceled
       event :end, transitions_to: :judging
@@ -225,10 +233,15 @@ class Challenge < ActiveRecord::Base
       @dates << { date: pre_registration_date, label: 'Registration opens' } if pre_registration_start_date
     end
 
+    # legacy
     if activate_pre_contest?
       @dates << { date: pre_contest_start_date, label: "#{pre_contest_label} opens" } if pre_contest_start_date
       @dates << { date: pre_contest_end_date, label: "#{pre_contest_label} closes" } if pre_contest_end_date
       @dates << { date: pre_winners_announced_date, format: :short_date, label: "#{pre_contest_label} winners announced by" } if pre_winners_announced_date and not disable_pre_contest_winners?
+    end
+
+    if activate_free_hardware?
+      @dates << { date: free_hardware_end_date, label: "Deadline to apply for free hardware" } if free_hardware_end_date
     end
 
     unless disable_projects_phase?
@@ -304,9 +317,9 @@ class Challenge < ActiveRecord::Base
     workflow_state.in? OPEN_SUBMISSION_STATES
   end
 
-  def pre_contest_pending?
-    activate_pre_contest? and workflow_state.in? %w(new pre_registration)
-  end
+  # def pre_contest_pending?
+  #   activate_pre_contest? and workflow_state.in? %w(new pre_registration)
+  # end
 
   def ready_for_judging?
     judging?
@@ -351,16 +364,8 @@ class Challenge < ActiveRecord::Base
     pre_registration_start_date ? pre_registration_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
-  def pre_contest_start_date_dummy
-    pre_contest_start_date ? pre_contest_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
-  end
-
-  def pre_contest_end_date_dummy
-    pre_contest_end_date ? pre_contest_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
-  end
-
-  def pre_winners_announced_date_dummy
-    pre_winners_announced_date ? pre_winners_announced_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  def free_hardware_end_date_dummy
+    free_hardware_end_date ? free_hardware_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def winners_announced_date_dummy
