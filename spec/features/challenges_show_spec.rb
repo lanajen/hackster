@@ -254,7 +254,7 @@ RSpec.describe 'challenges show view' do
 
       before(:each) do
         click_button('Register as a participant', :match => :first)
-        click_link('Submit your final entry')
+        click_link('Submit my final entry')
         select(project.name, :from => 'project_id')
         click_on('Enter my project into the challenge')
       end

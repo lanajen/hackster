@@ -12,8 +12,8 @@
               ul.entries-list.list-unstyled
                 - @current_entries[:contest].each do |entry|
                   = render 'challenge_entries/challenge_entry_thumb', entry: entry, challenge: @challenge
-              - if @challenge.in_progress? and @challenge.allow_multiple_entries?
-                = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+              - if @challenge.open_for_submissions? and @challenge.allow_multiple_entries?
+                = link_to 'Submit an additional entry', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
 
             - if @challenge.activate_pre_contest? and @current_entries[:pre_contest].any?
               - if @current_entries[:contest].any?
@@ -38,7 +38,8 @@
              - if @challenge.start_date > Time.now
               ' We'll let you know by email when the contest launches.
           - if @challenge.open_for_submissions?
-            = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+            - if @current_entries[:contest].empty?
+              = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
             - if @challenge.activate_free_hardware?
               - if @challenge.free_hardware_applications_open?
                 p
@@ -57,7 +58,7 @@
               - if @current_entries[:pre_contest].any?
                 hr
                 p
-                  strong.small Your existing applications:
+                  strong.small Your existing applications for free hardware:
                 ul.entries-list.list-unstyled
                   - @current_entries[:pre_contest].each do |entry|
                     = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge

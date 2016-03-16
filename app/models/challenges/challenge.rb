@@ -4,7 +4,7 @@ class Challenge < ActiveRecord::Base
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
   REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
   TOKEN_PARSABLE_ATTRIBUTES = %w(description how_to_enter eligibility judging_criteria requirements rules)
-  TOKENABLE_ATTRIBUTES = %w(pre_registration_date pre_contest_start_date pre_contest_end_date pre_winners_announced_date start_date end_date winners_announced_date)
+  TOKENABLE_ATTRIBUTES = %w(pre_registration_date pre_contest_start_date pre_contest_end_date pre_winners_announced_date start_date end_date winners_announced_date free_hardware_end_date)
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
@@ -91,7 +91,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
-  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit your final entry'
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit my final entry'
   hstore_column :hproperties, :free_hardware_label, :string
   hstore_column :hproperties, :free_hardware_link, :string
   hstore_column :hproperties, :free_hardware_quantity, :integer
