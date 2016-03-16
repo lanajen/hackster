@@ -6,7 +6,7 @@
           h4 Manage your entries
           - if @current_entries.values.select{|v| v.any? }.any?
             - if @current_entries[:contest].any?
-              - if @current_entries[:pre_contest].any?
+              - if @challenge.activate_pre_contest? and @current_entries[:pre_contest].any?
                 p
                   strong.small Contest entries:
               ul.entries-list.list-unstyled
@@ -15,7 +15,7 @@
               - if @challenge.in_progress? and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
 
-            - if @current_entries[:pre_contest].any?
+            - if @challenge.activate_pre_contest? and @current_entries[:pre_contest].any?
               - if @current_entries[:contest].any?
                 hr
                 p
@@ -28,10 +28,11 @@
                 - @current_entries[:pre_contest].each do |entry|
                   = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge
 
-              - if @challenge.pre_contest_awarded?
-                p= link_to "See the list of #{@challenge.pre_contest_label.downcase} winners", challenge_idea_winners_path(@challenge.slug)
-              - else
-                p Winners have not been announced yet.
+              - if @challenge.activate_pre_contest?
+                - if @challenge.pre_contest_awarded?
+                  p= link_to "See the list of #{@challenge.pre_contest_label.downcase} winners", challenge_idea_winners_path(@challenge.slug)
+                - else
+                  p Winners have not been announced yet.
 
               - if @challenge.workflow_state == 'pre_contest_in_progress' and @challenge.allow_multiple_entries?
                 = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
@@ -40,27 +41,41 @@
             p
              strong> You're registered!
              => link_to content_tag(:i, '', class: 'fa fa-times'), challenge_registrations_path(@challenge), class: 'btn btn-danger btn-xs', data: { method: :delete }
-             - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
+             - if @challenge.start_date > Time.now
               ' We'll let you know by email when the challenge launches.
           - if @challenge.open_for_submissions?
             = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+            - if @challenge.activate_free_hardware?
+              - if @challenge.free_hardware_applications_open?
+                p
+                  ' Need hardware to complete your submission? We are giving away up to #{@challenge.free_hardware_quantity} free
+                  => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
+                  ' devices. Applications
+                  - if @challenge.free_hardware_end_date
+                    ' are open until #{l @challenge.free_hardware_end_date} PT and
+                  ' will be reviewed on a first come, first served basis.
+                - unless @current_entries[:pre_contest].any?
+                  p
+                    strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
+              - else
+                p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date} PT.
+
+              - if @current_entries[:pre_contest].any?
+                hr
+                p
+                  strong.small Your existing applications:
+                ul.entries-list.list-unstyled
+                  - @current_entries[:pre_contest].each do |entry|
+                    = render 'challenge_ideas/challenge_idea_thumb', entry: entry, challenge: @challenge
+
+                - if @challenge.free_hardware_applications_open? and @challenge.allow_multiple_entries?
+                  p
+                    strong= link_to "Submit an additional application to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
+
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
         = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.registration_open?
         = button_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
-
-      - if @challenge.open_for_submissions? and @challenge.activate_free_hardware?
-        - if @challenge.free_hardware_end_date.blank? or @challenge.free_hardware_end_date > Time.now
-          p
-            ' Need hardware to complete your submission? We are giving away up to #{@challenge.free_hardware_quantity} free
-            => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
-            ' devices. Applications
-            - if @challenge.free_hardware_end_date
-              ' are open until #{l @challenge.free_hardware_end_date} PT and
-            ' will be reviewed on a first come, first served basis.
-            strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
-        - else
-          p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date} PT.
 
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'

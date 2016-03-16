@@ -4,7 +4,8 @@ li.award
     span.pull-left
       strong> Status:
       = entry.decorate.status
-    - if entry.new?
-      span.pull-right
-        = link_to content_tag(:i, '', class: 'fa fa-pencil') + content_tag(:span, 'Edit'), edit_challenge_idea_path(challenge.slug, entry), class: 'btn btn-default btn-xs entry-withdraw'
+    - if entry.new? or entry.rejected?
+      div
+        - if entry.new?
+          = link_to content_tag(:i, '', class: 'fa fa-pencil') + content_tag(:span, 'Edit'), edit_challenge_idea_path(challenge.slug, entry), class: 'btn btn-default btn-xs entry-withdraw'
         = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_single_idea_path(entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }

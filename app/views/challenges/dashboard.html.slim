@@ -21,7 +21,7 @@ p
       - if @challenge.activate_pre_contest?
         | #{@challenge.pre_contest_label} entries:
       - else
-        | Applications for free hardware
+        | Applications for free hardware:
     strong>= @new_ideas_count
     ' awaiting moderation
     ' |
@@ -30,7 +30,8 @@ p
     ' |
     strong>= @rejected_ideas_count
     | rejected
-  p=> link_to "Moderate #{@challenge.pre_contest_label.downcase} entries", challenge_admin_ideas_path(@challenge)
+  - link_text = @challenge.activate_pre_contest? ? "Moderate #{@challenge.pre_contest_label.downcase} entries" : "Moderate free hardware applications"
+  p=> link_to link_text, challenge_admin_ideas_path(@challenge)
 
 
 p

@@ -277,6 +277,10 @@ class Challenge < ActiveRecord::Base
     end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") if end_date
   end
 
+  def free_hardware_applications_open?
+    open_for_submissions? and activate_free_hardware? and (free_hardware_end_date.blank? or free_hardware_end_date > Time.now)
+  end
+
   def generate_slug
     return if name.blank?
 

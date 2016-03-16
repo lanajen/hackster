@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>We are sorry to inform you that your application "|idea_name|" to receive free hardware fir <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> was not selected.</p>
+<p>We are sorry to inform you that your application "|idea_name|" to receive free hardware for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> was not selected.</p>
 
 <% if @context[:challenge].open_for_submissions? %>
   <p>

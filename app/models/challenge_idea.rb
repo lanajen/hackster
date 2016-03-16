@@ -29,11 +29,13 @@ class ChallengeIdea < ActiveRecord::Base
     state :approved do
       event :mark_needs_approval, transitions_to: :new
       event :reject, transitions_to: :rejected
+      event :mark_as_shipped, transitions_to: :fulfilled
     end
     state :rejected do
       event :mark_needs_approval, transitions_to: :new
       event :approve, transitions_to: :approved
     end
+    state :fulfilled
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{triggering_event}")
     end
