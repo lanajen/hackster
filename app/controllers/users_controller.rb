@@ -45,6 +45,7 @@ class UsersController < ApplicationController
       else
         @private_projects.with_group(current_platform)
       end
+      @private_count = @private_projects.count
       @public_projects = @public_projects.with_group(current_platform, all: true)
       @public_count = @public_projects.count
       @respected_projects = @respected_projects.with_group(current_platform)
@@ -56,7 +57,7 @@ class UsersController < ApplicationController
         @public_count += @other_projects.count
       end
 
-      @public_query = @public_query.with_group(current_platform)
+      @public_query = @public_query.with_group(current_platform, all: true)
       @private_query = @private_query.with_group(current_platform)
       @guest_query = @guest_query.with_group(current_platform)
       @respected_query = @respected_query.with_group(current_platform)
@@ -71,8 +72,8 @@ class UsersController < ApplicationController
       end
     end
 
-    @public_count = @public_query.count
-    @private_count = @private_query.count
+    @public_count ||= @public_query.count
+    @private_count ||= @private_query.count
     @guest_count = @guest_query.count
     @respected_count = @respected_query.count
     @replicated_count = @replicated_query.count
