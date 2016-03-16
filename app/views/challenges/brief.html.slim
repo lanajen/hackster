@@ -60,7 +60,7 @@
             ' will be reviewed on a first come, first served basis.
             strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
         - else
-          p Applications to receive free hardware have closed on #{l @challenge.free_hardware_end_date} PT.
+          p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date} PT.
 
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'

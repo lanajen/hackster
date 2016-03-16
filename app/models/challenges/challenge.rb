@@ -49,7 +49,7 @@ class Challenge < ActiveRecord::Base
   validate :password_exists
   with_options if: proc{ |c| c.activate_free_hardware? } do |c|
     c.validates :free_hardware_label, :free_hardware_link, :free_hardware_quantity, presence: true
-    c.validates :free_hardware_quantity, numericality: { only_integer: true }, allow_blank: true
+    c.validates :free_hardware_quantity, numericality: { only_integer: true, greater_than: 0 }, allow_blank: true
   end
   before_validation :assign_new_slug
   before_validation :cleanup_custom_registration_email

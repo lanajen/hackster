@@ -37,7 +37,7 @@
         .panel-body
           = f.input :activate_free_hardware, as: :boolean, inline_label: 'Allow participants to apply for hardware', label: false, hint: "This will allow participants to submit ideas to receive hardware which they can use to enter the contest."
           #free_hardware_settings style=(@challenge.activate_free_hardware ? '' : 'display:none')
-            = f.input :free_hardware_label, label: 'Product name', hint: 'Keep it short and sweet! Just the name of the product that participants can receive, nothing else.'
+            = f.input :free_hardware_label, label: 'Product name', hint: 'Keep it short and sweet! Just the name of the product that participants can receive, nothing else. Eg: "Arduino Uno" or "Raspberry Pi".'
             = f.input :free_hardware_link, label: 'Product web page', hint: 'A page where participants can learn more about this product.'
             = f.input :free_hardware_quantity, label: 'Quantity', hint: 'How many units are available?'
             = f.input :free_hardware_end_date_dummy, label: 'Application deadline', wrapper_html: { id: 'free_hardware_end_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to apply for free hardware until this date. Times are PT (-08)." do
