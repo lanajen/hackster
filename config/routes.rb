@@ -342,6 +342,7 @@ HackerIo::Application.routes.draw do
           patch '' => 'challenges#update'
           resources :ideas, controller: :challenge_ideas, only: [:new, :create, :edit, :update]
           get 'ideas' => 'challenges#ideas'
+          get 'ideas/winners' => 'challenges#idea_winners', as: :idea_winners
           get 'ideas/:id' => 'challenges#idea'
           get 'faq' => 'challenges#faq'
         end

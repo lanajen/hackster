@@ -68,11 +68,16 @@ RSpec.describe 'challenges show view' do
       end
     end
 
-    context 'when workflow_state is pre_contest_in_progress and user attempts to submits an idea', :js => true do
+    context 'when workflow_state is in_progress and user attempts to apply for free hardware', :js => true do
       before(:each) do
-        update_challenge_workflow_state('pre_contest_in_progress', challenge)
+        update_challenge_workflow_state('in_progress', challenge)
+        challenge.activate_free_hardware = true
+        challenge.free_hardware_label = 'Arduino uno'
+        challenge.free_hardware_quantity = 100
+        challenge.free_hardware_link = 'http://www.yeahh.com'
+        challenge.save
         click_button('Register as a participant', :match => :first)
-        click_link('Submit an idea for the pre-contest')
+        click_link("Apply to receive #{indefinite_articlerize challenge.free_hardware_label}.")
       end
 
       it 'has navigates to ideas/new' do
@@ -82,6 +87,7 @@ RSpec.describe 'challenges show view' do
 
       it 'has a form that submits a new idea' do
         image = FactoryGirl.create(:image)
+        address = FactoryGirl.create(:address)
 
         page.execute_script('var el = document.createElement("input"); el.setAttribute("name", "challenge_idea[image_id]"); el.setAttribute("id", "challenge_idea_image_id"); document.getElementById("new_challenge_idea").appendChild(el);')
         page.execute_script('window.tinyMCE.activeEditor.setContent("cheeerz!");')
@@ -89,11 +95,17 @@ RSpec.describe 'challenges show view' do
         within '#new_challenge_idea' do
           fill_in 'challenge_idea_name', with: 'Beerz'
           fill_in 'challenge_idea_image_id', with: image.id
-          click_on('Submit my idea')
+          fill_in 'challenge_idea_address_attributes_full_name', with: 'Beerz'
+          fill_in 'challenge_idea_address_attributes_address_line1', with: 'Beerz'
+          fill_in 'challenge_idea_address_attributes_city', with: 'Beerz'
+          fill_in 'challenge_idea_address_attributes_zip', with: '11111'
+          select 'United States', from: 'challenge_idea_address_attributes_country'
+          fill_in 'challenge_idea_address_attributes_phone', with: '4444444444'
+          click_on('Submit my application')
         end
 
         within '#new_idea_challenge_share_prompt' do
-          expect(page).to have_content('Your idea is submitted!')
+          expect(page).to have_content('Your application is submitted!')
         end
       end
 
@@ -144,7 +156,7 @@ RSpec.describe 'challenges show view' do
           within '#new_challenge_idea' do
             fill_in 'challenge_idea_name', with: 'Beerz'
             fill_in 'challenge_idea_image_id', with: image.id
-            click_on('Submit my idea')
+            click_on('Submit my application')
           end
 
           expect(page).to have_css('div.challenge_idea_cfield0.has-error')
@@ -152,14 +164,14 @@ RSpec.describe 'challenges show view' do
       end
     end
 
-    context 'when workflow_state is pre_contest_in_progress and challenge has an idea', :js => true do
+    context 'when workflow_state is in_progress and challenge has an idea', :js => true do
       let!(:idea) { FactoryGirl.create(:challenge_idea, challenge: challenge, user: user) }
       let!(:required_field) { FactoryGirl.build(:challenge_idea_field, :required, position: 0) }
       let!(:hide_field) { FactoryGirl.build(:challenge_idea_field, :hide, position: 1) }
       let!(:normal_field) { FactoryGirl.build(:challenge_idea_field, position: 2) }
 
       before(:each) do
-        update_challenge_workflow_state('pre_contest_in_progress', challenge)
+        update_challenge_workflow_state('in_progress', challenge)
         challenge.challenge_idea_fields << required_field
         challenge.challenge_idea_fields << hide_field
         challenge.challenge_idea_fields << normal_field
@@ -176,7 +188,7 @@ RSpec.describe 'challenges show view' do
 
       it 'does not display without approval' do
         within '.entries-list' do
-          expect(page).to have_content('Status: Awaiting moderation')
+          expect(page).to have_content('Status: Awaiting review')
         end
       end
 
@@ -222,20 +234,18 @@ RSpec.describe 'challenges show view' do
       end
     end
 
-    context 'when workflow_state is pre_contest_ended', :js => true do
+    context 'when workflow_state is in_progress and date is past idea application deadine', :js => true do
       let!(:idea) { FactoryGirl.create(:challenge_idea, :approved, challenge: challenge, user: user) }
 
       before(:each) do
-        update_challenge_workflow_state('pre_contest_ended', challenge)
+        update_challenge_workflow_state('in_progress', challenge)
+        challenge.free_hardware_end_date = Time.now - 1.day
+        challenge.save
         click_button('Register as a participant', :match => :first)
       end
 
       it 'does not display a button for idea submissions' do
-        expect(page).to_not have_content('Submit an idea for the pre-contest')
-      end
-
-      it 'displays the challenge end date' do
-        expect(page).to have_content('Project submissions open in 24 hours')
+        expect(page).to_not have_content('Apply to receive')
       end
     end
 
@@ -244,7 +254,7 @@ RSpec.describe 'challenges show view' do
 
       before(:each) do
         click_button('Register as a participant', :match => :first)
-        click_link('Submit an entry')
+        click_link('Submit my final entry')
         select(project.name, :from => 'project_id')
         click_on('Enter my project into the challenge')
       end
@@ -259,7 +269,7 @@ RSpec.describe 'challenges show view' do
         page.execute_script("$('.entry-withdraw').click();")
         page.driver.browser.switch_to.alert.accept
 
-        within '.alert' do
+        within '.alert.alert-top' do
           expect(page).to have_content('Your entry has been withdrawn.')
         end
       end

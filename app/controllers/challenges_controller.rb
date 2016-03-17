@@ -1,17 +1,16 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
-  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq, :update]
-  before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :faq]
-  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
-  before_filter :load_ideas, only: [:show, :brief]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq, :update]
+  before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :idea_winners, :faq]
+  before_filter :load_side_models, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
-  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
-  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :idea, :faq]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
-  skip_before_filter :track_visitor, only: [:show, :brief, :projects, :ideas]
-  skip_after_filter :track_landing_page, only: [:show, :brief, :projects, :ideas]
+  skip_before_filter :track_visitor, only: [:show, :brief, :projects, :ideas, :idea_winners]
+  skip_after_filter :track_landing_page, only: [:show, :brief, :projects, :ideas, :idea_winners]
 
   def index
     title 'Hardware contests'
@@ -59,11 +58,19 @@ class ChallengesController < ApplicationController
 
   def ideas
     title "#{@challenge.name} ideas"
-    @ideas = @challenge.ideas.approved.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
+    @ideas = @challenge.ideas
+    @ideas = @ideas.approved unless @challenge.activate_free_hardware?
+    @ideas = @ideas.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
   end
 
   def idea
     @idea = @challenge.ideas.find params[:id]
+  end
+
+  def idea_winners
+    redirect_to @challenge and return unless @challenge.pre_contest_awarded?
+
+    @ideas = @challenge.ideas.won.joins(:user).includes(:image, user: :avatar).order('users.full_name, users.user_name')
   end
 
   def faq
@@ -80,7 +87,7 @@ class ChallengesController < ApplicationController
     @challenge = Challenge.find params[:challenge_id]
     authorize! :admin, @challenge
 
-    if @challenge.activate_pre_contest?
+    if @challenge.activate_pre_contest? or @challenge.activate_free_hardware?
       @ideas = @challenge.ideas.joins(:user).order(:created_at)
       @approved_ideas_count = @ideas.where(workflow_state: ChallengeIdea::APPROVED_STATES).count
       @rejected_ideas_count = @ideas.where(workflow_state: 'rejected').count
@@ -196,12 +203,6 @@ class ChallengesController < ApplicationController
       @prizes = @challenge.prizes.includes(:image)
     end
 
-    def load_ideas
-      if @challenge.pre_contest_awarded?
-        @ideas = @challenge.ideas.won.joins(:user).includes(:image, user: :avatar).order('users.full_name, users.user_name')
-      end
-    end
-
     def load_projects
       per_page = Challenge.per_page
       if @challenge.judged?
@@ -234,7 +235,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules projects brief participants ideas idea faq)
+      if self.action_name.to_s.in? %w(show rules projects brief participants ideas idea idea_winners faq)
         'challenge'
       else
         current_layout

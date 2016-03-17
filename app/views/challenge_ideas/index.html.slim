@@ -2,19 +2,20 @@ p
   = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
 
 h1
-  | #{@challenge.name}: #{@challenge.pre_contest_label.downcase} entries (ideas)
+  - if @challenge.activate_pre_contest?
+    | #{@challenge.name}: #{@challenge.pre_contest_label.downcase} entries (ideas)
+  - else
+    | #{@challenge.name}: Application to receive free hardware (= ideas)
 
 p= react_component 'ContestCsvExporter', { url: api_private_challenge_ideas_csv_path, label: 'Download list as CSV' }, {}
 
-- if @challenge.current_state >= :pre_contest_ended
+- if @challenge.activate_pre_contest?
   p
     => pluralize @challenge.ideas.where(workflow_state: :won).count, 'idea'
     ' marked as winners.
   - if @challenge.pre_contest_awarded?
     p
       strong Winners announced.
-  - else
-    p= link_to "Announce #{@challenge.pre_contest_label.downcase} winners", challenge_path(@challenge, challenge: { pre_contest_awarded: 1 }), data: { method: :patch, confirm: "Are you sure? This will email all participants to let them know about the winners." }, class: 'btn btn-primary'
 
 .row
   .col-xs-12= will_paginate @ideas
@@ -39,25 +40,18 @@ table.table.table-striped
           td= l idea.created_at
           td
             => idea.workflow_state
-            - if idea.address_id.present?
-              | (address in)
           td
-            - unless @challenge.pre_contest_awarded?
+            - if !@challenge.pre_contest_awarded? or @challenge.activate_free_hardware?
               - if idea.can_approve?
                 = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_idea_path(@challenge, idea, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this idea?', container: 'body' }
-              - if @challenge.current_state >= :pre_contest_ended
-                - if idea.can_mark_won?
-                  = link_to content_tag(:i, '', class: 'fa fa-trophy'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_won'), class: 'btn btn-xs btn-primary', rel: 'tooltip', title: "Mark as a #{@challenge.pre_contest_label.downcase} winner", data: { method: :put, confirm: "Are you sure you want to mark this idea as a #{@challenge.pre_contest_label.downcase} winner?", container: 'body' }
-                - elsif idea.can_undo_won?
-                  = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'undo_won'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: "Undo #{@challenge.pre_contest_label.downcase} winner", data: { method: :put, confirm: "Are you sure you want to undo marking this idea as a #{@challenge.pre_contest_label.downcase} winner?", container: 'body' }
               - if idea.can_reject?
                 = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'reject'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Reject', data: { method: :put, confirm: 'Are you sure you want to reject this idea?', container: 'body' }
+              - if @challenge.activate_free_hardware? and idea.can_mark_as_shipped?
+                = link_to content_tag(:i, '', class: 'fa fa-send-o'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_as_shipped'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Mark as shipped', data: { method: :put, confirm: 'Are you sure you want to mark this idea as "reward shipped"?', container: 'body' }
             - else
               - if idea.can_mark_as_shipped?
                 = link_to content_tag(:i, '', class: 'fa fa-send-o'), update_workflow_challenge_idea_path(@challenge, idea, event: 'mark_as_shipped'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Mark as shipped', data: { method: :put, confirm: 'Are you sure you want to mark this idea as "reward shipped"?', container: 'body' }
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge.slug, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
-            /- if current_user.is? :admin
-              = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_single_idea_path(idea), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }
     - else
       td.text-center colspan=5 No ideas yet
 

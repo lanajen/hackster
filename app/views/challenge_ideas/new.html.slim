@@ -3,8 +3,7 @@
     .box
       .box-title
         h2
-          ' Participate in
-          strong=> link_to @challenge.name, @challenge
-          ' by submitting an idea
+          ' Apply to receive
+          strong= indefinite_articlerize @challenge.free_hardware_label
       .box-content
         = render 'form'

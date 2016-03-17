@@ -17,7 +17,7 @@ class ChallengeIdea < ActiveRecord::Base
   accepts_nested_attributes_for :address
 
   validates :name, :description, :image_id, presence: true
-  validates :address, presence: true, if: proc{|i| i.challenge.pre_contest_needs_shipping? }
+  validates :address, presence: true
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
 
@@ -25,24 +25,17 @@ class ChallengeIdea < ActiveRecord::Base
     state :new do
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
-      event :mark_lost, transitions_to: :lost
     end
     state :approved do
       event :mark_needs_approval, transitions_to: :new
       event :reject, transitions_to: :rejected
-      event :mark_lost, transitions_to: :lost
-      event :mark_won, transitions_to: :won
+      event :mark_as_shipped, transitions_to: :fulfilled
     end
     state :rejected do
       event :mark_needs_approval, transitions_to: :new
       event :approve, transitions_to: :approved
     end
-    state :won do
-      event :undo_won, transitions_to: :approved
-      event :mark_as_shipped, transitions_to: :fullfilled
-    end
-    state :fullfilled
-    state :lost
+    state :fulfilled
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{triggering_event}")
     end

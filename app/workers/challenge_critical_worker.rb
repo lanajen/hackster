@@ -36,9 +36,7 @@ class ChallengeCriticalWorker < BaseWorker
     headers = ['ID', 'Name', 'Description', 'Image URL', 'Permalink']
     headers += challenge.challenge_idea_fields.map(&:label)
     headers += ['Submitter name', 'Submission date', 'Submission status', 'Email']
-    if challenge.pre_contest_awarded?
-      headers += ['Full name', 'Address line 1', 'Address line 2', 'City', 'State', 'Zip code', 'Country', 'Phone number']
-    end
+    headers += ['Full name', 'Address line 1', 'Address line 2', 'City', 'State', 'Zip code', 'Country', 'Phone number']
     rows = [headers]
     ideas.each do |idea|
       user = idea.user

@@ -15,10 +15,13 @@ p
     ' -
     = react_component 'ContestCsvExporter', { url: api_private_challenge_participants_csv_path, label: 'Download list as CSV' }, { tag: :span }
 
-- if @challenge.activate_pre_contest?
+- if @challenge.activate_pre_contest? or @challenge.activate_free_hardware?
   p
     strong>
-      | #{@challenge.pre_contest_label} entries:
+      - if @challenge.activate_pre_contest?
+        | #{@challenge.pre_contest_label} entries:
+      - else
+        | Applications for free hardware:
     strong>= @new_ideas_count
     ' awaiting moderation
     ' |
@@ -27,7 +30,8 @@ p
     ' |
     strong>= @rejected_ideas_count
     | rejected
-  p=> link_to "Moderate #{@challenge.pre_contest_label.downcase} entries", challenge_admin_ideas_path(@challenge)
+  - link_text = @challenge.activate_pre_contest? ? "Moderate #{@challenge.pre_contest_label.downcase} entries" : "Moderate free hardware applications"
+  p=> link_to link_text, challenge_admin_ideas_path(@challenge)
 
 
 p

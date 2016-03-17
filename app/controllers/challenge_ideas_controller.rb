@@ -22,7 +22,7 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def new
-    redirect_to @challenge, notice: "Idea submission is currently closed." and return unless @challenge.pre_contest_in_progress?
+    redirect_to @challenge, notice: "Applications for free hardware are currently closed." and return unless @challenge.activate_free_hardware?
 
     @idea = @challenge.ideas.new
     authorize! :create, @idea
@@ -43,7 +43,7 @@ class ChallengeIdeasController < ApplicationController
       session[:share_modal_model_id] = @challenge.id
       session[:share_modal_time] = 'after_redirect'
 
-      redirect_to @challenge #, notice: "Your idea has been entered!"
+      redirect_to @challenge #, notice: "Your application has been entered!"
     else
       render :new
     end
@@ -51,9 +51,9 @@ class ChallengeIdeasController < ApplicationController
 
   def update_workflow
     if @idea.send "#{params[:event]}!"
-      flash[:notice] = "Idea #{event_to_human(params[:event])}."
+      flash[:notice] = "Application #{event_to_human(params[:event])}."
     else
-      flash[:alert] = "Couldn't #{event_to_human(params[:event])} idea."
+      flash[:alert] = "Couldn't #{event_to_human(params[:event])} application."
     end
     redirect_to challenge_admin_ideas_path(@challenge)
   end
@@ -62,13 +62,13 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def update
-    @idea.assign_attributes params[:challenge_idea]
-    @idea.workflow_state = :new if @idea.changed? and current_user.id == @idea.user_id and @idea.can_mark_needs_approval?
-    if @idea.save
+    authorize! :edit, @idea
+
+    if @idea.update_attributes params[:challenge_idea]
       if current_user.id == @idea.user_id
-        redirect_to @challenge, notice: "Your idea was successfully edited."
+        redirect_to @challenge, notice: "Your application was successfully edited."
       else
-        redirect_to challenge_admin_ideas_path(@challenge), notice: "Idea successfully edited."
+        redirect_to challenge_admin_ideas_path(@challenge), notice: "Application successfully edited."
       end
     else
       render :edit
@@ -82,9 +82,9 @@ class ChallengeIdeasController < ApplicationController
     @idea.destroy
 
     if current_user.id == @idea.user_id
-      redirect_to @idea.challenge, notice: "Your idea has been withdrawn."
+      redirect_to @idea.challenge, notice: "Your application has been withdrawn."
     else
-      redirect_to challenge_admin_ideas_path(@idea.challenge), notice: "Idea deleted."
+      redirect_to challenge_admin_ideas_path(@idea.challenge), notice: "Application deleted."
     end
   end
 

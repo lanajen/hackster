@@ -14,11 +14,11 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-index"
       purge = true
     end
-    if (record.changed & %w(name custom_status idea_survey_link enter_button_text end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date custom_tweet winners_announced_date pre_winners_announced_date ready)).any?
+    if (record.changed & %w(name custom_status idea_survey_link enter_button_text end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date custom_tweet winners_announced_date pre_winners_announced_date ready free_hardware_label free_hardware_quantity free_hardware_link free_hardware_end_date)).any?
       keys << "challenge-#{record.id}-status"
       purge = true
     end
-    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date disabled_pre_contest_winners pre_contest_label disable_projects_phase)).any?
+    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date disabled_pre_contest_winners pre_contest_label disable_projects_phase free_hardware_end_date)).any?
       keys += ["challenge-#{record.id}-timeline", "challenge-#{record.id}-faq"]
       purge = true
     end
@@ -63,19 +63,19 @@ class ChallengeObserver < ActiveRecord::Observer
     expire_index
   end
 
-  def after_launch_pre_contest record
-    NotificationCenter.notify_all :launched_pre_contest, :challenge, record.id
-    display_banners record
-    expire_cache record
-    expire_index
-  end
+  # def after_launch_pre_contest record
+  #   NotificationCenter.notify_all :launched_pre_contest, :challenge, record.id
+  #   display_banners record
+  #   expire_cache record
+  #   expire_index
+  # end
 
-  def after_end_pre_contest record
-    NotificationCenter.notify_via_email :ended_pre_contest, :challenge, record.id
-    expire_cache record
-  end
+  # def after_end_pre_contest record
+  #   NotificationCenter.notify_via_email :ended_pre_contest, :challenge, record.id
+  #   expire_cache record
+  # end
 
-  alias_method :after_end_pre_contest_fully, :after_end_pre_contest
+  # alias_method :after_end_pre_contest_fully, :after_end_pre_contest
 
   def after_launch_contest record
     NotificationCenter.notify_all :launched_contest, :challenge, record.id
