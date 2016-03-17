@@ -40,8 +40,6 @@ table.table.table-striped
           td= l idea.created_at
           td
             => idea.workflow_state
-            - if idea.address_id.present?
-              | (address in)
           td
             - if !@challenge.pre_contest_awarded? or @challenge.activate_free_hardware?
               - if idea.can_approve?

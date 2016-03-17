@@ -48,7 +48,7 @@
                   ' devices. Applications
                   - if @challenge.free_hardware_end_date
                     ' are open until #{l @challenge.free_hardware_end_date} PT and
-                  ' will be reviewed on a first come, first served basis.
+                  ' will be reviewed on a first come, first served basis. One device maximum per person.
                 - unless @current_entries[:pre_contest].any?
                   p
                     strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
