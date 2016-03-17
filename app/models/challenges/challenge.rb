@@ -134,22 +134,11 @@ class Challenge < ActiveRecord::Base
     state :new do
       event :pre_launch, transitions_to: :pre_registration
       event :launch_contest, transitions_to: :in_progress
-      # event :launch_pre_contest, transitions_to: :pre_contest_in_progress
     end
     state :pre_registration do
       event :launch_contest, transitions_to: :in_progress
-      # event :launch_pre_contest, transitions_to: :pre_contest_in_progress
       event :take_offline, transitions_to: :new
     end
-    # state :pre_contest_in_progress do
-    #   event :end_pre_contest_fully, transitions_to: :judging
-    #   event :end_pre_contest, transitions_to: :pre_contest_ended
-    #   event :take_offline, transitions_to: :new
-    # end
-    # state :pre_contest_ended do
-    #   event :launch_contest, transitions_to: :in_progress
-    #   event :take_offline, transitions_to: :new
-    # end
     state :in_progress do
       event :cancel, transitions_to: :canceled
       event :end, transitions_to: :judging
@@ -322,10 +311,6 @@ class Challenge < ActiveRecord::Base
   def open_for_submissions?
     workflow_state.in? OPEN_SUBMISSION_STATES
   end
-
-  # def pre_contest_pending?
-  #   activate_pre_contest? and workflow_state.in? %w(new pre_registration)
-  # end
 
   def ready_for_judging?
     judging?

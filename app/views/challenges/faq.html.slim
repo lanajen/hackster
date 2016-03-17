@@ -30,7 +30,7 @@
               - question = template.result(binding)
               - template = ERB.new faq['a']
               - answer = template.result(binding)
-              = render 'faq_entries/answer', question: question, answer: answer, anchor: "faq_g_#{i}"
+              = render 'faq_entries/answer', question: question, answer: replace_tokens_for(@challenge, answer), anchor: "faq_g_#{i}"
 
           - @faq_entries.each do |entry|
             = render 'faq_entries/answer', question: replace_tokens_for(@challenge, entry.title), answer: replace_tokens_for(@challenge, entry.body), anchor: dom_id(entry)

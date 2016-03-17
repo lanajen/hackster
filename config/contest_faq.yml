@@ -22,7 +22,7 @@
   a: "<%= render 'challenges/timeline', challenge: @challenge %>"
 - q: When will winners be announced? Where can I see the list?
   a: >
-    <% if @challenge.pre_winners_announced_date.present? %>
+    <% if @challenge.activate_pre_contest? and @challenge.pre_winners_announced_date.present? %>
       <p><%= @challenge.pre_contest_label %> winners will be announced on <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
     <% end %>
     <% if @challenge.winners_announced_date.present? %>
