@@ -3,7 +3,10 @@ class AppLogger
     LogLine.create(message: @message, log_type: @log_type, source: @source)
   end
 
-  alias_method :log, :create_log
+  def log
+    create_log
+    self
+  end
 
   def initialize message, log_type, source, exception=nil
     @message, @log_type, @source, @exception = clean_message(message), log_type, source, exception
@@ -15,7 +18,11 @@ class AppLogger
     # cache the error in redis and count how many times it happened in last 10min
     if exception and count = redis.get(exception_key)
       @count = count.to_i + 1
-      redis.set exception_key, @count
+      ttl = redis.ttl exception_key
+      ttl = 6000 if ttl == -1
+      puts 'count: ' + count.to_s
+      puts 'ttl: ' + ttl.to_s
+      redis.setex exception_key, ttl, @count
       @message = "**#{@count} times in last 10min** " + @message
     else
       @count = 1
@@ -29,11 +36,11 @@ class AppLogger
     log_and_notify
   end
 
-  def log_and_notify level=:error
+  def log_and_notify level=:error, force=false
     log_line = create_log
 
     # send only 1 in 100 instances of errors
-    if ENV['ENABLE_ERROR_NOTIF'] and @count == 1 or (@count - 1) % 100 == 0
+    if force or (ENV['ENABLE_ERROR_NOTIF'] and (@count == 1 or (@count - 1) % 100 == 0))
       send_notification(log_line, level)
     end
   end

@@ -89,7 +89,7 @@ class ChallengesController < ApplicationController
 
     if @challenge.activate_pre_contest? or @challenge.activate_free_hardware?
       @ideas = @challenge.ideas.joins(:user).order(:created_at)
-      @approved_ideas_count = @ideas.where(workflow_state: ChallengeIdea::APPROVED_STATES).count
+      @approved_ideas_count = @ideas.where(workflow_state: ChallengeIdea::OLD_APPROVED_STATES).count
       @rejected_ideas_count = @ideas.where(workflow_state: 'rejected').count
       @new_ideas_count = @ideas.where(workflow_state: 'new').count
     end
