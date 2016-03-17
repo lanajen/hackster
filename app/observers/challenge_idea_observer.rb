@@ -1,7 +1,8 @@
 class ChallengeIdeaObserver < ActiveRecord::Observer
   def after_create record
     NotificationCenter.notify_via_email :new, :challenge_idea, record.id
-    NotificationCenter.notify_via_email :new, :challenge_idea_admin, record.id unless record.challenge.auto_approve
+    NotificationCenter.notify_via_email :new, :challenge_idea_admin, record.id
+    expire_cache record
   end
 
   def after_update record
@@ -12,17 +13,11 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
   end
 
   def after_approve record
-    expire_cache record
     NotificationCenter.notify_all :approved, :challenge_idea, record.id
   end
 
   def after_reject record
-    expire_cache record
     NotificationCenter.notify_via_email :rejected, :challenge_idea, record.id
-  end
-
-  def after_mark_needs_approval record
-    expire_cache record
   end
 
   def after_destroy record

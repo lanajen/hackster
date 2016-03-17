@@ -1,5 +1,5 @@
 class ChallengeIdea < ActiveRecord::Base
-  APPROVED_STATES = %w(approved won lost)
+  OLD_APPROVED_STATES = %w(approved won lost)
 
   include HstoreColumn
   include Workflow
@@ -41,8 +41,8 @@ class ChallengeIdea < ActiveRecord::Base
     end
   end
 
-  def self.approved
-    where workflow_state: APPROVED_STATES
+  def self.old_approved
+    where workflow_state: OLD_APPROVED_STATES
   end
 
   def self.won

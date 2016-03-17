@@ -124,7 +124,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :winners_announced_date, :datetime
 
   counters_column :hcounters_cache
-  has_counter :ideas, 'activate_free_hardware? ? ideas.count : ideas.approved.count'
+  has_counter :ideas, 'activate_free_hardware? ? ideas.count : ideas.old_approved.count'
   has_counter :projects, 'projects.valid.count'
   has_counter :registrations, 'registrations.count'
 
@@ -250,7 +250,7 @@ class Challenge < ActiveRecord::Base
       @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced by' } if winners_announced_date
     end
 
-    @dates = @dates.sort_by{|v| v[:date] }
+    @dates = @dates.sort_by{|v| v[:date] }  # sort
 
     @dates
   end

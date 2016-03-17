@@ -59,7 +59,7 @@ class ChallengesController < ApplicationController
   def ideas
     title "#{@challenge.name} ideas"
     @ideas = @challenge.ideas
-    @ideas = @ideas.approved unless @challenge.activate_free_hardware?
+    @ideas = @ideas.old_approved unless @challenge.activate_free_hardware?
     @ideas = @ideas.order(created_at: :desc).includes(user: :avatar).paginate(per_page: 12, page: safe_page_params)
   end
 
