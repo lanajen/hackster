@@ -77,11 +77,11 @@ class Ability
 
     can :create, ChallengeIdea do |idea|
       challenge = idea.challenge
-      can_enter_challenge?(challenge) and (challenge.activate_pre_contest? and challenge.workflow_state == 'pre_contest_in_progress') or (challenge.activate_free_hardware? and challenge.open_for_submissions?)
+      can_enter_challenge?(challenge) and (challenge.activate_pre_contest? and challenge.workflow_state == 'pre_contest_in_progress') or challenge.free_hardware_applications_open?
     end
 
     can :edit, ChallengeIdea do |idea|
-      idea.new? and idea.challenge.open_for_submissions?
+      idea.new? and idea.challenge.free_hardware_applications_open?
     end
 
     can :create, ChallengeRegistration do |registration|

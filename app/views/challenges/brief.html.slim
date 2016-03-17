@@ -47,13 +47,13 @@
                   => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
                   ' devices. Applications
                   - if @challenge.free_hardware_end_date
-                    ' are open until #{l @challenge.free_hardware_end_date} PT and
+                    ' are open until #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT and
                   ' will be reviewed on a first come, first served basis. One device maximum per person.
                 - unless @current_entries[:pre_contest].any?
                   p
                     strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
               - else
-                p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date} PT.
+                p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT.
 
               - if @current_entries[:pre_contest].any?
                 hr

@@ -22,7 +22,7 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def new
-    redirect_to @challenge, notice: "Applications for free hardware are currently closed." and return unless @challenge.activate_free_hardware?
+    redirect_to @challenge, notice: "Applications for free hardware are currently closed." and return unless @challenge.free_hardware_applications_open?
 
     @idea = @challenge.ideas.new
     authorize! :create, @idea
