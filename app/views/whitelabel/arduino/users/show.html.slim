@@ -35,7 +35,7 @@
               a.smooth-scroll href="#public-proj" data-offset=-130
                 | Public projects and articles
                 span.proj-number= @public_count
-            - if user_is_current_or_admin?
+            - if user_is_current_or_admin? and (@private_count + @other_count > 0)
               li
                 a.smooth-scroll href="#private-proj" data-offset=-130
                   | Private projects and articles

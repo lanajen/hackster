@@ -47,7 +47,7 @@ class UsersController < ApplicationController
       @replicated_query = @replicated_query.with_group(current_platform)
 
       @public_projects = @public_projects.with_group(current_platform, all_moderation_states: true)
-      if @user == current_user or user_signed_in? and current_user.is? :admin
+      if user_signed_in? and (@user.id == current_user.id or current_user.is?(:admin))
         @private_projects = @private_projects.with_origin_platform(current_platform)
 
         # projects that were created on this platform but are not linked (= don't have a product)
@@ -76,6 +76,7 @@ class UsersController < ApplicationController
     @guest_count = @guest_query.count
     @respected_count = @respected_query.count
     @replicated_count = @replicated_query.count
+    @other_count ||= 0
 
     if current_platform
       @comments = @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'BaseArticle'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }).limit(3)

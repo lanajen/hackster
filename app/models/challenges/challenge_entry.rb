@@ -8,7 +8,7 @@ class ChallengeEntry < ActiveRecord::Base
   include Workflow
 
   belongs_to :challenge
-  belongs_to :project
+  belongs_to :project, class_name: 'BaseArticle'
   belongs_to :user
   has_and_belongs_to_many :prizes
   has_many :notifications, as: :notifiable, dependent: :delete_all
