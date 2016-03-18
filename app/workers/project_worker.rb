@@ -56,6 +56,7 @@ class ProjectWorker < BaseWorker
       end
     end
 
+    # that's expensive, but that's the most certain way to make the update for now
     project.users.each do |user|
       user.projects_counter.update_all
     end

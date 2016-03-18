@@ -278,6 +278,7 @@ class ApplicationController < ActionController::Base
           response.headers['X-Alert-ID'] = '#badge-alert'
         end
       end
+    rescue ActionView::MissingTemplate  # sometimes badges are shown on non-html pages
     end
 
     def current_ability
