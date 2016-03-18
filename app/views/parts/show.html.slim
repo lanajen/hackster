@@ -22,6 +22,9 @@
   meta(property="twitter:data2" content=@part.owners_count)
   meta(property="twitter:label2" content="OWNERS")
 
+  = auto_discovery_link_tag :rss, part_path(@part, format: :rss), title: "Latest projects for #{@part.name} - Hackster.io"
+  = auto_discovery_link_tag :atom, part_path(@part, format: :atom), title: "Latest projects for #{@part.name} - Hackster.io"
+
 = render 'parts/part', { part: @part }
 
 - if @part.parent_parts.any?

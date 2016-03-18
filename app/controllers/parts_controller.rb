@@ -32,8 +32,15 @@ class PartsController < ApplicationController
     end
     meta_desc @meta_desc
     @projects = @part.projects.publyc.magic_sort.paginate(page: safe_page_params)
-    @part = @part.decorate
-    @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
+
+    respond_to do |format|
+      format.html do
+        @part = @part.decorate
+        @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
+      end
+      format.rss { redirect_to part_path(@part, format: :atom), status: :moved_permanently }
+      format.atom { render 'projects/index', layout: false }
+    end
   end
 
   def embed
