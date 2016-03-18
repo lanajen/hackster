@@ -49,7 +49,7 @@
           - else
             | Access private and draft projects below.
 
-      - if user_is_current_or_admin? and @private_count > 0 or (is_whitelabel? and @other_count > 0)
+      - if user_is_current_or_admin? and (@private_count > 0 or (is_whitelabel? and @other_count > 0))
           hr
           .clearfix
             h2.pull-left
