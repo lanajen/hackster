@@ -27,7 +27,11 @@ json.communities project.groups.where.not(groups: { type: 'Event' }).includes(:a
   json.partial! 'api/private/communities/community', community: community
 end
 if @with_details
-  json.story_html project.decorate.story
+  if project.story_json.nil?
+    json.story_html project.decorate.description
+  else
+    json.story_json StoryJsonJsonDecorator.new(project.story_json).to_json
+  end
   json.products project.part_joins.includes(part: [:image, :platform]) do |part_join|
     part = part_join.part
     json.id part.id
