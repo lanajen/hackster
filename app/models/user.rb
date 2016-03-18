@@ -263,6 +263,7 @@ class User < ActiveRecord::Base
   has_counter :thoughts, 'thoughts.count'
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
+  # hi!! new props should be created under hproperties
   store :properties, accessors: []
   hstore_column :properties, :available_for_ft, :boolean
   hstore_column :properties, :available_for_pt, :boolean

@@ -50,7 +50,7 @@
 
   = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
 
-  form id='code-upload-form' action='/code_files' method='post' enctype='multipart/form-data' style='display:none;'
+  form id='code-upload-form' action=code_files_path method='post' enctype='multipart/form-data' style='display:none;'
     input type="file" name="file"
 
   javascript:
