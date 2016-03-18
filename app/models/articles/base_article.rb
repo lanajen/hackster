@@ -613,7 +613,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def has_part_related_to_origin_platform?
-    parts.where(platform_id: origin_platform_id).exists?
+    parts.where(platform_id: origin_platform_id, exclude_from_platform: false).exists?
   end
 
   def has_platform?

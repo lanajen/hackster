@@ -8,13 +8,16 @@
       .row
         .col-xs-12
           b> Project:
-          ==> link_to @project.name, @project, target: '_blank'
+          - if @project
+            ==> link_to @project.name, @project, target: '_blank'
+          - else
+            ' Project not found
           ' -
           b> Entrant:
           - user = @entry.user
           ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user, target: '_blank'
           ==> link_to user.name, user, target: '_blank'
-          - if @project.team_members_count > 1
+          - if @project and @project.team_members_count > 1
             b> Team:
             - @project.team_members.includes(:user).each do |member|
               - user = member.user
@@ -40,4 +43,5 @@
                 = link_to 'Cancel', challenge_admin_entries_path(@challenge), class: 'btn btn-link btn-sm'
     #iframe-container
       #dragbar
-      iframe  src="#{url_for(@project)}?blank_frame=1" frameborder="0"
+      - if @project
+        iframe  src="#{url_for(@project)}?blank_frame=1" frameborder="0"
