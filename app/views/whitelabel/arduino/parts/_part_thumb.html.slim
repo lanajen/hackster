@@ -1,8 +1,0 @@
-.part-thumb
-  a.img-container
-    - if part.image
-      = image_tag(part.image(:medium))
-    .description= part.one_liner_or_description
-  h3
-    a
-      = part.name

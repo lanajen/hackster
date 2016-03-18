@@ -270,6 +270,7 @@ class User < ActiveRecord::Base
   hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
+  hstore_column :properties, :projects_counter_cache, :string
   hstore_column :properties, :reputation_last_updated_at, :datetime
   hstore_column :properties, :remote_ok, :boolean
   hstore_column :properties, :toolbox_shown, :boolean
@@ -654,6 +655,10 @@ class User < ActiveRecord::Base
       self.project_email_frequency = val
       self.email_subscriptions = email_subscriptions + ['new_projects'] if !subscribed_to? 'email', 'new_projects'
     end
+  end
+
+  def projects_counter
+    ProjectCounter.new self
   end
 
   def respected? respectable

@@ -17,6 +17,7 @@ class Event < GeographicCommunity
     :voting_end_date_dummy, :start_date, :end_date
 
   accepts_nested_attributes_for :awards, allow_destroy: true
+  validates :hackathon, presence: true
 
   add_websites :tickets
 

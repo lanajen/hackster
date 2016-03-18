@@ -51,6 +51,7 @@ class BaseArticle < ActiveRecord::Base
 
   editable_slug :slug
 
+  belongs_to :origin_platform, class_name: 'Platform'
   belongs_to :team, dependent: :destroy
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
@@ -435,8 +436,12 @@ class BaseArticle < ActiveRecord::Base
 
   def self.with_group group, opts={}
     records = joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
-    records = records.where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }) unless opts[:all] == true
+    records = records.where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }) unless opts[:all_moderation_states] == true
     records
+  end
+
+  def self.with_origin_platform group
+    where(origin_platform_id: group.id)
   end
 
   def self.with_type content_type
@@ -607,6 +612,14 @@ class BaseArticle < ActiveRecord::Base
     name == DEFAULT_NAME
   end
 
+  def has_part_related_to_origin_platform?
+    parts.where(platform_id: origin_platform_id).exists?
+  end
+
+  def has_platform?
+    !origin_platform_id.zero?
+  end
+
   def hidden?
     hide
   end
@@ -635,6 +648,10 @@ class BaseArticle < ActiveRecord::Base
 
   def needs_review?
     publyc? and (pending_review? or needs_work?)
+  end
+
+  def origin_site
+    @origin_site ||= ClientSubdomain.joins(:platform).where(groups: { id: origin_platform_id }).first if has_platform?
   end
 
   def security_token

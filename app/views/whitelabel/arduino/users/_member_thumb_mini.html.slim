@@ -12,8 +12,8 @@
 
     ul.project-stats.list-inline
       li
-        strong>= number_with_delimiter user.live_projects_count
-        ==> pluralize_without_count user.live_projects_count, 'project'
+        strong>= number_with_delimiter user.projects_counter.count(current_platform)
+        ==> pluralize_without_count user.projects_counter.count(current_platform), 'project'
       li
         strong>= number_with_delimiter user.followers_count
         ==> pluralize_without_count user.followers_count, 'follower'

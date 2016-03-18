@@ -24,8 +24,8 @@
           = user.skill_tags.pluck(:name).map{ |tag| link_to tag, "/tags/#{tag}" }.join(' / ').html_safe
     ul.list-unstyled.list-inline.project-stats
       li
-        span.stat-figure> = number_with_delimiter user.live_projects_count
-        = pluralize_without_count user.live_projects_count, 'project'
+        span.stat-figure> = number_with_delimiter user.projects_counter.count(current_platform)
+        = pluralize_without_count user.projects_counter.count(current_platform), 'project'
       li
         span.stat-figure> = number_with_delimiter user.project_respects_count
         = pluralize_without_count user.project_respects_count, 'respect'

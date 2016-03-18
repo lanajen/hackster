@@ -18,8 +18,8 @@
             h2.user-name= @user.user_name
             ul
               li
-                span.number>= @user.live_projects_count
-                = pluralize_without_count @user.projects_count, 'project'
+                span.number>= @user.projects_counter.count(current_platform)
+                = pluralize_without_count @user.projects_counter.count(current_platform), 'project'
               li
                 span.number>= @user.followers_count
                 = pluralize_without_count @user.followers_count, 'follower'
@@ -39,7 +39,7 @@
               li
                 a.smooth-scroll href="#private-proj" data-offset=-130
                   | Private projects and articles
-                  span.proj-number= @private_count
+                  span.proj-number= @private_count + @other_count
             - if @guest_count > 0
               li
                 a.smooth-scroll href="#guest-proj" data-offset=-130
@@ -71,12 +71,8 @@
           - if @public_count > 3
             .pull-right
               = link_to "See all of #{@user.name}'s public projects", user_projects_path(@user)
-        - if @other_projects and @other_projects.any?
-          strong.text-muted
-            ' Built with #{current_platform.name}
-            = content_tag(:span, @public_projects.count, class: 'badge')
 
-      - if @public_projects.any?
+      - if @public_count > 0
         .thumb-list
           .row.project-list
             - @public_projects.each_with_index do |project, i|
@@ -88,36 +84,46 @@
           - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
           ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
           ' !
-        p.smaller.text-muted
-          strong> Tip:
-          | Access private projects below.
       - else
         | #{@user.name} has no public projects.
 
-      - if @other_projects and @other_projects.any?
-        strong.text-muted
-          ' Built with other platforms
-          = content_tag(:span, @other_projects.count, class: 'badge')
-        .thumb-list
-          .row.project-list
-            - @other_projects.each_with_index do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_host: APP_CONFIG['default_host'], locale: I18n.default_www_locale }
+      - if user_is_current? and (@private_count > 0 or @other_count > 0)
+        p.smaller.text-muted
+          strong> Tip:
+          | Access private, draft and projects not made with #{current_platform.name} products below.
 
-      - if user_is_current_or_admin? and @private_projects.any?
+      - if user_is_current_or_admin? and (@private_count > 0 or @other_count > 0)
           hr
           .clearfix
             h2.pull-left#private-proj
-              ' Private projects and articles
-              = content_tag(:span, @private_count, class: 'badge')
+              i.fa.fa-lock
+              span Private projects and articles
+              = content_tag(:span, @private_count + @other_count, class: 'badge')
             - if @private_count > 3
               .pull-right
                 = link_to "See all your private projects", user_projects_drafts_path(@user)
-          .thumb-list
-            .row.project-list
-              - @private_projects.each_with_index do |project, i|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
-      - if @guest_projects.any?
+          - if @private_count > 0
+            .thumb-list
+              .row.project-list
+                - @private_projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+          - else
+            p No private projects.
+
+          - if @other_count > 0
+            .row
+              .col-md-6
+                hr
+            p
+              i.fa.fa-lock
+              span Public projects not using #{current_platform.name} products:
+            .thumb-list
+              .row.project-list
+                - @other_projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+      - if @guest_count > 0
         hr
         .clearfix
           h2.pull-left#guest-proj
@@ -131,7 +137,7 @@
             - @guest_projects.each_with_index do |project, i|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
-      - if @parts.any? or user_is_current?
+      - if @parts_count > 0 or user_is_current?
         hr
         .clearfix
           h2.pull-left#toolbox
@@ -145,7 +151,7 @@
               = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
         .row
           - @parts.each do |part|
-            .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
+            .col-md-4= render partial: 'parts/part_thumb_whitelabel', locals: { part: part.decorate }
 
       hr
       .clearfix
@@ -155,7 +161,7 @@
         - if @replicated_count > 3
           .pull-right
             = link_to "See all of #{@user.name}'s replicated projects", user_projects_replicated_path(@user)
-      - if @replicated_projects.any?
+      - if @replicated_count > 0
         .thumb-list
           .row.project-list
             - @replicated_projects.each_with_index do |project, i|
@@ -177,7 +183,7 @@
         - if @respected_count > 3
           .pull-right
             = link_to "See all of #{@user.name}'s respected projects", user_projects_respected_path(@user)
-      - if @respected_projects.any?
+      - if @respected_count > 0
         .thumb-list
           .row.project-list
             - @respected_projects.each_with_index do |project, i|
@@ -199,7 +205,7 @@
         - if @comments_count > 3
           .pull-right
             = link_to "See all of #{@user.name}'s comments", user_comments_path(@user)
-      - if @comments.any?
+      - if @comments_count > 0
         ul.list-unstyled.user-comments-list
           - @comments.each do |comment|
             li.comment

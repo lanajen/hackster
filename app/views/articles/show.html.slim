@@ -27,6 +27,10 @@ c= content_for :head do
         = render 'projects/project_type'
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
+            - if is_whitelabel? and @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
+                .alert.alert-warning
+                  strong> Heads up!
+                  ' This write-up is currently visible only to you on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the products lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
             .pull-right-desktop
               - if @project.publyc?
                 span style="position:relative;"= react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })

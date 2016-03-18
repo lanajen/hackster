@@ -1,0 +1,8 @@
+.part-thumb
+  a.img-container href=(part.product_page_link || part.store_link) target='_blank'
+    - if part.image
+      = image_tag(part.image(:medium))
+    .description= part.one_liner_or_description
+  h3
+    a href=(part.product_page_link || part.store_link) target='_blank'
+      = part.name

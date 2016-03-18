@@ -109,7 +109,7 @@ class ArticlesController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
+        if (!ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?) and !current_user.try(:id).in?(@project.users.pluck('users.id'))
           raise ActiveRecord::RecordNotFound
         end
       end

@@ -7,7 +7,7 @@ class ProjectImportsController < ApplicationController
   def create
     if urls_valid?(params[:urls])
       product_tags_string = begin; CGI::unescape(params[:product_tags_string]); rescue; end;
-      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, current_platform.try(:user_name), product_tags_string
+      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, current_platform.try(:id), product_tags_string
       send_admin_message(true) unless current_user.is? :admin
       redirect_to current_user, notice: "Our robot spiders are analyzing your page and getting ready to import it. They'll send you an email when they're done."
     else
@@ -29,7 +29,9 @@ class ProjectImportsController < ApplicationController
         @message.body += "<br><a href='#{url}'>#{url}</a>"
       end
       @message.body += "</p>"
-      @message.body += "<p>Platform: #{params[:platform]}</p>" if params[:platform].present?
+      if is_whitelabel?
+        @message.body += "<p>Platform: #{current_site.name}</p>"
+      end
       @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:urls]}'>Start importing</a></p>"
       MailerQueue.enqueue_generic_email(@message)

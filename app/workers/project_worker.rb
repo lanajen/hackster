@@ -24,16 +24,16 @@ class ProjectWorker < BaseWorker
     return unless project = BaseArticle.find_by_id(id)
 
     if project.pryvate?
-      project.platforms.delete_all
+      project.platforms.destroy_all
     else
       # merge platform_tags (for back compatibility) and platforms from parts
       platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase }).uniq
       platforms += project.part_platforms.default_scope + project.part_secondary_platforms.default_scope
-      project.platforms = platforms.uniq
 
       project.sub_platforms.each do |sub_platform|
-        project.platforms << sub_platform unless sub_platform.in? platforms
+        platforms << sub_platform unless sub_platform.in? platforms
       end
+      project.platforms = platforms.uniq
 
       project.project_collections.joins("INNER JOIN groups ON groups.id = project_collections.collectable_id AND project_collections.collectable_type = 'Group'").where(groups: { type: 'Platform'}).each do |collection|
 
@@ -54,6 +54,10 @@ class ProjectWorker < BaseWorker
           # do nothing
         end
       end
+    end
+
+    project.users.each do |user|
+      user.projects_counter.update_all
     end
   end
 end

@@ -24,12 +24,13 @@ c= content_for :head do
 
     #content.project-page class="project-#{@project.id}"
       .wrapper780.protip-show
-        - if @project.content_type_to_human or (!@project.unpublished? and @can_edit)
-          section.section-no-container
-            .info-header
-              = @project.content_type_to_human.presence || 'Please set content type (under the publish dropdown next to Edit button)'
+        = render 'projects/project_type'
         section.section-no-container.protip-section-heading.clearfix
           - if @can_edit
+            - if @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
+                .alert.alert-warning
+                  strong> Heads up!
+                  ' This article is currently visible only to you on the Arduino Create Projects site because no Arduino hardware was found in the products list. Only projects made with Arduino hardware will appear publicly on the Arduino Create Projects site.
             .pull-right-desktop
               - if @project.publyc?
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project

@@ -10,6 +10,6 @@ json.interests user.interest_tags_cached
 json.skills user.skill_tags_cached
 json.stats do
   json.impressions user.impressions_count
-  json.projects user.live_projects_count
+  json.projects user.projects_counter.count(current_platform)
   json.followers user.followers_count
 end

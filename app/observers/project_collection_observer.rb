@@ -65,11 +65,5 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       Cashier.expire "project-#{project.id}-teaser"
 
       project.reject! if project.pending_review? and project.force_hide?
-      # if project.issues.empty?
-      #   issue = project.issues.new title: 'Feedback'
-      #   issue.type = 'Feedback'
-      #   issue.user_id = 0
-      #   issue.save
-      # end
     end
 end

@@ -24,9 +24,10 @@ section#projects-list
         li= link_to 'Toolbox', user_toolbox_show_path(@user)
 
     h2
-      ' Private projects and articles
+      i.fa.fa-lock
+      span> Private projects and articles
       = content_tag(:span, @private_projects.count, class: 'badge')
-    - if user_is_current_or_admin? and @private_projects.count > 0
+    - if @private_projects.count > 0
       .thumb-list
         .row.project-list
           - @private_projects.each_with_index do |project, i|
@@ -35,3 +36,15 @@ section#projects-list
       p You have no private projects.
     - else
       p #{@user} has no private projects.
+
+    - if is_whitelabel? and @other_projects.any?
+      .row
+        .col-md-6
+          hr
+      p
+        i.fa.fa-lock
+        span Public projects not using #{current_platform.name} products:
+      .thumb-list
+        .row.project-list
+          - @other_projects.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate }

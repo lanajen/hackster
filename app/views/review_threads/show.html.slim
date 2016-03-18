@@ -24,6 +24,13 @@
           - if @project.assignment.present?
             .alert.alert-warning
               p This project is part of a university assignment. If it fits the guidelines feel free to approve it, or if it's close do give feedback. Otherwise gently reject it letting the authors know that this will not affect their grade and the project will still be visible on their profile.
+        - if @project.has_platform?
+          p
+            ' Created from
+            = link_to @project.origin_site.name, @project.origin_site.base_uri, target: '_blank'
+          - unless @project.has_part_related_to_origin_platform?
+            .alert.alert-warning
+              p This write-up is currently not visible on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the components, tools or apps lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
       = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, userRole: (%w(admin hackster_moderator super_moderator moderator) & current_user.roles).first, isAuthor: current_user.id.in?(@project.users.pluck(:id)) }, {}
 
 = content_for :js do

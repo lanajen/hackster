@@ -278,6 +278,11 @@
           .col-md-4.right-column
             .container-mobile
               - if @can_edit
+                - if is_whitelabel? and @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
+                  .alert.alert-warning
+                    p
+                      strong> Heads up!
+                      ' This write-up is currently visible only to you on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the components, tools or apps lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
                 section.section-thumbs
                   / h4 Manage this project
                   = render 'base_articles/manage_actions', { btn_size: '' }

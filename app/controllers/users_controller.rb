@@ -40,31 +40,27 @@ class UsersController < ApplicationController
     @replicated_query = @user.replicated_projects
 
     if is_whitelabel?
-      @private_projects = if current_user == @user
-        @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
-      else
-        @private_projects.with_group(current_platform)
-      end
-      @private_count = @private_projects.count
-      @public_projects = @public_projects.with_group(current_platform, all: true)
-      @public_count = @public_projects.count
-      @respected_projects = @respected_projects.with_group(current_platform)
-      @replicated_projects = @replicated_projects.with_group(current_platform)
-      @guest_projects = @guest_projects.with_group(current_platform)
-      if @user == current_user and !current_site.hide_alternate_search_results
-        ids = @user.projects.with_group(current_platform, all: true).pluck(:id)
-        @other_projects = @user.projects.where.not(id: ids).for_thumb_display
-        @public_count += @other_projects.count
-      end
-
-      @parts = @user.owned_parts.where(platform_id: current_platform.id).limit(3)
-      @parts_count = @user.owned_parts.where(platform_id: current_platform.id).count
-
-      @public_query = @public_query.with_group(current_platform, all: true)
-      @private_query = @private_query.with_group(current_platform)
+      @public_query = @public_query.with_group(current_platform, all_moderation_states: true)
+      @private_query = @private_query.with_origin_platform(current_platform)
       @guest_query = @guest_query.with_group(current_platform)
       @respected_query = @respected_query.with_group(current_platform)
       @replicated_query = @replicated_query.with_group(current_platform)
+
+      @public_projects = @public_projects.with_group(current_platform, all_moderation_states: true)
+      if @user == current_user or user_signed_in? and current_user.is? :admin
+        @private_projects = @private_projects.with_origin_platform(current_platform)
+
+        # projects that were created on this platform but are not linked (= don't have a product)
+        ids = @public_query.pluck(:id) + @private_query.pluck(:id)
+        @other_projects = @user.projects.where(origin_platform_id: current_platform.id).where.not(id: ids).for_thumb_display
+        @other_count = @other_projects.count
+      end
+      @respected_projects = @respected_projects.with_group(current_platform)
+      @replicated_projects = @replicated_projects.with_group(current_platform)
+      @guest_projects = @guest_projects.with_group(current_platform)
+
+      @parts = @user.owned_parts.where(platform_id: current_platform.id).limit(3)
+      @parts_count = @user.owned_parts.where(platform_id: current_platform.id).count
     else
       @parts = @user.owned_parts.limit(3)
       @parts_count = @user.owned_parts.count
@@ -75,8 +71,8 @@ class UsersController < ApplicationController
       end
     end
 
-    @public_count ||= @public_query.count
-    @private_count ||= @private_query.count
+    @public_count = @public_query.count
+    @private_count = @private_query.count
     @guest_count = @guest_query.count
     @respected_count = @respected_query.count
     @replicated_count = @replicated_query.count
@@ -99,7 +95,7 @@ class UsersController < ApplicationController
     @public_projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     if is_whitelabel?
       @public_projects = @public_projects.with_group(current_platform)
-      ids = @user.projects.with_group(current_platform, all: true).pluck(:id)
+      ids = @user.projects.with_group(current_platform, all_moderation_states: true).pluck(:id)
       @other_projects = @user.projects.where.not(id: ids).for_thumb_display
     end
   end
@@ -112,11 +108,11 @@ class UsersController < ApplicationController
 
     @private_projects = @user.projects.pryvate.for_thumb_display
     if is_whitelabel?
-      @private_projects = if current_user == @user
-        @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
-      else
-        @private_projects.with_group(current_platform)
-      end
+      @private_projects = @private_projects.with_origin_platform(current_platform)
+
+      # projects that were created on this platform but are not linked (= don't have a product)
+      ids = @user.projects.with_origin_platform(current_platform).pluck(:id)
+      @other_projects = @user.projects.where(origin_platform_id: current_platform.id).where.not(id: ids).for_thumb_display
     end
   end
 
