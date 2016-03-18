@@ -810,7 +810,7 @@ class BaseArticle < ActiveRecord::Base
     end
 
     def extract_content_from_story_json item
-      return item['content'] if item['content']
+      return item['content'] if item['content'].present?
 
       item['children'].map do |child|
         extract_content_from_story_json(child)
