@@ -27,7 +27,8 @@ class ProjectCounter
 
   private
     def get_store
-      eval @user.projects_counter_cache
+      store = @user.projects_counter_cache
+      store.present? ? eval(store) : {}
     end
 
     def set_store val
