@@ -38,7 +38,7 @@ class ScraperQueue < BaseWorker
         @project.build_team
         @project.team.members.new(user_id: user_id)
         @project.build_logs.each{|p| p.user_id = user_id }
-        @project.origin_platform_id = platform_id
+        @project.origin_platform_id = platform_id if platform_id.present?
         @project.product_tags_string = ((@project.product_tags_string.try(:split, ',') || []) + product_tags_string.try(:split, ',')).join(',') if product_tags_string.present?
         messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
         raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save
