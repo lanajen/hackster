@@ -22,7 +22,7 @@ class ScraperQueue < BaseWorker
     log_error e, clean_backtrace, message
   end
 
-  def scrape_project page_url, user_id, platform_id=nil, product_tags_string=nil
+  def scrape_project page_url, user_id, platform_id=0, product_tags_string=nil
     @message = Message.new(
       to_email: User.find(user_id).email,
       message_type: 'generic'
