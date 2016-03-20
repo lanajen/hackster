@@ -11,11 +11,25 @@ class Client::PartsController < Client::BaseController
   end
 
   def show
-    title "#{@platform.name} #{@part.name} projects"
     meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
-    @part = @part.decorate
-    @projects = @part.projects.paginate(page: safe_page_params)
-    render template: 'parts/show'
+
+    @projects = @part.projects.publyc
+
+    respond_to do |format|
+      format.html do
+        title "#{@part.full_name} projects"
+        @projects = @projects.magic_sort.paginate(page: safe_page_params)
+        @part = @part.decorate
+        @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
+        render template: 'parts/show'
+      end
+      format.rss { redirect_to part_path(@part, format: :atom), status: :moved_permanently }
+      format.atom do
+        title "Latest #{@part.full_name} projects"
+        @projects = @projects.last_public.limit(10)
+        render 'projects/index', layout: false
+      end
+    end
   end
 
   def embed

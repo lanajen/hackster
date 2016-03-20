@@ -151,7 +151,7 @@
               = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
         .row
           - @parts.each do |part|
-            .col-md-4= render partial: 'parts/part_thumb_whitelabel', locals: { part: part.decorate }
+            .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
 
       hr
       .clearfix

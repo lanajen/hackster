@@ -15,7 +15,7 @@
   meta(property="twitter:domain" content="hackster.io")
   meta(property="twitter:title" content="#{@part.full_name} projects")
   meta(property="twitter:description" content=@part.one_liner_or_description)
-  link(rel="canonical" href=platform_part_url(@platform.user_name, @part.slug))
+  link(rel="canonical" href=platform_part_url(@platform.user_name, @part.slug, host: APP_CONFIG['default_host']))
   meta(property="keywords" content="#{@part.full_name} projects")
   meta(property="twitter:data1" content=@part.projects_count)
   meta(property="twitter:label1" content="PROJECTS")
@@ -34,8 +34,7 @@
 
 .main-section-actions.clearfix.mg-30
   .pull-right
-    - hash = is_whitelabel? ? {} : { base_article: { platform_tags_string: @platform.name } }
-    - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash), source: 'new_project')
+    - link = user_signed_in? ? new_project_path : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path, source: 'new_project')
     ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
 
   / .btn-group.pull-left
