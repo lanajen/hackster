@@ -214,10 +214,10 @@ const ImageUtils = {
           .get(`${getApiPath()}/private/files/remote_upload?job_id=${jobId}`)
           .withCredentials()
           .end((err, res) => {
-            if(err) {
+            if (err || res.body.status === 'failed') {
               clearInterval(poll);
               reject(err);
-            } else if(res.body.status === 'complete') {
+            } else if (res.body.status === 'complete') {
               clearInterval(poll);
               resolve(res.body);
             }
