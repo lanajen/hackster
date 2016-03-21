@@ -1,6 +1,6 @@
 class ArticlesController < ApplicationController
   before_filter :load_project_with_hid, only: [:show, :update]
-  before_filter :ensure_belongs_to_platform, only: [:show, :update]
+  before_filter :ensure_project_belongs_to_platform, only: [:show, :update]
   respond_to :html
   skip_before_filter :track_visitor, only: [:show]
   skip_after_filter :track_landing_page, only: [:show]
@@ -107,14 +107,6 @@ class ArticlesController < ApplicationController
   end
 
   private
-    def ensure_belongs_to_platform
-      if is_whitelabel?
-        if (!ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?) and !current_user.try(:id).in?(@project.users.pluck('users.id'))
-          raise ActiveRecord::RecordNotFound
-        end
-      end
-    end
-
     def initialize_project
       @project.build_cover_image unless @project.cover_image
     end

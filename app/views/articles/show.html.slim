@@ -75,7 +75,7 @@ c= content_for :head do
                   span.stat-figure> = number_with_delimiter @project.respects_count
                   = pluralize_without_count @project.respects_count, 'respect'
 
-        - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
+        - cache_unless @can_edit, [I18n.locale, @project, 'left-column', is_whitelabel?], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
 
           section.section-container.section-no-title
             section.section-content.clearfix

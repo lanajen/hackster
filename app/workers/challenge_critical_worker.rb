@@ -21,7 +21,7 @@ class ChallengeCriticalWorker < BaseWorker
       row << project.impressions_count
       row << project.respects_count
       row << project.comments_count
-      row << project.replications_count
+      row << project.respond_to?(:replications_count) ? project.replications_count : ''
       row << entry.workflow_state
       rows << row
     end

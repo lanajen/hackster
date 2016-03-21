@@ -378,6 +378,14 @@ class ApplicationController < ActionController::Base
       slug.sluggable
     end
 
+    def ensure_project_belongs_to_platform
+      if is_whitelabel?
+        if (!ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?) and !(current_user.try(:is?, :admin) or current_user.try(:id).in?(@project.users.pluck('users.id')))
+          raise ActiveRecord::RecordNotFound
+        end
+      end
+    end
+
     def mark_last_seen!
       TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
     end

@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
   before_filter :load_project, only: [:redirect_to_slug_route]
-  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :redirect_to_slug_route]
+  before_filter :ensure_project_belongs_to_platform, only: [:show, :embed, :print, :redirect_to_slug_route]
   before_filter :load_and_authorize_resource, only: [:edit, :submit, :update_workflow]
   respond_to :html
   after_action :allow_iframe, only: :embed
@@ -656,14 +656,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-    def ensure_belongs_to_platform
-      if is_whitelabel?
-        if (!ProjectCollection.where(collectable: current_platform, project: @project).exists? or @project.users.reject{|u| u.enable_sharing }.any?) and !current_user.try(:id).in?(@project.users.pluck('users.id'))
-          raise ActiveRecord::RecordNotFound
-        end
-      end
-    end
-
     def initialize_project
       @project.build_cover_image unless @project.cover_image
     end
