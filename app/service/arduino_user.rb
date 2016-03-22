@@ -15,7 +15,7 @@ class ArduinoUser
       if parsed_info.try(:[], 'services').try(:[], 'create').try(:[], 'enabled') == true
         true
       else
-        AppLogger.new("Arduino user `#{user_name}` appears unauthorized: #{parsed_info.inspect}",
+        AppLogger.new("Arduino user `#{@user_name}` appears unauthorized: #{parsed_info.inspect}",
           'unauthorized',
           'arduino').log
         false
