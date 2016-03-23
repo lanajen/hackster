@@ -551,7 +551,9 @@ HackerIo::Application.routes.draw do
             resources :comments, only: [:create]
           end
 
-          resources :code_files, only: [:create]
+          resources :code_files, only: [:create] do
+            get 'download', on: :member
+          end
           resources :comments, only: [:edit, :update, :destroy]
 
           resources :files, only: [:create, :show, :destroy] do

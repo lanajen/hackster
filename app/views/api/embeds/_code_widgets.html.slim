@@ -17,7 +17,9 @@
                 - if !widget.binary? and widget.formatted_code.present?
                   button.btn.btn-primary.btn-xs.copy-code.istooltip title='Copy the code' data-container='body' data-trigger='hover'
                     i.fa.fa-clipboard
-                - if document = widget.document and document.file_url.present?
+                  a.btn.btn-primary.btn-xs rel='tooltip' title='Download' href=download_code_file_path(widget) data-container='body'
+                    i.fa.fa-cloud-download
+                - elsif document = widget.document and document.file_url.present?
                   a.btn.btn-primary.btn-xs rel='tooltip' title='Download' href=document.file_url data-container='body'
                     i.fa.fa-cloud-download
             - if widget.comment.present?

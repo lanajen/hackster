@@ -6,7 +6,9 @@
         - if widget.formatted_code.present?
           button.btn.btn-primary.btn-sm.copy-code
             ' Copy to clipboard
-        - if document = widget.document and document.file_url.present?
+          a.btn.btn-primary.btn-sm href=download_code_file_path(widget)
+            ' Download
+        - elsif document = widget.document and document.file_url.present?
           a.btn.btn-primary.btn-sm href=document.file_url
             ' Download
 

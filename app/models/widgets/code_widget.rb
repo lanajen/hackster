@@ -5,7 +5,9 @@ require 'pygments'
 
 class CodeWidget < Widget
 
+  DEFAULT_EXTENSION = 'txt'
   DEFAULT_LANGUAGE = 'bash'  # pygments format
+  DEFAULT_MIME_TYPE = 'text/plain'
 
   ACE_PYGMENTS_TRANSLATIONS = {
     'c_cpp' => 'cpp',
@@ -144,10 +146,7 @@ class CodeWidget < Widget
 
   accepts_nested_attributes_for :document, allow_destroy: true
   validates :language, presence: true
-  # before_validation :force_encoding
   before_validation :disallow_blank_file
-  before_save :check_changes
-  # before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
   def self.model_name
@@ -156,13 +155,6 @@ class CodeWidget < Widget
 
   def self.is_binary? buffer
     !buffer.force_encoding("UTF-8").valid_encoding?
-    # begin
-    #   fm = FileMagic.new(FileMagic::MAGIC_MIME)
-    #   mime = fm.buffer(buffer)
-    #   mime !~ /^text\//
-    # ensure
-    #   fm.close
-    # end
   end
 
   def self.read_from_file file
@@ -182,10 +174,6 @@ class CodeWidget < Widget
     end
 
     output_file.name = file.original_filename
-
-    # if language = Linguist::Language.detect(output_file.name, output_file.raw_code)
-    #   output_file.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
-    # end
 
     output_file
   end
@@ -211,21 +199,11 @@ class CodeWidget < Widget
   end
 
   def extension
-    return @extension if @extension
-    @extension = Pygments.lexers[ACE_LANGUAGES[language]][:aliases].first
-  rescue
-    'txt'
-  end
-
-  def extension_list
-    return @extension_list if @extension_list
-    @extension_list = {}
-    Pygments.lexers.each{|k,v| v[:filenames].each{|f| @extension_list[f] = k }}
-    @extension_list
+    @extension ||= pygments_lexer ? pygments_lexer[:filenames].first.gsub(/\*\./, '') : DEFAULT_EXTENSION
   end
 
   def file_name
-    (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
+    (binary? and document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
   end
 
   def formatted_code
@@ -251,6 +229,10 @@ class CodeWidget < Widget
     prop = properties
     prop[:language] = val
     self.properties = prop
+  end
+
+  def mime_type
+    @mime_type ||= pygments_lexer ? pygments_lexer[:mimetypes].first : DEFAULT_MIME_TYPE
   end
 
   def name
@@ -282,14 +264,6 @@ class CodeWidget < Widget
   end
 
   private
-    def check_changes
-      # if document and (document.file_changed? or raw_code.blank?)
-      #   read_code_from_file
-      if raw_code_changed? and document_id.blank?
-        read_code_from_text
-      end
-    end
-
     def disallow_blank_file
       if document
         if raw_code.blank?
@@ -299,17 +273,6 @@ class CodeWidget < Widget
         end
       end
     end
-
-    # def guess_language_from_document
-    #   return unless document and document.file_url
-
-    #   if language = Linguist::FileBlob.new(document.real_file_url).language
-    #     self.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
-    #   end
-    # rescue => e
-    #   puts "rescued error while guessing language: #{e.message}"
-    #   self.language = nil
-    # end
 
     def force_encoding
       self.raw_code = raw_code.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '') if raw_code.present? and raw_code_changed?
@@ -328,6 +291,12 @@ class CodeWidget < Widget
 
     rescue
       self.formatted_content = ERROR_MESSAGE
+    end
+
+    def pygments_lexer
+      @pygments_lexer ||= Pygments.lexers[ALL_LANGUAGES[language]]
+    rescue
+      # not found
     end
 
     def read_code_from_file
