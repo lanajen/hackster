@@ -271,8 +271,7 @@ export default {
     let lines = text.split('\n');
     let tag = nodeName === 'PRE' ? 'pre' : 'p';
     return lines.map(line => {
-      line = !line.length ? '<br/>' : line;
-      return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${sanitizer.escape(line)}</${tag}>`;
+      return `<${tag} data-hash="${hashids.encode(Math.floor(Math.random() * 9999 + 1))}">${!line.length ? '<br/>' : sanitizer.escape(line)}</${tag}>`;
     }).join('');
   },
 
@@ -299,7 +298,7 @@ export default {
   cleanEmptyElements(parent) {
     let newParent = document.createElement(parent.nodeName);
     [].slice.apply(parent.childNodes).forEach(child => {
-      if(child.childNodes.length && child.textContent.trim().length) {
+      if(child.childNodes.length && (child.textContent.trim().length || child.childNodes.length === 1 && child.firstChild.nodeName === 'BR')) {
         newParent.appendChild(child);
       }
     });

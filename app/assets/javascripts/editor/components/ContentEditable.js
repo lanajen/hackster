@@ -760,7 +760,12 @@ const ContentEditable = React.createClass({
     if(cleaned.childNodes.length > 1 && parentNode.nodeName !== 'P') {
       let childNodes = [].slice.call(cleaned.childNodes);
 
-      range.insertNode(childNodes.shift());
+      if(BlockElements[childNodes[0].nodeName]) {
+        range.insertNode(childNodes.shift().firstChild);
+      } else {
+        range.insertNode(childNodes.shift());
+      }
+
       wrapperNode.appendChild(parentNode.cloneNode(true));
 
       [].slice.call(childNodes).forEach((child, index) => {
@@ -772,45 +777,45 @@ const ContentEditable = React.createClass({
 
       cursorDataNode = cleaned.lastChild;
       cursorDataAnchorNode = cleaned.lastChild;
-    } else {
-      // If theres text after the cursor, transform any paragraphs to spans to keep the current paragraph whole.
-      if(parentNode.nodeName === 'P' && cleaned.nodeName === 'P' && range.endOffset < parentNode.textContent.length) {
-        let span = document.createElement('span');
-        [].slice.call(cleaned.childNodes).forEach(child => {
-          if(child.nodeName === 'P') {
-            let s = document.createElement('span');
-            s.innerHTML = child.innerHTML;
-            span.appendChild(s);
-          } else {
-            span.appendChild(child);
-          }
-        });
-        cleaned = span;
+      } else {
+        // If theres text after the cursor, transform any paragraphs to spans to keep the current paragraph whole.
+        if(parentNode.nodeName === 'P' && cleaned.nodeName === 'P' && range.endOffset < parentNode.textContent.length) {
+          let span = document.createElement('span');
+          [].slice.call(cleaned.childNodes).forEach(child => {
+            if(child.nodeName === 'P') {
+              let s = document.createElement('span');
+              s.innerHTML = child.innerHTML;
+              span.appendChild(s);
+            } else {
+              span.appendChild(child);
+            }
+          });
+          cleaned = span;
+        }
+
+        range.insertNode(cleaned);
+        cursorDataNode = dataType === 'text' ? cleaned : parentNode;
+        cursorDataAnchorNode = cleaned;
+        wrapperNode.innerHTML = parentNode.outerHTML;
       }
 
-      range.insertNode(cleaned);
-      cursorDataNode = dataType === 'text' ? cleaned : parentNode;
-      cursorDataAnchorNode = cleaned;
-      wrapperNode.innerHTML = parentNode.outerHTML;
-    }
+      return Utils.parseDescription(wrapperNode.innerHTML)
+        .then(results => {
+          if(!results.length) { return; }
+          /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
+          let clean = results.filter(item => {
+            return item.type === 'CE';
+          }).reduce((acc, curr) => {
+            acc.json = acc.json.concat(curr.json);
+            return acc;
+          });
 
-    return Utils.parseDescription(wrapperNode.innerHTML)
-      .then(results => {
-        if(!results.length) { return; }
-        /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
-        let clean = results.filter(item => {
-          return item.type === 'CE';
-        }).reduce((acc, curr) => {
-          acc.json = acc.json.concat(curr.json);
-          return acc;
-        });
-
-        clean.json = Parser.removeAttributes(clean.json);
-        this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth, { node: cursorDataNode, anchorNode: Utils.getLastTextNode(cursorDataAnchorNode), offset: range.startOffset + cursorDataAnchorNode.textContent.length });
-        this.props.actions.forceUpdate(true);
-      })
-      .catch(err => { console.log('Paste Error', err); });
-  },
+          clean.json = Parser.removeAttributes(clean.json);
+          this.props.actions.handlePastedHTML(clean, depth, this.props.storeIndex, endDepth, { node: cursorDataNode, anchorNode: Utils.getLastTextNode(cursorDataAnchorNode), offset: range.startOffset + cursorDataAnchorNode.textContent.length });
+          this.props.actions.forceUpdate(true);
+        })
+        .catch(err => { console.log('Paste Error', err); });
+    },
 
   render() {
     return (
