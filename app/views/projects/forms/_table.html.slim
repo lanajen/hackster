@@ -7,6 +7,7 @@
             td
               i.fa.fa-bars.handle
               = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+              = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
               = f_widget.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
               = f_widget.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
               = f_widget.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
