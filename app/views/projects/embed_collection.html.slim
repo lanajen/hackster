@@ -1,0 +1,9 @@
+- if @projects.exists?
+  .row
+    - @projects.each do |project|
+      = render partial: "projects/project_embed_thumb", locals: { project: project.decorate }
+  - unless params[:hide_pagination]
+    .text-center= will_paginate(@projects)
+
+- else
+  p No projects found.

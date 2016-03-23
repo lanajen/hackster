@@ -170,6 +170,20 @@ class ProjectsController < ApplicationController
     # track_event 'Rendered embed thumbnail', @project.to_tracker.merge({ referrer: request.referrer })
   end
 
+  def embed_collection
+    not_found and return unless params[:hids].present?
+
+    hids = params[:hids].split(/,/)
+    @projects = BaseArticle.where(hid: hids).paginate(page: safe_page_params)
+    surrogate_keys = ["projects/embed_collection"]
+    surrogate_keys << current_platform.user_name if is_whitelabel?
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers
+
+    title 'Hardware projects on Hackster.io'
+    render layout: 'embed'
+  end
+
   def new
     model_class = if params[:type] and params[:type].in? BaseArticle::MACHINE_TYPES.keys
       BaseArticle::MACHINE_TYPES[params[:type]].constantize

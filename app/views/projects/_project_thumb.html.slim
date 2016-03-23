@@ -7,7 +7,7 @@
 - host = defined?(force_host) ? force_host : false
 - locale = defined?(locale) ? locale : params[:locale]
 - if host
-  - project_link = project_url(project, host: host, locale: locale)
+  - project_link = project_url(project, host: host, locale: locale, path_prefix: params[:path_prefix])
 - else
   - project_link = url_for(project)
 - certifier = defined?(certifier) ? certifier : nil
