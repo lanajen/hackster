@@ -11,7 +11,8 @@
             / fetching image from server_images array by id
             - image = server_images.select{|o| o.id.to_s == id.to_s }.first
             / rendering image partial
-            = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid, lazyload: options[:mode] == :normal }
+            - if image
+              = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid, lazyload: options[:mode] == :normal }
 
 javascript:
   if (typeof(lightBoxImages) == 'undefined') {

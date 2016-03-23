@@ -125,11 +125,10 @@ class Users::AuthorizationsController < Users::RegistrationsController
           self.resource.invitation_token = hash[:invitation_token]
         end
       end
-      if resource
-        resource.platform = site_platform
-      else
+      unless resource
         self.resource = super
       end
+      resource.platform = site_platform
     end
 
     def current_site

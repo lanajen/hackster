@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317173807) do
+ActiveRecord::Schema.define(version: 20160323192625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20160317173807) do
     t.text     "caption"
     t.string   "title",           limit: 255
     t.integer  "position"
-    t.string   "tmp_file",        limit: 255
+    t.text     "tmp_file"
     t.boolean  "use_alt",                     default: false
   end
 
@@ -665,14 +665,12 @@ ActiveRecord::Schema.define(version: 20160317173807) do
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
-    t.integer  "parent_id"
     t.integer  "origin_platform_id",                  default: 0,         null: false
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["origin_platform_id"], name: "index_projects_on_origin_platform_id", using: :btree
-  add_index "projects", ["parent_id"], name: "index_projects_on_parent_id", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree

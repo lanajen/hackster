@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
     return @current_site if @current_site
 
 
-    redirect_to root_url(subdomain: ENV['SUBDOMAIN'], path_prefix: nil) unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
+    redirect_to root_url(subdomain: ENV['SUBDOMAIN'], path_prefix: nil) and return unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
   end
 
   def set_current_site domain, subdomain, host
