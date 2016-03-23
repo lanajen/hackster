@@ -134,6 +134,11 @@ class CodeWidget < Widget
     'c' => 'c_cpp',
     'cpp' => 'c_cpp',
   }.freeze
+  PYGMENTS_LEXERS_BY_ALIASES = Pygments.lexers.inject({}){|mem, k| k = k[1]; mem[k[:aliases].first] = k; mem }.freeze
+  ADDITIONAL_PYGMENTS_LEXERS = {
+    'c_cpp' => PYGMENTS_LEXERS_BY_ALIASES['c'],
+  }
+  ALL_PYGMENTS_LEXERS_BY_ALIASES = PYGMENTS_LEXERS_BY_ALIASES.merge(ADDITIONAL_PYGMENTS_LEXERS)
   BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
@@ -294,7 +299,7 @@ class CodeWidget < Widget
     end
 
     def pygments_lexer
-      @pygments_lexer ||= Pygments.lexers[ALL_LANGUAGES[language]]
+      @pygments_lexer ||= ALL_PYGMENTS_LEXERS_BY_ALIASES[language]
     rescue
       # not found
     end
