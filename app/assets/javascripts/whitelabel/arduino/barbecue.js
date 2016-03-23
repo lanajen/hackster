@@ -3,7 +3,7 @@ $(function(){
 	var newsFeedUrl = 'https://blog.arduino.cc/category/featured/feed/?json=1&callback=JSON_CALLBACK';
 
 	var rndNum = Math.floor((Math.random()*6)+1);
-	var backgroundBaseUrl = "https://s3.amazonaws.com/arduino-create-static/video/0"+rndNum;
+	var backgroundBaseUrl = "https://cdn.arduino.cc/video/0"+rndNum;
 
 	var videoSourceOgv = backgroundBaseUrl+".ogv";
     var videoSourceMp4 = backgroundBaseUrl+".mp4";
