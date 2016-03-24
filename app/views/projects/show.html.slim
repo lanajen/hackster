@@ -350,7 +350,7 @@
                   - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
                     section.section-thumbs
                       h4 Posted by
-                      .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
+                      = render partial: 'users/member_thumb_mini', locals: { user: poster }
 
                 - else
                   section.section-thumbs#team
