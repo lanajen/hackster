@@ -545,7 +545,7 @@ const Utils = {
   getParentNodeByElement(node, elementName) {
     let parent, childNodes = [];
 
-    while(node.parentNode && !node.parentNode.classList.contains('content-editable')) {
+    while(node.parentNode && node.parentNode.classList && !node.parentNode.classList.contains('content-editable')) {
       if(node.nodeName === elementName) {
         parent = node;
         break;
