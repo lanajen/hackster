@@ -4,9 +4,9 @@ class ProjectsController < ApplicationController
   before_filter :ensure_project_belongs_to_platform, only: [:show, :embed, :print, :redirect_to_slug_route]
   before_filter :load_and_authorize_resource, only: [:edit, :submit, :update_workflow]
   respond_to :html
-  after_action :allow_iframe, only: :embed
-  skip_before_filter :track_visitor, only: [:show, :embed, :next]
-  skip_after_filter :track_landing_page, only: [:show, :embed, :next]
+  after_action :allow_iframe, only: [:embed, :embed_collection]
+  skip_before_filter :track_visitor, only: [:show, :embed, :embed_collection, :next]
+  skip_after_filter :track_landing_page, only: [:show, :embed, :embed_collection, :next]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -179,6 +179,9 @@ class ProjectsController < ApplicationController
     surrogate_keys << current_platform.user_name if is_whitelabel?
     set_surrogate_key_header *surrogate_keys
     set_cache_control_headers
+
+    @column_width = params[:col_width]
+    @column_class = @column_width ? 'no-col' : (params[:col_class] ? CGI.unescape(params[:col_class]) : nil)
 
     title 'Hardware projects on Hackster.io'
     render layout: 'embed'

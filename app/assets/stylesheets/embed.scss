@@ -52,3 +52,11 @@
 body#embed {
   background: transparent;
 }
+
+.no-col {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
