@@ -35,3 +35,5 @@
 - q: What are the steps to enter the contest?
   a: "<%= raw @challenge.how_to_enter %>"
   condition: "@challenge.how_to_enter.present?"
+- q: My project is locked and I can't edit it anymore. Why is that?
+  a: All projects entered in the contest are locked after the submission deadline to ensure that they remain the same during the judging process. They are then unlocked after winners are announced.

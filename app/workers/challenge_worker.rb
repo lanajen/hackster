@@ -14,9 +14,20 @@ class ChallengeWorker < BaseWorker
   #   end
   # end
 
+  def do_after_end id
+    challenge = Challenge.find id
+
+    challenge.projects.each do |project|
+      project.udpate_attribute :locked, true
+    end
+  end
+
   def do_after_judged id
     challenge = Challenge.find id
 
+    challenge.projects.each do |project|
+      project.udpate_attribute :locked, false
+    end
     challenge.entries.where(workflow_state: %w(new qualified)).each do |entry|
       entry.has_prize? ? entry.give_award! : entry.give_no_award!
     end

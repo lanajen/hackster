@@ -95,6 +95,7 @@ class ChallengeObserver < ActiveRecord::Observer
     disable_challenge_on_platform record
     expire_cache record
     expire_index
+    ChallengeWorker.perform_async 'do_after_end', record.id
   end
 
   def after_mark_as_judged record
