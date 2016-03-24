@@ -52,7 +52,7 @@ module ScraperStrategies
         logs.each do |log|
           post = @project.build_logs.new
           post.user_id = 0
-          post.title = log.at_css('h2').text.strip
+          post.title = log.at_css('h3').text.strip
           @log = log.at_css('[id^="post-body"]')
           post.body = @log
           parse_images @log, false
