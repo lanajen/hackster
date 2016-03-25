@@ -7,10 +7,10 @@ module.exports = function (config) {
     colors: true,
     files: [
       './node_modules/babel-polyfill/dist/polyfill.min.js',
-      './spec/javascripts/**/*_test.js'
+      './spec/javascripts/e2e/**/*_test.js'
     ],
     preprocessors: {
-      './spec/javascripts/**/*_test.js': ['webpack']
+      './spec/javascripts/e2e/**/*_test.js': ['webpack']
     },
     // logLevel: 'LOG_INFO',
     reporters: [ 'mocha' ],

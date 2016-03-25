@@ -1,4 +1,5 @@
-// Karma takes care of the entry files.  See karma.conf.js @root.
+// E2E tests: Karma takes care of the entry files.  See karma.conf.js @root.
+// Unit tests: Mocha loader in the npm script sets the entry.
 
 module.exports = {
   devtool: 'inline-source-map',
