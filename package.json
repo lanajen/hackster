@@ -73,7 +73,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.4",
-    "mocha-webpack": "^0.1.0",
     "mutationobserver-shim": "^0.3.1",
     "react-addons-test-utils": "^0.14.7",
     "rewire": "^2.3.3"
@@ -81,8 +80,7 @@
   "scripts": {
     "clean": "rimraf app/assets/javascripts/bundle.js",
     "lint": "eslint app/assets/javascripts/",
-    "test:e2e": "karma start --browsers Firefox --single-run",
-    "test:unit": "mocha-webpack --reporter list --colors --webpack-config ./webpack/webpack.config.test.js \"spec/javascripts/unit/**/*_test.js\"",
+    "test": "./node_modules/.bin/karma start --browsers Firefox --single-run",
     "test:browsers": "karma start --browsers Chrome,Firefox,Safari",
     "webpack": "webpack --config webpack/webpack.config.dev.js",
     "build": "npm run clean && npm run webpack",

@@ -13,6 +13,9 @@ npm-debug.log
 /app/assets/javascripts/bundle.js
 /spec/javascripts/bundle.js
 
+#mocha-webpack
+.tmp/mocha-webpack/*
+
 # Ignore the default SQLite database.
 /db/*.sqlite3
 

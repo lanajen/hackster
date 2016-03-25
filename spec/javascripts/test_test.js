@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-describe('UNIT TEST', () => {
+describe('TEST', () => {
   it('should be true', () => {
     expect(true).toBe(true);
   });
