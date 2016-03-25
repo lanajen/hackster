@@ -1,4 +1,5 @@
-// Karma takes care of the entry files.  See karma.conf.js @root.
+// E2E: Karma takes care of the entry files.  See karma.conf.js @root.
+// Unit: Webpack-mocha takes care of the entry files in npm script.
 
 module.exports = {
   devtool: 'inline-source-map',
