@@ -406,6 +406,9 @@ HackerIo::Application.routes.draw do
         get 'tools', to: redirect('platforms')
         get 'platforms' => 'platforms#index'
 
+        # embend a hackster badge with your project name / number
+        get 'test_widget' => 'test_widget#index'
+
         # get 'talk' => 'channels#show'
         # get 'talk/*all' => 'channels#show'
 
@@ -444,6 +447,7 @@ HackerIo::Application.routes.draw do
         get 'spark/makes', to: redirect('/particle/components')
         get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
         get 'tinyduino', to: redirect('/tinycircuits')
+
 
         get 'about' => 'pages#about'
         get 'business' => 'pages#business'

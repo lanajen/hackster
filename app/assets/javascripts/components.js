@@ -18,5 +18,8 @@ require('expose?ReviewTool!./review_tool/containers/Root');
 require('expose?TimeLeft!./time_left/app');
 require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
+/* testing the badge */
+require('expose?BadgeWidget!./BadgeWidget/app');
+
 /** Global Utils */
 require('expose?Utils!./utils/Utils');
