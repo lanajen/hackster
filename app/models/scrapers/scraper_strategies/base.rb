@@ -174,7 +174,14 @@ module ScraperStrategies
 
       def extract_code_lines node
         out = if node.name.in? %w(code pre)
-          lang = node['data-lang']
+          if !(lang = node['data-lang']) and node['class'].present?
+            node['class'].split(' ').each do |css_class|
+              if css_class.in?(CodeWidget::ALL_PYGMENTS_LEXERS_BY_ALIASES.keys)
+                lang = css_class
+                break
+              end
+            end
+          end
           node.content.gsub(/<br ?\/?>/, "\r\n")
         else
           node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")

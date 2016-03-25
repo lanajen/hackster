@@ -14,27 +14,30 @@ module ScraperStrategies
         @project.one_liner = @parsed.at_css('.headline .description').try(:text).try(:strip).try(:truncate, 140)
         @project.product_tags_string = @parsed.css('.section-tags .tag:not(.tag-completed)').map{|a| a.text }.join(',')
         tags = @project.product_tags_string.split(',').map{|t| t.downcase }
-        platforms = Platform.joins(:platform_tags).where("LOWER(tags.name) IN (?)", tags).distinct(:id)
-        if platforms.any?
-          @project.platforms = platforms
-          @project.platform_tags_string = platforms.map{|t| t.name }.join(',')
-        end
         prepare_images @article, @parsed
 
         super
       end
 
       def prepare_images base=@article, super_base=@parsed
-        if super_base and super_base.at_css('.thumbs-holder')
-          super_base.css('.thumbs-holder a').each do |img|
-            src = img['data-image'].gsub(/resize\/[0-9x]+\//, '')
-            if test_link(src)
-              node = Nokogiri::XML::Node.new "img", base
-              node['src'] = src
-              parent = base.at_css('.section-description') || base.at_css('.section-details')
-              parent.add_previous_sibling node
+        if super_base
+          if super_base.at_css('.thumbs-holder')
+            super_base.css('.thumbs-holder a').each do |img|
+              prepare_image img, base
             end
+          elsif img = super_base.at_css('#project-image')
+            prepare_image img, base
           end
+        end
+      end
+
+      def prepare_image img, base
+        src = img['data-image'].gsub(/resize\/[0-9x]+\//, '')
+        if test_link(src)
+          node = Nokogiri::XML::Node.new "img", base
+          node['src'] = src
+          parent = base.at_css('.section-description') || base.at_css('.section-details')
+          parent.add_previous_sibling node
         end
       end
 
@@ -42,8 +45,6 @@ module ScraperStrategies
         parsed_logs = if @parsed.at_css('.section-buildlogs .log-btns a')
           content = fetch_page @host + @base_uri + '/logs'
           Nokogiri::HTML(content)
-        else
-          @parsed
         end
 
         logs = parsed_logs.css('.buildlogs-list > li')
@@ -117,8 +118,20 @@ module ScraperStrategies
             instructions
           end
           text += '<h2>Build instructions</h2>'
-          instructions.css('.instruction-list-item').each do |item|
+          parsed_instructions.css('.instruction-list-item').each_with_index do |item, i|
+            text += "<p><strong>Step #{i+1}</strong></p>"
             text += item.children.to_html
+          end
+        end
+
+        if @parsed.at_css('.section-files')
+          text += '<h2>Files</h2>'
+          @parsed.css('.section-files .file-details').each do |file|
+            text += '<p>' + file.at_css('.description a').to_html
+            if desc = file.at_css('.description span').try(:to_html)
+              text += ': ' + desc
+            end
+            text += '</p>'
           end
         end
 
