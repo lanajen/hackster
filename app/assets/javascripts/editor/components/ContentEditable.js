@@ -531,6 +531,17 @@ const ContentEditable = React.createClass({
 
     if(!range) { return; }
 
+    /** Hotkeys for Firefox */
+    if(this.props.browser.name === 'firefox' && range.startOffset !== range.endOffset) {
+      if(e.keyCode === 66 /* B */ && (e.ctrlKey || e.metaKey)) {
+        this.preventEvent(e);
+        document.execCommand('bold', false);
+      } else if(e.keyCode === 73 /* I */ && (e.ctrlKey || e.metaKey)) {
+        this.preventEvent(e);
+        document.execCommand('italic', false);
+      }
+    }
+
     /** Primarily for Firefox.  Sets the range from CE to the first P. */
     if(CE.children.length === 1 && CE.firstChild.textContent.length < 1 && !CE.firstChild.childNodes[0]) {
       range.selectNodeContents(CE.firstChild);

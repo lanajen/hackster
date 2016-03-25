@@ -297,6 +297,7 @@ const Editable = React.createClass({
         let html = item.html ? item.html : Parser.toHtml(item.json);
         return (<DropZone key={index} className="dropzone" onDrop={this.handleFilesDrop.bind(this, index)}>
                   <ContentEditable html={html}
+                                   browser={this.props.browser}
                                    storeIndex={index}
                                    editor={this.props.editor}
                                    actions={this.props.actions}
