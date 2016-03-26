@@ -89,6 +89,15 @@ class UsersController < ApplicationController
     # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
   end
 
+  def embed
+    # find the user associated with the
+    #
+    # User.find_by_user_name
+    # User.find id
+    # User.find_by_id! id
+    # params[:slug]
+  end
+
   def projects_public
     title "#{@user.name}'s public projects"
     meta_desc "#{@user.name}'s public projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
