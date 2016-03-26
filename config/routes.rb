@@ -3,6 +3,10 @@ require 'sidekiq/web'
 require 'sidekiq/cron/web'
 
 HackerIo::Application.routes.draw do
+  constraints(IntelLandingPage) do
+    get '/' => 'landing_pages#intel'
+  end
+
   constraints(ShortLinkDomain) do
     get ':slug' => 'short_links#show'
     get '/' => redirect('https://www.hackster.io')

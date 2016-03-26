@@ -1,0 +1,132 @@
+= content_for :head do
+  meta name='robots' content='noindex, nofollow'
+
+= content_for :js do
+  = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+  javascript:
+     try{Typekit.load({async: true});}catch(e){}
+
+#intel-landing
+
+  section#hero
+    .top-nav.clearfix
+      = link_to image_tag('hackster_logo_blue.png', alt: "Hackster.io"), root_url(host: APP_CONFIG['default_host']), title: "Hackster.io", class: 'logo'
+      ul.nav-list
+        li= link_to 'Challenge', '#details', class: 'smooth-scroll'
+        li= link_to 'US Finalists', '#finalists', class: 'smooth-scroll'
+        li= link_to 'Timeline', '#timeline', class: 'smooth-scroll'
+        li= link_to 'Prizes', '#prizes', class: 'smooth-scroll'
+        li= link_to 'Judging Criteria', '#criteria', class: 'smooth-scroll'
+        li= link_to 'Resources', '#resources', class: 'smooth-scroll'
+
+    .content
+      .us-china= image_tag 'landing_pages/intel/us_china.png'
+      h1 Young Maker Competition
+      p.title.subtitle Co-Making the Future
+      p.title April 18th - June 17th
+      = link_to 'Submit project', 'https://www.hackster.io/challenges/usmakercompetition', class: 'btn btn-primary submit-btn'
+
+  section#details
+    h2 Challenge
+    p Build an innovative maker project that solves social issues. Compete against makers and tinkerers in China. Become the ultimate maker. Be the Global Maker Winner.
+
+    ul.categories
+      li
+        .img= image_tag 'landing_pages/intel/team.png'
+        .title Community development
+      li
+        .img= image_tag 'landing_pages/intel/eco.png'
+        .title Environmental protection
+      li
+        .img= image_tag 'landing_pages/intel/book.png'
+        .title Education
+      li
+        .img= image_tag 'landing_pages/intel/yoga.png'
+        .title Health &amp; Fitness
+      li
+        .img= image_tag 'landing_pages/intel/traffic.png'
+        .title Transportation
+      li
+        .img= image_tag 'landing_pages/intel/energy.png'
+        .title Energy
+
+  section#finalists
+    h2 US Finalists
+    p The best US projects will be announced on July 1st.
+    = link_to 'Enter now', 'https://www.hackster.io/challenges/usmakercompetition', class: 'btn btn-primary submit-btn'
+
+  section#timeline
+    h2 Timeline
+    p Lorem ipsum factum.
+
+    .timeline
+      .step
+        .step-description
+          h3 Stage 1
+          p Submit your project #{link_to 'here', 'https://www.hackster.io/challenges/usmakercompetition'} by June 17th, 11:59 PM PT.
+        .step-img= image_tag 'landing_pages/intel/notebook.png'
+        .step-empty
+      .step
+        .step-empty
+        .step-img= image_tag 'landing_pages/intel/graph.png'
+        .step-description
+          h3 Stage 2
+          p Judging begins June 18th for US entries. Six finalists are announced on July 1st.
+      .step
+        .step-description
+          h3 Stage 3
+          p The Finalist hackathon will take place in China from August 19th to August 22nd.
+        .step-img= image_tag 'landing_pages/intel/plane.png'
+        .step-empty
+
+  section#prizes
+    h2 Prizes
+    p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+
+    .illustrations
+      .illustration
+        = image_tag 'landing_pages/intel/medal.png'
+        .title US Finalists
+        p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+      .illustration
+        = image_tag 'landing_pages/intel/victory.png'
+        .title Final Hackathon
+        p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+
+  section#criteria
+    h2 US Judging Criteria
+    p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+
+    .illustrations
+      .illustration
+        = image_tag 'landing_pages/intel/criteria_idea.png'
+        .title Strengh of Idea
+        p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+      .illustration
+        = image_tag 'landing_pages/intel/commercial.png'
+        .title Commercial Potential
+        p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+      .illustration
+        = image_tag 'landing_pages/intel/feasibility.png'
+        .title Feasibility and Completeness
+        p Donec ullamcorper neque nulla, at vestibulum quam varius quis. Ut consectetur leo ut congue cursus. Aenean vel ultricies eros, non facilisis nunc.
+
+  section#resources
+    .illustrations
+      .illustration
+        h2 Resources
+        p Want to build with Intel&reg; Edison&#8482; Developer Kit? Tell us why by filling out #{link_to 'this form', 'https://www.hackster.io/challenges/usmakercompetition/ideas/new'} and you may receive the board, for free! 75 kits available on a first-come, first-served basis.
+
+      .illustration
+        h2 Terms &amp; Conditions
+        p Read the Terms and Conditions HERE (ADD LINK).
+        p Read the Contestant Statement HERE (ADD LINK).
+        p Check out the recommended hardware HERE (ADD LINK).
+        p Check out the final hackathon schedule HERE (ADD LINK).
+
+  section#organizers
+    .logos
+      = link_to image_tag('landing_pages/intel/cscse_logo.png'), 'http://www.cscse.edu.cn/publish/portal0/'
+      = link_to image_tag('landing_pages/intel/intel_logo.png'), 'https://software.intel.com/en-us/'
+      = link_to image_tag('landing_pages/intel/tsinghua_logo.png'), 'http://www.tsinghua.edu.cn/publish/newthuen/index.html'
+      = link_to image_tag('landing_pages/intel/hackster_logo.png'), 'https://www.hackster.io'

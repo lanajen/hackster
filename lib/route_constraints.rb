@@ -1,5 +1,3 @@
-
-
 class ApiSite
   def self.matches?(request)
     if ENV['FULL_HOST'].present?
@@ -97,5 +95,11 @@ end
 class NotShortLinkDomain
   def self.matches?(request)
     request.domain != ENV['SHORT_LINK_DOMAIN']
+  end
+end
+
+class IntelLandingPage
+  def self.matches?(request)
+    request.subdomains[0] == 'usmakercompetition' and request.domain == APP_CONFIG['default_domain']
   end
 end

@@ -1,0 +1,257 @@
+#intel-landing {
+  background: #fff;
+  text-align: center;
+
+  p {
+    color: #8b9ca9;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  h1, h2, .title {
+    color: #0d5073;
+  }
+
+  h2 {
+    font-weight: 300;
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    display: inline-block;
+    font-size: 1.8em;
+    &::after {
+      content: ' ';
+      width: 30%;
+      border-bottom: 2px solid #208edb;
+      position: absolute;
+      bottom: 0;
+      left: 35%;
+    }
+  }
+
+  .submit-btn {
+    padding: 10px 27px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    margin-top: 20px;
+  }
+
+  .top-nav {
+    padding: 10px 20px 0;
+    height: 150px;
+    .logo {
+      float: left;
+      img {
+        height: 40px;
+      }
+    }
+    .nav-list {
+      float: right;
+      list-style: none;
+      margin: 0;
+      padding: 10px 20px 0 0;
+      li {
+        display: inline;
+        margin-left: 20px;
+      }
+      a {
+        color: #97caee;
+        text-decoration: none;
+      }
+    }
+  }
+
+  #hero {
+    height: 100vh;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-image: asset-url('landing_pages/intel/hero.png');
+    h1 {
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+    .subtitle {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      font-weight: 300;
+    }
+    .us-china {
+      width: 150px;
+      margin: 0 auto;
+    }
+    .submit-btn {
+      margin-top: 40px;
+    }
+  }
+
+  #details {
+    padding: 80px 0 160px;
+    position: relative;
+
+    .categories {
+      position: absolute;
+      bottom: -120px;
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      li {
+        display: inline-block;
+        max-width: 220px;
+      }
+      .img {
+        margin-bottom: 10px;
+        width: 220px;
+        max-width: 90%;
+        display: inline-block;
+      }
+      .title {
+        font-weight: bold;
+        font-size: 0.9em;
+      }
+    }
+  }
+
+  #finalists {
+    background: #eff3f5;
+    padding: 160px 0 80px;
+  }
+
+  #timeline {
+    padding: 80px 0;
+    @include background-cover;
+    background-image: asset-url('landing_pages/intel/timeline_bg.jpg');
+    h2 {
+      color: #fff;
+      &::after {
+        border-color: #fff;
+      }
+    }
+    p, a, a:hover {
+      color: #fff;
+    }
+    .timeline {
+      display: table;
+      margin: 100px auto 0;
+    }
+    .step {
+      display: table-row;
+      &:last-child {
+        margin-bottom: 0;
+        .step-img {
+          &::after {
+            content: none;
+          }
+        }
+      }
+      h3 {
+        color: #fff;
+        font-size: 1.2em;
+        font-weight: normal;
+      }
+    }
+    .step-description, .step-img, .step-empty {
+      display: table-cell;
+    }
+    .step-description {
+      width: 320px;
+      vertical-align: top;
+      &:first-child {
+        text-align: right;
+        padding-right: 40px;
+      }
+      &:last-child {
+        text-align: left;
+        padding-left: 40px;
+      }
+    }
+    .step-img {
+      padding-bottom: 100px;
+      position: relative;
+      &::after {
+        content: ' ';
+        border: 4px solid #fff;
+        height: 80px;
+        position: absolute;
+        bottom: 10px;
+        border-radius: 4px;
+      }
+    }
+    .step-empty {
+
+    }
+  }
+
+  .illustrations {
+    @include flexbox((
+      display: flex,
+      justify-content: center
+    ));
+    width: 1200px;
+    max-width: 90%;
+    margin: 100px auto 0;
+  }
+  .illustration {
+    img {
+      margin-bottom: 20px;
+    }
+    .title {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+    p {
+      font-size: 0.9em;
+      max-width: 400px;
+    }
+  }
+
+  #prizes {
+    padding: 80px 0;
+    @include background-cover;
+    background-image: asset-url('landing_pages/intel/china_wall.jpg');
+    .illustration {
+      width: 50%;
+      p {
+        color: #0d5073;
+      }
+    }
+  }
+
+  #criteria {
+    padding: 80px 0;
+    background-color: #eff3f5;
+    .illustration {
+      width: 33.333%;
+    }
+  }
+
+  #resources {
+    padding: 80px 0;
+
+    .illustrations {
+      margin-top: 0;
+    }
+    .illustration {
+      width: 50%;
+      p {
+        max-width: 90%;
+      }
+    }
+  }
+
+  #organizers {
+    background-color: #208edb;
+    padding: 80px;
+
+    .logos {
+      @include flexbox((
+        display: flex,
+        justify-content: space-between,
+        align-items: center
+      ));
+      img {
+        max-width: 200px;
+        max-height: 80px;
+      }
+    }
+  }
+}
