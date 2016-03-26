@@ -27,6 +27,8 @@ class ChallengeEntriesController < ApplicationController
 
     entry.user_id = current_user.id
     entry.project_id = @project.id
+    next_url = @challenge
+
     if entry.save
       entry.approve! if @challenge.auto_approve?
 
@@ -36,10 +38,14 @@ class ChallengeEntriesController < ApplicationController
       session[:share_modal_time] = 'after_redirect'
 
       # flash[:notice] = "Thanks for entering #{@challenge.name}!"
+    elsif :category_id.in? entry.errors.keys
+      flash[:alert] = "Please select a category"
+      next_url = challenge_path(@challenge, enter: true)
     else
       flash[:alert] = "Your project couldn't be entered."
     end
-    redirect_to @challenge
+
+    redirect_to next_url
   end
 
   def edit

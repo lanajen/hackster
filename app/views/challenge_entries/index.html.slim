@@ -25,7 +25,11 @@ table.table.table-striped
     - if @entries.any?
       - @entries.each do |entry|
         tr
-          td= link_to entry.project.name, entry.project
+          td
+            = link_to entry.project.name, entry.project
+            - if entry.category_id.present?
+              br
+              = entry.category.name
           td
             - user = entry.user
             ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user

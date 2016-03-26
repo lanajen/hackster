@@ -7,6 +7,7 @@ class ChallengeEntry < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
+  belongs_to :category, class_name: 'ChallengeCategory'
   belongs_to :challenge
   belongs_to :project, class_name: 'BaseArticle'
   belongs_to :user
@@ -16,6 +17,7 @@ class ChallengeEntry < ActiveRecord::Base
   has_one :address, as: :addressable
 
   validates :challenge_id, uniqueness: { scope: :project_id }
+  validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
 
   attr_accessible :judging_notes, :prize_ids, :workflow_state
 

@@ -93,6 +93,25 @@
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
           / = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
 
+          = f.input :activate_categories, as: :boolean, inline_label: 'Ask participants to select a category when submitting an entry', label: false
+          #categories_settings style=(@challenge.activate_categories ? '' : 'display:none')
+            .form-group
+              .col-md-4
+                label.control-label Categories
+              .col-md-8
+                table#sortable.table.table-sortable
+                  thead
+                    th Name
+                    th
+                  tbody
+                    = f.simple_fields_for :categories, wrapper: false do |f_field|
+                      tr.fields
+                        td style='min-width: 80%' = f_field.input :name, label: false
+                        td
+                          = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
+                    tr.sortable-disabled
+                      td colspan=4 = f.link_to_add 'Add a category', :categories, class: 'btn btn-xs btn-success nested-field-table'
+
           .mg-20
           .row
             .col-md-8.col-md-offset-4
@@ -293,34 +312,19 @@
         $('#free_hardware_end_date').val($(this).data("DateTimePicker").getDate());
       });
 
-      $('#challenge_activate_voting').on('change', function(){
-        if ($(this).is(':checked')) {
-          $('#voting_dates').slideDown();
-        } else {
-          $('#voting_dates').slideUp();
-        }
-      });
-      $('#challenge_activate_pre_registration').on('change', function(){
-        if ($(this).is(':checked')) {
-          $('#pre_registration_settings').slideDown();
-        } else {
-          $('#pre_registration_settings').slideUp();
-        }
-      });
-      $('#challenge_activate_free_hardware').on('change', function(){
-        if ($(this).is(':checked')) {
-          $('#free_hardware_settings').slideDown();
-        } else {
-          $('#free_hardware_settings').slideUp();
-        }
-      });
-      $('#challenge_activate_mailchimp_sync').on('change', function(){
-        if ($(this).is(':checked')) {
-          $('#mailchimp_settings').slideDown();
-        } else {
-          $('#mailchimp_settings').slideUp();
-        }
-      });
+      function toggleOptions(checkBoxId, containerId) {
+        $(checkBoxId).on('change', function(){
+          if ($(this).is(':checked')) {
+            $(containerId).slideDown();
+          } else {
+            $(containerId).slideUp();
+          }
+        });
+      }
+      toggleOptions('#challenge_activate_mailchimp_sync', '#mailchimp_settings');
+      toggleOptions('#challenge_activate_free_hardware', '#free_hardware_settings');
+      toggleOptions('#challenge_activate_voting', '#voting_dates');
+      toggleOptions('#challenge_activate_categories', '#categories_settings');
 
       tinyMCE.init({
         selector: 'textarea.text-editor',

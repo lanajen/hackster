@@ -20,6 +20,7 @@ class Challenge < ActiveRecord::Base
   has_many :sponsor_relations, dependent: :destroy
   has_many :sponsors, through: :sponsor_relations, class_name: 'Group'
   has_many :admins, through: :challenge_admins, source: :user
+  has_many :categories, -> { order("LOWER(challenge_categories.name)") }, class_name: 'ChallengeCategory'
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
@@ -61,16 +62,19 @@ class Challenge < ActiveRecord::Base
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
-    :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy
+    :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy,
+    :categories_attributes
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
     :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy
 
-  accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
+  accepts_nested_attributes_for :prizes, :challenge_admins, :categories,
+    allow_destroy: true
 
   store :properties, accessors: []
   hstore_column :hproperties, :activate_banners, :boolean, default: true
+  hstore_column :hproperties, :activate_categories, :boolean
   hstore_column :hproperties, :activate_mailchimp_sync, :boolean
   hstore_column :hproperties, :activate_pre_contest, :boolean  # legacy
   hstore_column :hproperties, :activate_free_hardware, :boolean
