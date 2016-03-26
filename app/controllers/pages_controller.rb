@@ -93,7 +93,7 @@ class PagesController < ApplicationController
 
       @challenges = Challenge.publyc.active.ends_last
 
-      @projects = BaseArticle.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 15)
+      @projects = BaseArticle.custom_for(current_user).last_public.for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 15)
       if @projects.any?
         @followed = current_user.follow_relations.where(follow_relations: { followable_type: %w(Group) }).includes(followable: [:avatar, :cover_image]) + current_user.follow_relations.where(follow_relations: { followable_type: %w(User) }).includes(followable: :avatar) + current_user.follow_relations.where(follow_relations: { followable_type: %w(Part) }).joins("INNER JOIN parts ON parts.id = follow_relations.followable_id").where.not(parts: { platform_id: nil }).includes(followable: [:image, :platform])
         @current_page = safe_page_params || 1

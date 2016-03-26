@@ -15,6 +15,7 @@ class BaseArticle < ActiveRecord::Base
     '1year' => :last_1year,
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
+    'me' => :for_user,
     'on_hackster' => :self_hosted,
     'toolbox' => :in_toolbox,
     'wip' => :wip,
@@ -308,7 +309,7 @@ class BaseArticle < ActiveRecord::Base
     user_projects = select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")
     part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'BaseArticle'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
 
-    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).last_public.includes(:parts, :platforms, :project_collections, :users)
+    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).includes(:parts, :platforms, :project_collections, :users)
   end
 
   def self.external
@@ -333,6 +334,11 @@ class BaseArticle < ActiveRecord::Base
     includes(project: :users).includes(project: :cover_image).includes(project: :team)
   end
 
+  def self.for_user opts={}
+    user = opts[:user]
+    user ? custom_for(user) : where('1=0')  # returns an AR relation
+  end
+
   def self.guest
     where("projects.guest_name <> '' AND projects.guest_name IS NOT NULL")
   end
@@ -347,7 +353,7 @@ class BaseArticle < ActiveRecord::Base
 
   def self.in_toolbox opts={}
     user = opts[:user]
-    indexable.joins(:parts).where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr ON fr.followable_id = parts.id AND fr.followable_type = 'Part'").where("fr.user_id = ?", user.id)
+    indexable.joins(:parts).where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr ON fr.followable_id = parts.id AND fr.followable_type = 'Part'").where("fr.user_id = ?", user.id).distinct('projects.id')
   end
 
   def self.live

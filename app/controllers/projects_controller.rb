@@ -15,12 +15,9 @@ class ProjectsController < ApplicationController
     @by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
     @projects = BaseArticle.indexable.for_thumb_display
-    if params[:sort]
-      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
-    end
 
     if @by and @by.in? BaseArticle::FILTERS.keys
-      @projects = @projects.send(BaseArticle::FILTERS[@by])
+      @projects = @projects.send(BaseArticle::FILTERS[@by], user: current_user)
       @by = case @by
       when '7days'
         '7 days of'
@@ -31,6 +28,10 @@ class ProjectsController < ApplicationController
       else
         @by
       end
+    end
+
+    if params[:sort]
+      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
     end
 
     if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
@@ -454,7 +455,7 @@ class ProjectsController < ApplicationController
             offset = 0
             params[:ref_id] = current_user.id
           end
-          BaseArticle.custom_for(current_user)
+          BaseArticle.custom_for(current_user).last_public
 
         when 'explore'
           sort, by, difficulty, type = params[:ref_id].split(/_/)
