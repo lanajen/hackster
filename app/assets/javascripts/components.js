@@ -19,7 +19,7 @@ require('expose?TimeLeft!./time_left/app');
 require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
 /* testing the badge */
-require('expose?BadgeWidget!./BadgeWidget/app');
+require('expose?Embed!./embed_widgets/app');
 
 /** Global Utils */
 require('expose?Utils!./utils/Utils');
