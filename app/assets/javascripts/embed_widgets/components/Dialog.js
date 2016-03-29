@@ -1,136 +1,128 @@
-import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import React, { PropTypes } from 'react';
 
-export default class Dialog extends Component {
+const Dialog = (initialProps) => {
 
-  constructor(props) {
-    super(props);
+  let { actions,
+        actionsContainerStyle,
+        bodyClassName,
+        bodyStyle,
+        className,
+        enableCloseButton,
+        overlayClassName,
+        overlayStyle,
+        style,
+        title,
+        wrapperClassName,
+        wrapperStyle,
+      } = initialProps;
 
+  const props = {
+    bodyClassName,
+    className,
+    enableCloseButton,
+    overlayClassName,
+    wrapperClassName,
+  };
+
+  /** Styles */
+
+  props.style = {
+    position: 'fixed',
+    boxSizing: 'border-box',
+    zIndex: '1000',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+    overflow: 'auto',
+    paddingTop: 16,
+    textAlign: 'left',
+    ...style
   }
 
-  render() {
-    let { actions,
-          actionsContainerStyle,
-          bodyClassName,
-          bodyStyle,
-          className,
-          enableCloseButton,
-          overlayClassName,
-          overlayStyle,
-          style,
-          title,
-          wrapperClassName,
-          wrapperStyle,
-        } = this.props;
+  props.overlayStyle = {
+    boxSizing: 'border-box',
+    transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+    position: 'relative',
+    width: '800',
+    margin: '0 auto 40px',
+    zIndex: 1050,
+    maxWidth: '90%',
+    opacity: 1,
+    transform: 'translate3d(0px, 64px, 0px)',
+    ...overlayStyle
+  }
 
-    const props = {
-      bodyClassName,
-      className,
-      enableCloseButton,
-      overlayClassName,
-      wrapperClassName,
-    };
+  props.wrapperStyle = {
+    backgroundColor: '#ffffff',
+    transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+    boxSizing: 'border-box',
+    minHeight: 250,
+    padding: '50px',
+    ...wrapperStyle
+  }
 
-    /** Styles */
+  props.bodyStyle = {
+    ...bodyStyle
+  }
 
-    props.style = {
-      position: 'fixed',
-      boxSizing: 'border-box',
-      zIndex: '1000',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      overflow: 'auto',
-      paddingTop: 16,
-      textAlign: 'left',
-      ...style
-    }
+  props.maskStyle = {
+    position: 'fixed',
+    height: '100%',
+    width: '100%',
+    top: 0,
+    left: 0,
+    opacity: 1,
+    willChange: 'opacity',
+    transform: 'translateZ(0px)',
+    transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+    zIndex: 200,
+    backgroundColor: 'rgba(0, 0, 0, 0.541176)',
+    overflow: 'auto'
+  }
 
-    props.overlayStyle = {
-      boxSizing: 'border-box',
-      transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      position: 'relative',
-      width: '800',
-      margin: '0 auto 40px',
-      zIndex: 1050,
-      maxWidth: '90%',
-      opacity: 1,
-      transform: 'translate3d(0px, 64px, 0px)',
-      ...overlayStyle
-    }
+  props.maskStyle = {
+    position: 'fixed',
+    height: '100%',
+    width: '100%',
+    top: 0,
+    left: 0,
+    opacity: 1,
+    willChange: 'opacity',
+    transform: 'translateZ(0px)',
+    transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+    zIndex: 200,
+    backgroundColor: 'rgba(0, 0, 0, 0.541176)',
+    overflow: 'auto'
+  }
 
-    props.wrapperStyle = {
-      backgroundColor: '#ffffff',
-      transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      boxSizing: 'border-box',
-      minHeight: 250,
-      padding: '50px',
-      ...wrapperStyle
-    }
+  let dismissStyle = {
+    fontSize: '45px',
+    position: 'absolute',
+    top: 0,
+    right: '8px',
+    outline: 0,
+    fontWeight: 'normal'
+  }
 
-    props.bodyStyle = {
-      ...bodyStyle
-    }
+  props.title = title && typeof title === 'object'
+              ? title
+              : title && typeof title === 'string'
+              ? _buildTitle(title, dismissStyle)
+              : null;
 
-    props.maskStyle = {
-      position: 'fixed',
-      height: '100%',
-      width: '100%',
-      top: 0,
-      left: 0,
-      opacity: 1,
-      willChange: 'opacity',
-      transform: 'translateZ(0px)',
-      transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      zIndex: 200,
-      backgroundColor: 'rgba(0, 0, 0, 0.541176)',
-      overflow: 'auto'
-    }
-
-    props.maskStyle = {
-      position: 'fixed',
-      height: '100%',
-      width: '100%',
-      top: 0,
-      left: 0,
-      opacity: 1,
-      willChange: 'opacity',
-      transform: 'translateZ(0px)',
-      transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-      zIndex: 200,
-      backgroundColor: 'rgba(0, 0, 0, 0.541176)',
-      overflow: 'auto'
-    }
-
-    let dismissStyle = {
-      fontSize: '45px',
-      position: 'absolute',
-      top: 0,
-      right: '8px',
-      outline: 0,
-      fontWeight: 'normal'
-    }
-
-    props.title = title && typeof title === 'object'
-                ? title
-                : title && typeof title === 'string'
-                ? this._buildTitle(title, dismissStyle)
+  props.actions = actions && Array.isArray(actions)
+                ? _buildActions(actions, actionsContainerStyle)
                 : null;
 
-    props.actions = actions && Array.isArray(actions)
-                  ? this._buildActions(actions, actionsContainerStyle)
-                  : null;
+  let dialog = initialProps.open
+             ? _build(props)
+             : (<div></div>);
 
-    let dialog = this.props.open
-               ? this._build(props)
-               : (<div></div>);
+  return dialog;
 
-    return dialog;
-  }
-
-  _build(props) {
+  function _build(props) {
     let { actions,
           bodyClassName,
           bodyStyle,
@@ -152,30 +144,30 @@ export default class Dialog extends Component {
       <div className={className || null} style={style}>
         <div className={overlayClassName || null} style={overlayStyle}>
           <div className={wrapperClassName || null} style={wrapperStyle}>
-            {enableCloseButton ? <button className='close' onClick={this.props.dismissDialog}>×</button> : null}
+            {enableCloseButton ? <button className='close' onClick={initialProps.dismissDialog}>×</button> : null}
             {title}
             <div className={bodyClassName || null} style={bodyStyle}>
-              {this.props.children}
+              {initialProps.children}
             </div>
             <div className="actions-wrapper">
               {actions}
             </div>
           </div>
         </div>
-        <div style={maskStyle} onClick={this.props.dismissDialog}></div>
+        <div style={maskStyle} onClick={initialProps.dismissDialog}></div>
       </div>
     );
   }
 
-  _buildTitle(title, dismissStyle) {
+  function _buildTitle(title, dismissStyle) {
     return (
-      <div className="dialog-title-wrapper">
-        <h4 className="dialog-title">{title}</h4>
+      <div>
+        <h4 style={{'textAlign': 'center'}}>{title}</h4>
       </div>
     );
   }
 
-  _buildActions(actions, style) {
+  function _buildActions(actions, style) {
     const styles = {
       boxSizing: 'border-box',
       width: '100%',
@@ -212,3 +204,5 @@ Dialog.PropTypes = {
 Dialog.defaultProps = {
   enableCloseButton: true
 };
+
+export default Dialog;
