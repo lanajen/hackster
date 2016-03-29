@@ -30,7 +30,7 @@ c= content_for :head do
             - if @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
                 .alert.alert-warning
                   strong> Heads up!
-                  ' This article is currently visible only to you on the Arduino Create Projects site because no Arduino hardware was found in the products list. Only projects made with Arduino hardware will appear publicly on the Arduino Create Projects site.
+                  ' This article is currently visible only to you on the Arduino Project Hub site because no Arduino hardware was found in the products list. Only projects made with Arduino hardware will appear publicly on the Arduino Project Hub site.
             .pull-right-desktop
               - if @project.publyc?
                 - if current_user.is?(:admin) and !current_user.is_team_member? @project

@@ -1680,13 +1680,13 @@ div#feed_cont {
 }
 .create-logo {
   float: left;
-  background-image: asset-url("whitelabel/arduino/CreateProjectsLogoMinified.svg");
+  background-image: asset-url("whitelabel/arduino/ProjectHub-logo_compressed.svg");
   background-size: 237px;
   background-repeat: no-repeat;
   height: 36px;
   width: 308px;
   margin-left: -22px;
-  margin-top: 16px;
+  margin-top: 10px;
   transition-property: height, background-size;
   transition-duration: 0.2s, 0.1s;
 }
@@ -1699,8 +1699,8 @@ div#feed_cont {
 }
 
 .arduino-bbq.affix #navigation .create-logo {
-  background-image: asset-url("whitelabel/arduino/CreateProjectsLogoMinified.svg");
-  margin-top: 16px;
+  background-image: asset-url("whitelabel/arduino/ProjectHub-logo_compressed.svg");
+  margin-top: 10px;
   height: 36px;
   background-size: 237px;
   transition-property: height, background-size;
@@ -2411,13 +2411,13 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
   }
   .create-logo {
     float: left;
-    background-image: asset-url("whitelabel/arduino/CreateProjectsLogo.svg");
+    background-image: asset-url("whitelabel/arduino/ProjectHub-logo.svg");
     background-size: 308px;
     background-repeat: no-repeat;
-    height: 75px;
+    height: 83px;
     width: 308px;
     margin-left: -8px;
-    margin-top: 6px;
+    margin-top: 0;
     transition-property: height, background-size;
     transition-duration: 0.2s, 0.1s;
   }
