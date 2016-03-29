@@ -17,24 +17,15 @@ export default class Info extends Component {
     }
   }
 
-  toggleOpen(){
-    console.log('should be toggling')
-    let toggle = !this.state.open;
-
-    this.setState({
-      open: toggle
-    })
-  }
-
-
   render() {
+    const actions = [<button className='btn btn-primary'>Cancel</button>, <button className='btn btn-primary'>Submit</button>];
     return (
       <div style={infoStyles}>
         <h4>Hackster Badge</h4>
-        <Dialog dismissDialog={() => this.toggleOpen()} open={this.state.open}>
+        <Dialog actions={actions} dismissDialog={() => this.setState({open: false})} open={this.state.open}>
           <GetIframe/>
         </Dialog>
-        <button onClick={() => this.toggleOpen()}>Get the Code!</button>
+        <button onClick={() => this.setState({open: true})}>Get the Code!</button>
       </div>
     )
   }
