@@ -56,7 +56,7 @@ class Platform < Collection
   before_save :ensure_api_credentials,
     :ensure_portal_credentials,
     :ensure_platform_tags,
-    :format_hashtag
+    :format_twitter_hashtag
 
   add_websites :forums, :documentation, :crowdfunding, :buy, :shoplocket,
     :download, :cta
@@ -85,6 +85,7 @@ class Platform < Collection
   hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :synonym_tags_string, :string
+  hstore_column :hproperties, :twitter_hashtag, :string
   hstore_column :hproperties, :verified, :boolean, default: false
 
   has_counter :parts, 'parts.visible.count'
@@ -249,8 +250,8 @@ class Platform < Collection
   end
 
   protected
-    def format_hashtag
-      self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
+    def format_twitter_hashtag
+      self.twitter_hashtag = '#' + twitter_hashtag if twitter_hashtag.present? and twitter_hashtag !~ /\A#/
     end
 
     def ensure_api_credentials

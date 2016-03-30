@@ -7,7 +7,7 @@ class TweetBuilder
   end
 
   def tweet prepend='', append=''
-    # we have 113-118 characters to play with
+    # we have 124-129 characters to play with
 
     message = prepend
 
@@ -20,7 +20,7 @@ class TweetBuilder
     message << " #{url}"
 
     tags = @project.platforms.map do |platform|
-      TwitterHandle.new(platform.twitter_link).handle.presence || platform.hashtag
+      platform.twitter_hashtag.presence || TwitterHandle.new(platform.twitter_link).handle.presence || platform.hashtag
     end
     tags += @project.product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
 

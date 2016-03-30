@@ -698,7 +698,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def prepare_tweet
-    prepend = "New project: "  # 13 characters
+    prepend = "🆕 "  # 2 characters
     TweetBuilder.new(self).tweet(prepend)
   end
 
