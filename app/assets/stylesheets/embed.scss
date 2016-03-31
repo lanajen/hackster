@@ -50,8 +50,32 @@
 }
 .embed-badge {
   width: 400px;
-  height: 300px;
-  background-color: blue;
+  height: 180px;
+  display: flex;
+  flex-direction: row;
+  background-image: url(../../../assets/home/banner-6c6ea6219103030f4b618aef7657b4bd.jpg);
+  background-size: 400px 180px;
+  border: 1px solid #E5E5E5;
+}
+.embed-badge-image {
+  height: 80px;
+  width: 80px;
+  padding: 10px 0 0 10px;
+  margin-right: 5px;
+}
+.embed-badge-info {
+  width: 320px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+.embed-badge-info-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 0px;
 }
 
 body#embed {
