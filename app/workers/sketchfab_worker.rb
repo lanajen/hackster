@@ -8,10 +8,12 @@ class SketchfabWorker < BaseWorker
 
     Rails.logger.debug "Uploading to sketchfab..."
 
+    file_name = record.file_name[0..47]  # limit to 48 characters as per Sketchfab API
+
     RestClient.post SKETCHFAB_API_MODEL_ENDPOINT,
       { 'modelFile' => tmpfile,
         'token' => SKETCHFAB_API_TOKEN,
-        name: record.file_name,
+        name: file_name,
         private: true } do |json_response, request, result|
 
       response = JSON.parse json_response

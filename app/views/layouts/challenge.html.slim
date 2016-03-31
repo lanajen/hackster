@@ -201,8 +201,9 @@
             = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control mg-10'
             p
               small.text-muted
-                ' Project not showing in the list? Only write-ups using the "Project" template are valid for submission.
-                = link_to 'Read how to change templates.', 'https://hacksterio.freshdesk.com/support/solutions/articles/9000042210-what-if-i-think-a-different-template-should-be-used-', target: '_blank'
+                strong> Project not showing in the list?
+                ' Only write-ups using the "Project" template are valid for submission.
+                = link_to 'Read how to change templates on your existing write-ups.', 'https://hacksterio.freshdesk.com/support/solutions/articles/9000042210-what-if-i-think-a-different-template-should-be-used-', target: '_blank'
             - if @challenge.activate_categories?
               label Category you want to enter:
               = select_tag :category_id, options_from_collection_for_select(@challenge.categories, :id, :name), class: 'form-control mg-10', include_blank: 'Please select one:'

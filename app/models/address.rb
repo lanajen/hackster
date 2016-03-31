@@ -6,7 +6,10 @@ class Address < ActiveRecord::Base
   attr_accessible :full_name, :address_line1, :address_line2, :state, :city,
     :country, :zip, :phone, :default
   validates :full_name, :address_line1, :city, :zip, :country, :phone, presence: true
-  validates :full_name, :address_line1, :address_line2, :city, :state, :zip, :country, :phone, length: { maximum: 255 }
+  validates :full_name, :city, :state, :zip, :country, :phone, length: { maximum: 255 }
+
+  validates :address_line1, length: { maximum: 50 }, if: proc{|a| a.address_line1_changed? }
+  validates :address_line2, length: { maximum: 50 }, if: proc{|a| a.address_line2_changed? }
 
   register_sanitizer :strip_tags, :before_save, :full_name, :address_line1,
     :address_line2, :state, :city, :country, :zip, :phone

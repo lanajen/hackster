@@ -167,12 +167,12 @@ body {
   font-family: 'Typonine Sans Pro';
   background: #ecf1f1;
   -webkit-font-smoothing: antialiased;
-  /*font-size: 16px;
-  line-height: 23px;*/
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.3px;
   color: #879191;
+  /*display: inline-table;
+  width: 100%;*/
 }
 .wrapper {
   width: 100%;
@@ -2178,15 +2178,19 @@ hr {
 .user #projects-list .btn-primary, .user #projects-list .btn-primary:hover {
   color: white;
 }
-.user #projects-list .thumb-inner a {
+.thumb-list .thumb-inner a {
   color: #879191;
+  transition-property: color;
+  transition-duration: 0.2s;
+}
+.thumb-list .thumb-inner a:hover {
+  color: #00979C;
+  transition-property: color;
+  transition-duration: 0.2s;
 }
 #projects-list {
   padding-top: 0;
   margin-top: -20px;
-}
-.user #projects-list .thumb-inner a:hover {
-  color: #00979C;
 }
 .badge {
   vertical-align: middle;
@@ -2253,9 +2257,14 @@ div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay:hover {
 
 
 div.thumb-image.has-link-overlay:hover + div.thumb-inner,
-div.thumb-image.has-link-overlay:hover + div.thumb-inner a,
 div.thumb-image.has-link-overlay:hover + div.thumb-inner .project-stats {
   background-color: #DAE3E3;
+  color: #747B7B;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+}
+div.thumb-image.has-link-overlay:hover + div.thumb-inner a {
+  background-color: transparent;
   color: #747B7B;
 }
 
@@ -2356,6 +2365,134 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
 
 
 
+/* RESPONSIVE HEADER */
+
+a#my_dashboard-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 320px) {
+  .thumb .project-stats li {
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+  .thumb p {
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 480px) {
+  a.login-link {
+    display: none;
+  }
+}
+@media screen and (max-width: 760px) {
+  a#add_project.btn-primary,
+  a#new_project.btn-primary {
+    display: none;
+  }
+  .create-logo {
+    width: 237px;
+    margin-left: 50%;
+    left: -114px;
+    position: relative;
+  }
+  #navigation {
+    height: 64px;
+  }
+  #content {
+    padding-top: 43px;
+  }
+  .content.projects .btn-group-default .btn-group + .btn-group {
+    margin-left: 0 !important;
+  }
+  .content.projects .btn-group.btn-group-default {
+    width: 100%;
+  }
+  .content.projects .btn-default.btn-sm {
+    padding: 7px 4px 10px;
+    margin-right: 5px;
+  }
+  .content.projects .btn-sm {
+    font-size: 12px;
+    line-height: 12px;
+  }
+  .content.projects .btn .caret {
+    margin-left: -1px;
+  }
+  .content.projects .btn-group #type {
+    margin-right: 0;
+  }
+  .content.projects .btn-group #difficulty + ul.dropdown-menu,
+  .content.projects .btn-group #type + ul.dropdown-menu {
+    left: auto;
+  }
+  .content.projects .btn-group #difficulty + .dropdown-menu.pull-right {
+    right: 8px;
+  }
+  .content.projects .btn-group #type + .dropdown-menu.pull-right {
+    right: 3px;
+  }
+  .filters-container {
+    width: 298px;
+    margin: 0 auto;
+  }
+  .pagination {
+    width: 100%;
+  }
+  ul.pagination li {
+    display: none;
+  }
+  ul.pagination li.prev,
+  ul.pagination li.next {
+    display: inline-block;
+    width: 48%;
+    position: relative;
+  }
+  ul.pagination li.prev {
+    float: left;
+  }
+  ul.pagination li.next {
+    float: right;
+  }
+  ul.pagination li.prev a,
+  ul.pagination li.next a {
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 15px;
+  }
+  .pull-right a#my_dashboard {
+    display: none;
+  }
+  a#my_dashboard-mobile {
+    display: block;
+    position: relative;
+    width: 290px;
+    left: -3px;
+    margin: -4px auto 28px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .pull-right a#new_project span {
+    display: none;
+  }
+  .pull-right a#new_project span.icon-minified {
+    background-image: asset-url("whitelabel/arduino/Global-Plus.svg");
+    background-size: 11px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 11px;
+    height: 15px;
+  }
+}
+@media screen and (max-width: 1200px) {
+  #navbar-search .form-control {
+    width: 185px;
+  }
+}
+/* END RESPONSIVE HEADER */
+
+
 
 /* DROPDOWN MENU CREATE RESPONSIVE */
 /*.arduino-bbq #home {
@@ -2411,7 +2548,7 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
   }
   .create-logo {
     float: left;
-    background-image: asset-url("whitelabel/arduino/ProjectHub-logo.svg");
+    background-image: asset-url("whitelabel/arduino/CreateProjectsLogo.svg");
     background-size: 308px;
     background-repeat: no-repeat;
     height: 83px;
