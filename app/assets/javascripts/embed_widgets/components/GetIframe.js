@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 let styles = {
   'width' : '100%',
@@ -9,13 +9,21 @@ let styles = {
 let inputStyles = {
   'width' : '300px'
 }
-const GetIframe = () => {
-  //generate the iframe code
+
+
+
+const GetIframe = ({
+  userId
+}) => {
+  let url = 'http://www.localhost.local:5000/'+ userId + '/embed';
+
   return (
     <div style={styles}>
-      <input style={inputStyles} type="text" value='<iframe src="hackster.io/vanleuvenze">'/>
+      <input style={inputStyles} type="text"
+        value={"<iframe frameBorder='0' height='270' scrolling='no' src=" + url + " width='360'></iframe>"}
+      />
     </div>
   )
 }
 
-export default GetIframe
+export default GetIframe;

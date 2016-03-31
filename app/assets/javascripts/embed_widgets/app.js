@@ -1,41 +1,38 @@
-import React, { Component } from 'react'
-import Badge from './components/Badge'
-import Info from './components/Info'
+import React, { Component } from 'react';
+import Badge from './components/Badge';
+import Info from './components/Info';
 
 
 let styles = {
-  'width': '100%',
+  'width': '80%',
   'height': '500px',
+  'margin': '0 auto',
   'display' : 'flex',
   'flexDirection': 'row',
-  'justifyContent' : 'center',
+  'justifyContent' : 'space-between',
   'backgroundColor': 'white',
   'border' : '1px solid #E5E5E5',
   'padding' : '5px'
-}
+};
 
 
 
-export default class App extends Component {
+const App = ({
+  username,
+  projectCount,
+  followers,
+  respects,
+  userId
+}) => {
+  let url = 'http://www.localhost.local:5000/'+ userId + '/embed';
 
-  constructor(props) {
-    super(props)
+  return (
+    <div style={styles}>
+      <Info userId={userId}/>
+      <iframe frameBorder='0' height='180' width='400' scrolling='no' src={url}></iframe>
+    </div>
+  )
 
-    this.state = {
-      username: this.props.username,
-      projectCount: this.props.projectCount,
-      logo: this.props.logo
-    }
-  }
+};
 
-  render() {
-    return (
-      <div style={styles}>
-        <Info/>
-        <Badge logo={this.state.logo}/>
-      </div>
-    )
-  }
-
-}
-
+export default App;

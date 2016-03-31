@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 
 let embedBadgeStyles = {
@@ -34,7 +34,8 @@ let infoListStyles = {
 const Badge = ({
   username,
   projectCount,
-  logo
+  followers,
+  respects
 }) => {
 
   /*
@@ -45,11 +46,11 @@ const Badge = ({
     <div style={embedBadgeStyles}>
       <img style={imgStyles} src='../../../assets/hackster_logo_squared.png' alt='Hackster logo squared'/>
       <div style={badgeInfoStyles}>
-        <h4><strong>Zack Dean</strong></h4>
+        <h4><strong>{username}</strong></h4>
         <ul style={infoListStyles}>
-          <li>projects</li>
-          <li>followers</li>
-          <li>respect</li>
+          <li>projects {projectCount}</li>
+          <li>followers {followers}</li>
+          <li>respect {respects}</li>
         </ul>
       </div>
     </div>
