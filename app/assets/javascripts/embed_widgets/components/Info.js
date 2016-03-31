@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import Dialog from './Dialog'
-import GetIframe from './GetIframe'
+import React, { Component } from 'react';
+import Dialog from './Dialog';
+import GetIframe from './GetIframe';
 
 let infoStyles = {
   'width': '300px',
@@ -23,7 +23,7 @@ export default class Info extends Component {
       <div style={infoStyles}>
         <h4>Hackster Badge</h4>
         <Dialog actions={actions} dismissDialog={() => this.setState({open: false})} open={this.state.open}>
-          <GetIframe/>
+          <GetIframe userId={this.props.userId}/>
         </Dialog>
         <button onClick={() => this.setState({open: true})}>Get the Code!</button>
       </div>
