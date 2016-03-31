@@ -90,9 +90,8 @@ class UsersController < ApplicationController
   end
 
   def embed
-    # find the user associated with the
-    @user = User.find params[:id]
-
+    @user = User.find params[:slug]
+    render layout: 'embed'
   end
 
   def projects_public
