@@ -78,14 +78,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session['devise.provider_data'] = omniauth_data
       session['devise.provider'] = provider
 
-      # prevent sign in if they're not arduino beta testers
-      # remove these lines when the arduino site goes public
-      if provider == 'arduino'
-        site = ClientSubdomain.find_by_subdomain(ENV['ARDUINO_SUBDOMAIN'] || 'arduino')
-        url = arduino_unauthorized_url(host: site.host, path_prefix: site.path_prefix)
-        redirect_to url and return unless ArduinoUser.new(omniauth_data).is_beta_tester?
-      end
-
       if params[:link_accounts]
         redirect_to update__authorizations_path(link_accounts: true)
       else

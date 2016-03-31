@@ -27,11 +27,11 @@
         /! HOME GRID
         #home_grid
           .grid_row
-            a href="http://create-staging.arduino.cc/ide" target="_blank"
+            a href="http://create.arduino.cc/ide" target="_blank"
               .grid_square.by_col.editor
                 img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Editor.svg').gsub(asset_host_with_protocol, '')
                 p Arduino Web Editor
-            a href="http://create-staging.arduino.cc/getting-started" target="_blank"
+            a href="http://create.arduino.cc/getting-started" target="_blank"
               .grid_square.by_col.editor
                 img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Start.svg').gsub(asset_host_with_protocol, '')
                 p Getting Started
@@ -45,19 +45,19 @@
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
                   use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
                 img.help src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Help.svg').gsub(asset_host_with_protocol, '')
-                p Need Help? Go to Forum
+                p style="max-width: 80px;" Need Help?
             a href="http://store.arduino.cc/" target="_blank"
               .grid_square.by_col.store
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
                   use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
                 img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-Store.svg').gsub(asset_host_with_protocol, '')
                 p Arduino Store
-            a href="https://www.temboo.com/arduino" target="_blank"
+            a href="https://create.arduino.cc/iot" target="_blank"
               .grid_square.by_col.products
                 svg.openNew xmlns:xlink="http://www.w3.org/2000/xlink"
                   use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
                 img src=asset_path('whitelabel/arduino/barbecue/temboo-drop.svg').gsub(asset_host_with_protocol, '')
-                p Connect to Temboo
+                p style="max-width: 80px;" Internet of Things
       #closeArea.hidden
 
     - if user_signed_in?

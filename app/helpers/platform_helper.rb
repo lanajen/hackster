@@ -62,6 +62,17 @@ module PlatformHelper
     @by = params[:by] || 'all'
 
     @projects = platform.project_collections.references(:project).includes(:project).visible.featured_order(I18n.short_locale).merge(BaseArticle.for_thumb_display_in_collection)
+
+    if @by and @by.in? BaseArticle::FILTERS.keys
+      @projects = if @by == 'featured'
+        @projects.featured
+      else
+        opts = { user: user_signed_in? ? current_user : nil }
+        @projects = @projects.joins(:project) if @by == 'toolbox'
+        @projects.merge(BaseArticle.send(BaseArticle::FILTERS[@by], opts))
+      end
+    end
+
     @projects = if sort == 'recent'
       @projects.most_recent
     else
@@ -82,15 +93,6 @@ module PlatformHelper
 
     if params[:tag]
       @projects = @projects.joins(:project).joins(project: :product_tags).where("LOWER(tags.name) = ?", CGI::unescape(params[:tag]))
-    end
-
-    if @by and @by.in? BaseArticle::FILTERS.keys
-      @projects = if @by == 'featured'
-        @projects.featured
-      else
-        opts = { user: user_signed_in? ? current_user : nil }
-        @projects.merge(BaseArticle.send(BaseArticle::FILTERS[@by], opts))
-      end
     end
 
     @projects = @projects.paginate(page: safe_page_params, per_page: per_page)

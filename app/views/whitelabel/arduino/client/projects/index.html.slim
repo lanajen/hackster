@@ -53,7 +53,7 @@
           span.caret
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
+          / li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
           - if user_signed_in?
             li*{ class: "#{'active' if params[:by] == 'toolbox'}" } = link_to 'In my toolbox', root_path(by: 'toolbox', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
@@ -87,7 +87,7 @@
           li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', root_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', root_path(type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
 
-  - if @projects.any?
+  - if @projects.exists?
     .row.thumb-list
       - @projects.each_with_index do |project_collection, i|
         = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, ref: 'platform', ref_id: [current_platform.id, params[:sort], params[:by], params[:difficulty], params[:type]].join('_'), offset: (i + ((safe_page_params || 1) - 1) * BaseArticle.per_page) }

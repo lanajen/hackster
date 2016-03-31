@@ -353,7 +353,7 @@ class BaseArticle < ActiveRecord::Base
 
   def self.in_toolbox opts={}
     user = opts[:user]
-    indexable.joins(:parts).where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr ON fr.followable_id = parts.id AND fr.followable_type = 'Part'").where("fr.user_id = ?", user.id).distinct('projects.id')
+    indexable.joins(:parts).where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr ON fr.followable_id = parts.id AND fr.followable_type = 'Part'").where("fr.user_id = ?", user.id)#.distinct('projects.id')  # doesn't work with project_collections.merge :/
   end
 
   def self.live

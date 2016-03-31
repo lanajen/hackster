@@ -18,6 +18,9 @@ class ProjectsController < ApplicationController
 
     if @by and @by.in? BaseArticle::FILTERS.keys
       @projects = @projects.send(BaseArticle::FILTERS[@by], user: current_user)
+      if @by == 'toolbox'
+        @projects = @projects.distinct('projects.id')  # see if this can be moved out
+      end
       @by = case @by
       when '7days'
         '7 days of'
