@@ -1,5 +1,16 @@
--user = @user.inspect
-
 div class='embed-badge'
-  h1
-    =user
+  img class='embed-badge-image' src='../../assets/hackster_logo_squared.png'
+  div class='embed-badge-info'
+    h4
+      strong
+        a = @user.user_name
+      ul class='embed-badge-info-list'
+        li
+          p projects
+          = @user.projects_count
+        li
+          p followers
+          = @user.followers_count
+        li
+          p respects
+          = @user.respects_count
