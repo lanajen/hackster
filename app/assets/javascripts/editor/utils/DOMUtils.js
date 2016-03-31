@@ -1618,7 +1618,7 @@ const Utils = {
 
         return item;
       } else if(item.tag === 'ul') {
-        if(!item.children.length && item.content.length > 0) {
+        if(!item.children.length && item.content && item.content.length > 0) {
           item.children.push({
             tag: 'li',
             attribs: {},
