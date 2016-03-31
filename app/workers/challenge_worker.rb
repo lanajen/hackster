@@ -26,7 +26,7 @@ class ChallengeWorker < BaseWorker
     challenge = Challenge.find id
 
     challenge.projects.each do |project|
-      project.udpate_attribute :locked, false
+      project.update_attribute :locked, false
     end
     challenge.entries.where(workflow_state: %w(new qualified)).each do |entry|
       entry.has_prize? ? entry.give_award! : entry.give_no_award!
