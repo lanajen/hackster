@@ -89,11 +89,11 @@
                 input#q.form-control name="q" placeholder=("Search projects") type="text" value=params[:q]
         - if user_signed_in?
           .pull-right style=("padding-top: 11px;")
-            = link_to content_tag(:span, 'My dashboard'), current_user, class: 'btn btn-primary'
-            = link_to content_tag(:span, 'New project'), new_project_path, class: 'btn btn-primary'
+            = link_to content_tag(:span, 'My dashboard'), current_user, class: 'btn btn-primary', id: 'my_dashboard'
+            = link_to content_tag(:span, 'New project') + content_tag(:span, '', class: 'icon-minified'), new_project_path, class: 'btn btn-primary', id: 'new_project'
         - else
           .pull-right style=("padding-top: 11px;")
-            = link_to content_tag(:span, 'Add project'), new_project_path, class: 'btn btn-primary'
+            = link_to content_tag(:span, 'Add project'), new_project_path, class: 'btn btn-primary', id: 'add_project'
     #filler-bg-toolbar
 
 = content_for :bootstrap_flash do
