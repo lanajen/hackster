@@ -1391,7 +1391,7 @@ const Utils = {
       attribs: data.attribs,
       children: data.children,
       content: data.content,
-      name: data.name
+      tag: data.tag
     }
   },
 
@@ -1483,6 +1483,8 @@ const Utils = {
         coll.hash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
         coll.json = this.parseTree(coll.json);
         coll.json = this.cleanTree(coll.json);
+        // Unfold pre's
+        coll.json = this.expandPreBlocks(coll.json);
         return coll;
       } else {
         return coll;
@@ -1655,6 +1657,9 @@ const Utils = {
         }
 
         return item;
+      } else if(item.tag === 'h3') {
+        item.children = this.shallowlyCleanHeaderChildren(item.children);
+        return item;
       } else if(item.tag === 'span') {
         if(item.content && item.content === '\n' || item.content === ' ') {
           return null;
@@ -1726,6 +1731,59 @@ const Utils = {
 
     ul.children = newChildren;
     return ul;
+  },
+
+  shallowlyCleanHeaderChildren(children) {
+    const inlineMap = {
+      bold: true,
+      italic: true,
+      a: true
+    };
+    return children.map(child => {
+      if(inlineMap[child.tag]) {
+        child.tag = 'span';
+      }
+      return child;
+    });
+  },
+
+  expandPreBlocks(json) {
+    return json.reduce((acc, item) => {
+      if(item.tag === 'pre') {
+        // Create stacking pre blocks for text content
+        if(item.content && item.content.length && item.content.match(/[\n\r]/g)) {
+          acc = acc.concat(this.createPreBlocksByText(item.content));
+        }
+        // Create stacking pre blocks for childrens content.
+        if(item.children && item.children.length) {
+          item.children.forEach(child => {
+            acc = acc.concat(this.createPreBlocksByText(child.content));
+          });
+        }
+      } else {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  },
+
+  createPreBlocksByText(text) {
+    const updatedText = text.replace(/[\n\r]/g, '/n');
+    const blocks = updatedText.split('/n');
+
+    return blocks.map(block => {
+      return {
+        tag: 'pre',
+        content: '',
+        attribs: {},
+        children: [{
+          tag: 'code',
+          content: block,
+          attribs: {},
+          children: []
+        }]
+      };
+    });
   }
 
 };
