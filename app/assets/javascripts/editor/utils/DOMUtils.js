@@ -975,7 +975,7 @@ const Utils = {
    * Description and OnPaste Parser.
    */
 
-  parseDescription(html) {
+  parseDescription(html, options) {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
         if(err) reject(err);
@@ -983,7 +983,7 @@ const Utils = {
         this.convertVideoSrc(clean, result => {
           result = result.filter(item => { return item !== null; });
 
-          let parsedHTML = this.mergeAndParseTree(result);
+          let parsedHTML = this.mergeAndParseTree(result, options);
           resolve(parsedHTML);
         });
       }, {});
@@ -1467,7 +1467,7 @@ const Utils = {
     return el;
   },
 
-  mergeAndParseTree(collection) {
+  mergeAndParseTree(collection, options) {
     let newCollection = [];
 
     collection.forEach((component, index) => {
@@ -1483,8 +1483,10 @@ const Utils = {
         coll.hash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
         coll.json = this.parseTree(coll.json);
         coll.json = this.cleanTree(coll.json);
-        // Unfold pre's
-        coll.json = this.expandPreBlocks(coll.json);
+        // Unfold pre's on initial description parse.
+        if(options && options.initialParse) {
+          coll.json = this.expandPreBlocks(coll.json);
+        }
         return coll;
       } else {
         return coll;

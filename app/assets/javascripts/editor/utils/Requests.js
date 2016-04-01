@@ -16,7 +16,7 @@ export default {
             if(!description.length) {
               resolve([]);
             } else {
-              let parsedHtml = Utils.parseDescription(description, projectId, csrfToken);
+              let parsedHtml = Utils.parseDescription(description, { initialParse: true });
 
               parsedHtml.then(parsed => {
                 resolve(parsed);
