@@ -552,3 +552,138 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
   width: 100%;
   max-height: 150px;
 }
+
+#home_mobile {
+  display: none;
+}
+
+@media all and (max-width: 1024px) {
+  #feed_cont {
+    display: none;
+  }
+
+  #home_grid .grid_row {
+    margin-left: 0;
+  }
+}
+
+/* tablet home grid */
+@media all and (max-width: 768px) {
+  #home_grid {
+    margin-top: 4em;
+  }
+
+  #ham {
+    height: 75px;
+  }
+
+  #ham > svg.logo {
+      width: 207px;
+      height: 45px;
+      margin-top: -1px;
+  }
+
+  #ham > svg {
+      width: 30px;
+      height: 30px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-profile .dropover.simple {
+      width: 250px;
+      left: -211px;
+  }
+
+  .user-profile .dropover.simple button, .notification-button .dropover.simple button {
+    letter-spacing: .1em;
+      font-size: 1.5em;
+      padding: 12px 15px;
+  }
+
+  .login-button {
+    top: 30px;
+  }
+
+  .login-button a {
+    font-size: 2em;
+  }
+
+  .user-profile .default-usr-pic {
+      width: 40px;
+      height: 40px;
+  }
+}
+
+/* mobile home grid */
+@media all and (max-width: 480px) {
+
+  #ham {
+    height: 60px;
+    padding-top: 12px;
+      padding-left: 12px;
+  }
+
+  #ham > svg.logo {
+      margin-top: -8px;
+  }
+
+  #ham > svg.bbq {
+    display: none;
+  }
+
+  #ham > svg.logo {
+      width: 200px;
+      display: block!important;
+      position: static!important;
+      visibility: visible;
+    }
+
+  .user-profile {
+    display: none;
+  }
+
+  #home_grid, .login-button {
+    display: none;
+  }
+
+  #home_mobile {
+    display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 3em;
+  }
+
+  #home_mobile ul {
+    list-style: none;
+    width: 100%;
+      padding: 2em;
+  }
+
+  #home_mobile ul li {
+    text-transform: uppercase;
+    background-color: white;
+    color: #7F8C8D;
+    text-align: center;
+      margin: 5px 0;
+      font-size: 1em;
+      letter-spacing: 5px;
+  }
+
+  #home_mobile ul li a {
+    display: block;
+    padding: 1.5em;
+  }
+
+  .logo-home-bottom {
+    display: none;
+  }
+
+  #waiter p {
+    margin-top: 60px;
+  }
+}

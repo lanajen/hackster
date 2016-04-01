@@ -58,6 +58,24 @@
                   use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Home-Grid-Open_in_new').gsub(asset_host_with_protocol, '')
                 img src=asset_path('whitelabel/arduino/barbecue/Home-Grid-IoT.svg').gsub(asset_host_with_protocol, '')
                 p style="max-width: 80px;" Internet of Things
+        #home_mobile
+          ul
+            li
+              a href="//create.arduino.cc/projecthub" target="_self"  Project Hub
+            li
+              a href="https://create.arduino.cc/iot" target="_self"  Internet of Things
+            li
+              a href="https://forum.arduino.cc/" target="_self"  Forum
+            li
+              a href="https://store.arduino.cc/" target="_self"  Store
+            - if user_signed_in?
+              li
+                a href="https://id.arduino.cc/" target="_blank"  Profile
+              li
+                a#sign-out-link href='javascript:void(0)' Sign Out
+            - else
+              li
+                a href=arduino_sign_in_url Sign In
       #closeArea.hidden
 
     - if user_signed_in?

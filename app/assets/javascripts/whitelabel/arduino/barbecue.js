@@ -36,6 +36,9 @@ $(function(){
 	var openHome = function(){
 		expanded = true;
 
+		videoEl.get(0).load();
+		videoEl.get(0).play();
+
 		$('#back').attr('style', 'display: block !important');
 
 		var hh = $('#home').height();
@@ -85,6 +88,7 @@ $(function(){
 			});
 
 	  	expanded = false;
+	  	videoEl.get(0).pause();
 	};
 
 	$('.toggleNav').click(function(){

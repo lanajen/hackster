@@ -2370,6 +2370,9 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
 a#my_dashboard-mobile {
   display: none;
 }
+.arduino-bbq.affix-top #ham.hamNoBack {
+  z-index: 2;
+}
 
 @media screen and (max-width: 320px) {
   .thumb .project-stats li {
@@ -2378,6 +2381,12 @@ a#my_dashboard-mobile {
   }
   .thumb p {
     font-size: 13px;
+  }
+  .create-logo, .arduino-bbq.affix #navigation .create-logo {
+    width: 208px;
+    left: -111px;
+    background-size: 208px;
+    margin-top: 12px;
   }
 }
 @media screen and (max-width: 480px) {
@@ -2409,8 +2418,8 @@ a#my_dashboard-mobile {
     width: 100%;
   }
   .content.projects .btn-default.btn-sm {
-    padding: 7px 4px 10px;
-    margin-right: 5px;
+    padding: 7px 5px 10px;
+    margin-right: 6px;
   }
   .content.projects .btn-sm {
     font-size: 12px;
@@ -2433,7 +2442,7 @@ a#my_dashboard-mobile {
     right: 3px;
   }
   .filters-container {
-    width: 298px;
+    width: 290px;
     margin: 0 auto;
   }
   .pagination {
@@ -2468,7 +2477,6 @@ a#my_dashboard-mobile {
     display: block;
     position: relative;
     width: 290px;
-    left: -3px;
     margin: -4px auto 28px;
   }
 }
