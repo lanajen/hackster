@@ -1,3 +1,11 @@
-div
-
-= react_component 'Embed', {username: @username, projectCount: @project_count, followers: @followers, respects: @respects, userId: @id, user: @user }, {}
+div class='embed-info-container'
+  div class='embed-info-wrapper'
+    div class='embed-info'
+      strong Hackster Badge
+      p
+        | Embed this badge on your page to display some basic
+        | informaition about your Hackster profile, and to link
+        | your readers to your Hackster page!
+    div class='embed-sample-wrapper'
+      iframe frameBorder='0' height='180' width='400' scrolling='no' src= @iframe_url
+      = react_component 'EmbedDialog', {iframeURL: @iframe_url}, {}
