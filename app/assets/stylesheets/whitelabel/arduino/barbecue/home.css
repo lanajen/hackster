@@ -652,16 +652,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
 
   #home_mobile {
     display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin-top: 3em;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 3em;
   }
 
   #home_mobile ul {
     list-style: none;
     width: 100%;
-      padding: 2em;
+    padding: 2em;
   }
 
   #home_mobile ul li {
@@ -669,9 +669,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
     background-color: white;
     color: #7F8C8D;
     text-align: center;
-      margin: 5px 0;
-      font-size: 1em;
-      letter-spacing: 5px;
+    margin: 5px 0;
+    font-size: 12px;
+    letter-spacing: 5px;
   }
 
   #home_mobile ul li a {

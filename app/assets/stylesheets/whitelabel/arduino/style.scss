@@ -242,8 +242,11 @@ div.arduino-bbq.bbq-overlap div.user-profile div.dropover.simple svg {
 
 
 /*  -- CREATE TOOLBAR --  */
+body.affixed-nav #main {
+  padding-top: 65px;
+}
 div.arduino-bbq {
-  height: 50px;
+  // height: 50px;
   background: white;
   width: 100%;
   /*z-index: 5;*/

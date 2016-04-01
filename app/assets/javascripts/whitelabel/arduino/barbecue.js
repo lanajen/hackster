@@ -6,15 +6,22 @@ $(function(){
 	var backgroundBaseUrl = "https://cdn.arduino.cc/video/0"+rndNum;
 
 	var videoSourceOgv = backgroundBaseUrl+".ogv";
-    var videoSourceMp4 = backgroundBaseUrl+".mp4";
-    var videoSourcesPoster = backgroundBaseUrl+".jpg";
+  var videoSourceMp4 = backgroundBaseUrl+".mp4";
+  var videoSourcesPoster = backgroundBaseUrl+".jpg";
 
-    var videoEl = $('#bgvid');
-    var expanded = false;
+  var videoEl = $('#bgvid');
+  var expanded = false;
 
-    videoEl.attr('poster', videoSourcesPoster);
-    videoEl.find('#mp4').attr('src', videoSourceMp4);
-    videoEl.find('#ogv').attr('src', videoSourceOgv);
+  videoEl.attr('poster', videoSourcesPoster);
+  videoEl.find('#mp4').attr('src', videoSourceMp4);
+  videoEl.find('#ogv').attr('src', videoSourceOgv);
+
+  $('.arduino-bbq').on('affix.bs.affix', function () {
+    $('body').addClass('affixed-nav');
+	});
+  $('.arduino-bbq').on('affix-top.bs.affix', function () {
+    $('body').removeClass('affixed-nav');
+	});
 
 	$.ajax({
 	   type: 'GET',
