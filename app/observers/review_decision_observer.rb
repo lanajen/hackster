@@ -37,7 +37,13 @@ class ReviewDecisionObserver < ActiveRecord::Observer
 
       case record.decision
       when 'approve'
-        project.approve_later! reviewer_id: record.user_id if project.can_approve?
+        if project.can_approve?
+          if project.made_public_at.nil?
+            project.approve_later! reviewer_id: record.user_id
+          else
+            project.approve! reviewer_id: record.user_id
+          end
+        end
         thread.update_column :workflow_state, :closed unless thread.closed?
       when 'reject'
         project.reject! reviewer_id: record.user_id if project.can_reject?
