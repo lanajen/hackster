@@ -1757,7 +1757,9 @@ const Utils = {
         // Create stacking pre blocks for childrens content.
         if(item.children && item.children.length) {
           item.children.forEach(child => {
-            acc = acc.concat(this.createPreBlocksByText(child.content));
+            if(child.content && child.content.length) {
+              acc = acc.concat(this.createPreBlocksByText(child.content));
+            }
           });
         }
       } else {
