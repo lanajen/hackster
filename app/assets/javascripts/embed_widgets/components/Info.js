@@ -3,30 +3,31 @@ import Dialog from './Dialog';
 import GetIframe from './GetIframe';
 
 let infoStyles = {
-  'width': '300px',
-  'height': '200px'
+  'width': '500px',
+  'height': '200px',
+  'display': 'flex',
+  'flexDirection': 'column',
+  'justifyContent': 'space-around'
 }
 
-export default class Info extends Component {
+const Info = ({
+  openDialog,
+  closeDialog,
+  dialogState,
+  iframeURL
+}) => {
 
-  constructor() {
-    super()
-
-    this.state = {
-      open: false
-    }
-  }
-
-  render() {
-    const actions = [<button className='btn btn-primary'>Cancel</button>, <button className='btn btn-primary'>Submit</button>];
     return (
       <div style={infoStyles}>
-        <h4>Hackster Badge</h4>
-        <Dialog actions={actions} dismissDialog={() => this.setState({open: false})} open={this.state.open}>
-          <GetIframe userId={this.props.userId}/>
+        <strong>Hackster Badge</strong>
+        <p>Embed this badge on your page to display your some basic information about your Hackster profile, and to link your readers to your Hackster Page!</p>
+        <Dialog dismissDialog={closeDialog} open={dialogState}>
+          <p>Copy and paste this code into your HTML!</p>
+          <GetIframe iframeURL={iframeURL}/>
         </Dialog>
-        <button onClick={() => this.setState({open: true})}>Get the Code!</button>
       </div>
     )
-  }
 }
+
+
+export default Info
