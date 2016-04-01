@@ -12,10 +12,10 @@ p= react_component 'ContestCsvExporter', { url: api_private_challenge_ideas_csv_
 - if @challenge.activate_pre_contest?
   p
     => pluralize @challenge.ideas.where(workflow_state: :won).count, 'idea'
-    ' marked as winners.
+    ' marked as #{winners_label.downcase}.
   - if @challenge.pre_contest_awarded?
     p
-      strong Winners announced.
+      strong #{winners_label} announced.
 
 .row
   .col-xs-12= will_paginate @ideas

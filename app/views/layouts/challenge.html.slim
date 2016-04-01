@@ -204,14 +204,23 @@
                 strong> Project not showing in the list?
                 ' Only write-ups using the "Project" template are valid for submission.
                 = link_to 'Read how to change templates on your existing write-ups.', 'https://hacksterio.freshdesk.com/support/solutions/articles/9000042210-what-if-i-think-a-different-template-should-be-used-', target: '_blank'
+            - @challenge.challenge_entry_fields.each_with_index do |field, i|
+              label
+                - if field.required
+                  abbr> title="Required" *
+                = field.label
+              = text_field_tag :"challenge_entry[cfield#{i}]", '', class: 'form-control'
+
             - if @challenge.activate_categories?
-              label Category you want to enter:
-              = select_tag :category_id, options_from_collection_for_select(@challenge.categories, :id, :name), class: 'form-control mg-10', include_blank: 'Please select one:'
+              label
+                abbr> title="Required" *
+                | Category you want to enter:
+              = select_tag 'challenge_entry[category_id]', options_from_collection_for_select(@challenge.categories, :id, :name), class: 'form-control mg-10', include_blank: ''
             p
               small
                 ' By entering you agree to the
-                = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();'
-            = submit_tag "Enter my project into the challenge", class: 'btn btn-primary'
+                = link_to 'contest rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();', tabindex: -1
+            = submit_tag "Enter my project into the contest", class: 'btn btn-primary'
           p
             small
               ' or

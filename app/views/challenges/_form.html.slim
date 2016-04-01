@@ -88,6 +88,26 @@
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :winners_announced_date, as: :hidden, input_html: { id: 'winners_announced_date' }
+          .form-group
+            .col-md-4
+              label.control-label Extra fields for the entry submission
+              .help-block.text-right If you want more than the project and user. Data is only visible to admins.
+            .col-md-8
+              table#sortable.table.table-sortable
+                thead
+                  th Field label
+                  th Required
+                  th
+                tbody
+                  = f.simple_fields_for :challenge_entry_fields, wrapper: false do |f_field|
+                    tr.fields
+                      td style='min-width: 80%' = f_field.input :label, label: false
+                      td= f_field.input :required, label: false, as: :boolean
+                      td
+                        = f_field.input :position, as: :hidden, input_html: { class: 'position' }
+                        = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
+                  tr.sortable-disabled
+                    td colspan=4 = f.link_to_add 'Add a field', :challenge_entry_fields, class: 'btn btn-xs btn-success nested-field-table'
           = f.input :after_submit_entry_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit a project. Leave room for the URL! Default: '#{@challenge.default_after_submit_entry_tweet}'", label: "Tweet after entry submitted"
 
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
@@ -246,7 +266,8 @@
                 strong.text-danger USE ONLY IF YOU KNOW HOW TO:
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
-            = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
+            /= f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
+            = f.input :winners_label, hint: "By default it will be \"Winners\", but you can override it to something else like \"Finalists\"."
 
       .panel.panel-default
         .panel-heading

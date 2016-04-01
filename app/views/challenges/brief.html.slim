@@ -110,8 +110,11 @@
             strong= raw @challenge.status
             - if @challenge.judging? and @challenge.winners_announced_date
               p style='margin-bottom:0'
-                strong> Winners announced by:
-                = l @challenge.winners_announced_date, format: :short_date
+                - if @challenge.winners_announced_date > Time.now
+                  strong> #{winners_label} announced by:
+                  = l @challenge.winners_announced_date, format: :short_date
+                - else
+                  strong> Winners will be announced soon.
 
       - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
         section.section-thumbs

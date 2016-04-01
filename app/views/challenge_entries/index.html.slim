@@ -29,11 +29,16 @@ table.table.table-striped
             = link_to entry.project.name, entry.project
             - if entry.category_id.present?
               br
+              strong> Category:
               = entry.category.name
           td
             - user = entry.user
             ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
             = link_to user.name, user
+            - @challenge.challenge_entry_fields.each_with_index do |field, i|
+              br
+              strong> #{field.label}:
+              = entry.send("cfield#{i}")
           td= l entry.created_at
           td= entry.workflow_state
           td= entry.judging_notes.try(:truncate, 100)

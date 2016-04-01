@@ -56,10 +56,13 @@ class ChallengeCriticalWorker < BaseWorker
     registrations = challenge.registrations.joins(:user).includes(:user).order("users.full_name ASC")
 
     headers = ['Name', 'Email', 'Registration date']
+    headers += challenge.challenge_entry_fields.map(&:label)
     rows = [headers]
     registrations.each do |registration|
       user = registration.user
-      rows << [user.name, user.email, registration.created_at.in_time_zone(PDT_TIME_ZONE)]
+      output = [user.name, user.email, registration.created_at.in_time_zone(PDT_TIME_ZONE)]
+      output += challenge.challenge_entry_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
+      rows << output
     end
 
     save_csv_to_file rows, doc_id, file_name

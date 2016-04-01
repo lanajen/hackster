@@ -25,8 +25,10 @@ class ChallengeEntriesController < ApplicationController
 
     @project.update_attribute :private, false
 
+    entry.assign_attributes params[:challenge_entry]
     entry.user_id = current_user.id
     entry.project_id = @project.id
+
     next_url = @challenge
 
     if entry.save
@@ -40,6 +42,9 @@ class ChallengeEntriesController < ApplicationController
       # flash[:notice] = "Thanks for entering #{@challenge.name}!"
     elsif :category_id.in? entry.errors.keys
       flash[:alert] = "Please select a category"
+      next_url = challenge_path(@challenge, enter: true)
+    elsif entry.errors.keys.select{|v| v =~ /cfield/ }.any?
+      flash[:alert] = "Please answer all fields"
       next_url = challenge_path(@challenge, enter: true)
     else
       flash[:alert] = "Your project couldn't be entered."

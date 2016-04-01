@@ -1,5 +1,4 @@
-class ChallengeIdeaField < Tableless
-  belongs_to :challenge
+class ChallengeIdeaField < ChallengeExtraField
   attr_accessible :label, :position, :required, :hide
 
   column :label, :string

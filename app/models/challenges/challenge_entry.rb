@@ -4,6 +4,7 @@ class ChallengeEntry < ActiveRecord::Base
   AWARDED_STATES = %w(awarded fullfiled)
   APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
 
+  include HstoreColumn
   include HstoreCounter
   include Workflow
 
@@ -16,10 +17,12 @@ class ChallengeEntry < ActiveRecord::Base
   has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
+  attr_accessible :judging_notes, :prize_ids, :workflow_state, :category_id
+
   validates :challenge_id, uniqueness: { scope: :project_id }
   validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
-
-  attr_accessible :judging_notes, :prize_ids, :workflow_state
+  validate :validate_custom_fields_presence
+  after_initialize :set_extra_fields
 
   counters_column :counters_cache
   has_counter :votes, 'votes.count'
@@ -72,4 +75,29 @@ class ChallengeEntry < ActiveRecord::Base
   def to_tracker
     {}
   end
+
+  # WARNING!
+  # this function adds the fields to ChallengeEntry every time an instance is loaded.
+  # since classes are cached on prod, it can cause duplicate attributes to be added.
+  # moreover, there is cross-polenization between challenges, which causes bugs.
+  # we've left hstore_column because it's begnign, but validation has to be taken out
+  def set_extra_fields
+    return unless challenge
+
+    challenge.challenge_entry_fields.each_with_index do |field, i|
+      field_name = "cfield#{i}"
+      unless respond_to? field_name
+        self.class.send :hstore_column, :properties, field_name, :text
+        # self.class.send :validates, field_name, presence: true if field.required
+      end
+    end
+  end
+
+  private
+    def validate_custom_fields_presence
+      challenge.challenge_entry_fields.each_with_index do |field, i|
+        field_name = "cfield#{i}"
+        errors.add field_name, 'is required' if field.required and send(field_name).blank?
+      end
+    end
 end

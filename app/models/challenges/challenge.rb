@@ -41,6 +41,7 @@ class Challenge < ActiveRecord::Base
   has_many :registrations, dependent: :destroy, class_name: 'ChallengeRegistration'
   has_many :registrants, -> { order(:full_name) }, through: :registrations, source: :user
   has_many :votes, through: :entries
+  has_many_tableless :challenge_entry_fields, order: :position
   has_many_tableless :challenge_idea_fields, order: :position
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
@@ -126,6 +127,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :voting_start, :string, default: :end
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
   hstore_column :hproperties, :winners_announced_date, :datetime
+  hstore_column :hproperties, :winners_label, :string, default: 'Winners'
 
   counters_column :hcounters_cache
   has_counter :ideas, 'activate_free_hardware? ? ideas.count : ideas.old_approved.count'
@@ -240,7 +242,7 @@ class Challenge < ActiveRecord::Base
     unless disable_projects_phase?
       @dates << { date: start_date, label: 'Project submissions open' } if start_date
       @dates << { date: end_date, label: 'Project submissions close' } if end_date
-      @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced by' } if winners_announced_date
+      @dates << { date: winners_announced_date, format: :short_date, label: "#{winners_label} announced by" } if winners_announced_date
     end
 
     @dates = @dates.sort_by{|v| v[:date] }  # sort

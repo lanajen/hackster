@@ -9,7 +9,7 @@
     You now have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT polish your write-up, fix bugs, and make it the best entry of all so you can win the contest!
 
     <% if @context[:challenge].winners_announced_date %>
-      Winners will be announced on <%= l @context[:challenge].winners_announced_date, format: :short_date %>.
+      <%= @context[:challenge].winners_label %> will be announced on <%= l @context[:challenge].winners_announced_date, format: :short_date %>.
     <% end %>
   </p>
 <% end %>

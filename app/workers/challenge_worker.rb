@@ -18,7 +18,7 @@ class ChallengeWorker < BaseWorker
     challenge = Challenge.find id
 
     challenge.projects.each do |project|
-      project.udpate_attribute :locked, true
+      project.update_attribute :locked, true
     end
   end
 

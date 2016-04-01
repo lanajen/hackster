@@ -23,10 +23,13 @@
 - q: When will winners be announced? Where can I see the list?
   a: >
     <% if @challenge.activate_pre_contest? and @challenge.pre_winners_announced_date.present? %>
-      <p><%= @challenge.pre_contest_label %> winners will be announced on <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+      <p><%= @challenge.pre_contest_label %> winners will be announced by <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+    <% end %>
+    <% if @challenge.activate_free_hardware? %>
+      <p>Winners of free hardware will be announced individually by email on a rolling basis.</p>
     <% end %>
     <% if @challenge.winners_announced_date.present? %>
-      <p>Contest winners will be announced on <%= l @challenge.winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (Contest brief).</p>
+      <p>Contest <%= @challenge.winners_label.downcase %> will be announced on <%= l @challenge.winners_announced_date, format: :short_date %>. The list of <%= @challenge.winners_label.downcase %> will be visible on the main page (Contest brief).</p>
     <% end %>
   condition: "@challenge.pre_winners_announced_date.present? or @challenge.winners_announced_date.present?"
 - q: Who is eligible to participate?
@@ -36,4 +39,5 @@
   a: "<%= raw @challenge.how_to_enter %>"
   condition: "@challenge.how_to_enter.present?"
 - q: My project is locked and I can't edit it anymore. Why is that?
-  a: All projects entered in the contest are locked after the submission deadline to ensure that they remain the same during the judging process. They are then unlocked after winners are announced.
+  a: >
+    All projects entered in the contest are locked after the submission deadline to ensure that they remain the same during the judging process. They are then unlocked after <%= @challenge.winners_label.downcase %> are announced.
