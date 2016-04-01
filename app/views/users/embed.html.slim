@@ -1,9 +1,10 @@
 div class='embed-badge'
-  img class='embed-badge-image' src='../../assets/hackster_logo_squared.png'
+  a href= @user_link target='_top'
+    img class='embed-badge-image' src= @userAvatar
   div class='embed-badge-info'
     h4
       strong
-        a = @user.user_name
+        = @user.user_name
       ul class='embed-badge-info-list'
         li
           p projects

@@ -411,9 +411,9 @@ HackerIo::Application.routes.draw do
         get 'platforms' => 'platforms#index'
 
         # embend a hackster badge with your project name / number
-        get 'embed_widget' => 'embed_widget#index'
+        get 'embed_widgets' => 'embed_widgets#index'
 
-        get ':slug/embed' => 'users#embed'
+        get 'users/:slug/embed' => 'users#embed'
 
 
         # get 'talk' => 'channels#show'
