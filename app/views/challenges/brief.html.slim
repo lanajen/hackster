@@ -111,7 +111,7 @@
             - if @challenge.judging? and @challenge.winners_announced_date
               p style='margin-bottom:0'
                 - if @challenge.winners_announced_date > Time.now
-                  strong> #{winners_label} announced by:
+                  strong> #{@challenge.winners_label} announced by:
                   = l @challenge.winners_announced_date, format: :short_date
                 - else
                   strong> Winners will be announced soon.
