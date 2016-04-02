@@ -72,7 +72,7 @@
               li
                 a href="https://id.arduino.cc/" target="_blank"  Profile
               li
-                a#sign-out-link href='javascript:void(0)' Sign Out
+                a.sign-out-link href='javascript:void(0)' Sign Out
             - else
               li
                 a href=arduino_sign_in_url Sign In
@@ -89,7 +89,7 @@
               a href="https://id.arduino.cc/" target="_blank"
                 button Profile
             li
-              = link_to content_tag(:button, 'Sign Out'), 'javascript:void(0)', id: 'sign-out-link'
+              = link_to content_tag(:button, 'Sign Out'), 'javascript:void(0)', class: 'sign-out-link'
     - else
       a class="login-link" href=arduino_sign_in_url Sign In
 

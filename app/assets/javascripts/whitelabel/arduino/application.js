@@ -7,7 +7,7 @@ $(function() {
 
 
   // sign out hijack to clear up local storage
-  $('#sign-out-link').on('click', function(e){
+  $('.sign-out-link').on('click', function(e){
     e.preventDefault();
 
     // clear up arduino local storage

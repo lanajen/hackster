@@ -9,7 +9,7 @@ class Groups::ProjectsController < ApplicationController
 
     @pending_review_size = @group.project_collections.where(workflow_state: :pending_review).size
 
-    @project_collections = @group.project_collections
+    @project_collections = @group.project_collections.joins(:project)
 
     if params[:status] and params[:status].in? %w(approved rejected pending_review featured)
       @project_collections = @project_collections.where(workflow_state: params[:status])
