@@ -4,14 +4,14 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', '<%= tracker %>', 'auto');
-  ga('send', 'pageview');
+  ga('create', '<%= tracker %>', 'auto', 'hackster');
+  ga('hackster.send', 'pageview');
   <% if user_signed_in? %>
-    ga('set', '&uid', <%= current_user.id %>);
+    ga('hackster.set', '&uid', <%= current_user.id %>);
   <% end %>
-  ga('set', 'dimension1', '<%= user_signed_in? ? 'Member' : 'Visitor' %>');
-  ga('set', 'dimension2', '<%= self.controller_name %>');
-  ga('set', 'dimension3', '<%= self.action_name %>');
+  ga('hackster.set', 'dimension1', '<%= user_signed_in? ? 'Member' : 'Visitor' %>');
+  ga('hackster.set', 'dimension2', '<%= self.controller_name %>');
+  ga('hackster.set', 'dimension3', '<%= self.action_name %>');
 </script>
 
 <%- if defined?(track_outbound) and track_outbound %>
