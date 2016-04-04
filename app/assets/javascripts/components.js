@@ -19,8 +19,8 @@ require('expose?TimeLeft!./time_left/app');
 require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
 /* testing the badge */
-require('expose?Embed!./embed_widgets/app');
-require('expose?EmbedDialog!./embed_widgets/components/EmbedDialog')
+require('expose?EmbedWidget!./embed_widgets/app');
+// require('expose?EmbedDialog!./embed_widgets/components/EmbedDialog')
 
 /** Global Utils */
 require('expose?Utils!./utils/Utils');

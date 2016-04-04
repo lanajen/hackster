@@ -12,18 +12,15 @@ let inputStyles = {
   'marginBottom': '10px'
 };
 
-const GetIframe = ({
+const EmbedCodeDisplay = ({
   iframeURL
 }) => {
-
   return (
     <div style={styles}>
-      <input style={inputStyles} type="text"
-        value={"<iframe frameBorder='0' height='270' scrolling='no' src=" + iframeURL + " width='360'></iframe>"}
-      />
+      <input style={inputStyles} type="text" value={"<iframe frameBorder='0' height='270' scrolling='no' src=" + iframeURL + " width='360'></iframe>"}/>
       <iframe frameBorder='0' height='270' scrolling='no' src={iframeURL} width='360'></iframe>
     </div>
   )
 }
 
-export default GetIframe;
+export default EmbedCodeDisplay;
