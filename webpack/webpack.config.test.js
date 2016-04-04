@@ -1,17 +1,20 @@
 // E2E: Karma takes care of the entry files.  See karma.conf.js @root.
 // Unit: Webpack-mocha takes care of the entry files in npm script.
-var path = require('path');
 
 module.exports = {
   devtool: 'inline-source-map',
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
+        loader: 'babel',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.js?$/,
         loader: 'babel',
         exclude: /(node_modules|bower_components)/,
         query: {
-          cacheDirectory: true,
           presets: ['es2015', 'react', 'stage-2'],
           plugins: ['transform-runtime', 'add-module-exports', 'rewire']
         }
