@@ -7,6 +7,11 @@ HackerIo::Application.routes.draw do
     get '/' => 'landing_pages#intel'
   end
 
+  constraints(MouserContest) do
+    # add some route and the corresponding controller / views
+    get '/' => ''
+  end
+
   constraints(ShortLinkDomain) do
     get ':slug' => 'short_links#show'
     get '/' => redirect('https://www.hackster.io')
