@@ -28,4 +28,10 @@ class LandingPagesController < ActionController::Base
         @title = 'Hackster.io'
       end
     end
+
+  def mouser_contest
+    title "Mouser Contest"
+    meta_desc "Mouser Contest"
+  end
+
 end

@@ -9,7 +9,7 @@ HackerIo::Application.routes.draw do
 
   constraints(MouserContest) do
     # add some route and the corresponding controller / views
-    get '/' => ''
+    get '/' => 'landing_pages#mouser_contest'
   end
 
   constraints(ShortLinkDomain) do
