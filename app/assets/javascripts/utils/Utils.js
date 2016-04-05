@@ -3,9 +3,15 @@
 export default {
   getApiPath() {
     if(window && window.location) {
-      let protocol = window.location.protocol;
-      let port = window.location.port;
-      return port && port.length ? `${protocol}//${document.getElementById('api-uri').content}:${port}` : `${protocol}//${document.getElementById('api-uri').content}`;
+      const protocol = window.location.protocol;
+      const port = window.location.port;
+      const element = document.getElementById('api-uri');
+
+      return element && element.content && port && port.length
+        ? `${protocol}//${element.content}:${port}`
+        : element && element.content
+        ? `${protocol}//${element.content}`
+        : console.error('Utils.getApiPath expects a header with an id of api-uri');
     }
   },
 
@@ -14,7 +20,7 @@ export default {
     let csrfToken;
 
     [].slice.call(metaList).forEach(m => {
-      if(m.name === 'csrf-token') { csrfToken = m.content }
+      if(m.name === 'csrf-token' && m.content) { csrfToken = m.content }
     });
 
     return csrfToken;
