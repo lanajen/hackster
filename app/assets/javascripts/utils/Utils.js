@@ -11,7 +11,7 @@ export default {
         ? `${protocol}//${element.content}:${port}`
         : element && element.content
         ? `${protocol}//${element.content}`
-        : console.error('Utils.getApiPath expects a header with an id of api-uri');
+        : console.error('Utils.getApiPath expects a meta tag with an id of api-uri');
     }
   },
 
