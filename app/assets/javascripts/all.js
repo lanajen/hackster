@@ -251,7 +251,7 @@ $(function () {
 
   showAlerts();
 
-  $('#show-login-form').on('click', function(e){
+  $('#show-login-form, .show-login-form').on('click', function(e){
     e.preventDefault();
     openModal('#login-popup');
   });
@@ -273,7 +273,7 @@ $(function () {
     }
   });
 
-  $('#login-form, #signup-popup-email').on('submit', function(e){
+  $('#login-form, #signup-popup-email, #challenge-unlock-form').on('submit', function(e){
     var form = $(this);
     if (!form.find('[name="authenticity_token"]').length) {
       e.preventDefault();

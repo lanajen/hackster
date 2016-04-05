@@ -3,16 +3,16 @@
   .popup-overlay-outer
     .popup-overlay-inner
       button.close data-target='#simplified-signup-popup' &times;
-      h4 Please enter your email to continue:
+      h4 Please complete the following to continue:
 
-      = simple_form_for User.new, url: _simplified_registrations_path, html: { class: 'user-form form-compact disable-on-submit', id: 'login-form' }, authenticity_token: !csrf_disabled? do |f|
+      = simple_form_for User.new, url: _simplified_registrations_path, html: { class: 'user-form form-compact disable-on-submit text-left', id: 'login-form' }, authenticity_token: !csrf_disabled? do |f|
         input  type='hidden' name='redirect_to'
         input  type='hidden' name='source'
-        = f.input :full_name, label: false, placeholder: 'Full name', wrapper_html: { style: 'display:none;', class: 'full-name-wrapper' }
-        = f.input :email, label: false, placeholder: 'Email', tabindex: 1
+        = f.input :full_name, label: 'First name and last name:', wrapper_html: { style: 'display:none;', class: 'full-name-wrapper' }
+        = f.input :email, label: 'Email:', tabindex: 1
         = f.button :submit, "Continue", class: 'btn btn-primary btn-block'
 
       p
         small
           ' Already have an account?
-          = link_to 'Sign in', new_user_session_path, class: 'sign-in-link'
+          = link_to 'Sign in', new_user_session_path, class: 'sign-in-link show-login-form'

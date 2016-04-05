@@ -153,7 +153,7 @@ class ChallengesController < ApplicationController
     @challenge = Challenge.find params[:id]
     redirect_to @challenge and return unless @challenge.password_protect?
 
-    if key = @challenge.unlock(params[:password])
+    if key = @challenge.unlock(params[:password]).presence
       session[:challenge_keys] ||= {}
       session[:challenge_keys][@challenge.id] = key
     else

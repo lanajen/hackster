@@ -256,12 +256,11 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    redirect_to @project, alert: "Your project is locked and cannot be edited at this time." if @project.locked? and !current_user.try(:is?, :admin)
+    redirect_to @project, alert: "Your project is locked and cannot be edited at this time." if @project.locked? and !current_user.try(:is?, :admin, :hackster_moderator)
 
     title 'Edit project'
     initialize_project
     @team = @project.team
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :hackster_moderator
   end
 
   def update

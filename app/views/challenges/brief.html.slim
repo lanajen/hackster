@@ -43,7 +43,7 @@
             - if @challenge.activate_free_hardware?
               - if @challenge.free_hardware_applications_open?
                 p
-                  ' Need hardware to complete your submission? We are giving away up to #{@challenge.free_hardware_quantity} free
+                  ' Need hardware to complete your submission? We are giving away a limited amount of free
                   => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
                   ' devices. Applications
                   - if @challenge.free_hardware_end_date

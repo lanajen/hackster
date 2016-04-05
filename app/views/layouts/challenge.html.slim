@@ -173,9 +173,9 @@
               .box
                 .box-content
                   p.text-center
-                    strong This challenge is password-protected.
+                    strong This contest is password-protected.
                   / p.text-center Please enter a password below to unlock it:
-                  = form_tag unlock_challenge_path(@challenge), autocomplete: 'off' do
+                  = form_tag unlock_challenge_path(@challenge), autocomplete: 'off', authenticity_token: !csrf_disabled?, class: 'user-form', id: 'challenge-unlock-form' do
                     .input-group
                       = password_field_tag :password, nil, class: 'form-control', placeholder: 'Password'
                       span.input-group-btn
