@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { browserHistory, Link } from 'react-router'
 
-
-//fetching iframe image inside dialog is slow..?
-
-
 export default class MouserContest extends Component {
 
   constructor(props) {
@@ -22,6 +18,5 @@ export default class MouserContest extends Component {
       </div>
     )
   }
-
 }
 
