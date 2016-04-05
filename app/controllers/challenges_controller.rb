@@ -167,7 +167,7 @@ class ChallengesController < ApplicationController
     def authorize_and_set_cache
       authorize! :read, @challenge
 
-      if user_signed_in?
+      if user_signed_in? or @challenge.password_protect?
         impressionist_async @challenge, '', unique: [:session_hash]
       else
         surrogate_keys = [@challenge.record_key, 'challenge']
