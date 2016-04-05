@@ -9,7 +9,7 @@ HackerIo::Application.routes.draw do
 
   constraints(MouserContest) do
     # add some route and the corresponding controller / views
-    get '/' => 'landing_pages#mouser_contest'
+    get '/' => 'mouser_contest#index'
   end
 
   constraints(ShortLinkDomain) do
@@ -417,7 +417,7 @@ HackerIo::Application.routes.draw do
 
         # embend a hackster badge with your project name / number
         get 'embed_widgets' => 'embed_widgets#index'
-        get 'users/:slug/embed' => 'users#embed'
+        get 'users/:id/embed' => 'users#embed'
 
 
         # get 'talk' => 'channels#show'

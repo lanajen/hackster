@@ -90,9 +90,8 @@ class UsersController < ApplicationController
   end
 
   def embed
-    @user = User.find params[:slug]
-    @userAvatar = @user.decorate.avatar
-    @user_link = 'http://www.localhost.local:5000/' + @user.user_name
+    @user = User.find params[:id]
+    @user_link = APP_CONFIG['default_domain'] + '/users/' + @user.user_name
     render layout: 'embed'
   end
 
