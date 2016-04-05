@@ -142,36 +142,37 @@
 
     - cache ["challenge-#{@challenge.id}-prizes"], tag: ["challenge-#{@challenge.id}-prizes"], skip_digest: true do
 
-      section.section-thumbs
-        h4 Prizes
-        - @prizes.each do |prize|
-          .award
-            h5
-              i.fa.fa-trophy
-              = prize.name
-            - if prize.image
-              - if prize.link.present?
-                div= link_to image_tag(prize.image.imgix_url(:medium)), prize.link, target: '_blank'
-              - else
-                div= image_tag prize.image.imgix_url(:medium)
-            p
-              - if prize.description.present?
+      - if @prizes.exists?
+        section.section-thumbs
+          h4 Prizes
+          - @prizes.each do |prize|
+            .award
+              h5
+                i.fa.fa-trophy
+                = prize.name
+              - if prize.image
                 - if prize.link.present?
-                  = link_to prize.description, prize.link, target: '_blank'
+                  div= link_to image_tag(prize.image.imgix_url(:medium)), prize.link, target: '_blank'
                 - else
-                  = prize.description
-              - elsif prize.cash_value.present?
-                strong
-                  = number_to_currency prize.cash_value, precision: 0
+                  div= image_tag prize.image.imgix_url(:medium)
+              p
+                - if prize.description.present?
+                  - if prize.link.present?
+                    = link_to prize.description, prize.link, target: '_blank'
+                  - else
+                    = prize.description
+                - elsif prize.cash_value.present?
+                  strong
+                    = number_to_currency prize.cash_value, precision: 0
 
-            - if prize.quantity > 1 or prize.description.present? and prize.cash_value.present?
-              p.small.text-muted
-                ' #{number_to_currency prize.cash_value, precision: 0} value
-                - if prize.quantity > 1 and prize.cash_value.present?
-                  ' -
-                - if prize.quantity > 1
-                  => prize.quantity
-                  | available
+              - if prize.quantity > 1 or prize.description.present? and prize.cash_value.present?
+                p.small.text-muted
+                  ' #{number_to_currency prize.cash_value, precision: 0} value
+                  - if prize.quantity > 1 and prize.cash_value.present?
+                    ' -
+                  - if prize.quantity > 1
+                    => prize.quantity
+                    | available
 
     section.section-thumbs
       h4 Timeline

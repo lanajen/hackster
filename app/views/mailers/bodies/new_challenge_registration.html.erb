@@ -6,7 +6,7 @@
   <p><%= raw @context[:challenge].custom_registration_email %></p>
 <% end %>
 
-<p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> to learn more about the requirements.</p>
+<p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the contest rules</a> to learn more about the requirements.</p>
 
 <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT to submit your entry. Good luck!</p>
 

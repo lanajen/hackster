@@ -126,7 +126,7 @@
                   li= link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary enter-challenge'
             - else
               - if @challenge.registration_open? and !@has_registered
-                ul.list-inline.manage
+                ul.list-inline.manage.show-affixed
                   - if user_signed_in?
                     li= button_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary register-challenge register-challenge-btn', data: { method: :post }
                   - else

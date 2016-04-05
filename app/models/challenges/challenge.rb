@@ -91,6 +91,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_participants_tab, :boolean
   hstore_column :hproperties, :disable_pre_contest_winners, :boolean  # legacy
   hstore_column :hproperties, :disable_projects_phase, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean

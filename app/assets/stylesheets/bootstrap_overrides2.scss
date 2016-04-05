@@ -213,3 +213,13 @@ code {
   background-color: #f2f2f2;
   color: #777;
 }
+.affixable {
+  .show-affixed {
+    display: none;
+  }
+  &.affix {
+    .show-affixed {
+      display: initial;
+    }
+  }
+}

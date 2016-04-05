@@ -38,7 +38,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-#{record.id}-banner"
       purge = true
     end
-    if record.password_protect_changed? or record.disable_projects_tab_changed?
+    if record.password_protect_changed? or record.disable_projects_tab_changed? or record.disable_participants_tab?
       purge = true
     end
     (record.changed & Challenge::TOKENABLE_ATTRIBUTES).each do |attr|

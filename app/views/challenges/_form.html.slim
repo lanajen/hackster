@@ -266,7 +266,7 @@
                 strong.text-danger USE ONLY IF YOU KNOW HOW TO:
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
-            /= f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
+            = f.input :disable_participants_tab, inline_label: 'Disable participants tab', as: :boolean, label: false
             = f.input :winners_label, hint: "By default it will be \"Winners\", but you can override it to something else like \"Finalists\"."
 
       .panel.panel-default
