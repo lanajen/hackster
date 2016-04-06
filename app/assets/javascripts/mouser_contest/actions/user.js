@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { User } from '../constants';
 import { determineHost } from '../../utils/Mouser'
 
@@ -63,3 +64,37 @@ export function setUserAsAdmin(bool) {
     bool
   }
 }
+||||||| merged common ancestors
+=======
+import { User } from '../constants';
+
+export function getProjects() {
+  return disptach => {
+    return fetch('http://api.localhost.local:5000/v1/projects?user_id=1')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        const projects = data.projects.map(project => { value: project, label: project.name });
+        dispatch(setProjects(projects));
+      })
+      .catch(err => console.log('ERROR', err))
+  }
+}
+
+function setProjects (projects) {
+  return {
+    type: User.SET_PROJECTS,
+    projects
+  }
+}
+
+
+
+
+
+  // this.props.dispatch({
+      //   type: 'INITIALIZE_PROJECTS',
+      //   userProjects: projects
+      // });}
+>>>>>>> added an auth component for route authentication
