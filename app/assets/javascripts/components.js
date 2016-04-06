@@ -21,7 +21,7 @@ require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
 /* testing the badge */
 require('expose?EmbedWidget!./embed_widgets/app');
-require('expose?MouserContest!./mouser_contest/');
+require('expose?MouserContest!./mouser_contest/app');
 
 
 /** Global Utils */

@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import { browserHistory, Link } from 'react-router'
+import React, { Component} from 'react';
+import { Router, Route, browserHistory } from 'react-router';
+import { Provider } from 'react-redux';
+import { syncHistoryWithStore } from 'react-router-redux'
 
+import Splash from './containers/Splash';
+// import Vendors from './containers/Vendors';
+// import Match from './containers/Match';
 
-export default class MouserContest extends Component {
+import configureStore from './configStore';
 
+const store = configureStore();
+const history = syncHistoryWithStore(browserHistory, store);
 
-  constructor(props) {
-    super(props);
-  }
+const MouserContest = () => (
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path='/' component={Splash}/>
+      {/* <Route path='vendor' component={Vendors}/> */}
+    </Router>
+  </Provider>
+)
 
-  render() {
-    console.log(window.location)
-    return (
-      <div id='#mouser-contest'>
-        <a> <Link to={'/vendors'}>Route to Vendors</Link></a>
-        <br/>
-        <a> <Link to={'/matches'}>Route to Matches</Link></a>
-        <section>hi</section>
-      </div>
-    )
-  }
-}
-
+export default MouserContest;
