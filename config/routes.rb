@@ -10,6 +10,8 @@ HackerIo::Application.routes.draw do
   constraints(MouserContest) do
     # add some route and the corresponding controller / views
     get '/' => 'mouser_contest#index'
+    get '*splat' => 'mouser_contest#index'
+
   end
 
   constraints(ShortLinkDomain) do

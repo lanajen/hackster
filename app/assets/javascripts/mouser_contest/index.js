@@ -6,16 +6,13 @@ import { Router, browserHistory } from 'react-router'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
 import { Provider } from 'react-redux'
-import store from './store.js'
+import { store, history } from './store.js'
 
 
-
-
-
-  const MouserContestMount = () => (
-    <Provider store={store}>
-      <Router history={browserHistory}>{routes}</Router>
-    </Provider>
-  )
+const MouserContestMount = () => (
+  <Provider store={store}>
+    <Router history={history}>{routes}</Router>
+  </Provider>
+)
 
 export default MouserContestMount;

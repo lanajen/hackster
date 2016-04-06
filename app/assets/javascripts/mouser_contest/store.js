@@ -10,12 +10,15 @@ const store = createStore(
   combineReducers({
   MainReducer,
   routing: routerReducer})
-)
+);
 
 
-const reduxRouterMiddleware = syncHistoryWithStore(browserHistory, store)
+const history = syncHistoryWithStore(browserHistory, store);
 
 //this is for use with the redux dev tools
 // reduxRouterMiddleware.listenForReplays(store)
 
-export default store
+export {
+  history,
+  store
+}

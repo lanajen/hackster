@@ -1,19 +1,7 @@
 import store from '../store.js'
 
 
-const initialState = {
-  Playlist: null,
-  nowPlayingDescription: {
-    name: null,
-    aliases: null,
-    profile: null,
-    groups: null,
-    urls: null,
-    images: null
-  },
-  nowPlayingURL: null,
-  backupDescription: null
-}
+const initialState = {};
 
 
 const MainReducer = (state = initialState, action) => {
