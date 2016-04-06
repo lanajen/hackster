@@ -3,6 +3,8 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 
+
+
 import Root from './containers/Root';
 import Splash from './containers/Splash';
 import Vendor from './containers/Vendor';
