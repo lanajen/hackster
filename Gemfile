@@ -17,7 +17,7 @@ gem 'fog-aws', '0.1.2'
 gem 'font-awesome-rails', '4.5.0.0'
 gem 'jquery-rails', '4.0.4'
 gem 'jquery-ui-rails', '5.0.5'
-gem 'react-rails', '~> 1.5'
+gem 'react-rails', '~>1.5'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
 gem 'uglifier', '2.3.1'
@@ -25,7 +25,7 @@ gem 'zocial-rails', '1.0.2'
 
 # bower
 source 'https://rails-assets.org' do
-  gem 'rails-assets-algoliasearch', '3.12.0'
+  gem 'rails-assets-algoliasearch', '3.11.0'
   gem 'rails-assets-algolia-autocomplete.js', '0.16.1'
   gem 'rails-assets-clipboard', '1.5.3'
   gem 'rails-assets-js-cookie', '2.0.3'

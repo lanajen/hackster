@@ -7,6 +7,13 @@ HackerIo::Application.routes.draw do
     get '/' => 'landing_pages#intel'
   end
 
+  constraints(MouserContest) do
+    # add some route and the corresponding controller / views
+    get '/' => 'mouser_contest#index'
+    get '*splat' => 'mouser_contest#index'
+
+  end
+
   constraints(ShortLinkDomain) do
     get ':slug' => 'short_links#show'
     get '/' => redirect('https://www.hackster.io')
@@ -410,6 +417,11 @@ HackerIo::Application.routes.draw do
         get 'tools', to: redirect('platforms')
         get 'platforms' => 'platforms#index'
 
+        # embend a hackster badge with your project name / number
+        get 'embed_widgets' => 'embed_widgets#index'
+        get 'users/:id/embed' => 'users#embed'
+
+
         # get 'talk' => 'channels#show'
         # get 'talk/*all' => 'channels#show'
 
@@ -448,6 +460,7 @@ HackerIo::Application.routes.draw do
         get 'spark/makes', to: redirect('/particle/components')
         get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
         get 'tinyduino', to: redirect('/tinycircuits')
+
 
         get 'about' => 'pages#about'
         get 'business' => 'pages#business'

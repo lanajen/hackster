@@ -98,6 +98,12 @@ class NotShortLinkDomain
   end
 end
 
+class MouserContest
+  def self.matches?(request)
+    request.subdomains[0] == 'mousercontest' and request.domain == APP_CONFIG['default_domain']
+  end
+end
+
 class IntelLandingPage
   def self.matches?(request)
     request.subdomains[0] == 'usmakercompetition' and request.domain == APP_CONFIG['default_domain']

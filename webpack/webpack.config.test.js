@@ -7,11 +7,10 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.js?$/,
         loader: 'babel',
         exclude: /(node_modules|bower_components)/,
         query: {
-          cacheDirectory: true,
           presets: ['es2015', 'react', 'stage-2'],
           plugins: ['transform-runtime', 'add-module-exports', 'rewire']
         }
