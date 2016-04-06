@@ -8,7 +8,7 @@ import App from './app'
 
 export default (
   <Route path='/' component={App}>
-    <Route path='vendors' component={Vendors}/>
+    <Route path='#vendors' component={Vendors}/>
   </Route>
 )
 

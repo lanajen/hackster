@@ -15,7 +15,7 @@ export default class MouserContest extends Component {
     console.log(window.location)
     return (
       <div id='#mouser-contest'>
-        <a> <Link to={'/vendors'}>Route to Vendors</Link></a>
+        <a> <Link to={'/#vendors'}>Route to Vendors</Link></a>
         <br/>
         <a> <Link to={'/matches'}>Route to Matches</Link></a>
         <section>hi</section>
