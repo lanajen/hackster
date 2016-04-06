@@ -184,6 +184,11 @@ class ProjectsController < ApplicationController
     set_surrogate_key_header *surrogate_keys
     set_cache_control_headers
 
+    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
+    if params[:sort]
+      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
+    end
+
     @column_width = params[:col_width]
     @column_class = @column_width ? 'no-col' : (params[:col_class] ? CGI.unescape(params[:col_class]) : nil)
 
