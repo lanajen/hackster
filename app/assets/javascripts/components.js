@@ -11,7 +11,7 @@ require('expose?FlagButton!./flag_button/app');
 require('expose?FollowButton!./follow_button/app');
 require('expose?ImageUploader!./image_uploader/app');
 require('expose?ListsDropdown!./lists_dropdown/app');
-require('expose?NotificationDropdown!./notification_dropdown/app.js');
+require('expose?NotificationDropdown!./notification_dropdown/app');
 require('expose?ReactEditor!./editor/app');
 require('expose?ReputationUpdateButton!./reputation_update_button/app');
 require('expose?ReviewTool!./review_tool/containers/Root');
@@ -20,7 +20,7 @@ require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
 /* testing the badge */
 require('expose?EmbedWidget!./embed_widgets/app');
-require('expose?MouserContest!./Mouser_contest/index');
+require('expose?MouserContest!./mouser_contest/');
 
 
 /** Global Utils */
