@@ -1,0 +1,17 @@
+div class='embed-badge'
+  a href= @user_link target='_top'
+    img class='embed-badge-image' src= @user.decorate.avatar
+  div class='embed-badge-info'
+    h4
+      strong
+        = @user.user_name
+      ul class='embed-badge-info-list'
+        li
+          p projects
+          = @user.projects_count
+        li
+          p followers
+          = @user.followers_count
+        li
+          p respects
+          = @user.respects_count

@@ -1,0 +1,20 @@
+= content_for :head do
+  meta name='robots' content='noindex, nofollow'
+
+= content_for :js do
+  = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+  javascript:
+     try{Typekit.load({async: true});}catch(e){}
+
+
+= react_component 'MouserContest'
+/ #mousercontest-landing
+
+/   section#hero
+/     | This is where the navigation and content information will go
+
+/   section#bracket
+/     | This is where the contest bracket will go
+
+/   section#vendors
+/     | This is where all of the vendors will appear

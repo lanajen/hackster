@@ -1,12 +1,14 @@
-class LandingPagesController < ActionController::Base
+class MouserContestController < ActionController::Base
   layout 'blank'
   helper_method :title
   helper_method :meta_desc
 
-  def intel
-    title "US Maker Competition - Intel"
-    meta_desc "US Maker Competition - Intel"
+  def index
+    title "Mouser Contest"
+    meta_desc "Mouser Contest"
+    #get the appropriate makers
   end
+
 
   private
     def meta_desc meta_desc=nil
