@@ -8,4 +8,14 @@ const createStoreWithMiddleware = applyMiddleware(
 
 export default function configureStore() {
   return createStoreWithMiddleware(rootReducer);
+<<<<<<< HEAD
 }
+||||||| merged common ancestors
+}
+
+=======
+}
+
+
+
+>>>>>>> added an auth component for route authentication

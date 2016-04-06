@@ -1,41 +1,43 @@
 import React, { Component } from 'react';
-import { connect } from 'connect';
+import { connect } from 'react-redux';
 
 
-export function authenticateComponent(Component) {
+export default function authenticateComponent (Component) {
 
 
   class AuthenticatedComponent extends Component {
 
     componentWillMount() {
-      //check authentication each time an authenticated route is hit by react- router
       this.checkAuth()
     }
 
-    componentWillRecieveProps() {
-      //check auth again
+    componentWillReceiveProps() {
       this.checkAuth();
     }
 
+    checkAuth() {
+      if (!this.props.isAuthenticated) {
+        console.log('THIS USER IS NOT AUTHENTICATED');
+      }
+    }
 
     render() {
       return (
         <div>
-          {
-
+          {this.props.isAuthenticated === true
+            ? <Component/>
+            : null
           }
         </div>
-
       )
     }
-
   }
-//map redux state to props
-//this will include all of the current user's information (really just the token)
-const mapStateToProps = (state) => ({
-  token: state.auth.token
-});
 
-connect(mapStateToProps)(AuthenticatedComponent);
+  const mapStateToProps = (state) => ({
+    token: state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated
+  });
+
+  return connect(mapStateToProps)(AuthenticatedComponent);
 
 }
