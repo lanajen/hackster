@@ -161,6 +161,9 @@ class PlatformsController < ApplicationController
 
     title "Projects built with #{@platform.name}"
 
+    @column_width = params[:col_width]
+    @column_class = @column_width ? 'no-col' : (params[:col_class] ? CGI.unescape(params[:col_class]) : nil)
+
     respond_to do |format|
       format.html { render "groups/platforms/embed", layout: 'embed' }
       format.js do
