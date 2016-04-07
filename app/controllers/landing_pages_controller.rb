@@ -28,5 +28,4 @@ class LandingPagesController < ActionController::Base
         @title = 'Hackster.io'
       end
     end
-
 end

@@ -8,10 +8,10 @@ HackerIo::Application.routes.draw do
   end
 
   constraints(MouserContest) do
-    # add some route and the corresponding controller / views
-    get '/' => 'mouser_contest#index'
-    get '*splat' => 'mouser_contest#index'
-
+    scope module: :mouser, as: :mouser do
+      get '/' => 'vendors#index', as: :vendors
+      get ':user_name' => 'vendors#show', as: :vendor
+    end
   end
 
   constraints(ShortLinkDomain) do
