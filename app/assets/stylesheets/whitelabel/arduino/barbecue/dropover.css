@@ -27,6 +27,7 @@
 }
 .dropover .scrollable{
 	flex: 1;
+	-webkit-flex: 1;
 	overflow: auto;
 }
 .dropover ul{
@@ -81,10 +82,13 @@
 
 .dropover li button{
 	display: flex;
+	display: -webkit-flex;
 	flex-direction: row;
+	-webkit-flex-direction: row;
 }
 .dropover li button span{
 	flex: auto;
+	-webkit-flex: auto;
 }
 
 .dropover.notify{

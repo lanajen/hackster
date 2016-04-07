@@ -147,6 +147,10 @@ function loadImage (el) {
     el.removeClass('loading');
     el.addClass('loaded');
   }
+  img.onerror = function() {
+    el.removeClass('loading');
+    el.addClass('load-error');
+  }
 
   el.addClass('loading');
   img.src = src;
@@ -295,7 +299,7 @@ $(function () {
 
   $('input, textarea').placeholder();
 
-  $('form.disable-on-submit').submit(function(){
+  $('form.disable-on-submit').submit(function(e){
     $(this).find('input[name="commit"]').prop('disabled', 'disabled');
   });
 
