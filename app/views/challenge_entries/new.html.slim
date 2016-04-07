@@ -1,0 +1,15 @@
+p
+  = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
+
+h1
+  | #{@challenge.name}: Manually enter a project
+
+= simple_form_for @entry, url: challenge_entries_path(@challenge, admin: true) do |f|
+  = f.error_notification
+  = f.input :project_id, label: 'Project ID', required: true
+  = f.input :user_id, label: 'User ID', required: true
+  - @challenge.challenge_entry_fields.each_with_index do |field, i|
+    = f.input :"cfield#{i}", label: field.label, required: field.required
+  - if @challenge.activate_categories?
+    = f.input :category_id, label: 'Category', collection: @challenge.categories, required: true
+  = f.submit 'Enter project', class: 'btn btn-primary'

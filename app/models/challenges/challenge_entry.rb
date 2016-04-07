@@ -17,9 +17,10 @@ class ChallengeEntry < ActiveRecord::Base
   has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
-  attr_accessible :judging_notes, :prize_ids, :workflow_state, :category_id
+  attr_accessible :judging_notes, :prize_ids, :workflow_state, :category_id,
+    :project_id, :user_id
 
-  validates :challenge_id, uniqueness: { scope: :project_id }
+  validates :project_id, uniqueness: { scope: :challenge_id, message: 'has already been submitted to the contest' }
   validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
   validate :validate_custom_fields_presence
   after_initialize :set_extra_fields
