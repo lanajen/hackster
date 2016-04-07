@@ -1,13 +1,13 @@
 import { Auth } from '../constants';
 
 const initialState = {
-  authorized: false
+  isAuthorized: false
 };
 
 const MainReducer = (state = initialState, action) => {
   switch(action.type) {
-    case Auth.AUTHORIZE:
-      return { ...state, authorized: action.bool };
+    case Auth.SET_AUTHORIZED:
+      return { ...state, isAuthorized: action.bool };
 
     default:
       return state;

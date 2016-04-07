@@ -1,1 +1,4 @@
-h1= @platform.name
+- if user_signed_in?
+  = react_component('MouserContest', { platform: @platform })
+- else
+  h1= @platform.name

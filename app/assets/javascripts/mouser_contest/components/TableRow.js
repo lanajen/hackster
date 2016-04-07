@@ -14,6 +14,7 @@ const TableRow = props => {
   const actions = buttons
     ? React.Children.toArray([<button>reject</button>,<button>approve</button>])
     : 'Actions';
+
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={cellStyle}>{vendor}</div>

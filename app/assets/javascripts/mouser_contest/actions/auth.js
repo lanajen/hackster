@@ -2,7 +2,7 @@ import { Auth } from '../constants';
 
 export function authorizeUser(bool) {
   return {
-    type: Auth.AUTHORIZE,
+    type: Auth.SET_AUTHORIZED,
     bool
   };
 }

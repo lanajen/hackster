@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import SubmissionsTable from './SubmissionsTable';
+import * as AuthActions from '../actions/auth';
+import SubmissionsTable from '../components/SubmissionsTable';
 
 // Project Name: Link,
 // Author: Text,
@@ -29,7 +31,7 @@ function makeProjects(amount) {
   });
 }
 
-export default class Admin extends Component {
+class Admin extends Component {
   constructor(props) {
     super(props);
 
@@ -78,3 +80,15 @@ export default class Admin extends Component {
 Admin.PropTypes = {
 
 };
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(AuthActions, dispatch) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Admin);

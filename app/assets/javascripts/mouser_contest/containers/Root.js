@@ -1,25 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AuthActions from '../actions/auth';
+import Toolbar from '../components/Toolbar';
 
-class Splash extends Component {
+class Root extends Component {
   constructor(props) {
     super(props);
-
-    this.props.actions.authorizeUser(true);
   }
 
+  // Toolbar
+  // Children / Body
+  // Footer
   render() {
     return (
-      <div id='#mouser-contest'>
-        Splash Page
+      <div>
+        <Toolbar />
         {this.props.children}
       </div>
     );
   }
 }
+
+Root.PropTypes = {
+
+};
 
 function mapStateToProps(state) {
   return {
@@ -31,4 +37,5 @@ function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(AuthActions, dispatch) };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);
+export default connect(mapStateToProps, mapDispatchToProps)(Root);
+

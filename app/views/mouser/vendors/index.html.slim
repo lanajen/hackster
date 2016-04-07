@@ -1,14 +1,15 @@
-= react_component('MouserContest')
+- if user_signed_in?
+  = react_component('MouserContest')
+- else
+  #mousercontest-landing
+    section#hero
+      | This is where the navigation and content information will go
 
-#mousercontest-landing
-  section#hero
-    | This is where the navigation and content information will go
+    section#bracket
+      | This is where the contest bracket will go
 
-  section#bracket
-    | This is where the contest bracket will go
-
-  section#vendors
-    h2 Vendors
-    ul
-      - @platforms.each do |platform|
-        li= link_to platform.name, mouser_vendor_path(platform.user_name)
+    section#vendors
+      h2 Vendors
+      ul
+        - @platforms.each do |platform|
+          li= link_to platform.name, mouser_vendor_path(platform.user_name)

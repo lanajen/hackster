@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import TableRow from './TableRow';
 
+// Maintain a class here, we'll need state and maybe lifecycle methods for filtering.
 export default class SubmissionsTable extends Component {
   constructor(props) {
     super(props);
