@@ -353,9 +353,9 @@ HackerIo::Application.routes.draw do
 
         resources :challenges, except: [:show, :update] do
           get 'admin/dashboard' => 'challenges#dashboard', as: :admin
-          resources :entries, controller: :challenge_entries, only: [:index], path: 'admin/entries', as: :admin_entries
+          resources :entries, controller: :challenge_entries, only: [:index, :new], path: 'admin/entries', as: :admin_entries
           resources :ideas, controller: :challenge_ideas, only: [:index], path: 'admin/ideas', as: :admin_ideas
-          resources :entries, controller: :challenge_entries, except: [:index, :show] do
+          resources :entries, controller: :challenge_entries, only: [:create, :edit, :update, :destroy] do
             put 'update_workflow' => 'challenge_entries#update_workflow', on: :member
             get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
             patch 'address' => 'addresses#update', on: :member

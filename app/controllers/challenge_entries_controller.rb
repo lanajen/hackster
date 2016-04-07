@@ -1,6 +1,6 @@
 class ChallengeEntriesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :destroy]
-  before_filter :load_challenge, only: [:index, :create]
+  before_filter :load_challenge, only: [:index, :create, :new]
   before_filter :load_and_authorize_entry, only: [:edit, :update, :update_workflow, :destroy]
   layout :set_layout
 
@@ -16,41 +16,59 @@ class ChallengeEntriesController < ApplicationController
     end
   end
 
+  def new
+    authorize! :admin, @challenge
+    @entry = @challenge.entries.new
+  end
+
   def create
-    entry = @challenge.entries.new
-    authorize! :create, entry
+    if params[:admin]
+      authorize! :admin, @challenge
 
-    @project = BaseArticle.find params[:project_id]
-    authorize! :enter_in_challenge, @project
+      @entry = @challenge.entries.new
+      @entry.assign_attributes params[:challenge_entry]
+      if @entry.save
+        redirect_to new_challenge_admin_entry_path(@challenge), notice: 'The project was successfuly entered to the contest.'
+      else
+        render :new
+      end
 
-    @project.update_attribute :private, false
-
-    entry.assign_attributes params[:challenge_entry]
-    entry.user_id = current_user.id
-    entry.project_id = @project.id
-
-    next_url = @challenge
-
-    if entry.save
-      entry.approve! if @challenge.auto_approve?
-
-      session[:share_modal] = 'new_entry_challenge_share_prompt'
-      session[:share_modal_model] = 'challenge'
-      session[:share_modal_model_id] = @challenge.id
-      session[:share_modal_time] = 'after_redirect'
-
-      # flash[:notice] = "Thanks for entering #{@challenge.name}!"
-    elsif :category_id.in? entry.errors.keys
-      flash[:alert] = "Please select a category"
-      next_url = challenge_path(@challenge, enter: true)
-    elsif entry.errors.keys.select{|v| v =~ /cfield/ }.any?
-      flash[:alert] = "Please answer all fields"
-      next_url = challenge_path(@challenge, enter: true)
     else
-      flash[:alert] = "Your project couldn't be entered."
-    end
+      entry = @challenge.entries.new
+      authorize! :create, entry
 
-    redirect_to next_url
+      @project = BaseArticle.find params[:project_id]
+      authorize! :enter_in_challenge, @project
+
+      @project.update_attribute :private, false
+
+      entry.assign_attributes params[:challenge_entry]
+      entry.user_id = current_user.id
+      entry.project_id = @project.id
+
+      next_url = @challenge
+
+      if entry.save
+        entry.approve! if @challenge.auto_approve?
+
+        session[:share_modal] = 'new_entry_challenge_share_prompt'
+        session[:share_modal_model] = 'challenge'
+        session[:share_modal_model_id] = @challenge.id
+        session[:share_modal_time] = 'after_redirect'
+
+        # flash[:notice] = "Thanks for entering #{@challenge.name}!"
+      elsif :category_id.in? entry.errors.keys
+        flash[:alert] = "Please select a category"
+        next_url = challenge_path(@challenge, enter: true)
+      elsif entry.errors.keys.select{|v| v =~ /cfield/ }.any?
+        flash[:alert] = "Please answer all fields"
+        next_url = challenge_path(@challenge, enter: true)
+      else
+        flash[:alert] = "Your project couldn't be entered."
+      end
+
+      redirect_to next_url
+    end
   end
 
   def edit
