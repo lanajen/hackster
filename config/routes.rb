@@ -12,7 +12,6 @@ HackerIo::Application.routes.draw do
       get '/' => 'vendors#index', as: :vendors
       get ':user_name' => 'vendors#show', as: :vendor
     end
-  end
 
   constraints(ShortLinkDomain) do
     get ':slug' => 'short_links#show'
