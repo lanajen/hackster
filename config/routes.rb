@@ -10,6 +10,7 @@ HackerIo::Application.routes.draw do
   constraints(MouserContest) do
     scope module: :mouser, as: :mouser do
       get '/' => 'vendors#index', as: :vendors
+      get 'admin' => 'vendors#index', as: :admin
       get ':user_name' => 'vendors#show', as: :vendor
     end
   end

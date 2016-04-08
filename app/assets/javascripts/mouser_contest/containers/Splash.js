@@ -13,7 +13,7 @@ class Splash extends Component {
 
   render() {
     return (
-      <div id='#mouser-contest'>
+      <div>
         Splash Page
         {this.props.children}
       </div>
