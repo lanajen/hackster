@@ -1,14 +1,25 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Link } from 'react-router'
 
-export default class Vendor extends Component {
+import * as AuthActions from '../actions/auth';
+
+class Vendor extends Component {
   constructor(props) {
     super(props);
+
+    if(!props.auth.authorized) {
+      this.props.actions.authorizeUser(true);
+    }
   }
 
   render() {
+    const { params } = this.props;
+
     return (
       <div>
-        Vendors
+        {`${params.vendor} Component`}
         {this.props.children}
       </div>
     );
@@ -18,3 +29,15 @@ export default class Vendor extends Component {
 Vendor.PropTypes = {
 
 };
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(AuthActions, dispatch) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Vendor);

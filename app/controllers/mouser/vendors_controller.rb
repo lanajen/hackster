@@ -6,6 +6,6 @@ class Mouser::VendorsController < Mouser::BaseController
   end
 
   def show
-    @platform = Platform.find_by_user_name params[:user_name]
+    @platform = Platform.find_by_user_name! params[:user_name]
   end
 end

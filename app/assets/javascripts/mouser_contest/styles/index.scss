@@ -1,0 +1,22 @@
+.slider_input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 30px;
+  width: 30px;
+  border-radius: 100px;
+  background: #ADD8E6;
+  cursor: pointer;
+}
+
+.slider_input {
+  &:focus {
+    outline: none;
+  }
+}
+
+// .slider_input::-moz-range-thumb {
+//   width: 24px;
+//   height: 24px;
+//   background-color: 'lightblue';
+//   border: 0;
+//   border-radius: 999px;
+// }
