@@ -99,6 +99,7 @@ class Splash extends Component {
             {phases}
           </div>
         </section>
+        <ImportProject userData={ user } selectProject={ actions.selectProject } submitProject={ actions.submitProject } />
       </div>
     );
   }
