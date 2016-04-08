@@ -105,6 +105,10 @@ HackerIo::Application.routes.draw do
             get ':user_name' => 'platforms#show'
           end
           resources :projects, only: [:show, :index]
+          scope :mouser_contest do
+            get '' => 'mouser_contest#index'
+            post '/submit' => 'mouser_contest#create'
+          end
           resources :users, only: [:show]
           get 'search' => 'search#index'
           match "*all" => "base#cors_preflight_check", via: :options
