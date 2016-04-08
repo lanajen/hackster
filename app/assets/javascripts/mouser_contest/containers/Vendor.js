@@ -8,8 +8,11 @@ import * as AuthActions from '../actions/auth';
 class Vendor extends Component {
   constructor(props) {
     super(props);
+  }
 
-    if(!props.auth.authorized) {
+  // React router and connect will complain if we move this up into the constructor.
+  componentWillMount() {
+    if(!this.props.auth.authorized) {
       this.props.actions.authorizeUser(true);
     }
   }

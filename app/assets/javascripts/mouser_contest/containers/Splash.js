@@ -7,8 +7,13 @@ import * as AuthActions from '../actions/auth';
 class Splash extends Component {
   constructor(props) {
     super(props);
+  }
 
-    this.props.actions.authorizeUser(true);
+  // React router and connect will complain if we move this up into the constructor.
+  componentWillMount() {
+    if(!this.props.auth.authorized) {
+      this.props.actions.authorizeUser(true);
+    }
   }
 
   render() {
