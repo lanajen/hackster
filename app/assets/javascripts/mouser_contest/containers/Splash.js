@@ -13,6 +13,8 @@ import Hero from '../components/Hero';
 class Splash extends Component {
   constructor(props) {
     super(props);
+
+    props.actions.getProjects();
   }
 
   componentWillMount() {
@@ -106,8 +108,16 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     contest: state.contest,
+<<<<<<< HEAD
     vendors: state.vendors,
     user: state.user
+||||||| merged common ancestors
+    vendors: state.vendors
+=======
+    vendors: state.vendors,
+    platforms: state.platforms,
+    user: state.user
+>>>>>>> refactoring project import flow into redux
   };
 }
 
