@@ -15,12 +15,7 @@ $(function() {
     window.localStorage.removeItem('ideapp.uid');
     window.localStorage.removeItem('ideapp.email');
 
-    // sign out from arduino
-    $.ajax({
-      url: 'https://id.arduino.cc/cas/logout?service=https://create.arduino.cc/'
-    }).complete(function(){  // use complete so that it fires whatever the output of above, so that the click on the signout button works as expected
-      // sign out
-      $('#sign-out-form').submit();
-    });
+    // sign out
+    $('#sign-out-form').submit();
   });
 });
