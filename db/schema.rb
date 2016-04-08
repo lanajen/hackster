@@ -10,7 +10,6 @@
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended that you check this file into your version control system.
-
 ActiveRecord::Schema.define(version: 20160409001718) do
 
   # These are extensions that must be enabled in order to support this database
@@ -444,6 +443,7 @@ ActiveRecord::Schema.define(version: 20160409001718) do
 
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
+<<<<<<< HEAD
   create_table "mouser_submissions", force: :cascade do |t|
     t.string   "status"
     t.string   "project_name"
@@ -454,6 +454,19 @@ ActiveRecord::Schema.define(version: 20160409001718) do
     t.datetime "updated_at",   null: false
   end
 
+||||||| merged common ancestors
+=======
+  create_table "mouser_submissions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "project_id"
+    t.string   "project_name"
+    t.integer  "vendor_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "status"
+  end
+
+>>>>>>> added vendor_id and status columns to mouser_submissions table - "importing" projects basic functionality is now working
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
     t.integer  "notifiable_id"

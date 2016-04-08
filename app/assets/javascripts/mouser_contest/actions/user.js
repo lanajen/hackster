@@ -37,7 +37,7 @@ export function selectProject(project) {
 /* Submitting projects via POST to Rails API */
 export function submitProject() {
   return (dispatch, getState) => {
-    const { id, authors, name, communities } = getState().user.submission.value;
+    const { id, authors, name } = getState().user.submission.value;
     const payload = {
       userId: authors[0].id,
       projectId: id,
