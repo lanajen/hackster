@@ -17,12 +17,17 @@ class Api::V1::MouserContestController < Api::V1::BaseController
     @user_id = @submission['userId']
     @project_id = @submission['projectId']
     @description = @submission['description']
+    @vendor = @submission['vendor']
 
     # this should save author (user_id) - project (project_id) - status - vendor (platform_id)
 
     logger.info @submission
-    # user = MouserSubmission.create(user_id: @user_id, project_id: @project_id, project_name: @description)
-    MouserSubmission.find_or_create_by(user_id: @user_id, project_id: @project_id, project_name: @description)
+
+    MouserSubmission.find_or_create_by(user_id: @user_id, project_id: @project_id) do |user|
+      user.project_name = @description
+      user.vendor_id = @vendor
+      user.status = 'undecided'
+    end
 
     render text: 'POST successful'
   end
