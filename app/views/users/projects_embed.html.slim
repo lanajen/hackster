@@ -1,0 +1,17 @@
+- unless params[:hide_header]
+  p.text-muted.mg-20
+    small
+      ' Projects made by
+      ==> link_to @user.name, user_url(@user), target: '_blank'
+      ' on
+      = link_to 'Hackster.io', root_url, target: '_blank'
+
+- if @projects.any?
+  .row
+    - @projects.each do |project|
+      = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, col: @column_class, width: @column_width }
+  - unless params[:hide_pagination]
+    .text-center= will_paginate(@projects)
+
+- else
+  p No projects found.
