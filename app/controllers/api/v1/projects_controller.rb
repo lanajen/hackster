@@ -26,6 +26,10 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
     projects = if params[:platform_user_name] or params[:part_mpn] or params[:part_mpns]
       projects.publyc
+    elsif params[:user_id]
+      # user = User.find params[:user_id]
+      # user.projects.publyc
+      BaseArticle.publyc.own.joins(:users).where(users: { id: params[:user_id] })
     else
       projects.indexable
     end

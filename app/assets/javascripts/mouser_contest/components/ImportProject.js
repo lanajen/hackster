@@ -3,7 +3,6 @@ import Select from 'react-select'
 import { connect } from 'react-redux'
 
 const ImportProject = ({ userData, selectProject, submitProject }) => {
-
   return (
     <div>
       <Select
