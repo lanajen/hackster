@@ -670,6 +670,7 @@ HackerIo::Application.routes.draw do
               get '' => 'users#show'
               scope 'projects', as: :user_projects do
                 get '' => 'users#projects_public'
+                get 'embed' => 'users#projects_embed'
                 get 'drafts' => 'users#projects_drafts', as: :drafts
                 get 'guest' => 'users#projects_guest', as: :guest
                 get 'respected' => 'users#projects_respected', as: :respected
