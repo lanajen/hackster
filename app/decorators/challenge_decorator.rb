@@ -1,4 +1,8 @@
 class ChallengeDecorator < ApplicationDecorator
+  def alternate_name
+    model.alternate_name.presence || model.name
+  end
+
   def bg_class
     if model.cover_image and model.cover_image.file_url
       'user-bg'
@@ -12,6 +16,14 @@ class ChallengeDecorator < ApplicationDecorator
       model.cover_image.imgix_url(size)
     else
       h.asset_url 'footer-bg.png'
+    end
+  end
+
+  def alternate_cover_image size=:cover
+    if model.alternate_cover_image and model.alternate_cover_image.file_url
+      model.alternate_cover_image.imgix_url(size)
+    else
+      cover_image size
     end
   end
 

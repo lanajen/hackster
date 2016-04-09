@@ -5,11 +5,11 @@
 div class=col_size
   .category-col
     .thumb.category-thumb.challenge-thumb
-      .thumb-image.has-link-overlay class=thumb_image_class style="background-image:url('#{challenge.cover_image(image_size)}')"
+      .thumb-image.has-link-overlay class=thumb_image_class style="background-image:url('#{challenge.alternate_cover_image(image_size)}')"
         = link_to '', challenge, class: 'link-overlay'
         .thumb-image-inner
           h4
-            = link_to challenge.name, challenge
+            = link_to challenge.alternate_name, challenge
             - sponsors = challenge.sponsors.pluck(:full_name).to_sentence
             - if sponsors.present?
               br
