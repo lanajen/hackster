@@ -10,22 +10,13 @@ class Api::V1::MouserContestController < Api::V1::BaseController
   end
 
   def create
-
-    # INCOMING JSON { userId, projectId, description }
-
     @submission = JSON.parse(request.body.read)
-    @user_id = @submission['userId']
-    @project_id = @submission['projectId']
-    @description = @submission['description']
-    @vendor = @submission['vendor']
-
-    # this should save author (user_id) - project (project_id) - status - vendor (platform_id)
 
     logger.info @submission
 
-    MouserSubmission.find_or_create_by(user_id: @user_id, project_id: @project_id) do |user|
-      user.project_name = @description
-      user.vendor_id = @vendor
+    MouserSubmission.find_or_create_by(user_id: @submission['userId'], project_id: @submission['projectId']) do |user|
+      user.project_name = @submission['description']
+      user.vendor_id = @submission['vendor']
       user.status = 'undecided'
     end
 
