@@ -2,14 +2,16 @@
   = react_component('MouserContest')
 - else
   #mousercontest-landing
-    section#hero
-      | This is where the navigation and content information will go
-
-    section#bracket
-      | This is where the contest bracket will go
+    = render partial: 'mouser/vendors/navbar'
+    = render partial: 'mouser/vendors/hero'
 
     section#vendors
-      h2 Vendors
-      ul
-        - @platforms.each do |platform|
-          li= link_to platform.name, mouser_vendor_path(platform.user_name)
+      .title The Competition
+      .description-columns
+        .description
+          span.bullet •
+          span.brief  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
+        .description
+          span.bullet •
+          span.brief  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!
+      .showcase-container
