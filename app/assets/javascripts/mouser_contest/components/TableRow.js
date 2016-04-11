@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 
 const TableRow = props => {
-  //  Vendor | Project | Author | SubDate | Buttons
   const { vendor, project, author, date, status, buttons } = props.rowData;
 
   let cellStyle = {
@@ -20,12 +19,18 @@ const TableRow = props => {
   };
   cellStyle = props.header ? {...cellStyle, fontWeight: 'bold', backgroundColor: 'none' } : cellStyle;
 
-  const actions = buttons
+  // TODO: Create Icon button.
+  const actions = props.header
+    ? 'Actions'
+    : status !== 'undecided'
     ? React.Children.toArray([
-        <button style={{ backgroundColor: status === 'rejected' ? 'red' : 'none' }}>reject</button>,
-        <button style={{ backgroundColor: status === 'approved' ? 'green': 'none' }}>approve</button>
+        <span style={{ color: status === 'approved' ? 'green' : 'red' }}>{status}</span>,
+        <button>Undo</button>
       ])
-    : 'Actions';
+    : React.Children.toArray([
+        <button>Reject</button>,
+        <button>Approve</button>
+      ]);
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>

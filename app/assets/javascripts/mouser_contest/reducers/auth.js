@@ -4,7 +4,7 @@ const initialState = {
   isAuthorized: false
 };
 
-const MainReducer = (state = initialState, action) => {
+export default function auth(state = initialState, action) {
   switch(action.type) {
     case Auth.SET_AUTHORIZED:
       return { ...state, isAuthorized: action.bool };
@@ -13,7 +13,3 @@ const MainReducer = (state = initialState, action) => {
       return state;
   }
 }
-
-
-
-export default MainReducer

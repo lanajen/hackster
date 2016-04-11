@@ -82,7 +82,7 @@
   "scripts": {
     "clean": "rimraf app/assets/javascripts/bundle.js",
     "lint": "eslint app/assets/javascripts/",
-    "test:unit": "./node_modules/.bin/karma start --browsers Firefox --single-run",
+    "test:unit": "./node_modules/.bin/karma start --browsers Firefox",
     "test:browsers": "karma start --browsers Chrome,Firefox,Safari",
     "webpack": "webpack --config webpack/webpack.config.dev.js",
     "build": "npm run clean && npm run webpack",

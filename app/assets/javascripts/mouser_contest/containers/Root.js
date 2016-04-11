@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AuthActions from '../actions/auth';
-import Toolbar from '../components/Toolbar';
+import Navbar from '../components/Navbar';
 
 class Root extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class Root extends Component {
   render() {
     return (
       <div>
-        <Toolbar />
+        <Navbar />
         {this.props.children}
       </div>
     );
