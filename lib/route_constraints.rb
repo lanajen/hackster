@@ -100,6 +100,6 @@ end
 
 class IntelLandingPage
   def self.matches?(request)
-    request.subdomains[0] == 'usmakercompetition' and request.domain == APP_CONFIG['default_domain']
+    request.subdomains[0] == 'chinausyoungmakercompetition' and request.domain == APP_CONFIG['default_domain']
   end
 end
