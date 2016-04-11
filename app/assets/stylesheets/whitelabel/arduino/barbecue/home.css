@@ -54,7 +54,9 @@ html, body{
   top: 0;
   z-index: 12000;
   display: flex;
+  display: -webkit-flex;
   flex-direction: row;
+  -webkit-flex-direction: row;
   padding-top: 15px;
   padding-left: 1em;
   width: 100%;
@@ -226,7 +228,9 @@ svg.logo-home-bottom {
   left: 0;
   z-index: 11000;
   display: flex;
+  display: -webkit-flex;
   flex-direction: row;
+  -webkit-flex-direction: row;
   overflow: hidden;
   transform: translate3d(0,0,0);
 }
@@ -241,10 +245,15 @@ svg.logo-home-bottom {
 /* FEED */
 #feed_cont{
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   flex: 15% 0 0;
+  -webkit-flex: 15% 0 0;
   align-items: center;
+  -webkit-align-items: center;
   justify-content: center;
+  -webkit-justify-content: center;
   padding-left: 13px;
   visibility: hidden;
   opacity: 0;
@@ -317,26 +326,35 @@ svg.logo-home-bottom {
 /* GRID */
 #home_grid{
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   background-color: transparent;
   width: 100%;
   height: auto;
   align-items: center;
+  -webkit-align-items: center;
   justify-content: center;
+  -webkit-justify-content: center;
 }
 
 
 
 .grid_row{
   display: flex;
+  display: -webkit-flex;
   flex-direction: row;
+  -webkit-flex-direction: row;
   margin-left: -18%;
 }
 .grid_square{
   position: relative;
   display: flex;
+  display: -webkit-flex;
   justify-content: center;
+  -webkit-justify-content: center;
   align-items: center;
+  -webkit-align-items: center;
   width: 180px;
   height: 180px;
   background-color: rgba(255,255,255,.94);
@@ -422,6 +440,7 @@ svg.logo-home-bottom {
 }
 .grid_square p{
   flex: 3 0 0;
+  -webkit-flex: 3 0 0;
   width: 60%;
   font-family: 'TypoNine';
   font-weight: 600;
@@ -496,6 +515,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
 /* HOME */
 .grid_square img{
   flex: 5 0 0;
+  -webkit-flex: 5 0 0;
   width: 80px;
   margin-top: 15%;
 }
@@ -652,16 +672,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
 
   #home_mobile {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 3em;
+    display: -webkit-flex;
+      align-items: center;
+      -webkit-align-items: center;
+      justify-content: center;
+      -webkit-justify-content: center;
+      width: 100%;
+      margin-top: 3em;
   }
 
   #home_mobile ul {
     list-style: none;
     width: 100%;
-    padding: 2em;
+      padding: 2em;
   }
 
   #home_mobile ul li {
@@ -669,9 +692,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6600979d', e
     background-color: white;
     color: #7F8C8D;
     text-align: center;
-    margin: 5px 0;
-    font-size: 12px;
-    letter-spacing: 5px;
+      margin: 5px 0;
+      font-size: 12px;
+      letter-spacing: 5px;
   }
 
   #home_mobile ul li a {

@@ -18,12 +18,7 @@
             ul.dropdown-menu.pull-right
               li= link_to "Submit a link", new_project_path(type: 'external')
 
-      ul.user-profile-nav
-        li= link_to 'Public projects', user_projects_path(@user)
-        - if user_is_current_or_admin?
-          li= link_to 'Private projects', user_projects_drafts_path(@user)
-        - unless is_whitelabel?
-          li= link_to 'Toolbox', user_toolbox_show_path(@user)
+      = render 'subpage_nav'
 
       h2
         ' Respected projects and articles

@@ -2,16 +2,17 @@
   .row
     .col-md-3.col-sm-4.details-container
       .details
-        h4= link_to challenge.name, challenge
-        .small.challenge-sponsors
-          ' Sponsored by
-          ul.list-unstyled
-            - challenge.sponsors.each do |sponsor|
-              li
-                => image_tag sponsor.decorate.avatar(:tiny)
-                strong= link_to sponsor.name, sponsor
-              - unless challenge.sponsors[-1] == sponsor
-                li and
+        h4= link_to challenge.alternate_name, challenge
+        - if challenge.sponsors.any?
+          .small.challenge-sponsors
+            ' Sponsored by
+            ul.list-unstyled
+              - challenge.sponsors.each do |sponsor|
+                li
+                  => image_tag sponsor.decorate.avatar(:tiny)
+                  strong= link_to sponsor.name, sponsor
+                - unless challenge.sponsors[-1] == sponsor
+                  li and
 
         .bottom
           .date
@@ -22,7 +23,7 @@
     .col-md-9.col-sm-8.hidden-xs
       .row
         .col-md-9.col-sm-8
-          .cover style="background-image:url('#{challenge.cover_image(:medium)}')"
+          .cover style="background-image:url('#{challenge.alternate_cover_image(:medium)}')"
         .col-md-3.col-sm-4
           .prize
             - if prize = challenge.prizes.first

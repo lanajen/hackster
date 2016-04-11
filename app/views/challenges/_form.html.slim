@@ -29,7 +29,14 @@
           = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
           = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "The default message under 'Invite others to compete', which is accessible by everyone whether they have registered or not. Leave room for the URL! Default: '#{@challenge.decorate.default_tweet}'", label: 'General tweet'
           = f.input :after_registration_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they register for the contest. Leave room for the URL! Default: '#{@challenge.default_after_registration_tweet}'", label: "Tweet after registration"
-          = f.input :custom_registration_email, label: "Registration confirmation customization", hint: "Text to be added to the  confirmation email sent after people register. Useful for providing custom info like coupons. Should only be one sentence, straight to the point. Don't forget the dot at the end. Supports limited HTML.", input_html: { autocomplete: 'off' }
+          = f.input :custom_registration_email, label: "Registration confirmation customization", hint: "Text to be added to the  confirmation email sent after people register. Useful for providing custom info like coupons. Should only be one sentence, straight to the point. Don't forget the dot at the end. Supports limited HTML.", input_html: { autocomplete: 'off' }, as: :string
+
+      .panel.panel-default
+        .panel-heading
+          h4 Thumbnail settings
+        .panel-body
+          = f.input :alternate_name, label: 'Alternate title', hint: "If you'd like the thumbnail to show a different title, enter it here. Otherwise leave empty."
+          = render partial: 'shared/image_form', locals: { file_type: 'alternate_cover_image', human_file_type: 'Alternate cover image', image_link: @challenge.alternate_cover_image.try(:imgix_url), help_block: "If you'd like the thumbnail to show a different background image, enter it here. Otherwise leave empty.", attribute_type: 'alternate_cover_image', image_version: nil, model: 'challenge' }
 
       .panel.panel-default
         .panel-heading
