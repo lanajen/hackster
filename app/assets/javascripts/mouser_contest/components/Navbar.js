@@ -12,7 +12,7 @@ const Navbar = props => {
   );
 };
 
-Toolbar.PropTypes = {
+Navbar.PropTypes = {
  user: PropTypes.object.isRequired
 };
 
