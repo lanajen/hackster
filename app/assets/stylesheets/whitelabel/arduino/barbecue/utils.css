@@ -11,12 +11,17 @@
 .by_row{
 	display: flex;
 	flex-direction: row;
+	-webkit-display: flex;
+	-webkit-flex-direction: row;
 }
 
 .by_col{
 	display: flex;
 	flex-direction: column;
 	flex: auto;
+	display: -webkit-flex;
+	-webkit-flex-direction: column;
+	-webkit-flex: auto;
 }
 .preloader-container {
 		display: block;

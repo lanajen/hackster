@@ -1,0 +1,55 @@
+- if @project.publyc?
+  - if @project.pending_review?
+    .alert.alert-warning.text-center
+      p
+        i.fa.fa-clock-o>
+        ' We're reviewing your #{@project.identifier} before it can appear on the home page.
+        => link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+        ' Also check the
+        = link_to 'content guidelines.', guidelines_path, class: 'alert-link'
+- else
+  - who = %w(you)
+  - who += ['team members'] if @project.team_members_count > 1
+  - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.model.respond_to?(:has_assignment?) and @project.has_assignment?
+
+  .alert.alert-warning.text-center
+    p
+      i.fa.fa-lock>
+      | This project is private so only #{who.to_sentence} can see it.
+
+- alert_color = @project.checklist_completed? ? 'success' : 'warning'
+.alert.text-center class="alert-#{alert_color}"
+  span
+    p
+      i.fa.fa-list>
+      = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'checklist-tab'), class: 'alert-link'
+  .progress style="margin-bottom: 0"
+    .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
+
+= simple_form_for @project, url: api_private_project_url(@project, host: api_host), html: { class: 'form-save-on-input remote', id: 'project-form-prepublish', data: { remote: true, 'with-credentials' => true } } do |f|
+  = f.input :content_type, collection: content_types_for_article(@project), label: "#{@project.identifier.capitalize} type", required: true
+  = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
+
+- if @project.publyc?
+  = link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-primary'
+- else
+  = simple_form_for @project do |f|
+    = f.input :private, as: :hidden, input_html: { value: 0 }
+    = f.submit 'Make public', class: 'btn btn-primary'
+
+- if @project.can_publish?
+  .hr.small or
+  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
+      = hidden_field_tag :event, 'publish'
+      = submit_tag 'Submit for publication', class: 'btn btn-secondary'
+      = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/816132', target: '_blank'
+    .alert-msg
+      ' Please select a type before publishing.
+      = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/816132', target: '_blank'
+- if @project.pending_review?
+  .hr.small or
+  .content-type-indicator class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
+      = hidden_field_tag :event, 'unpublish'
+      = submit_tag 'Cancel publication', class: 'btn btn-danger btn-sm btn-block'

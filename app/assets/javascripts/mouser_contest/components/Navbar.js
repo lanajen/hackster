@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router'
 
-const Toolbar = props => {
+const Navbar = props => {
   return (
     <div>
       <Link to='/'>Home </Link>
@@ -13,7 +13,7 @@ const Toolbar = props => {
 };
 
 Toolbar.PropTypes = {
-
+ user: PropTypes.object.isRequired
 };
 
-export default Toolbar;
+export default Navbar;

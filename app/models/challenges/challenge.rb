@@ -45,6 +45,7 @@ class Challenge < ActiveRecord::Base
   has_many_tableless :challenge_idea_fields, order: :position
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
+  has_one :alternate_cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
   validates :teaser, :custom_tweet, :after_submit_idea_tweet, length: { maximum: 140 }
   validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
@@ -64,7 +65,7 @@ class Challenge < ActiveRecord::Base
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
     :pre_winners_announced_date_dummy, :free_hardware_end_date_dummy,
-    :categories_attributes
+    :categories_attributes, :alternate_cover_image_id
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
     :pre_contest_end_date_dummy, :winners_announced_date_dummy,
@@ -84,8 +85,9 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :after_submit_idea_tweet, :string, default: 'I just submitted an idea to %{name}. You should too!'
   hstore_column :hproperties, :after_submit_entry_tweet, :string, default: 'I just submitted a project to %{name}. You should too!'
   hstore_column :hproperties, :after_registration_tweet, :string, default: 'I just registered to %{name}. You should too!'
-  hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
+  hstore_column :hproperties, :alternate_name, :string
+  hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :custom_css, :string
   hstore_column :hproperties, :custom_registration_email, :string
   hstore_column :hproperties, :custom_status, :string
@@ -218,6 +220,10 @@ class Challenge < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def alternate_cover_image_id=(val)
+    self.alternate_cover_image = AlternateCoverImage.find_by_id(val)
   end
 
   def dates

@@ -180,19 +180,74 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 }
+@media screen and (max-width: 1200px) {
+  .wrapper {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
 
 
 div.arduino-bbq.bbq-overlap div.user-profile div.dropover.simple svg {
   fill: #20A3A8;
 }
 
+textarea:focus {
+  outline: none;
+}
 
 /*  -- NOTIFICATIONS --  */
-.alert {
-  padding: 15px;
+.react-editor-error-message {
+  z-index: 12000;
+  padding: 0;
+  width: auto;
+  top: 62px;
+  right: 20px;
+}
+.alert, .alert-danger, .alert-success {
+  padding: 15px 35px;
   margin-bottom: 20px;
   border: none;
   border-radius: 3px;
+}
+.alert-danger {
+  background-color: #F1C40F;
+  // position: relative;
+}
+.alert-success {
+  // position: relative;
+  background-color: #7F8C8D;
+}
+.react-editor-error-message .error-message-body {
+  padding: 0;
+  border-left: none;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+  font-family: 'Typonine Sans Pro';
+  color: #886A50;
+  letter-spacing: 0.6px;
+}
+.react-editor-error-message .alert-success .error-message-body {
+  color: #fff;
+}
+.react-editor-error-message .error-message-body .error-message-close-button {
+  background: transparent;
+  border: none;
+  position: absolute;
+  top: 0;
+  right: 8px;
+  font-size: 23px;
+  padding: 0;
+  line-height: 23px;
 }
 .close {
   text-shadow: none;
@@ -236,6 +291,9 @@ div.arduino-bbq.bbq-overlap div.user-profile div.dropover.simple svg {
   transition-property: opacity;
   transition-duration: .2s;
 }
+
+
+
 /*  -- END NOTIFICATIONS --  */
 
 
@@ -246,7 +304,7 @@ body.affixed-nav #main {
   padding-top: 65px;
 }
 div.arduino-bbq {
-  // height: 50px;
+  /*height: 50px;*/
   background: white;
   width: 100%;
   /*z-index: 5;*/
@@ -323,6 +381,19 @@ div#user-profile-box div.user-projects ul span.proj-number {
   letter-spacing: 1px;
   margin-top: 3px;
 }
+div#user-profile-box .user-projects ul li:first-child span.proj-number {
+  background-color: #F47A20;
+}
+h2 span.badge {
+  font-size: 22px;
+  font-weight: 500;
+  border-radius: 70px;
+  min-width: 29px;
+  letter-spacing: 1.2px;
+}
+.container-userproj-info h2#public-proj span.badge {
+  background-color: #F47A20;
+}
 div#user-profile-box div.user-projects ul a:hover span.proj-number {
   background-color: #00979C;
 }
@@ -342,15 +413,17 @@ div#user-profile-box div.user-info {
 }
 div#user-profile-box div.profile-pic {
   width: 150px;
-  height: 150px;
+  height: 170px;
   margin-right: 30px;
 }
 div#user-profile-box div.profile-pic div.profile-img-container {
   /*background: #879191;*/
   background-size: 150px;
   margin-bottom: 10px;
+  margin-top: 10px;
   border-radius: 80px;
   overflow: hidden;
+  max-height: 100%;
 }
 div#user-profile-box div.profile-pic img {
   width: 100%;
@@ -358,7 +431,7 @@ div#user-profile-box div.profile-pic img {
 }
 div#user-profile-box div.user-info {
   width: calc(100% - 180px);
-  height: 150px;
+  height: 170px;
   display: inline-block;
 }
 div#user-profile-box div.user-info ul {
@@ -379,7 +452,7 @@ div#user-profile-box div.user-info a.btn-default {
 }
 div#user-profile-box div.user-info div.react-btn {
   position: absolute;
-  bottom: 8px;
+  bottom: 6px;
   top: auto;
 }
 div#user-profile-box div.user-info a.follow-button:hover {
@@ -397,6 +470,102 @@ div#user-profile-box div.user-info a.follow-button + a {
   margin-top: 0;
   margin-bottom: 12px;
 }
+
+
+@media screen and (max-width: 940px) {
+  div#user-profile-box div.container-user-info,
+  div#user-profile-box div.user-projects {
+    width: 100%;
+  }
+  div#user-profile-box div.user-projects {
+    border-left: 0;
+    padding-left: 155px;
+    margin-top: 40px;
+  }
+  div#user-profile-box div.profile-pic {
+    width: 120px;
+    margin-right: 40px;
+    height: auto;
+  }
+  div#user-profile-box div.user-info {
+    height: auto;
+  }
+  div#user-profile-box div.user-info div.react-btn {
+    position: relative;
+    bottom: auto;
+    width: 100%;
+  }
+  button.follow-button.btn.btn-secondary {
+    margin: 8px auto 16px auto;
+  }
+  div#user-profile-box div.user-info a.btn-default {
+    position: relative;
+    bottom: auto;
+    display: inline-block;
+    margin-top: 6px;
+  }
+}
+
+
+@media screen and (max-width: 550px) {
+  div#user-profile-box {
+    margin-top: 10px;
+  }
+  div#user-profile-box div.user-projects {
+    padding-left: 0;
+  }
+  div#user-profile-box div.profile-pic {
+    width: 100%;
+    height: auto;
+    padding: 0 30%;
+    margin-bottom: 20px;
+    margin-right: 0;
+  }
+  div#user-profile-box div.profile-pic div.profile-img-container {
+    border-radius: 150px;
+  }
+  div#user-profile-box div.user-info {
+    width: 100%;
+    text-align: center;
+  }
+  div#user-profile-box div.user-info a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+  }
+  div#user-profile-box div.user-info ul {
+    margin: 0 auto 18px auto;
+    display: inline-block;
+    display: block;
+  }
+  div#user-profile-box div.user-info ul li {
+    display: inline-block;
+    margin-right: 15px;
+  }
+  div#user-profile-box div.user-projects ul li {
+    font-size: 16px;
+    line-height: 30px;
+  }
+  div#user-profile-box div.user-projects ul span.proj-number {
+    margin-top: 5px;
+  }
+  div#user-profile-box div.user-info ul li:last-child {
+    margin-right: 0;
+  }
+  .user #projects-list h2.user-name {
+    text-align: center;
+  }
+  div#user-profile-box div.user-info div.react-btn {
+    text-align: center;
+  }
+  button.follow-button.btn.btn-secondary {
+    margin: 8px auto 16px auto;
+  }
+}
+
+
+
+
 
 .protip-section-title, .protip-section-img {
   width: 100%;
@@ -554,7 +723,7 @@ ul.list-inline.protip-parts i.fa-circle-o {
 }
 .comments-form-button-container button.btn-primary {
   position: relative;
-  right: -7px;
+  /*right: -7px;*/
 }
 .comments-form div.comments-preview p, .r-comments .comments-form .comments-textarea {
   background-color: white;
@@ -565,15 +734,24 @@ ul.list-inline.protip-parts i.fa-circle-o {
   font-weight: 400;
   letter-spacing: 0.6px;
 }
+@media screen and (max-width: 500px) {
+  .comments-form div.comments-preview p, .r-comments .comments-form .comments-textarea {
+    min-height: 250px;
+  }
+}
+
 .r-comments .comments-form .comments-textarea {
  border: 6px solid #ecf1f1;
  padding: 20px;
+ width: 100%;
+ max-width: 100%;
 }
 .r-comments .comments-form .comments-preview {
   padding: 6px;
 }
 .r-comments .comments-form .comments-form-button-container {
   border: none;
+  margin-top: 10px;
 }
 /* END COMMENTS FORM */
 
@@ -875,8 +1053,15 @@ div.template-chooser-container + p.help-block {
   color: #879191;
 }
 .wide-thumb-body-bottom {
-  position: relative;
-  bottom: 0;
+  /*position: relative;
+  bottom: 0;*/
+  position: absolute;
+  bottom: 12px;
+}
+@media screen and (max-width: 990px) {
+  .wide-thumb-body-bottom button.follow-button.btn.btn-secondary {
+    margin: 0;
+  }
 }
 a.follow-button {
   /*width: 100%;*/
@@ -1077,7 +1262,17 @@ body.whitelabel .navbar .navbar-brand {
   line-height: 15px;
   color: #434F54;
   letter-spacing: 0.7px;
+  min-width: 185px;
 }
+
+.dropdown-menu li.active a {
+  background-image: asset-url("whitelabel/arduino/icon-checked.svg");
+  background-repeat: no-repeat;
+  background-size: 15px;
+  background-position-x: calc(100% - 10px);
+  background-position-y: 10px;
+}
+
 .dropdown-menu > li > a {
   padding: 6px 14px;
   color: #434F54;
@@ -1578,6 +1773,190 @@ div.panel-heading h4 {
 
 
 
+/* PROFILE PAGE > TOOLBOX */
+.part-thumb {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+.part-thumb a.img-container:hover .description {
+  background: rgba(0,151,156,0.95);
+}
+.part-thumb .description {
+  padding: 28px 24px;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.6px;
+  font-weight: 500;
+}
+.part-thumb .img-container {
+  min-height: 270px;
+}
+.part-thumb h3 {
+  padding: 30px 20px;
+  font-size: 21px;
+  line-height: 23px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  text-align: left;
+  margin: 0;
+  background: #fff;
+  min-height: 108px;
+  white-space: normal;
+  transition-property: background;
+  transition-duration: 0.2s;
+}
+.part-thumb h3 a {
+  color: #879191;
+}
+.part-thumb h3 a:hover {
+  color: #00979C;
+}
+.part-thumb a.img-container:hover + h3 {
+  background-color: #DAE3E3;
+  color: #747B7B;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+}
+.part-thumb a.status:hover + .img-container + h3 {
+  background-color: #DAE3E3;
+  color: #747B7B;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+}
+.part-thumb a.status:hover {
+  background: linear-gradient(180deg, rgba(0,151,156,0.95) 270px, transparent 1px);
+  transition-property: background;
+  transition-duration: 0.2s;
+}
+.toolbox-selector .part-thumb.is-selected .status,
+.toolbox-selector .part-thumb.is-loading .status {
+  background: transparent;
+}
+/* END PROFILE PAGE > TOOLBOX */
+
+/* STORY - MAKE LINK */
+.react-link-popover-wrapper .react-link-popover {
+  box-shadow: none;
+  border-radius: 0;
+}
+.react-link-popover-wrapper .react-link-popover .link-popover-change-container {
+  border-radius: 0;
+  max-width: 500px;
+  padding: 0;
+  border-bottom: 3px solid #20A3A8;
+  background-color: #F7F7F7;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+}
+.react-link-popover-wrapper .link-popover-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 7px 6px 0 6px;
+  border-color: #20A3A8 transparent transparent transparent;
+}
+.react-link-popover-wrapper .react-link-popover .link-popover-change-container .link-popover-input {
+  color: #434F54;
+  width: 100%;
+  text-align: left;
+  letter-spacing: 0.5px;
+  font-size: 13.5px;
+  line-height: 14px;
+  height: auto;
+  display: inline-block;
+}
+.react-link-popover-wrapper .react-link-popover .link-popover-change-container label {
+  font-family: 'Typonine Sans Pro';
+  color: #434F54;
+  font-size: 13.5px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  margin: 0;
+}
+/* END STORY - MAKE LINK */
+
+
+
+/* RESPONSIVE COMPONENTS AND SUPPLIES */
+@media screen and (max-width: 500px) {
+  table.sortable-table.fields-container td.part-img {
+    width: 20%;
+  }
+}
+@media screen and (max-width: 400px) {
+  table.sortable-table.fields-container td.part-img {
+    width: 15%;
+  }
+  table.sortable-table.fields-container td {
+    font-size: 14px;
+    line-height: 19px;
+    padding-right: 0;
+  }
+  table.sortable-table.fields-container tr.fields td:last-child {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+  .table>tbody>tr>td {
+    padding: 20px 5px;
+  }
+}
+/* END RESPONSIVE COMPONENTS AND SUPPLIES */
+
+/* RESPONSIVE CODE BLOCK */
+@media screen and (max-width: 500px) {
+  .code-widgets {
+    height: auto;
+  }
+  .code-widgets .sidebar {
+    border-right: 1px solid #ddd;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+  }
+  .code-widgets .preview-pane.active {
+    display: block;
+    width: 100%;
+    position: relative;
+    left: 0;
+  }
+  .code-widgets .sidebar {
+    height: auto;
+    display: inline-block;
+  }
+  .code-widgets .preview-body {
+    height: 340px !important;
+  }
+  .code-widgets .preview-header h5,
+  .repository .button-content h5 {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .code-widget .button-content .buttons,
+  .repository .button-content .buttons,
+  .code-widgets .button-content .buttons {
+    position: relative;
+    display: inline-block;
+    top: auto;
+    margin-bottom: 12px;
+  }
+  .buttons.btn-group.btn-group-default {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+}
+/* END RESPONSIVE CODE BLOCK */
+
+
+
+
+
 /* Editor Project Story */
 .react-editor-toolbar-container .react-editor-toolbar-wrapper .react-editor-toolbar .toolbar-btn:hover {
   color: #fff;
@@ -1636,6 +2015,11 @@ div.panel-heading h4 {
   position: relative !important;
   top: -7px;
 }
+
+
+
+
+
 /* End Editor Project Story */
 
 .parts-widget .select2--text-only {
@@ -1658,9 +2042,9 @@ div.panel-heading h4 {
 .react-btn+.btn:not(.btn-block) {
   margin-left: 15px;
 }
-.wide-thumb-body-bottom {
+/*.wide-thumb-body-bottom {
   bottom: -28px;
-}
+}*/
 .react-btn+.btn:not(.btn-block) {
   margin-top: 5px;
 }
@@ -1955,9 +2339,9 @@ div.project-page h3, div.project-page .h3 {
   font-size: 20px;
   line-height: 22px;
 }
-.wide-thumb-body-bottom {
+/*.wide-thumb-body-bottom {
   bottom: -18px;
-}
+}*/
 .wide-thumb-body-bottom a.follow-button {
   width: 100%;
 }
@@ -1996,6 +2380,20 @@ b, strong {
   line-height: 24px;
   margin-bottom: 4px;
 }
+
+
+
+
+section#team .thumb.wide-thumb a:hover img {
+  opacity: 0.7;
+}
+section#team .thumb.wide-thumb a:hover {
+  color: #00979C;
+}
+
+
+
+
 ul.project-stats.list-inline {
   margin-bottom: 4px;
 }
@@ -2242,7 +2640,7 @@ div#main-content .header.clearfix .pull-right {
 
 
 
-div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay {
+/*div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay {
   background-image: asset-url("whitelabel/arduino/placeholder_proj_cover.svg");
   transition-property: background-image;
   transition-duration: 0.3s;
@@ -2253,9 +2651,12 @@ div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay:hover {
   transition-property: background-image;
   transition-duration: 0.3s;
   transition-delay: 0.1s;
-}
+}*/
 
 
+/*div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay.transparent-bg-image {
+  background-image: none;
+}*/
 
 
 
@@ -2315,7 +2716,10 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
 .list-group-wrapper ul.list-group span.input-group-btn {
   top: -3px;
 }
-.btn-primary[disabled] {
+.btn-primary[disabled],
+.btn-primary[disabled]:hover,
+.btn-primary[disabled]:focus,
+.btn-primary[disabled]:active {
   background-color: #00979C;
   border: none;
   box-shadow: 0 6px #005c5f;
@@ -2352,6 +2756,13 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
 #project-embed .thumb-image-inner span {
   color: #879191;
 }
+#project-embed .thumb-image-inner h4 {
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 23px;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
 #project-embed .project-stats {
   color: white;
 }
@@ -2364,7 +2775,205 @@ button.dropdown-toggle + ul.dropdown-menu div.dropdown-caret {
   color: #00979C;
   opacity: 1;
 }
+.project-embed-thumb ul.list-inline.project-stats {
+  margin-bottom: 0;
+}
+div#project-embed input.embed-code {
+  margin-top: 10px;
+  padding: 10px 12px;
+}
+div#project-embed input.embed-code:focus {
+  outline: none;
+}
+.popup-overlay-inner .addthis_toolbox {
+  margin-bottom: 25px;
+}
+.popup-overlay-inner .addthis_toolbox a:hover {
+  opacity: 0.7;
+}
+@media screen and (max-width: 680px) {
+  #embed-popup .popup-overlay-inner {
+    width: 100% !important;
+    margin: 0 !important;
+    position: relative;
+    top: auto;
+    left: auto;
+    max-width: none;
+  }
+}
+@media screen and (max-width: 400px) {
+  #embed-popup .popup-overlay-inner {
+    padding: 30px 15px 25px 15px;
+  }
+}
 /* END EMBED IFRAME */
+
+/* EMBEDDED PROJECT */
+body#embed {
+  font-family: 'Typonine Sans Pro';
+}
+body#embed div#project-embed {
+  margin: 0;
+}
+body#embed .thumb-image-inner {
+  background-image: none;
+  padding: 15px 20px;
+  font-family: 'Typonine Sans Pro';
+  background: rgba(0,151,156,0.95);
+}
+.project-embed-thumb .thumb-image:hover:before {
+  background: rgba(0,151,156,1);
+}
+body#embed .project-stats {
+  color: #fff;
+}
+body#embed .project-embed-thumb {
+  padding-left: 0;
+  padding-right: 0;
+}
+body#embed .thumb-image-inner-top {
+  padding: 15px 20px;
+}
+/* END EMBEDDED PROJECT */
+
+
+
+
+/* EDIT PRIVATE PROJECT */
+.dropdown-menu .divider {
+  margin: 0;
+}
+.btn-group .dropdown-toggle.btn-primary,
+.btn-group .dropdown-toggle.btn-primary:hover,
+.btn-group .dropdown-toggle.btn-primary:active,
+.btn-group .dropdown-toggle.btn-secondary,
+.btn-group .dropdown-toggle.btn-secondary:hover,
+.btn-group .dropdown-toggle.btn-secondary:active {
+  border: none;
+}
+.section-thumbs .btn-group.open .dropdown-toggle {
+  border: none;
+  background-color: #DAE3E3;
+  position: relative;
+  top: 6px;
+  color: #7f8c8d;
+}
+.section-thumbs .btn-group.open .dropdown-toggle + .dropdown-menu.pull-right {
+  left: auto;
+  right: 0;
+  margin-top: 16px;
+}
+i.fa.fa-ellipsis-v {
+  padding: 0 7px;
+}
+span + i.fa-caret-down {
+  margin-left: 10px;
+  margin-right: -5px;
+}
+.section-thumbs .btn-group.open .popover-carat {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 6px 5px;
+  border-color: transparent transparent #20A3A8 transparent;
+  position: absolute;
+  right: 13px;
+  top: -9px;
+}
+.popover.fade.bottom.in {
+  z-index: 3;
+}
+.popover-content .alert-warning {
+  background-color: #dae3e3;
+  color: #879191;
+  font-family: 'Typonine Sans Pro';
+}
+.popover-content .alert-warning p {
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+.popover-content .alert-warning p a {
+  color: #00979C;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 12px;
+  display: inline-block;
+  transition-property: color;
+  transition-duration: 0.2s;
+}
+.popover-content .alert-warning p a:hover {
+  color: #006569;
+  opacity: 1;
+  transition-property: color;
+  transition-duration: 0.2s;
+}
+.popover-content .progress {
+  background-color: white;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  height: 32px;
+}
+.popover-content .progress-bar-warning {
+    background-color: #f0ad4e;
+}
+.popover-content .alert {
+  border-radius: 0;
+  padding: 20px;
+  margin: 0;
+}
+.popover-content .alert:first-child {
+  padding-bottom: 0;
+}
+.popover-content .form-group {
+  margin: 20px;
+}
+.popover-content .help-block,
+.popover-content .alert-msg {
+  font-family: 'Typonine Sans Pro';
+  text-align: left;
+  color: #999;
+  margin: 18px 1px 30px 1px;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.5px;
+}
+.popover-content .hr {
+  /*margin: 15px 0 -5px 0;
+  font-size: 14px;
+  font-family: 'Typonine Sans Pro';*/
+  display: none;
+}
+.popover-content .alert-msg {
+  margin: 10px 20px;
+}
+.popover-content label.select.required.control-label,
+.popover-content label.select.optional.control-label {
+  font-family: 'Typonine Sans Pro';
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 14px;
+  line-height: 19px;
+}
+.popover-content .btn-primary {
+  left: 50%;
+  margin-left: -63px;
+  margin-bottom: 15px;
+}
+.popover-content {
+  padding-bottom: 6px;
+}
+@media screen and (max-width: 990px) {
+  #edit_private_project {
+    display: none;
+  }
+}
+/* END EDIT PRIVATE PROJECT */
+
+
+
 
 
 

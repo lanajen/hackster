@@ -1,6 +1,6 @@
 class ChallengeIdeasController < ApplicationController
   before_filter :authenticate_user!, only: [:new, :create, :index, :update_workflow, :edit, :update, :destroy]
-  before_filter :load_challenge, only: [:create, :new, :edit, :update]
+  before_filter :load_challenge, only: [:show, :create, :new, :edit, :update]
   before_filter :load_and_authorize_idea, only: [:update_workflow, :edit, :update]
   layout :set_layout
 
@@ -17,7 +17,6 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def show
-    @challenge = Challenge.find_by_slug! params[:slug]
     @idea = @challenge.ideas.find params[:id]
   end
 
@@ -105,7 +104,7 @@ class ChallengeIdeasController < ApplicationController
     end
 
     def load_challenge
-      @challenge = Challenge.find_by_slug params[:slug]
+      @challenge = Challenge.find_by_slug! params[:slug]
     end
 
     def load_and_authorize_idea

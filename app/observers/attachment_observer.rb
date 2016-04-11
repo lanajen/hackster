@@ -57,7 +57,7 @@ class AttachmentObserver < ActiveRecord::Observer
       end
     elsif record.attachable_type == 'Challenge'
       challenge = record.attachable
-      Cashier.expire "challenge-#{challenge.id}-meta", "challenge-#{challenge.id}-banner"
+      Cashier.expire "challenge-#{challenge.id}-meta", "challenge-#{challenge.id}-banner", 'challenge-index'
       FastlyWorker.perform_async 'purge', challenge.record_key
     end
     if record.attachable_type != 'Orphan' and record.attachable

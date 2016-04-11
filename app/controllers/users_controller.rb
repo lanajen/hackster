@@ -2,12 +2,13 @@ class UsersController < ApplicationController
   include ScraperUtils
 
   before_filter :authenticate_user!, only: [:edit, :update, :after_registration, :after_registration_save, :toolbox, :toolbox_save]
-  before_filter :load_user, only: [:show, :projects_public, :projects_drafts, :projects_guest, :projects_respected, :projects_replicated, :toolbox_show, :comments]
+  before_filter :load_user, only: [:show, :projects_public, :projects_embed, :projects_drafts, :projects_guest, :projects_respected, :projects_replicated, :toolbox_show, :comments]
   authorize_resource only: [:update, :edit]
   layout :set_layout
+  after_action :allow_iframe, only: [:projects_embed]
   protect_from_forgery except: :redirect_to_show
-  skip_before_filter :track_visitor, only: [:show, :avatar]
-  skip_after_filter :track_landing_page, only: [:show, :avatar]
+  skip_before_filter :track_visitor, only: [:show, :avatar, :projects_embed]
+  skip_after_filter :track_landing_page, only: [:show, :avatar, :projects_embed]
 
   def index
     title "Browse top community members"
@@ -105,6 +106,29 @@ class UsersController < ApplicationController
       ids = @user.projects.with_group(current_platform, all_moderation_states: true).pluck(:id)
       @other_projects = @user.projects.where.not(id: ids).for_thumb_display
     end
+  end
+
+  def projects_embed
+    not_found and return if is_whitelabel?
+
+    @projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+
+    surrogate_keys = ["users/#{@user.id}/projects/embed"]
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers
+
+    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
+    if params[:sort]
+      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
+    end
+
+    @projects = @projects.paginate(page: safe_page_params)
+
+    @column_width = params[:col_width]
+    @column_class = @column_width ? 'no-col' : (params[:col_class] ? CGI.unescape(params[:col_class]) : nil)
+
+    title "#{@user.name}'s hardware projects on Hackster.io"
+    render layout: 'embed'
   end
 
   def projects_drafts

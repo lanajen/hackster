@@ -18,7 +18,7 @@
     div class="project-#{project.id}"
       .thumb.project-thumb
         .thumb-image.has-link-overlay
-          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif')
+          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('whitelabel/arduino/placeholder_proj_cover.svg')
           noscript
             img.project-thumb-img.loaded src=project.cover_image(:cover_thumb)
           = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (host.present? ? '_blank' : nil)

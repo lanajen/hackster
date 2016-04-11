@@ -2,94 +2,47 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import * as AdminActions from '../actions/admin';
 import * as AuthActions from '../actions/auth';
+
 import SubmissionsTable from '../components/SubmissionsTable';
 import TableFilter from '../components/TableFilter';
-
-function makeProjects(amount) {
-  amount = amount || 5;
-  const vendors = [ 'TI', 'Intel', 'NXP', 'ST Micro', 'Cypress', 'Diligent', 'UDOO', 'Seeed Studio' ];
-  const authors = [ 'Duder', 'Satan', 'Bowie', 'IndiaGuy', 'OtherDuder' ];
-  const projects = [ 'Blinky lights', 'Water gun', 'Moar lights', 'VR porn', 'Drugs' ];
-
-  function random(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  }
-
-  return Array.from(new Array(amount), () => {
-    return {
-      vendor: random(vendors),
-      project: random(projects),
-      author: random(authors),
-      date: randomDate(new Date(2012, 0, 1), new Date()),
-      status: random([ 'undecided', 'approved', 'rejected' ])
-    };
-  });
-}
-
-const subs = makeProjects(30);
 
 class Admin extends Component {
   constructor(props) {
     super(props);
 
     this.handleFilterUpdate = this.handleFilterUpdate.bind(this);
-    this.state = {
-      filters: {
-        author: 'default',
-        date: 'default',
-        project: 'default',
-        status: 'undecided',
-        vendor: 'default',
-      }
-    };
+  }
+
+  componentWillMount() {
+    this.props.actions.getSubmissions();
   }
 
   handleFilterUpdate(label, value) {
     const sortingFilters = [ 'project', 'author', 'date' ];
     if(sortingFilters.indexOf(label.toLowerCase()) !== -1) {
-      this.setState({
-        filters: {
-          ...this.state.filters,
-          project: 'default',
-          author: 'default',
-          date: 'default',
-          [label.toLowerCase()]: value
-        }
+      this.props.actions.setFilters({
+        ...this.props.admin.filters,
+        project: 'default',
+        author: 'default',
+        date: 'default',
+        [label.toLowerCase()]: value
       });
     } else {
-      this.setState({ filters: { ...this.state.filters, [label.toLowerCase()]: value }});
+      this.props.actions.setFilters({ ...this.props.admin.filters, [label.toLowerCase()]: value });
     }
-
   }
 
   render() {
-    // Title
-    // Timeline / Progress slider (input type of range)
-    // - has confirm button with a follow up prompt that submits contest changes
-    // Dynamic display per timeline.
-    //
-    // Filters panel
-    // Table
+    const { admin } = this.props;
 
-    const filterOptions = {
-      Vendor: [ 'Cypress', 'Diligent', 'Intel', 'NXP', 'Seeed Studio', 'ST Micro', 'TI', 'UDOO' ],
-      Project: [ 'ascending', 'descending' ],
-      Author: [ 'ascending', 'descending' ],
-      Date: [ 'oldest', 'latest' ],
-      Status: [ 'approved', 'rejected', 'undecided' ]
-    };
-
-    const filterKeys = Object.keys(filterOptions);
+    const filterKeys = Object.keys(admin.filterOptions);
     const filters = filterKeys.map((key, index) => {
       return <TableFilter key={index}
                           label={key}
-                          options={filterOptions[key]}
-                          value={this.state.filters[key.toLowerCase()]}
+                          options={admin.filterOptions[key]}
+                          value={admin.filters[key.toLowerCase()]}
                           onChange={this.handleFilterUpdate} />
     });
 
@@ -132,24 +85,27 @@ class Admin extends Component {
           <span style={{ flex: '0.1', fontWeight: 'bold' }}>Filters: </span>
           { filters }
         </div>
-        <SubmissionsTable submissions={subs} filters={this.state.filters} />
+        <SubmissionsTable submissions={admin.submissions} filters={admin.filters} />
       </div>
     );
   }
 }
 
 Admin.PropTypes = {
-
+  actions: PropTypes.object.isRequired,
+  admin: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
+    admin: state.admin,
     auth: state.auth
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(AuthActions, dispatch) };
+  return { actions: bindActionCreators({...AdminActions, ...AuthActions}, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);

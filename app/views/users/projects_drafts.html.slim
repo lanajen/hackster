@@ -17,11 +17,7 @@ section#projects-list
           ul.dropdown-menu.pull-right
             li= link_to "Submit a link", new_project_path(type: 'external')
 
-    ul.user-profile-nav
-      li= link_to 'Public projects', user_projects_path(@user)
-      li= link_to 'Respected projects', user_projects_respected_path(@user)
-      - unless is_whitelabel?
-        li= link_to 'Toolbox', user_toolbox_show_path(@user)
+    = render 'subpage_nav'
 
     h2
       i.fa.fa-lock
