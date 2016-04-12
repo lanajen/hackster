@@ -33,9 +33,23 @@
           h3 TIMELINE
           p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
         .dates
-          - @dates.each do |date|
+          - @dates.each_with_index do |date, index|
             .date-container
-              .date #{date[:date]}
-              .line
+              .date-wrapper
+                .date #{date[:date]}
+                .circle-container
+                  - if index == 0
+                    .circle
+                  - else
+                    .circle class="doughnut"
+                .event-container
+                  .event #{date[:event]}
+                  - if date[:sub_action]
+                    .sub-action #{date[:sub_action]}
+              -if index != @dates.length-1
+                .line-wrapper
+                  .line
+
+    = render partial: 'mouser/vendors/footer'
 
 

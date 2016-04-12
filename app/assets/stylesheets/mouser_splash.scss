@@ -3,8 +3,11 @@ $purpley-grey: #938298;
 $pale-grey: #e3ecf1;
 $gunmetal: #53595d;
 $brownish-grey: #696969;
+$warm-grey: #9c9a9a;
 
 #mousercontest-landing {
+  // TODO: Set a max-width of 1440 here and on #hero trophy & sparkles bg shiet.
+
   /** Navbar */
   #navbar {
     @include flexbox((
@@ -14,6 +17,7 @@ $brownish-grey: #696969;
 
     background-color: white;
     height: 127px;
+    width: 100%;
 
     .title-container {
       @include flexbox((
@@ -51,7 +55,7 @@ $brownish-grey: #696969;
       }
     }
   }
-
+  /** Navbar::Media Queries */
   @media screen and (min-width: 768px) {
     #navbar > .title-container > .title { font-size: 18px; }
     #navbar > .details-button-container > button { font-size: 14px; }
@@ -114,7 +118,7 @@ $brownish-grey: #696969;
       }
     }
   }
-
+  /** Hero::Media Queries */
   @media screen and (min-width: 768px) {
     #hero > .title { font-size: 32px; }
     #hero > .brief { font-size: 22px; }
@@ -124,7 +128,7 @@ $brownish-grey: #696969;
     #hero > .brief { font-size: 32px; }
   }
 
-  /** Vendors List::Splash Page */
+  /** Vendors / Splash Page */
   #vendors {
     @include flexbox((
       display: flex,
@@ -220,10 +224,10 @@ $brownish-grey: #696969;
               position: absolute;
               z-index: 5;
               height: 380px;
-              width: 60%;
+              width: 70%;
               background-color: $pale-grey;
-              margin-top: -10%;
-              margin-left: -32%;
+              margin-top: -15%;
+              margin-left: -35%;
               box-shadow: 0 5px 24px 0 rgba(40, 117, 171, 0.1);
               border-radius: 6px;
 
@@ -265,29 +269,34 @@ $brownish-grey: #696969;
 
     .timeline {
       @include flexbox((
-        display: flex
+        display: flex,
+        flex-wrap: wrap
       ));
-      @include background-image(linear-gradient(to top, rgba(255, 255, 255, 0.0), #ffffff));
-      opacity: 0.3;
+      @include background-image(linear-gradient(to top, rgba(227, 236, 241, 1), rgba(236, 242, 245, 1)));
       background-color: $pale-grey;
-      padding: 8%;
 
       .description {
         @include flexbox((
-          flex-basis: 40%
+          flex-basis: 100%
         ));
-        padding: 0 5%;
+        padding-left: 8%;
+        padding-top: 6%;
+        padding-right: 6%;
+        padding-bottom: 6%;
 
         h3 {
           font-family: Lato-Black;
-          font-size: 32px;
+          font-size: 24px;
           letter-spacing: 7.4px;
           color: $gunmetal;
+          margin-top: 0;
+          margin-bottom: 8%;
+          text-align: center;
         }
 
         p {
           font-family: Lato-Light;
-          font-size: 24px;
+          font-size: 12px;
           letter-spacing: 1.8px;
           color: $gunmetal;
         }
@@ -295,16 +304,95 @@ $brownish-grey: #696969;
 
       .dates {
         @include flexbox((
-          flex-basis: 60%
+          flex-basis: 100%
         ));
-        padding: 0 5%;
-        border-image: linear-gradient(to bottom, #979797, rgba(0, 0, 0, 0)) 1 100%;
-        border-left: 1px solid #979797;
+        padding: 6% 8%;
+        border-image: linear-gradient(to bottom, rgba(151, 151, 151, 0.3), rgba(0, 0, 0, 0)) 1 100%;
+        border-left: 1px solid #979797; // Color doesn't matter here, its set in the gradient.  This is for the 1px.
         border-right: 0px solid transparent; // Hides the right border gradient.
-      }
-    }
-  }
 
+        .date-container {
+          @include flexbox((
+            display: flex,
+            flex-direction: column
+          ));
+
+          .date-wrapper {
+            @include flexbox((
+              display: flex,
+              flex-direction: row
+            ));
+
+            .date {
+              @include flexbox((
+                display: flex,
+                justify-content: center,
+                flex-basis: 20%,
+                align-self: center
+              ));
+              font-family: Lato-Bold;
+              font-size: 10px;
+              letter-spacing: 1.8px;
+              color: $gunmetal;
+            }
+
+            .circle-container {
+              @include flexbox((
+                display: flex,
+                justify-content: center,
+                flex-basis: 16%,
+                align-self: center
+              ));
+
+              .circle {
+                background-color: #2badf4;
+                border-radius: 100px;
+                width: 8px;
+                height: 8px;
+                &.doughnut {
+                  background-color: transparent;
+                  border: 2px solid #2badf4;
+                }
+              }
+            }
+
+            .event-container {
+              .event{
+                font-family: Lato-Regular;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                color: $gunmetal;
+              }
+              .sub-action {
+                position: absolute;
+                font-family: Lato-Regular;
+                font-size: 10px;
+                letter-spacing: 1.7px;
+                color: $warm-grey;
+                text-transform: uppercase;
+              }
+            }
+          }
+
+          .line-wrapper {
+            @include flexbox((
+              display: flex
+            ));
+            height: 40px;
+
+            .line {
+              @include flexbox((
+                flex-basis: 28%
+              ));
+              border-right: 1px solid #bababa;
+            }
+          }
+
+        }
+      }
+    } // end timeline
+  }
+  /** Vendors::Media Queries */
   @media screen and (min-width: 768px) {
     #vendors > .title { font-size: 25px; }
     #vendors > .description-columns > .description > .bullet { font-size: 52px; }
@@ -318,6 +406,28 @@ $brownish-grey: #696969;
         .backdrop-container > .backdrop { height: 415px; }
       }
     }
+    #vendors > .timeline .description {
+      h3 {
+        text-align: left;
+        font-size: 32px;
+      }
+
+      p { font-size: 24px; }
+    }
+    #vendors > .timeline .dates {
+      .date-container > .date-wrapper {
+        .date { font-size: 20px; }
+        .circle-container > .circle { width: 14px; height: 14px; }
+        .event-container {
+          .event { font-size: 24px; }
+          .sub-action { font-size: 15px; }
+        }
+      }
+
+      .date-container > .line-wrapper {
+        height: 73px;
+      }
+    }
   }
   @media screen and (min-width: 1024px) {
     #vendors > .title { font-size: 32px; }
@@ -328,5 +438,155 @@ $brownish-grey: #696969;
         flex-basis: 25%
       ));
     }
+    #vendors > .timeline .description { @include flexbox(( flex-basis: 40% )); }
+    #vendors > .timeline .dates { @include flexbox(( flex-basis: 60% )); }
   }
+
+  /** Footer */
+  #footer {
+    @include background-image(linear-gradient(to right, $grape, $purpley-grey));
+
+    .stars {
+      background: asset-url('mouser/stars@3x.png') center center no-repeat;
+      background-size: contain;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      padding-top: 25%;
+      margin-top: 5%;
+      z-index: 5;
+    }
+
+    .content {
+      @include flexbox((
+        display: flex,
+        flex-direction: column,
+        align-items: center
+      ));
+      padding: 10% 15%;
+
+      .brief {
+        font-family: Lato-Light;
+        font-size: 14px;
+        letter-spacing: 1.7px;
+        color: white;
+        z-index: 10;
+        text-align: center;
+      }
+
+      .signup-form-container {
+        @include flexbox((
+          display: flex,
+          flex-direction: column,
+          justify-content: center
+        ));
+        width: 100%;
+        padding-top: 5%;
+        padding-bottom: 3%;
+        z-index: 10;
+        max-width: 400px;
+
+        .input-wrapper {
+          @include flexbox((
+            display: flex,
+            align-items: center,
+            flex: 1
+          ));
+          background-color: white;
+          border-radius: 4px;
+          box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
+          height: 32px;
+          margin-bottom: 2%;
+
+          .icon {
+            color: $gunmetal;
+            padding: 0 6%;
+          }
+
+          input {
+            height: 100%;
+            border: none;
+            border-radius: 4px;
+            color: $gunmetal;
+            font-family: Lato-Regular;
+            font-size: 12px;
+            letter-spacing: 1.1px;
+
+            &:focus {
+              outline: none;
+            }
+          }
+        }
+
+        .signup-button {
+          @include flexbox(( flex: 1 ));
+          border-radius: 4px;
+          background-image: linear-gradient(to top, #0991e0, #55b4ea);
+          border: none;
+          height: 32px;
+
+          &:hover {
+            background-image: linear-gradient(to top, #1F82D4, #1F82D4);
+          }
+        }
+      }
+
+      .login-container {
+        z-index: 10;
+        font-family: Lato-Regular;
+        font-size: 12px;
+        letter-spacing: 1.1px;
+        width: 100%;
+        text-align: center;
+
+        a {
+          color: #2DA0FF;
+          padding-left: 1%;
+
+          &:hover {
+            color: #1F82D4;
+          }
+          &:focus {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  } // end footer
+
+  /** Footer::Media Queries */
+  @media screen and (min-width: 1024px) {
+    #footer > .content {
+      .brief {
+        font-size: 27px;
+        text-align: left;
+      }
+
+      .signup-form-container {
+        @include flexbox((
+          flex-direction: row
+        ));
+        max-width: 100%;
+
+        .input-wrapper {
+          height: 42px;
+          margin-right: 1%;
+          margin-bottom: 0;
+
+          input { font-size: 18px; }
+        }
+
+        .signup-button {
+          height: 42px;
+          margin-right: 1%;
+        }
+      }
+
+      .login-container {
+        font-size: 18px;
+      }
+    }
+  }
+
+  @media screen and (min-width: 1024px) {}
 }
