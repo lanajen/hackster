@@ -10,7 +10,7 @@ class ChallengeObserver < ActiveRecord::Observer
     # expire or purge only once
     keys = []
     purge = false
-    if (record.changed & %w(slug)).any?
+    if (record.changed & %w(slug name alternate_name)).any?
       keys << "challenge-index"
       purge = true
     end
