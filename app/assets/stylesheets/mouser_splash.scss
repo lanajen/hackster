@@ -2,6 +2,7 @@ $grape: #4f3254;
 $purpley-grey: #938298;
 $pale-grey: #e3ecf1;
 $gunmetal: #53595d;
+$brownish-grey: #696969;
 
 #mousercontest-landing {
   /** Navbar */
@@ -67,8 +68,8 @@ $gunmetal: #53595d;
       flex-direction: column,
       align-items: center
     ));
+    @include background-image(linear-gradient(to right, $grape, $purpley-grey));
     width: 100%;
-    background-image: linear-gradient(to right, $grape, $purpley-grey);
 
     .title {
       font-family: Lato-Black;
@@ -123,7 +124,7 @@ $gunmetal: #53595d;
     #hero > .brief { font-size: 32px; }
   }
 
-  /** Vendors List :: Splash Page */
+  /** Vendors List::Splash Page */
   #vendors {
     @include flexbox((
       display: flex,
@@ -132,7 +133,8 @@ $gunmetal: #53595d;
     ));
     background-color: $pale-grey;
     width: 100%;
-    padding: 10% 0;
+    padding-top: 10%;
+    padding-bottom: 5%;
 
     .title {
       font-family: Lato-Black;
@@ -147,7 +149,6 @@ $gunmetal: #53595d;
         flex-direction: row
       ));
       width: 100%;
-      // margin: 3% 0;
       padding: 3% 5%;
 
       .description {
@@ -156,8 +157,6 @@ $gunmetal: #53595d;
           flex-direction: row,
           flex: 1
         ));
-
-        &:nth-child(1) { padding-left: 5%; }
 
         .bullet {
           @include flexbox((
@@ -173,10 +172,135 @@ $gunmetal: #53595d;
             flex: 10
           ));
           font-family: Lato-Light;
-          font-size: 14px;
+          font-size: 12px;
           letter-spacing: 1.8px;
           color: $gunmetal;
         }
+      }
+    } // end description-columns
+
+    .boards {
+      @include flexbox((
+        display: flex,
+        flex-direction: row,
+        flex-wrap: wrap,
+        justify-content: center
+      ));
+      position: relative;
+      padding-top: 5%;
+      padding-right: 5%;
+      padding-left: 5%;
+
+      .board-container {
+        @include flexbox((
+          display: flex,
+          flex-direction: column,
+          align-items: center,
+          flex-basis: 100%
+        ));
+
+        height: 415px;
+        margin-top: 5%;
+
+        .backdrop-container {
+          display: none;
+        }
+
+
+        &:hover {
+          .backdrop-container {
+            @include flexbox((
+              display: flex,
+              justify-content: center
+            ));
+            position: relative;
+            width: 100%;
+
+            .backdrop {
+              position: absolute;
+              z-index: 5;
+              height: 380px;
+              width: 60%;
+              background-color: $pale-grey;
+              margin-top: -10%;
+              margin-left: -32%;
+              box-shadow: 0 5px 24px 0 rgba(40, 117, 171, 0.1);
+              border-radius: 6px;
+
+              .logo {
+                background: asset-url('mouser/vendor-logo.png') center center no-repeat;
+                background-size: contain;
+                width: 35px;
+                height: 35px;
+                display: block;
+                margin-top: 5%;
+                margin-left: 5%;
+              }
+            }
+          }
+        }
+
+        .board-img-container {
+          @include flexbox((
+            display: flex,
+            justify-content: center
+          ));
+          max-width: 325px;
+          height: 275px;
+          z-index: 6;
+        }
+
+        .name {
+          font-family: Lato-Regular;
+          font-size: 18px;
+          letter-spacing: 4px;
+          color: $brownish-grey;
+          text-align: center;
+          padding-top: 5%;
+          text-transform: uppercase;
+          z-index: 6;
+        }
+      }
+    }  // end boards
+
+    .timeline {
+      @include flexbox((
+        display: flex
+      ));
+      @include background-image(linear-gradient(to top, rgba(255, 255, 255, 0.0), #ffffff));
+      opacity: 0.3;
+      background-color: $pale-grey;
+      padding: 8%;
+
+      .description {
+        @include flexbox((
+          flex-basis: 40%
+        ));
+        padding: 0 5%;
+
+        h3 {
+          font-family: Lato-Black;
+          font-size: 32px;
+          letter-spacing: 7.4px;
+          color: $gunmetal;
+        }
+
+        p {
+          font-family: Lato-Light;
+          font-size: 24px;
+          letter-spacing: 1.8px;
+          color: $gunmetal;
+        }
+      }
+
+      .dates {
+        @include flexbox((
+          flex-basis: 60%
+        ));
+        padding: 0 5%;
+        border-image: linear-gradient(to bottom, #979797, rgba(0, 0, 0, 0)) 1 100%;
+        border-left: 1px solid #979797;
+        border-right: 0px solid transparent; // Hides the right border gradient.
       }
     }
   }
@@ -185,10 +309,24 @@ $gunmetal: #53595d;
     #vendors > .title { font-size: 25px; }
     #vendors > .description-columns > .description > .bullet { font-size: 52px; }
     #vendors > .description-columns > .description > .brief { font-size: 18px; }
+    #vendors > .boards > .board-container {
+      @include flexbox((
+        flex-basis: 50%
+      ));
+
+      &:hover {
+        .backdrop-container > .backdrop { height: 415px; }
+      }
+    }
   }
   @media screen and (min-width: 1024px) {
     #vendors > .title { font-size: 32px; }
     #vendors > .description-columns > .description > .bullet { font-size: 72px; }
     #vendors > .description-columns > .description > .brief { font-size: 24px; }
+    #vendors > .boards > .board-container {
+      @include flexbox((
+        flex-basis: 25%
+      ));
+    }
   }
 }
