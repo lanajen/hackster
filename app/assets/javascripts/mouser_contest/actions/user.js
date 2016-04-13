@@ -53,8 +53,7 @@ export function submitProject() {
         'Accept': 'application/json'
       })
     })
-    .catch((err) => console.err(err))
-
+    .catch((err) => console.err(err));
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory, useRouterHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux'
 import createBrowserHistory from 'history/lib/createBrowserHistory'
@@ -15,8 +15,9 @@ import configureStore from './configStore';
 import { setInitialData } from './actions/contest';
 import { setUserAsAdmin } from './actions/user';  // Move this to setInitialData.
 
-const store = configureStore();
-const history = syncHistoryWithStore(browserHistory, store);
+const store = configureStore(browserHistory);
+const appHistory = useRouterHistory(createBrowserHistory)();
+const history = syncHistoryWithStore(appHistory, store);
 
 const MouserContest = (props) => {
   store.dispatch(setInitialData(props));
@@ -24,6 +25,10 @@ const MouserContest = (props) => {
   // Really, we can just set the user model and delimit what we need in the controller before hand.  If they're an admin then
   // its they are already flagged, just set the user normally.
   store.dispatch(setUserAsAdmin(true));
+
+  // Really, we can just set the user model and delimit what we need in the controller before hand.  If they're an admin then
+  // its they are already flagged, just set the user normally.
+  // store.dispatch(setUserAsAdmin(true));
 
   return (
     <Provider store={store}>
