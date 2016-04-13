@@ -15,6 +15,8 @@ $(function() {
     window.localStorage.removeItem('ideapp.uid');
     window.localStorage.removeItem('ideapp.email');
 
+    Cookies.remove('web.ide.sid');
+
     // sign out
     $('#sign-out-form').submit();
   });
