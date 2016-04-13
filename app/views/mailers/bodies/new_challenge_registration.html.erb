@@ -11,7 +11,7 @@
 <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT to submit your entry. Good luck!</p>
 
 <% if @context[:challenge].activate_free_hardware? %>
-  If you need hardware to enter the contest, we are giving away a limited amount of free <%= @context[:challenge].free_hardware_label %> devices. Grants come on a first-come, first-served basis, so please apply as early as possible. One device per team maximum. <a href="<%= u.new_challenge_idea_url(@context[:challenge]) %>">Apply now</a>.
+  If you need hardware to enter the <%= @context[:challenge].self_label.downcase %>, we are giving away a limited amount of free <%= @context[:challenge].free_hardware_label %> devices. Grants come on a first-come, first-served basis, so please apply as early as possible. One device per team maximum. <a href="<%= u.new_challenge_idea_url(@context[:challenge]) %>">Apply now</a>.
 <% end %>
 
 <p>Finally, here is the timeline:</p>

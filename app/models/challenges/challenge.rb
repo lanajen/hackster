@@ -86,6 +86,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :after_submit_entry_tweet, :string, default: 'I just submitted a project to %{name}. You should too!'
   hstore_column :hproperties, :after_registration_tweet, :string, default: 'I just registered to %{name}. You should too!'
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
+  hstore_column :hproperties, :allow_teams, :boolean
   hstore_column :hproperties, :alternate_name, :string
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :custom_css, :string
@@ -123,6 +124,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :ready, :boolean
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
+  hstore_column :hproperties, :self_label, :string, default: 'Contest'
   hstore_column :hproperties, :teaser, :string
   hstore_column :hproperties, :token_tags, :hash
   hstore_column :hproperties, :sponsor_link, :string
@@ -323,6 +325,10 @@ class Challenge < ActiveRecord::Base
 
   def open_for_submissions?
     workflow_state.in? OPEN_SUBMISSION_STATES
+  end
+
+  def participant_label
+    allow_teams? ? 'team' : 'person'
   end
 
   def ready_for_judging?

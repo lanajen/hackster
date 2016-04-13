@@ -173,7 +173,7 @@
               .box
                 .box-content
                   p.text-center
-                    strong This contest is password-protected.
+                    strong This #{@challenge.self_label.downcase} is password-protected.
                   / p.text-center Please enter a password below to unlock it:
                   = form_tag unlock_challenge_path(@challenge), autocomplete: 'off', authenticity_token: !csrf_disabled?, class: 'user-form', id: 'challenge-unlock-form' do
                     .input-group
@@ -219,8 +219,8 @@
             p
               small
                 ' By entering you agree to the
-                = link_to 'contest rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();', tabindex: -1
-            = submit_tag "Enter my project into the contest", class: 'btn btn-primary'
+                = link_to "#{@challenge.self_label.downcase} rules", challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();', tabindex: -1
+            = submit_tag "Enter my project into the #{@challenge.self_label.downcase}", class: 'btn btn-primary'
           p
             small
               ' or

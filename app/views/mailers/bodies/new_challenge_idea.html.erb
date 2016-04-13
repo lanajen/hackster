@@ -2,10 +2,10 @@
 
 <p>This is to confirm that we have received your application "|idea_name|" for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a>.</p>
 
-<p>If needed, you can edit it <a href="<%= u.edit_challenge_idea_url(@context[:challenge].slug, @context[:idea], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">here</a>. It will now be reviewed in order to determine whether you can receive free hardware. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the contest rules</a> for more information.</p>
+<p>If needed, you can edit it <a href="<%= u.edit_challenge_idea_url(@context[:challenge].slug, @context[:idea], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">here</a>. It will now be reviewed in order to determine whether you can receive free hardware. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the <%= @context[:challenge].self_label.downcase %> rules</a> for more information.</p>
 
 <p>
-  Submissions to the contest are open until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT.
+  Submissions to the <%= @context[:challenge].self_label.downcase %> are open until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT.
 </p>
 
 <p>Cheers,<br> The Hackster.io team</p>

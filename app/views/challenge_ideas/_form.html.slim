@@ -35,7 +35,7 @@
   p
     small
       ' By submitting your application you agree to the
-      = link_to 'contest rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), target: '_blank', tabindex: -1
+      = link_to "#{@challenge.self_label.downcase} rules", challenge_path(@challenge, anchor: 'rules', show_rules: 1), target: '_blank', tabindex: -1
       | .
 
   .form-actions

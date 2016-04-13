@@ -1,14 +1,14 @@
 - if @challenge.disable_projects_tab?
-  = active_li_link_to 'Contest brief', url_for(@challenge), role: 'presentation'
+  = active_li_link_to "#{@challenge.self_label} brief", url_for(@challenge), role: 'presentation'
 - elsif @challenge.judged? and !@challenge.disable_projects_phase?
   = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, number_with_delimiter(@challenge.projects_count)), url_for(@challenge), role: 'presentation'
   - if @challenge.ideas_count > 0
     = active_li_link_to content_tag(:span, "Ideas") + content_tag(:small, number_with_delimiter(@challenge.ideas_count)), challenge_ideas_path(@challenge.slug), role: 'presentation'
   - if @challenge.registrations_count > 0 and !@challenge.disable_participants_tab?
     = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, number_with_delimiter(@challenge.registrations_count)), challenge_participants_path(@challenge.slug), role: 'presentation'
-  = active_li_link_to 'Contest brief', challenge_brief_path(@challenge.slug), role: 'presentation'
+  = active_li_link_to "#{@challenge.self_label} brief", challenge_brief_path(@challenge.slug), role: 'presentation'
 - else
-  = active_li_link_to 'Contest brief', url_for(@challenge), role: 'presentation'
+  = active_li_link_to "#{@challenge.self_label} brief", url_for(@challenge), role: 'presentation'
   - if @challenge.registrations_count > 0 and !@challenge.disable_participants_tab?
     = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, number_with_delimiter(@challenge.registrations_count)), challenge_participants_path(@challenge.slug), role: 'presentation'
   - if @challenge.ideas_count > 0

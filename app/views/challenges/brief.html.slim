@@ -8,7 +8,7 @@
             - if @current_entries[:contest].any?
               - if @challenge.activate_pre_contest? and @current_entries[:pre_contest].any?
                 p
-                  strong.small Contest entries:
+                  strong.small #{@challenge.self_label} entries:
               ul.entries-list.list-unstyled
                 - @current_entries[:contest].each do |entry|
                   = render 'challenge_entries/challenge_entry_thumb', entry: entry, challenge: @challenge
@@ -36,7 +36,7 @@
              strong> You're registered!
              => link_to content_tag(:i, '', class: 'fa fa-times'), challenge_registrations_path(@challenge), class: 'btn btn-danger btn-xs', data: { method: :delete }
              - if @challenge.start_date > Time.now
-              ' We'll let you know by email when the contest launches.
+              ' We'll let you know by email when the #{@challenge.self_label.downcase} launches.
           - if @challenge.open_for_submissions?
             - if @current_entries[:contest].empty?
               = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
@@ -48,7 +48,7 @@
                   ' devices. Applications
                   - if @challenge.free_hardware_end_date
                     ' are open until #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT and
-                  ' will be reviewed on a first come, first served basis. One device maximum per person.
+                  ' will be reviewed on a first come, first served basis. One device maximum per #{@challenge.participant_label}.
                 - unless @current_entries[:pre_contest].any?
                   p
                     strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
@@ -80,7 +80,7 @@
     - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
 
       section.section-thumbs
-        h4 Challenge status
+        h4 #{@challenge.self_label} status
 
         - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
 
@@ -184,7 +184,7 @@
       section.section-container.section-collapsible
         h2.section-title
           a.title.title-toggle href=''
-            ' Contest brief
+            ' #{@challenge.self_label} brief
             i.fa.fa-chevron-down
             i.fa.fa-chevron-up
 
@@ -198,7 +198,7 @@
       section.section-container.section-collapsible#rules class=(params[:show_rules] ? '' : 'section-toggled')
         h2.section-title
           a.title.title-toggle href=''
-            ' Contest rules
+            ' #{@challenge.self_label} rules
             i.fa.fa-chevron-down
             i.fa.fa-chevron-up
 

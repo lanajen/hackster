@@ -5,14 +5,14 @@
       = link_to 'Go to the judging dashboard', challenge_admin_entries_path(@challenge), class: 'alert-link'
   - else
     .alert.alert-info.alert-flat.text-center
-      strong> This contest is over and the winners are being selected.
+      strong> This #{@challenge.self_label.downcase} is over and the winners are being selected.
       - if @challenge.winners_announced_date
         ' Winners will be announced on
         = l @challenge.winners_announced_date, format: :short_date
         | .
 - elsif @challenge.judged?
   .alert.alert-info.alert-flat.text-center
-    ' This contest is over!
+    ' This #{@challenge.self_label.downcase} is over!
     strong> Want more chances to win prizes?
     ' Check out
     = link_to 'our active contests', challenges_path, class: 'alert-link'

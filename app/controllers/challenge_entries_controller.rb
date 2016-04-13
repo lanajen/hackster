@@ -28,7 +28,7 @@ class ChallengeEntriesController < ApplicationController
       @entry = @challenge.entries.new
       @entry.assign_attributes params[:challenge_entry]
       if @entry.save
-        redirect_to new_challenge_admin_entry_path(@challenge), notice: 'The project was successfuly entered to the contest.'
+        redirect_to new_challenge_admin_entry_path(@challenge), notice: "The project was successfuly entered to the #{@challenge.self_label.downcase}."
       else
         render :new
       end

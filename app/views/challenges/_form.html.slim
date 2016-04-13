@@ -117,7 +117,8 @@
                     td colspan=4 = f.link_to_add 'Add a field', :challenge_entry_fields, class: 'btn btn-xs btn-success nested-field-table'
           = f.input :after_submit_entry_tweet, as: :text, input_html: { rows: 2 }, hint: "To be used by participants after they submit a project. Leave room for the URL! Default: '#{@challenge.default_after_submit_entry_tweet}'", label: "Tweet after entry submitted"
 
-          = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
+          = f.input :allow_teams, inline_label: 'Allow participants to enter as a team?', as: :boolean, label: false
+          = f.input :multiple_entries, inline_label: 'Allow more than one entry per person/team?', as: :boolean, label: false
           / = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
 
           = f.input :activate_categories, as: :boolean, inline_label: 'Ask participants to select a category when submitting an entry', label: false
@@ -274,6 +275,7 @@
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_participants_tab, inline_label: 'Disable participants tab', as: :boolean, label: false
+            = f.input :self_label, hint: "Contest, Competition, Challenge... The default is Contest", label: 'How should we refer to this contest?'
             = f.input :winners_label, hint: "By default it will be \"Winners\", but you can override it to something else like \"Finalists\"."
 
       .panel.panel-default
