@@ -3,12 +3,14 @@ import { Link } from 'react-router'
 
 const Navbar = props => {
   return (
-    <div>
-      <Link to='/'>Home </Link>
-      <Link to='particle'>Particle </Link>
-      <Link to='arduino'>Arduino </Link>
-      <Link to='admin'>Admin </Link>
-    </div>
+    <nav id="navbar">
+      <div className="title-container">
+        <a href="/" className="title">#MAKERMADNESS</a>
+      </div>
+      <div className="details-button-container">
+        <button>Event Details</button>
+      </div>
+    </nav>
   );
 };
 

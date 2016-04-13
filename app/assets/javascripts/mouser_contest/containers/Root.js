@@ -4,20 +4,19 @@ import { connect } from 'react-redux';
 
 import * as AuthActions from '../actions/auth';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 class Root extends Component {
   constructor(props) {
     super(props);
   }
 
-  // Toolbar
-  // Children / Body
-  // Footer
   render() {
     return (
-      <div>
+      <div id="mousercontest-landing">
         <Navbar />
         {this.props.children}
+        <Footer />
       </div>
     );
   }

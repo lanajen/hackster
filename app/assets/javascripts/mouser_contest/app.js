@@ -10,10 +10,17 @@ import Admin from './containers/Admin';
 
 import configureStore from './configStore';
 
+import { setPlatforms } from './actions/platforms';
+
 const store = configureStore();
 const history = syncHistoryWithStore(browserHistory, store);
 
-const MouserContest = () => {
+const MouserContest = (props) => {
+
+  // Setup initial state for all stores here.
+  const { platforms } = props;
+  store.dispatch(setPlatforms(platforms));
+
   return (
     <Provider store={store}>
       <Router history={history}>
