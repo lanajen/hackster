@@ -1,5 +1,8 @@
 .row
   .col-md-4.col-md-push-8
+    noscript
+      .alert.alert-warning
+        p Please ensure that JavaScript is enabled in your browser to use this page.
     - if user_signed_in?
       - if @has_registered or (@challenge.disable_registration and @is_challenge_entrant)
         section.section-thumbs
