@@ -2,7 +2,7 @@ import { Contest } from '../constants';
 
 export function setPhase(phase) {
   return {
-    type: Platforms.SET_PHASE,
+    type: Contest.SET_PHASE,
     phase
   }
 }

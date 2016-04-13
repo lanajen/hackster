@@ -15,6 +15,6 @@ export default {
   }),
 
   Platforms: keymirror({
-    SET_STATE: null
+    SET_PLATFORMS: null
   })
 }
