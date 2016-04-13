@@ -29,6 +29,9 @@ $warm-grey: #9c9a9a;
         letter-spacing: 6px;
         color: #593e5e;
         padding-left: 6%;
+
+        &:hover { text-decoration: none; }
+        &:focus { text-decoration: none; }
       }
     }
 
@@ -38,7 +41,7 @@ $warm-grey: #9c9a9a;
         flex: 1,
         justify-content: flex-end
       ));
-      padding-right: 6%;
+      margin-right: 6%;
 
       button {
         background-color: transparent;
@@ -49,20 +52,24 @@ $warm-grey: #9c9a9a;
         letter-spacing: 0.6px;
         color: #838383;
         max-width: 200px;
-        height: 58px;
+        width: 100%;
+        height: 42px;
         padding: 0 10%;
         white-space: nowrap;
+
+        &:hover { box-shadow: 0 5px 25px 0 rgba(0, 0, 160, 0.2); border: none; }
+        &:focus { outline: none; }
       }
     }
   }
   /** Navbar::Media Queries */
   @media screen and (min-width: 768px) {
     #navbar > .title-container > .title { font-size: 18px; }
-    #navbar > .details-button-container > button { font-size: 14px; }
+    #navbar > .details-button-container > button { font-size: 14px; height: 48px; }
   }
   @media screen and (min-width: 1024px) {
     #navbar > .title-container > .title { font-size: 26px; }
-    #navbar > .details-button-container > button { font-size: 21px; }
+    #navbar > .details-button-container > button { font-size: 21px; height: 52px; }
   }
 
   /** Hero */
@@ -276,9 +283,7 @@ $warm-grey: #9c9a9a;
       background-color: $pale-grey;
 
       .description {
-        @include flexbox((
-          flex-basis: 100%
-        ));
+        @include flexbox(( flex-basis: 100% ));
         padding-left: 8%;
         padding-top: 6%;
         padding-right: 6%;
@@ -308,7 +313,7 @@ $warm-grey: #9c9a9a;
         ));
         padding: 6% 8%;
         border-image: linear-gradient(to bottom, rgba(151, 151, 151, 0.3), rgba(0, 0, 0, 0)) 1 100%;
-        border-left: 1px solid #979797; // Color doesn't matter here, its set in the gradient.  This is for the 1px.
+        border-left: 1px solid black; // Color doesn't matter here, its set in the gradient.  This is for the 1px.
         border-right: 0px solid transparent; // Hides the right border gradient.
 
         .date-container {
@@ -398,9 +403,7 @@ $warm-grey: #9c9a9a;
     #vendors > .description-columns > .description > .bullet { font-size: 52px; }
     #vendors > .description-columns > .description > .brief { font-size: 18px; }
     #vendors > .boards > .board-container {
-      @include flexbox((
-        flex-basis: 50%
-      ));
+      @include flexbox(( flex-basis: 50% ));
 
       &:hover {
         .backdrop-container > .backdrop { height: 415px; }
@@ -423,7 +426,6 @@ $warm-grey: #9c9a9a;
           .sub-action { font-size: 15px; }
         }
       }
-
       .date-container > .line-wrapper {
         height: 73px;
       }
@@ -434,9 +436,7 @@ $warm-grey: #9c9a9a;
     #vendors > .description-columns > .description > .bullet { font-size: 72px; }
     #vendors > .description-columns > .description > .brief { font-size: 24px; }
     #vendors > .boards > .board-container {
-      @include flexbox((
-        flex-basis: 25%
-      ));
+      @include flexbox(( flex-basis: 25% ));
     }
     #vendors > .timeline .description { @include flexbox(( flex-basis: 40% )); }
     #vendors > .timeline .dates { @include flexbox(( flex-basis: 60% )); }
@@ -563,9 +563,7 @@ $warm-grey: #9c9a9a;
       }
 
       .signup-form-container {
-        @include flexbox((
-          flex-direction: row
-        ));
+        @include flexbox(( flex-direction: row ));
         max-width: 100%;
 
         .input-wrapper {
@@ -587,6 +585,4 @@ $warm-grey: #9c9a9a;
       }
     }
   }
-
-  @media screen and (min-width: 1024px) {}
 }

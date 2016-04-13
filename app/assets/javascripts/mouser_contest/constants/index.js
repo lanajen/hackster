@@ -8,5 +8,13 @@ export default {
 
   Auth: keymirror({
     SET_AUTHORIZED: null
+  }),
+
+  Contest: keymirror({
+    SET_PHASE: null
+  }),
+
+  Platforms: keymirror({
+    SET_PLATFORMS: null
   })
 }

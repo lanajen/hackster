@@ -9,7 +9,7 @@ const initialState = {
     vendor: 'default',
   },
   filterOptions: {
-    Vendor: [ 'Cypress', 'Diligent', 'Intel', 'NXP', 'Seeed Studio', 'ST Micro', 'TI', 'UDOO' ],
+    Vendor: [ 'Cypress', 'Digilent', 'Intel', 'NXP', 'Seeed Studio', 'ST Micro', 'TI', 'UDOO' ],
     Project: [ 'ascending', 'descending' ],
     Author: [ 'ascending', 'descending' ],
     Date: [ 'oldest', 'latest' ],

@@ -35,7 +35,8 @@ Vendor.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    platforms: state.platforms
   };
 }
 
