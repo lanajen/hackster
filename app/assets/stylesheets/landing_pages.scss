@@ -97,6 +97,10 @@
     padding: 80px 0 160px;
     position: relative;
 
+    p {
+      max-width: 750px;
+    }
+
     .categories {
       position: absolute;
       left: 0;
