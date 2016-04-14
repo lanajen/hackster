@@ -1,6 +1,7 @@
 = content_for :head do
-  meta name='robots' content='noindex, nofollow',
+  meta name='robots' content='noindex, nofollow'
   meta name='api-uri' content='null' id='api-uri'
+  = render 'shared/favicons'
 
 = content_for :js do
   = javascript_include_tag "//use.typekit.net/okr0yzp.js"
@@ -100,7 +101,7 @@
     .illustrations
       .illustration
         = image_tag 'landing_pages/intel/criteria_idea.png'
-        .title Strengh of Idea
+        .title Strength of Idea
         p Build projects that solve real problems and are nicely articulated.
       .illustration
         = image_tag 'landing_pages/intel/commercial.png'
