@@ -10,4 +10,8 @@ class PartObserver < ActiveRecord::Observer
   def after_update record
     PartObserverWorker.perform_async 'after_update', record.id, record.changed
   end
+
+  def after_platforms_changed record
+    PartObserverWorker.perform_async 'after_platforms_changed', record.id
+  end
 end

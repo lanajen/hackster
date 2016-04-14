@@ -36,7 +36,7 @@
           h4 Thumbnail settings
         .panel-body
           = f.input :alternate_name, label: 'Alternate title', hint: "If you'd like the thumbnail to show a different title, enter it here. Otherwise leave empty."
-          = render partial: 'shared/image_form', locals: { file_type: 'alternate_cover_image', human_file_type: 'Alternate cover image', image_link: @challenge.alternate_cover_image.try(:imgix_url), help_block: "If you'd like the thumbnail to show a different background image, enter it here. Otherwise leave empty.", attribute_type: 'alternate_cover_image', image_version: nil, model: 'challenge' }
+          = render partial: 'shared/image_form', locals: { file_type: 'alternate_cover_image', human_file_type: 'Alternate cover image', image_link: @challenge.alternate_cover_image.try(:imgix_url), help_block: "If you'd like the thumbnail to show a different background image, enter it here. Otherwise leave empty. Format is 630x300px.", attribute_type: 'alternate_cover_image', image_version: nil, model: 'challenge' }
 
       .panel.panel-default
         .panel-heading

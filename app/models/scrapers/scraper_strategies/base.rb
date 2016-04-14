@@ -464,7 +464,7 @@ module ScraperStrategies
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             ext = File.extname(URI.parse(link).path)[1..-1]
-            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git gsp)
+            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git gsp io)
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''

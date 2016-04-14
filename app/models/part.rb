@@ -26,7 +26,7 @@ class Part < ActiveRecord::Base
   belongs_to :platform
   has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
   has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
-  has_and_belongs_to_many :platforms, join_table: :parts_platforms
+  has_and_belongs_to_many :platforms, join_table: :parts_platforms, after_add: :after_platforms_changed, after_remove: :after_platforms_changed
   has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :follow_relations, as: :followable
@@ -350,5 +350,9 @@ class Part < ActiveRecord::Base
 
     def strip_whitespace text
       text.try(:strip)
+    end
+
+    def after_platforms_changed record
+      notify_observers :after_platforms_changed
     end
 end

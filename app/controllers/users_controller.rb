@@ -68,7 +68,7 @@ class UsersController < ApplicationController
       @lists = if @user.id == current_user.try(:id) or current_user.try(:is?, :admin)
         @user.lists.order(:full_name)
       else
-        @user.lists.publyc.order(:full_name)
+        @user.lists.publyc.curators_not_hidden.order(:full_name)
       end
     end
 

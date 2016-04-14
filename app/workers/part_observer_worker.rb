@@ -25,6 +25,12 @@ class PartObserverWorker < BaseWorker
     end
   end
 
+  def after_platforms_changed record
+    record.projects.each do |project|
+      ProjectWorker.perform_async 'update_platforms', project.id
+    end
+  end
+
   def perform method, record_id, *args
     with_logging method do
       record = Part.find record_id

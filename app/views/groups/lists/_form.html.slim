@@ -27,9 +27,9 @@
 
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @list.cover_image.try(:imgix_url), help_block: "A high quality picture of your product, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
-      / # = f.input :enable_comments, inline_label: 'Enable comments', label: false, as: :boolean
       - if @group.checklist_completed?(:get_started)
         = f.input :publyc, as: :boolean, inline_label: 'Make this list public', label: false
+      = f.input :hide_curators, inline_label: 'Hide curators (admin only)', label: false, as: :boolean
 
     .col-md-6
       .form-group
