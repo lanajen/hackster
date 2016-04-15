@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux'
 
-<<<<<<< HEAD
 import admin from './admin';
 import auth from './auth';
-<<<<<<< HEAD
 import contest from './contest';
 <<<<<<< HEAD
 import vendors from './vendors';
@@ -13,22 +11,20 @@ import user from './user';
 import platforms from './platforms';
 =======
 import platforms from './platforms';
-||||||| merged common ancestors
-=======
-||||||| merged common ancestors
-import auth from './auth';
-=======
-// import auth from './auth';
 import user from './user';
+<<<<<<< HEAD
 >>>>>>> refactoring project import flow into redux
 >>>>>>> refactoring project import flow into redux
 >>>>>>> refactoring project import flow into redux
+||||||| merged common ancestors
+>>>>>>> refactoring project import flow into redux
+>>>>>>> refactoring project import flow into redux
+=======
+>>>>>>> squashing
 
 const rootReducer = combineReducers({
-<<<<<<< HEAD
   admin,
   auth,
-<<<<<<< HEAD
   contest,
 <<<<<<< HEAD
   vendors,
@@ -37,15 +33,16 @@ const rootReducer = combineReducers({
   platforms,
 =======
   platforms,
-||||||| merged common ancestors
-=======
-||||||| merged common ancestors
-  auth,
-=======
   user,
+<<<<<<< HEAD
 >>>>>>> refactoring project import flow into redux
 >>>>>>> refactoring project import flow into redux
 >>>>>>> refactoring project import flow into redux
+||||||| merged common ancestors
+>>>>>>> refactoring project import flow into redux
+>>>>>>> refactoring project import flow into redux
+=======
+>>>>>>> squashing
   routing: routerReducer
 });
 
