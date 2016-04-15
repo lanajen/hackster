@@ -1,4 +1,8 @@
-- if false #user_signed_in?
-  = react_component('MouserContest', { platform: @platform })
+- if user_signed_in?
+  = react_component('MouserContest', platforms: @platforms )
 - else
-  h1= @platform.name
+  #mousercontest-landing
+    = render partial: 'mouser/vendors/navbar'
+    = render partial: 'mouser/vendors/hero'
+    = render partial: 'vendor_details'
+    = render partial: 'mouser/vendors/footer'

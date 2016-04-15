@@ -3,15 +3,20 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AuthActions from '../actions/auth';
+import * as UserActions from '../actions/user';
+
+import ImportProject from '../components/ImportProject';
 
 import Hero from '../components/Hero';
 
 class Splash extends Component {
   constructor(props) {
     super(props);
+
+    props.actions.getProjects();
+    console.log(props)
   }
 
-  // React router and connect will complain if we move this up into the constructor.
   componentWillMount() {
     if(!this.props.auth.authorized) {
       this.props.actions.authorizeUser(true);
@@ -19,7 +24,7 @@ class Splash extends Component {
   }
 
   render() {
-    const { auth, contest, platforms } = this.props;
+    const { auth, contest, platforms, user, actions } = this.props;
 
     const boardList = platforms.map((platform, index) => {
       return (
@@ -108,16 +113,18 @@ class Splash extends Component {
   }
 }
 
+
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     contest: state.contest,
-    platforms: state.platforms
+    platforms: state.platforms,
+    user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(AuthActions, dispatch) };
+  return { actions: bindActionCreators({ ...AuthActions, ...UserActions }, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Splash);

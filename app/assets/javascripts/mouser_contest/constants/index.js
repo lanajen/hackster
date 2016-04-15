@@ -16,5 +16,11 @@ export default {
 
   Platforms: keymirror({
     SET_PLATFORMS: null
+  }),
+
+  User: keymirror({
+    SET_PROJECTS: null,
+    SET_SUBMISSION: null,
+    SUBMIT_PROJECTS: null
   })
 }

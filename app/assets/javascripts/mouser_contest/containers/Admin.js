@@ -36,7 +36,8 @@ class Admin extends Component {
 
   render() {
     const { admin } = this.props;
-
+    console.log('FROM ADMIN', admin)
+    console.log('FROM ADMIN', this.props)
     const filterKeys = Object.keys(admin.filterOptions);
     const filters = filterKeys.map((key, index) => {
       return <TableFilter key={index}

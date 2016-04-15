@@ -1,7 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router'
+import { Link } from 'react-router';
+
+import Vendors from '../components/Vendors';
+import Hero from '../components/Hero'
 
 import * as AuthActions from '../actions/auth';
 
@@ -19,11 +22,11 @@ class Vendor extends Component {
 
   render() {
     const { params } = this.props;
-
+    console.log('FROM VENDORS', this.props.children)
     return (
       <div>
-        {`${params.vendor} Component`}
-        {this.props.children}
+        <Hero/>
+        <Vendors/>
       </div>
     );
   }
