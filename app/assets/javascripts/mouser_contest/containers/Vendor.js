@@ -22,7 +22,7 @@ class Vendor extends Component {
 
   render() {
     const { params } = this.props;
-    console.log('FROM VENDORS', this.props.children)
+
     return (
       <div>
         <Hero/>
@@ -38,8 +38,7 @@ Vendor.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
-    platforms: state.platforms
+    auth: state.auth
   };
 }
 

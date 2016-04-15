@@ -12,9 +12,6 @@ import Hero from '../components/Hero';
 class Splash extends Component {
   constructor(props) {
     super(props);
-
-    props.actions.getProjects();
-    console.log(props)
   }
 
   componentWillMount() {
@@ -36,7 +33,7 @@ class Splash extends Component {
           </div>
           <div className="board-img-container">
             <a href="javascript:void(0);">
-              <img src={index % 2 === 0 ? 'assets/mouser/chipkit.png' : 'assets/mouser/board-sample.png'} alt=""/>
+              <img src={index % 2 === 0 ? 'assets/mouser/boards/chipkit.png' : 'assets/mouser/boards/udoo.jpg'} alt=""/>
             </a>
           </div>
           <div className="name">{vendor}</div>

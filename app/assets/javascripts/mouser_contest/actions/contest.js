@@ -65,7 +65,7 @@ export function updateSubmission(submission) {
 }
 
 
-import { fetchSubmissions } from '../requests';
+import { fetchSubmissions, postActivePhase } from '../requests';
 
 function makeSubmissions(amount) {
   amount = amount || 5;
@@ -91,6 +91,48 @@ function makeSubmissions(amount) {
       vendor: random(vendors)
     };
   });
+}
+
+
+export function setInitialData(props) {
+  const { activePhase, phases, vendors } = props;
+
+  return dispatch => {
+    dispatch(setActivePhase(parseInt(activePhase, 10)));
+    dispatch(setVendors(vendors));
+    dispatch(setPhases(
+      [].slice.call(phases).map(phase => {
+        phase.date = moment(phase.date, 'DD-MM-YYYY').format('MMMM Do');
+        return phase;
+      })
+    ));
+  }
+}
+
+export function updateActivePhase(phase) {
+  phase = phase > 7 ? 7 : phase;
+
+  return dispatch => {
+    return postActivePhase(phase)
+      .then(res => {
+        dispatch(setActivePhase(phase));
+      })
+      .catch(err => console.error('postActivePhase Error: ', err));
+  };
+}
+
+export function setActivePhase(activePhase) {
+  return {
+    type: Contest.SET_ACTIVE_PHASE,
+    activePhase
+  }
+}
+
+function setPhases(phases) {
+  return {
+    type: Contest.SET_PHASES,
+    phases
+  }
 }
 
 function setSubmissions(submissions) {
@@ -122,34 +164,5 @@ export function updateSubmission(submission) {
   return dispatch => {
     // Make the request, on 200 update the store.
     dispatch(setSubmission(submission));
-  }
-}
-
-export function setActivePhase(phase) {
-  return {
-    type: Contest.SET_ACTIVE_PHASE,
-    phase
-  }
-}
-
-function setPhases(phases) {
-  return {
-    type: Contest.SET_PHASES,
-    phases
-  }
-}
-
-export function setInitialData(props) {
-  const { activePhase, phases, vendors } = props;
-
-  return dispatch => {
-    dispatch(setActivePhase(parseInt(activePhase, 10)));
-    dispatch(setVendors(vendors));
-    dispatch(setPhases(
-      [].slice.call(phases).map(phase => {
-        phase.date = moment(phase.date, 'DD-MM-YYYY').format('MMMM Do');
-        return phase;
-      })
-    ));
   }
 }

@@ -9,8 +9,7 @@ const ImportProject = ({ userData, selectProject, submitProject }) => {
       <Select
         name='Import your project from Hackster!'
         options={userData.projects}
-        onChange={selectProject}
-      />
+        onChange={selectProject} />
       {
         userData.submission && userData.submission.label
           ? (<div>
