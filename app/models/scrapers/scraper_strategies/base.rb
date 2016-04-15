@@ -36,7 +36,7 @@ module ScraperStrategies
       format_text
       parse_cover_image
       if model_class == Project
-        parse_images
+        # parse_images
         parse_embeds
         parse_files
         parse_code
@@ -169,10 +169,13 @@ module ScraperStrategies
       end
 
       def extract_code_blocks base=@article
-        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code, pre')
+        base.css('pre code, div.crayon-syntax, .syntaxhighlighter .code, pre')
       end
 
       def extract_code_lines node
+        lang = nil
+        title = nil
+
         out = if node.name.in? %w(code pre)
           if !(lang = node['data-lang']) and node['class'].present?
             node['class'].split(' ').each do |css_class|
@@ -184,10 +187,17 @@ module ScraperStrategies
           end
           node.content.gsub(/<br ?\/?>/, "\r\n")
         else
-          node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
+          if lang_node = node.at_css('.crayon-language')
+            if lang_node.text.downcase.in?(CodeWidget::ALL_PYGMENTS_LEXERS_BY_ALIASES.keys)
+              lang = lang_node.text.downcase
+            end
+          end
+          title = node.at_css('.crayon-title').try(:text)
+
+          node.css('.crayon-main .crayon-line, .line').map{|l| l.content }.join("\r\n")
         end
 
-        return out, lang
+        return out, lang, title
       end
 
       def extract_comments
@@ -361,17 +371,24 @@ module ScraperStrategies
 
       def parse_code base=@article
         extract_code_blocks(base).each_with_index do |node, i|
-          code, lang = extract_code_lines(node)
+          code, lang, title = extract_code_lines(node)
           next unless code
 
-          if code.size >= 5
-            file = CodeWidget.new raw_code: code, name: "Code snippet ##{i+1}", language: lang || 'text'
+          if code.split(/\n/).size >= 5
+            name = title.present? ? title : "Code snippet ##{i+1}"
+            file = CodeWidget.new raw_code: code, name: name, language: lang || 'text'
             file.project = @project
             @widgets << file
           end
 
           node.after "<pre><code>#{CGI::escapeHTML code}</code></pre>"
+          node.after "<p><i>" + title + ":</i></p>" if title.present?
           node.remove  # remove so it's not added to text later
+        end
+
+        base.css('.crayon-syntax-inline').each do |node|
+          node.after "<code>" + node.text + "</code>"
+          node.remove
         end
       end
 
@@ -462,7 +479,7 @@ module ScraperStrategies
         files = {}
         base.css('a').each do |node|
           next unless link = node['href']
-          if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
+          if link.match /\/\/.+\/[^\?]+\.([a-z0-9]{,5})$/
             ext = File.extname(URI.parse(link).path)[1..-1]
             next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git gsp io)
             next unless test_link(link)
