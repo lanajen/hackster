@@ -16,10 +16,9 @@ import { Contest } from '../constants';
 
 const initialState = {
   activePhase: 0,
-  phases: [],
-  submissions: [],
   phase: '',
-  phases: []
+  phases: [],
+  submissions: []
 };
 
 export default function platforms(state = initialState, action) {
