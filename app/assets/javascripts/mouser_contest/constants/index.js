@@ -11,16 +11,20 @@ export default {
   }),
 
   Contest: keymirror({
-    SET_PHASE: null
-  }),
-
-  Platforms: keymirror({
-    SET_PLATFORMS: null
+    SET_ACTIVE_PHASE: null,
+    SET_PHASES: null,
+    SET_SUBMISSIONS: null,
+    SET_SUBMISSION: null
   }),
 
   User: keymirror({
     SET_PROJECTS: null,
     SET_SUBMISSION: null,
-    SUBMIT_PROJECTS: null
+    SUBMIT_PROJECTS: null,
+    SET_ADMIN: null
+  }),
+
+  Vendors: keymirror({
+    SET_VENDORS: null
   })
 }

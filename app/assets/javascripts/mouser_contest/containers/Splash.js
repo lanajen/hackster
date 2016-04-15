@@ -24,9 +24,9 @@ class Splash extends Component {
   }
 
   render() {
-    const { auth, contest, platforms, user, actions } = this.props;
+    const { auth, contest, vendors } = this.props;
 
-    const boardList = platforms.map((platform, index) => {
+    const boards = vendors.map((vendor, index) => {
       return (
         <div key={index} className="board-container">
           <div className="backdrop-container">
@@ -39,12 +39,13 @@ class Splash extends Component {
               <img src={index % 2 === 0 ? 'assets/mouser/chipkit.png' : 'assets/mouser/board-sample.png'} alt=""/>
             </a>
           </div>
-          <div className="name">{platform}</div>
+          <div className="name">{vendor}</div>
         </div>
       );
     });
 
-    const dateChart = contest.phases.map((phase, index, list) => {
+    const phases = contest.phases.map((phase, index, list) => {
+      if(index === 2) return null;
       return (
         <div key={index} className="date-container">
           <div className="date-wrapper">
@@ -52,13 +53,13 @@ class Splash extends Component {
             <div className="date">{phase.date}</div>
 
             <div className="circle-container">
-              <div className={index === 0 ? 'circle' : 'circle doughnut'}></div>
+              <div className={index <= parseInt(contest.activePhase, 10) ? 'circle' : 'circle doughnut'}></div>
             </div>
 
             <div className="event-container">
               <div className="event">
                 {phase.event}
-                { phase.sub_action ? <div className="sub-action">{phase.sub_action}</div> : null }
+                { phase.sub_event ? <div className="sub-action">{phase.sub_event}</div> : null }
               </div>
             </div>
           </div>
@@ -95,7 +96,7 @@ class Splash extends Component {
           </div>
 
           <div className="boards">
-            {boardList}
+            {boards}
           </div>
 
           <div className="timeline" id="timeline">
@@ -104,7 +105,7 @@ class Splash extends Component {
               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur</p>
             </div>
             <div className="dates">
-              {dateChart}
+              {phases}
             </div>
           </div>
         </section>
@@ -118,8 +119,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     contest: state.contest,
-    platforms: state.platforms,
-    user: state.user
+    vendors: state.vendors
   };
 }
 

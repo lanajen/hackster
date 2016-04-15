@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import * as AdminActions from '../actions/admin';
 import * as AuthActions from '../actions/auth';
+import * as ContestActions from '../actions/contest';
 
 import SubmissionsTable from '../components/SubmissionsTable';
 import TableFilter from '../components/TableFilter';
@@ -17,6 +18,12 @@ class Admin extends Component {
 
   componentWillMount() {
     this.props.actions.getSubmissions();
+  }
+
+  componentDidMount() {
+    if(!this.props.user.isAdmin) {
+      this.props.actions.redirectToLogin(this.context.router);
+    }
   }
 
   handleFilterUpdate(label, value) {
@@ -35,9 +42,8 @@ class Admin extends Component {
   }
 
   render() {
-    const { admin } = this.props;
-    console.log('FROM ADMIN', admin)
-    console.log('FROM ADMIN', this.props)
+    const { admin, contest } = this.props;
+
     const filterKeys = Object.keys(admin.filterOptions);
     const filters = filterKeys.map((key, index) => {
       return <TableFilter key={index}
@@ -62,51 +68,53 @@ class Admin extends Component {
     }
 
     return (
-      <div style={{ padding: '2% 5%'}}>
-        {'Admin Page'}
-        <div>
-          <div style={{ textAlign: 'center'}}>Timeline</div>
-          <input className="slider_input" style={rangeStyle} type="range" min={0} max={100} step={25} list="steplist" />
-          <div style={{ display: 'flex' }}>
-            <span style={{ flex: 1 }}>Submissions Open</span>
-            <span style={{ flex: 1 }}>Submissions Closed</span>
-            <span style={{ flex: 1 }}>Prelim Voting</span>
-            <span style={{ flex: 1 }}>Voting Closed</span>
-            <span>Move to next</span>
+      <div>
+        <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, borderBottom: '1px solid #e7e7e7', backgroundColor: '#f8f8f8' }}>
+          {'Admin links and stuff'}
+        </nav>
+        <div style={{ padding: '2% 5%', backgroundColor: 'white' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div>Timeline</div>
+            <div>
+              <h3>Current Phase</h3>
+              <p>{contest.phases[contest.activePhase].event}</p>
+            </div>
+            <div></div>
           </div>
-          <datalist id="steplist">
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-          </datalist>
+          <div style={{ display: 'flex', padding: '2% 0' }}>
+            <span style={{ flex: '0.1', fontWeight: 'bold' }}>Filters: </span>
+            { filters }
+          </div>
+          <SubmissionsTable submissions={contest.submissions} filters={admin.filters} onActionClick={this.props.actions.updateSubmission} />
         </div>
-        <div style={{ display: 'flex', padding: '2% 0' }}>
-          <span style={{ flex: '0.1', fontWeight: 'bold' }}>Filters: </span>
-          { filters }
-        </div>
-        <SubmissionsTable submissions={admin.submissions} filters={admin.filters} />
       </div>
     );
   }
 }
 
+Admin.contextTypes = {
+  router: () => PropTypes.func
+};
+
 Admin.PropTypes = {
   actions: PropTypes.object.isRequired,
   admin: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  contest: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
     admin: state.admin,
-    auth: state.auth
+    auth: state.auth,
+    contest: state.contest,
+    user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({...AdminActions, ...AuthActions}, dispatch) };
+  return { actions: bindActionCreators({...AdminActions, ...AuthActions, ...ContestActions}, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);

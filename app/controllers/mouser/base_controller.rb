@@ -23,4 +23,8 @@ private
       @title = 'Mouser Summer Contest'
     end
   end
+
+  def redis
+    @redis ||= Redis::Namespace.new('mouser', redis: RedisConn.conn)
+  end
 end

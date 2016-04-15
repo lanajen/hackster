@@ -63,7 +63,8 @@ const SubmissionsTable = props => {
                        firstRow={index === 0}
                        lastRow={index === list.length-1}
                        position={index % 2 === 0 ? 'even' : 'odd'}
-                       rowData={{ buttons: true, ...submission }} />
+                       rowData={{ buttons: true, ...submission }}
+                       onActionClick={props.onActionClick} />
     });
 
   return (
@@ -76,6 +77,7 @@ const SubmissionsTable = props => {
 
 SubmissionsTable.PropTypes = {
   filters: PropTypes.object.isRequired,
+  onActionClick: PropTypes.func.isRequired,
   submissions: PropTypes.array.isRequired
 };
 

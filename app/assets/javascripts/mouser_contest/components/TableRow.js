@@ -1,7 +1,11 @@
 import React, { PropTypes } from 'react';
 
 const TableRow = props => {
-  const { vendor, project, author, date, status, buttons } = props.rowData;
+  const { id, vendor, project, author, date, status, buttons } = props.rowData;
+
+  function handleClick(updatedStatus) {
+    props.onActionClick({ id, vendor, project, author, date, status: updatedStatus });
+  }
 
   let cellStyle = {
     display: 'flex',
@@ -19,17 +23,24 @@ const TableRow = props => {
   };
   cellStyle = props.header ? {...cellStyle, fontWeight: 'bold', backgroundColor: 'none' } : cellStyle;
 
-  // TODO: Create Icon button.
+  const buttonStyle = {
+    borderRadius: 2,
+    border: 'none',
+    backgroundColor: '#E4E4E4',
+    color: '#555',
+    fontSize: 14
+  };
+
   const actions = props.header
     ? 'Actions'
     : status !== 'undecided'
     ? React.Children.toArray([
-        <span style={{ color: status === 'approved' ? 'green' : 'red' }}>{status}</span>,
-        <button>Undo</button>
+        <span style={{ color: status === 'approved' ? 'green' : 'red', marginRight: '3%', fontSize: 14 }}>{status}</span>,
+        <button style={buttonStyle} onClick={() => handleClick('undecided')}>Undo</button>
       ])
     : React.Children.toArray([
-        <button>Reject</button>,
-        <button>Approve</button>
+        <button style={{...buttonStyle, marginRight: '3%' }} onClick={() => handleClick('rejected')}>Reject</button>,
+        <button style={buttonStyle} onClick={() => handleClick('approved')}>Approve</button>
       ]);
 
   return (
@@ -49,6 +60,7 @@ TableRow.PropTypes = {
   header: PropTypes.bool,
   firstRow: PropTypes.bool,
   lastRow: PropTypes.bool,
+  onActionClick: PropTypes.func,
   position: PropTypes.string,
   rowData: PropTypes.object.isRequired
 };

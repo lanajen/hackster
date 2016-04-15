@@ -14,17 +14,13 @@ const initialState = {
     Author: [ 'ascending', 'descending' ],
     Date: [ 'oldest', 'latest' ],
     Status: [ 'approved', 'rejected', 'undecided' ]
-  },
-  submissions: []
+  }
 };
 
 export default function admin(state = initialState, action) {
   switch(action.type) {
     case Admin.SET_FILTERS:
       return { ...state, filters: action.filters };
-
-    case Admin.SET_SUBMISSIONS:
-      return { ...state, submissions: action.submissions };
 
     default:
       return state;

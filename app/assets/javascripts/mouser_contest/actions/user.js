@@ -36,17 +36,14 @@ export function selectProject(project) {
 
 /* Submitting projects via POST to Rails API */
 export function submitProject() {
-
   return (dispatch, getState) => {
     const { id, authors, name, communities } = getState().user.submission.value;
-    console.log(getState().user.submission.value);
     const payload = {
       userId: authors[0].id,
       projectId: id,
       description: name,
       vendor: communities[0].id
     }
-    console.log(payload);
     fetch(API_PATH, {
       method: 'post',
       mode: 'no-cors',
@@ -57,5 +54,11 @@ export function submitProject() {
       })
     })
     .catch((err) => console.err(err))
+}
+
+export function setUserAsAdmin(bool) {
+  return {
+    type: User.SET_ADMIN,
+    bool
   }
 }

@@ -12,23 +12,25 @@ class Root extends Component {
   }
 
   render() {
+    const { location, user } = this.props;
+    const isAdminPath = location.pathname && location.pathname !== '/admin';
     return (
       <div id="mousercontest-landing">
-        <Navbar />
-        {this.props.children}
-        <Footer />
+        { isAdminPath ? <Navbar user={user}/> : null }
+        { this.props.children }
+        { isAdminPath ? <Footer /> : null }
       </div>
     );
   }
 }
 
 Root.PropTypes = {
-
 };
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    user: state.user
   };
 }
 

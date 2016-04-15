@@ -1,5 +1,5 @@
 - if user_signed_in?
-  = react_component('MouserContest', platforms: @boards)
+  = react_component('MouserContest', vendors: @boards, phases: @phases, activePhase: @active_phase)
 - else
   #mousercontest-landing
     = render partial: 'mouser/vendors/hero'
@@ -24,26 +24,29 @@
                   img src="#{'assets/mouser/board-sample.png'}"
             .name #{board}
 
-    section#timeline
-      .description
-        h2 Timeline
-        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
-      .dates
-        - @dates.each_with_index do |date, index|
-          .date-container
-            .date-wrapper
-              .date #{date[:date]}
-              .circle-container
-                - if index == 0  # Change this!  If the timeline has reached this date point do not add 'doughnut' to the classList.
-                  .circle
-                - else
-                  .circle class="doughnut"
-              .event-container
-                .event #{date[:event]}
-                - if date[:sub_action]
-                  .sub-action #{date[:sub_action]}
-            - if index != @dates.length-1
-              .line-wrapper
-                .line
+      .timeline id="timeline"
+        .description
+          h3 TIMELINE
+          p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
+        .dates
+          - @phases.each_with_index do |phase, index|
+            - if index != 2 # Index 2 contains dupe data from the previous phases's sub_event, ignore it for presentation.
+              .date-container
+                .date-wrapper
+                  - date = Date.parse(phase[:date])
+                  .date #{date.strftime("%B #{date.day.ordinalize}")}
+                  .circle-container
+                    - if index <= @active_phase.to_i
+                      .circle
+                    - else
+                      .circle class="doughnut"
+                  .event-container
+                    .event #{phase[:event]}
+                    - if phase[:sub_event]
+                      .sub-action #{phase[:sub_event]}
+                -if index != @phases.length-1
+                  .line-wrapper
+                    .line
+            end
 
     = render partial: 'mouser/vendors/footer'
