@@ -12,6 +12,12 @@ GIT
       rails
 
 GIT
+  remote: https://github.com/hacksterio/mailgunner.git
+  revision: d179d4ab7a63f7c69b50223dd04fd06da6f52870
+  specs:
+    mailgunner (2.4.0)
+
+GIT
   remote: https://github.com/hacksterio/mandrill_dm.git
   revision: ecd75235398f954b234bc65c0eb3937ac7fcae1a
   specs:
@@ -776,6 +782,7 @@ DEPENDENCIES
   letter_opener
   mail (>= 2.6.3)
   mailcatcher!
+  mailgunner!
   mandrill_dm!
   mini_magick (= 3.7.0)
   mixpanel (= 4.0.8)
