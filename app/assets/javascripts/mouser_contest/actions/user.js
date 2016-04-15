@@ -54,6 +54,8 @@ export function submitProject() {
       })
     })
     .catch((err) => console.err(err))
+
+  }
 }
 
 export function setUserAsAdmin(bool) {

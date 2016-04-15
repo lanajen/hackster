@@ -11,7 +11,7 @@
 }
 
 .image-container {
-  height: 70vw;
+  padding: 10% 0;
   position: relative;
   background-color: #e3ecf1;
   z-index: -1;
@@ -29,13 +29,13 @@
   .logo {
     width: 17%;
     position: absolute;
-    object-fit: contain;
+    max-width: 100%;
     top: 24%;
     left: 8%;
   }
   .board {
     position: relative;
-    object-fit: contain;
+    max-width: 100%;
     top: 2vw;
   }
 }
@@ -132,7 +132,7 @@
         ));
 
         img {
-          object-fit: contain;
+          max-width: 100%;
         }
       }
       .info {
