@@ -8,7 +8,7 @@
       strong> This #{@challenge.self_label.downcase} is over and the winners are being selected.
       - if @challenge.winners_announced_date
         ' Winners will be announced on
-        = l @challenge.winners_announced_date, format: :short_date
+        = l @challenge.winners_announced_date, format: :long_date
         | .
 - elsif @challenge.judged?
   .alert.alert-info.alert-flat.text-center

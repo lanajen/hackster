@@ -48,15 +48,15 @@
                 p
                   ' Need hardware to complete your submission? We are giving away a limited amount of free
                   => link_to @challenge.free_hardware_label, @challenge.free_hardware_link
-                  ' devices. Applications
+                  ' #{@challenge.free_hardware_unit_label.pluralize}. Applications
                   - if @challenge.free_hardware_end_date
                     ' are open until #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT and
-                  ' will be reviewed on a first come, first served basis. One device maximum per #{@challenge.participant_label}.
+                  ' will be reviewed on a first come, first served basis. One #{@challenge.free_hardware_unit_label} maximum per #{@challenge.participant_label}.
                 - unless @current_entries[:pre_contest].any?
                   p
                     strong= link_to "Apply to receive #{indefinite_articlerize(@challenge.free_hardware_label)}.", new_challenge_idea_path(@challenge)
               - else
-                p Applications to receive free #{@challenge.free_hardware_label} devices have closed on #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT.
+                p Applications to receive free #{@challenge.free_hardware_label} #{@challenge.free_hardware_unit_label.pluralize} have closed on #{l @challenge.free_hardware_end_date.in_time_zone(PDT_TIME_ZONE)} PT.
 
               - if @current_entries[:pre_contest].any?
                 hr
@@ -115,7 +115,7 @@
               p style='margin-bottom:0'
                 - if @challenge.winners_announced_date > Time.now
                   strong> #{@challenge.winners_label} announced by:
-                  = l @challenge.winners_announced_date, format: :short_date
+                  = l @challenge.winners_announced_date, format: :long_date
                 - else
                   strong> Winners will be announced soon.
 

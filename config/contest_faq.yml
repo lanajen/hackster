@@ -23,13 +23,13 @@
 - q: When will winners be announced? Where can I see the list?
   a: >
     <% if @challenge.activate_pre_contest? and @challenge.pre_winners_announced_date.present? %>
-      <p><%= @challenge.pre_contest_label %> winners will be announced by <%= l @challenge.pre_winners_announced_date, format: :short_date %>. The list of winners will be visible on the main page (<%= @challenge.self_label %> brief).</p>
+      <p><%= @challenge.pre_contest_label %> winners will be announced by <%= l @challenge.pre_winners_announced_date, format: :long_date %>. The list of winners will be visible on the main page (<%= @challenge.self_label %> brief).</p>
     <% end %>
     <% if @challenge.activate_free_hardware? %>
       <p>Winners of free hardware will be announced individually by email on a rolling basis.</p>
     <% end %>
     <% if @challenge.winners_announced_date.present? %>
-      <p><%= @challenge.self_label %> <%= @challenge.winners_label.downcase %> will be announced on <%= l @challenge.winners_announced_date, format: :short_date %>. The list of <%= @challenge.winners_label.downcase %> will be visible on the main page (<%= @challenge.self_label %> brief).</p>
+      <p><%= @challenge.self_label %> <%= @challenge.winners_label.downcase %> will be announced on <%= l @challenge.winners_announced_date, format: :long_date %>. The list of <%= @challenge.winners_label.downcase %> will be visible on the main page (<%= @challenge.self_label %> brief).</p>
     <% end %>
   condition: "@challenge.pre_winners_announced_date.present? or @challenge.winners_announced_date.present?"
 - q: Who is eligible to participate?
