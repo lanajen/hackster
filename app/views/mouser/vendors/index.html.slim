@@ -10,43 +10,35 @@
         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!
       .boards
-        - @boards.each_with_index do |board, index|
+        - @vendors.each do |vendor|
           .board-container
             .backdrop-container
               .backdrop
-                span.logo
+                span.logo style="background-image: url('#{asset_url(vendor.logo_url)}')"
             .board-img-container
-              - if index % 2 == 0  # Remove this!  This is just to get an alternating image for testing.  Put the actual link & image here.
-                a href="javascript:void(0);"
-                  img src="#{'assets/mouser/chipkit.png'}"
-              - else
-                a href="javascript:void(0);"
-                  img src="#{'assets/mouser/board-sample.png'}"
-            .name #{board}
+              a href=mouser_vendor_path(vendor.user_name)
+                img src=asset_url(vendor.board_image_url)
+            .name= vendor.board_name
 
-      .timeline id="timeline"
-        .description
-          h3 TIMELINE
-          p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
-        .dates
-          - @phases.each_with_index do |phase, index|
-            - if index != 2 # Index 2 contains dupe data from the previous phases's sub_event, ignore it for presentation.
-              .date-container
-                .date-wrapper
-                  - date = Date.parse(phase[:date])
-                  .date #{date.strftime("%B #{date.day.ordinalize}")}
-                  .circle-container
-                    - if index <= @active_phase.to_i
-                      .circle
-                    - else
-                      .circle class="doughnut"
-                  .event-container
-                    .event #{phase[:event]}
-                    - if phase[:sub_event]
-                      .sub-action #{phase[:sub_event]}
-                -if index != @phases.length-1
-                  .line-wrapper
-                    .line
-            end
+    section#timeline
+      .description
+        h2 Timeline
+        p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
+      .dates
+        - @phases.each_with_index do |phase, index|
+          - if index != 2 # Index 2 contains dupe data from the previous phases's sub_event, ignore it for presentation.
+            .date-container
+              .date-wrapper
+                - date = Date.parse(phase[:date])
+                .date #{date.strftime("%B #{date.day.ordinalize}")}
+                .circle-container
+                  .circle class=(index <= active_phase ? '' : 'doughnut')
+                .event-container
+                  .event #{phase[:event]}
+                  - if phase[:sub_event]
+                    .sub-action #{phase[:sub_event]}
+              -if index != @phases.length-1
+                .line-wrapper
+                  .line
 
     = render partial: 'mouser/vendors/footer'
