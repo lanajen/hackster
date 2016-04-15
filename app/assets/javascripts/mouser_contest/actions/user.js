@@ -34,7 +34,6 @@ export function selectProject(project) {
   }
 }
 
-
 /* Submitting projects via POST to Rails API */
 export function submitProject() {
   return (dispatch, getState) => {
