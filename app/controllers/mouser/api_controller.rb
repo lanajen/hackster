@@ -1,12 +1,14 @@
-class Api::V1::MouserContestController < Api::V1::BaseController
+class Mouser::ApiController < Api::V1::BaseController
 
   def index
-    #display all of the currently competing platforms
-    render json: MouserSubmission.last()
   end
 
   def show
+  end
 
+  def import
+    projects = BaseArticle.publyc.own.joins(:users).where(users: { id: params[:user_id] })
+    @projects = projects.for_thumb_display.paginate(page: safe_page_params)
   end
 
   def create

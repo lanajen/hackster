@@ -40,7 +40,6 @@ export function submitProject() {
   return (dispatch, getState) => {
     console.log('should be submitting project', getState());
     const { id, authors, name, communities } = getState().user.submission.value;
-
     const payload = {
       userId: authors[0].id,
       projectId: id,
@@ -57,6 +56,7 @@ export function submitProject() {
       })
     })
     .catch((err) => console.err(err));
+
   }
 }
 

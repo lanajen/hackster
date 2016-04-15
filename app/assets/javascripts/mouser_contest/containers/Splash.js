@@ -99,7 +99,6 @@ class Splash extends Component {
             {phases}
           </div>
         </section>
-        <ImportProject userData={ user } selectProject={ actions.selectProject } submitProject={ actions.submitProject } />
       </div>
     );
   }
@@ -109,16 +108,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     contest: state.contest,
-<<<<<<< HEAD
     vendors: state.vendors,
     user: state.user
-||||||| merged common ancestors
-    vendors: state.vendors
-=======
-    vendors: state.vendors,
-    platforms: state.platforms,
-    user: state.user
->>>>>>> refactoring project import flow into redux
   };
 }
 
