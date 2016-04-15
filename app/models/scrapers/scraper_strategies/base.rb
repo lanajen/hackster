@@ -525,9 +525,10 @@ module ScraperStrategies
               image.skip_file_check!
               image.remote_file_url = src
             end
-            widget.save
-            @widgets << widget
-            node.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
+            if widget.save
+              @widgets << widget
+              node.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
+            end
           end
           i = i + 1
         end
