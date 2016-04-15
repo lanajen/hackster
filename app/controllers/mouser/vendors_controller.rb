@@ -1,3 +1,5 @@
+require 'yaml'
+
 class Mouser::VendorsController < Mouser::BaseController
   before_filter :load_phases
   before_filter :load_vendors, only: [:index]

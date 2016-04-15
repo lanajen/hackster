@@ -19,7 +19,7 @@ const initialState = {
   phases: [],
   submissions: [],
   phase: '',
-  phases: phases
+  phases: []
 };
 
 export default function platforms(state = initialState, action) {

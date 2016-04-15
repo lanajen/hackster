@@ -14,7 +14,8 @@ export default {
     SET_ACTIVE_PHASE: null,
     SET_PHASES: null,
     SET_SUBMISSIONS: null,
-    SET_SUBMISSION: null
+    SET_SUBMISSION: null,
+    SET_PHASES: null
   }),
 
   User: keymirror({

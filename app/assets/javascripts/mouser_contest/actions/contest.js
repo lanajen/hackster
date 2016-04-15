@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import { Contest } from '../constants';
 import { setVendors } from './vendors';
+<<<<<<< 054b8805ef6936933b0fa2df77dcae5382ada6f8
 
 import { fetchSubmissions } from '../requests';
 
@@ -63,6 +64,7 @@ export function updateSubmission(submission) {
   }
 }
 
+
 export function setActivePhase(phase) {
   return {
     type: Contest.SET_ACTIVE_PHASE,
@@ -89,5 +91,5 @@ export function setInitialData(props) {
         return phase;
       })
     ));
-  }
+  };
 }
