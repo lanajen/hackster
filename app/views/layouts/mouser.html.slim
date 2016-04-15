@@ -13,18 +13,16 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     meta(name="api-uri" id="api-uri" content='http://wwww.mousercontest.localhost.local:5000')
     meta name='robots' content='noindex, nofollow'
+    link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'
     title= title
     meta(name="description" content=meta_desc)
     = content_for :head
     = csrf_meta_tags
-    = stylesheet_link_tag "application", :media => "all"
     link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'
+    = stylesheet_link_tag "mouser/style", :media => "all"
 
   body
     = yield
 
-    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-    javascript:
-       try{Typekit.load({async: true});}catch(e){}
     = javascript_include_tag "application"
     = content_for :js

@@ -1,16 +1,4 @@
-class Mouser::ApiController < Api::V1::BaseController
-
-  def index
-  end
-
-  def show
-  end
-
-  def import
-    projects = BaseArticle.publyc.own.joins(:users).where(users: { id: params[:user_id] })
-    @projects = projects.for_thumb_display.paginate(page: safe_page_params)
-  end
-
+class Mouser::Api::SubmissionsController < Mouser::Api::BaseController
   def create
     @submission = JSON.parse(request.body.read)
 
@@ -24,9 +12,4 @@ class Mouser::ApiController < Api::V1::BaseController
 
     render text: 'POST successful'
   end
-
-  private
-    def load_platform
-      @platform = Platform.find_by_user_name! params[:user_name]
-    end
 end

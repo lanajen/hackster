@@ -1,0 +1,436 @@
+h2 {
+  font-weight: bold;
+  font-size: 25px;
+  letter-spacing: 7.4px;
+  text-transform: uppercase;
+}
+
+p {
+  font-weight: 300;
+  letter-spacing: 1.8px;
+  margin: 0;
+}
+
+/** Navbar */
+#navbar {
+  @include flexbox((
+    display: flex,
+    align-items: center
+  ));
+
+  height: 127px;
+  width: 100%;
+
+  .title-container {
+    @include flexbox((
+      flex: 4
+    ));
+  }
+
+  .details-button-container {
+    @include flexbox((
+      display: flex,
+      flex: 1,
+      justify-content: flex-end
+    ));
+    margin-right: 6%;
+
+    a {
+      border: 1px solid #DEDEDE;
+      @include border-radius(2px);
+      letter-spacing: 0.6px;
+      color: #fff;
+      padding: 10px 23px;
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover {
+        @include box-shadow(0 5px 25px 0 rgba(0, 0, 160, 0.2));
+      }
+    }
+  }
+}
+
+/** Hero */
+#hero {
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center
+  ));
+  @include background-image(linear-gradient(to right, $grape, $purpley-grey));
+  width: 100%;
+
+  h1 {
+    font-weight: bold;
+    font-size: 1.4em;
+    letter-spacing: 0.3em;
+    color: white;
+    padding-top: 8%;
+  }
+
+  p {
+    letter-spacing: 2.4px;
+    color: #ffffff;
+  }
+
+  .bracket-container {
+    @include flexbox((
+      display: flex,
+      flex: 1
+    ));
+    width: 100%;
+    padding-top: 8%;
+    padding-bottom: 2%;
+
+    .bracket {
+      background: asset-url('mouser/bracket.png') center center no-repeat;
+      background-size: contain;
+      width: 100%;
+      padding-top: 29.642%;
+      align-self: flex-end;
+    }
+
+    .trophy {
+      background: asset-url('mouser/trophy.png') center center no-repeat;
+      background-size: contain;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      padding-top: 41.78%;
+      margin-top: -2.4%;
+    }
+  }
+}
+/** Hero::Media Queries */
+@media screen and (min-width: 768px) {
+  #hero {
+    h1 {
+      font-size: 1.7em;
+      letter-spacing: 0.4em;
+    }
+    p {
+      font-size: 1.2em;
+    }
+  }
+}
+@media screen and (min-width: 1024px) {
+  #hero {
+    h1 {
+      font-size: 2.8em;
+      letter-spacing: 0.6em;
+    }
+    p {
+      font-size: 1.7em;
+    }
+  }
+}
+
+
+/** Vendors / Splash Page */
+#description {
+  @include flexbox((
+    display: flex,
+    flex-direction: column,
+    align-items: center
+  ));
+  background-color: $pale-grey;
+  padding-top: 10%;
+  padding-bottom: 5%;
+
+  .description-columns {
+    padding: 0 20px;
+
+    p {
+      padding: 20px 15px;
+    }
+  } // end description-columns
+
+  .boards {
+    @include flexbox((
+      display: flex,
+      flex-direction: row,
+      flex-wrap: wrap,
+      justify-content: center
+    ));
+    position: relative;
+    padding-top: 5%;
+    padding-right: 5%;
+    padding-left: 5%;
+
+    .board-container {
+      @include flexbox((
+        display: flex,
+        flex-direction: column,
+        align-items: center,
+        flex-basis: 100%
+      ));
+
+      height: 415px;
+      margin-top: 5%;
+
+      .backdrop-container {
+        display: none;
+      }
+
+
+      &:hover {
+        .backdrop-container {
+          @include flexbox((
+            display: flex,
+            justify-content: center
+          ));
+          position: relative;
+          width: 100%;
+
+          .backdrop {
+            position: absolute;
+            z-index: 5;
+            height: 380px;
+            width: 70%;
+            background-color: $pale-grey;
+            margin-top: -15%;
+            margin-left: -35%;
+            @include box-shadow(0 5px 24px 0 rgba(40, 117, 171, 0.1));
+            @include border-radius(6px);
+
+            .logo {
+              background: asset-url('mouser/vendor-logo.png') center center no-repeat;
+              background-size: contain;
+              width: 35px;
+              height: 35px;
+              display: block;
+              margin-top: 5%;
+              margin-left: 5%;
+            }
+          }
+        }
+      }
+
+      .board-img-container {
+        @include flexbox((
+          display: flex,
+          justify-content: center
+        ));
+        max-width: 325px;
+        height: 275px;
+        z-index: 6;
+        img {
+          width: 100%;
+        }
+      }
+
+      .name {
+        font-size: 18px;
+        letter-spacing: 4px;
+        color: $brownish-grey;
+        text-align: center;
+        padding-top: 5%;
+        text-transform: uppercase;
+        z-index: 6;
+      }
+    }
+  }  // end boards
+}
+
+#timeline {
+  @include flexbox((
+    display: flex,
+    flex-wrap: wrap
+  ));
+  background-color: $pale-grey;
+  @include background-image(linear-gradient(to top, rgba(227, 236, 241, 1), rgba(236, 242, 245, 1)));
+
+  .description {
+    @include flexbox(( flex-basis: 100% ));
+    padding-left: 8%;
+    padding-top: 6%;
+    padding-right: 6%;
+    padding-bottom: 6%;
+  }
+
+  .dates {
+    @include flexbox((
+      flex-basis: 100%
+    ));
+    padding: 6% 8%;
+    border-image: linear-gradient(to bottom, rgba(151, 151, 151, 0.3), rgba(0, 0, 0, 0)) 1 100%;
+    border-left: 1px solid black; // Color doesn't matter here, its set in the gradient.  This is for the 1px.
+    border-right: 0px solid transparent; // Hides the right border gradient.
+
+    .date-container {
+      @include flexbox((
+        display: flex,
+        flex-direction: column
+      ));
+
+      .date-wrapper {
+        @include flexbox((
+          display: flex,
+          flex-direction: row
+        ));
+
+        .date {
+          @include flexbox((
+            display: flex,
+            justify-content: center,
+            flex-basis: 20%,
+            align-self: center
+          ));
+          font-weight: bold;
+          font-size: 0.9em;
+          letter-spacing: 1.8px;
+        }
+
+        .circle-container {
+          @include flexbox((
+            display: flex,
+            justify-content: center,
+            flex-basis: 16%,
+            align-self: center
+          ));
+
+          .circle {
+            background-color: #2badf4;
+            @include border-radius(100px);
+            width: 0.7em;
+            height: 0.7em;
+            &.doughnut {
+              background-color: transparent;
+              border: 2px solid #2badf4;
+            }
+          }
+        }
+
+        .event-container {
+          .event{
+            letter-spacing: 0.5px;
+          }
+          .sub-action {
+            position: absolute;
+            font-size: 0.6em;
+            letter-spacing: 1.7px;
+            color: $warm-grey;
+            text-transform: uppercase;
+          }
+        }
+      }
+
+      .line-wrapper {
+        @include flexbox((
+          display: flex
+        ));
+        height: 40px;
+
+        .line {
+          @include flexbox((
+            flex-basis: 28%
+          ));
+          border-right: 1px solid #bababa;
+        }
+      }
+
+    }
+  }
+} // end timeline
+
+/** Vendors::Media Queries */
+@media screen and (min-width: 768px) {
+  h2 {
+    text-align: left;
+  }
+
+  #description {
+    .description-columns {
+      @include flexbox((
+        display: flex,
+        flex-direction: row,
+        flex: 1
+      ));
+
+      p {
+        @include flexbox((
+          flex: 10
+        ));
+      }
+    }
+
+    .boards .board-container {
+      @include flexbox(( flex-basis: 50% ));
+
+      &:hover {
+        .backdrop-container .backdrop { height: 415px; }
+      }
+    }
+  }
+
+  #timeline {
+    .dates {
+      .date-container .line-wrapper {
+        height: 73px;
+      }
+    }
+  }
+}
+@media screen and (min-width: 1024px) {
+  #description .boards .board-container {
+    @include flexbox((
+      flex-basis: 25%
+    ));
+  }
+  #timeline {
+    .description {
+      @include flexbox((
+        flex-basis: 40%
+      ));
+    }
+    .dates {
+      @include flexbox((
+        flex-basis: 60%
+      ));
+    }
+  }
+}
+
+/** Footer */
+#footer {
+  @include background-image(linear-gradient(to right, $grape, $purpley-grey));
+
+  .stars {
+    background: asset-url('mouser/stars@3x.png') center center no-repeat;
+    background-size: contain;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    padding-top: 25%;
+    margin-top: 5%;
+    z-index: 5;
+  }
+
+  .content {
+    @include flexbox((
+      display: flex,
+      flex-direction: column,
+      align-items: center
+    ));
+    padding: 10% 15%;
+
+    .brief {
+      font-weight: 300;
+      // font-size: 14px;
+      letter-spacing: 1.7px;
+      color: white;
+      z-index: 10;
+      text-align: center;
+    }
+  }
+} // end footer
+
+/** Footer::Media Queries */
+@media screen and (min-width: 1024px) {
+  #footer .content {
+    .brief {
+      text-align: left;
+    }
+  }
+}

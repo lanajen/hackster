@@ -12,10 +12,10 @@ class Mouser::VendorsController < Mouser::BaseController
       {date: 'June 10th', event: 'Round 2 begins'},
       {date: 'June 20th', event: 'Round 3 begins'},
       {date: 'June 30th', event: 'Competition ends', sub_action: 'Winner announced'}
-    ];
+    ]
   end
 
   def show
-    @platforms = Platform.find_by_user_name! params[:user_name]
+    # @platforms = Platform.find_by_user_name! params[:user_name]
   end
 end

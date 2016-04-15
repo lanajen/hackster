@@ -9,9 +9,11 @@ HackerIo::Application.routes.draw do
 
   constraints(MouserContest) do
     scope module: :mouser, as: :mouser do
-      get 'api' => 'api#index'
-      get 'api/import' => 'api#import'
-      post 'api/submit' => 'api#create'
+      scope module: :api, as: :api do
+        resources :projects, only: [:index]
+        resources :submissions, only: [:create]
+        match "*all" => "base#cors_preflight_check", via: :options
+      end
 
       get '/' => 'vendors#index', as: :vendors
       get 'admin' => 'vendors#index', as: :admin

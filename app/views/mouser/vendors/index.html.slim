@@ -2,18 +2,13 @@
   = react_component('MouserContest', platforms: @boards)
 - else
   #mousercontest-landing
-    = render partial: 'mouser/vendors/navbar'
     = render partial: 'mouser/vendors/hero'
 
-    section#vendors
-      .title The Competition
+    section#description
+      h2 The competition
       .description-columns
-        .description
-          span.bullet •
-          span.brief  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
-        .description
-          span.bullet •
-          span.brief  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!
       .boards
         - @boards.each_with_index do |board, index|
           .board-container
@@ -28,26 +23,27 @@
                 a href="javascript:void(0);"
                   img src="#{'assets/mouser/board-sample.png'}"
             .name #{board}
-      .timeline id="timeline"
-        .description
-          h3 TIMELINE
-          p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
-        .dates
-          - @dates.each_with_index do |date, index|
-            .date-container
-              .date-wrapper
-                .date #{date[:date]}
-                .circle-container
-                  - if index == 0  # Change this!  If the timeline has reached this date point do not add 'doughnut' to the classList.
-                    .circle
-                  - else
-                    .circle class="doughnut"
-                .event-container
-                  .event #{date[:event]}
-                  - if date[:sub_action]
-                    .sub-action #{date[:sub_action]}
-              -if index != @dates.length-1
-                .line-wrapper
-                  .line
+
+    section#timeline
+      .description
+        h2 Timeline
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
+      .dates
+        - @dates.each_with_index do |date, index|
+          .date-container
+            .date-wrapper
+              .date #{date[:date]}
+              .circle-container
+                - if index == 0  # Change this!  If the timeline has reached this date point do not add 'doughnut' to the classList.
+                  .circle
+                - else
+                  .circle class="doughnut"
+              .event-container
+                .event #{date[:event]}
+                - if date[:sub_action]
+                  .sub-action #{date[:sub_action]}
+            - if index != @dates.length-1
+              .line-wrapper
+                .line
 
     = render partial: 'mouser/vendors/footer'

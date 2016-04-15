@@ -1,0 +1,21 @@
+@import 'custom_mixins';
+@import 'compass/css3';
+@import 'bootstrap';
+@import 'bootstrap_overrides2';
+
+$grape: #4f3254;
+$purpley-grey: #938298;
+$pale-grey: #e3ecf1;
+$gunmetal: #53595d;
+$brownish-grey: #696969;
+$warm-grey: #9c9a9a;
+
+// TODO: Set a max-width of 1440 here and on #hero trophy & sparkles bg shiet.
+body {
+  font-family: Lato, sans-serif;
+  font-size: 18px;
+  color: $gunmetal;
+}
+
+@import 'home';
+@import 'vendors';
