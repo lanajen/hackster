@@ -1,21 +1,16 @@
-import { User } from '../constants';
-import { determineHost } from '../../utils/Mouser'
+import constants from '../constants';
+import { determineHost } from '../utils/utils';
+import { fetchProjects, postProject } from '../requests';
 
 const API_PATH = determineHost();
+const { User } = constants;
 
 // Getting projects from Rails API by user_id
 export function getProjects(userId) {
   userId = userId || 1;
   return dispatch => {
-    return fetch(API_PATH + userId )
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        const projects = data.projects.map(project => { return { value: project, label: project.name }; });
-        dispatch(setProjects(projects));
-      })
-      .catch(err => console.log('ERROR', err))
+    return fetchProjects(userId)
+      .then((projects) => dispatch(setProjects(projects)));
   }
 }
 
@@ -45,17 +40,7 @@ export function submitProject() {
       description: name,
       vendor: communities[0].id
     }
-    fetch(API_PATH, {
-      method: 'post',
-      mode: 'no-cors',
-      body: JSON.stringify(payload),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      })
-    })
-    .catch((err) => console.err(err));
-
+    return postProject(payload);
   }
 }
 

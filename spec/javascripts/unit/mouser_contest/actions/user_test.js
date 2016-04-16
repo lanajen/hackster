@@ -1,23 +1,69 @@
-import configureStore from 'mouser_contest/configStore';
 import expect from 'expect';
+import fetchMock from 'fetch-mock';
 
-import Redux, { createStore, applyMiddleware } from 'redux';
+import * as actions from 'mouser_contest/actions/user';
+import * as constants from 'mouser_contest/constants';
+
 import thunk from 'redux-thunk';
-import rootReducer from 'mouser_contest/reducers';
+import configureStore from 'redux-mock-store';
 
-describe('testing our user reducer / user actions', () => {
+const middlewares = [thunk];
+const mockStore = configureStore(middlewares);
 
-  it('should fetch a user\'s eligible projects on page load', () => {
-    console.log('this should be the store');
+const initialState = {
+  id: null,
+  projects: null,
+  submission: null
+}
+
+const resetState = () => {
+  return initialState.map( (prop) => { return null; } );
+}
+
+describe('testing our user actions', () => {
+
+  afterEach(fetchMock.restore);
+
+  it('should dispatch SET_PROJECTS when getProjects has finished', () => {
+    const store = mockStore(initialState);
+    const sampleResponse = [
+      {
+        value: { name: 'dog doorbell'},
+        name: 'dog doorbell'
+      },
+      {
+        value: { name: 'wireless tupee'},
+        name: 'wireless tupee'
+      }
+    ];
+    const sampleProjects = sampleResponse.map((p,k) => ({value: p, label: p.name}))
+    const expectedActions = [
+      { type: 'SET_PROJECTS', projects: sampleProjects }
+    ];
+
+    fetchMock
+      .mock('http://mousercontest.localhost.local:5000/api/import?user_id=1', 'GET', { projects: sampleResponse })
+
+    return store.dispatch(actions.getProjects())
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      })
   })
 
-  xit('should queue a selection for submission', () => {
+  xit('should dispatch SET_SUBMISSION when setProjects is called', () => {
+    const store = mockStore(initialState);
 
+    const expectedActions = [{
+      type: 'SET_SUBMISSION',
+        project: {
+          value: { name: 'wireless tupee'},
+          name: 'wireless tupee'
+        }
+      }];
+
+    return store.dispatch(actions.getProjects())
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      })
   })
-
-  xit('should submit a project', () => {
-
-  })
-
 });
-
