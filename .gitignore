@@ -11,6 +11,7 @@
 /node_modules
 npm-debug.log
 /app/assets/javascripts/bundle.js
+/app/assets/javascripts/mouser_bundle.js
 /spec/javascripts/bundle.js
 
 #mocha-webpack

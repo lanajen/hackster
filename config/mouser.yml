@@ -1,0 +1,86 @@
+phases:
+  :0:
+    :date: 01-05-2016
+    :event: Project submissions open
+  :1:
+    :date: 15-05-2016
+    :event: Project submissions close
+    :sub_event: Preliminary voting begins
+  :2:
+    :date: 15-05-2016
+    :event: Preliminary voting begins
+  :3:
+    :date: 31-05-2016
+    :event: Project voting ends
+    :sub_event: Vendor champions chosen
+  :4:
+    :date: 01-06-2016
+    :event: Round 1 begins
+  :5:
+    :date: 10-06-2016
+    :event: Round 2 begins
+  :6:
+    :date: 20-06-2016
+    :event: Round 3 begins
+  :7:
+    :date: 30-06-2016
+    :event: Competition ends
+    :sub_event: Winner announced
+
+vendors:
+  - user_name: cypress
+    name: Cypress
+    logo_url: mouser/vendors/cypress.png
+    website: http://www.cypress.com/documentation/development-kitsboards/cy8ckit-044-psoc-4-m-series-pioneer-kit
+    board_name: PSOC 4 M Series Pioneer
+    board_image_url: mouser/boards/psoc.png
+    board_description: The PSoC® 4 M-Series Pioneer Kit is a low-cost platform enabling design and debug of PSoC 4 M-Series devices.
+  - user_name: digilent
+    name: Digilent
+    logo_url: mouser/vendors/digilent.png
+    website: http://store.digilentinc.com/chipkit-uc32-basic-microcontroller-board-with-uno-r3-headers/
+    board_name: Chipkit32 – UC32
+    board_image_url: mouser/boards/chipkit.png
+    board_description: The chipKIT™ uC32 is a prototyping platform that adds the performance of the Microchip® PIC32 microcontroller.
+  - user_name: intel
+    name: Intel
+    logo_url: mouser/vendors/intel.png
+    website: https://www.arduino.cc/en/Main/ArduinoBoard101
+    board_name: Arduino 101
+    board_image_url: mouser/boards/101.png
+    board_description: Arduino 101 combines the ease-of-use of the classic boards with the latest technologies. The board recognises gestures, and features a six-axis accelerometer and gyroscope. Control your projects with your phone over Bluetooth connectivity!
+  - user_name: nxp
+    name: NXP
+    logo_url: mouser/vendors/nxp.png
+    website: http://www.nxp.com/products/software-and-tools/hardware-development-tools/freedom-development-boards/freedom-development-platform-for-kinetis-k64-k63-and-k24-mcus:FRDM-K64F
+    board_name: K64F Freedom
+    board_image_url: mouser/boards/k64.png
+    board_description: The Freedom-K64F is an ultra-low-cost development platform for Kinetis K64, K63, and K24 MCUs.
+  - user_name: seeed
+    name: Seeed Studio
+    logo_url: mouser/vendors/seeed.png
+    website: http://www.seeed.cc/beaglebone_green/
+    board_name: BeagleBone Green
+    board_image_url: mouser/boards/beaglebone.png
+    board_description: SeeedStudio BeagleBone Green (BBG) is a joint effort by BeagleBoard.org and Seeed Studio. It is based on the open-source hardware design of BeagleBone Black and developed into this differentiated version. The BBG has included two Grove connectors, making it easier to connect to the large family of Grove sensors. The on-board HDMI is removed to make room for these Grove connectors.
+  - user_name: st
+    name: ST Microelectronics
+    logo_url: mouser/vendors/st.png
+    website: http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1847/PF262063
+    board_name: M7 Nucleo
+    board_image_url: mouser/boards/nucleo.png
+    board_description: The STM32 Nucleo board provides an affordable and flexible way for users to try out new ideas and build prototypes with any STM32 microcontroller line, choosing from the various combinations of performance, power consumption and features. The Arduino™ connectivity support and ST Morpho headers make it easy to expand the functionality of the STM32 Nucleo open development platform with a wide choice of specialized shields. The STM32 Nucleo board does not require any separate probe as it integrates the ST-LINK/V2-1 debugger and programmer. The STM32 Nucleo board comes with the STM32 comprehensive software HAL library together with various packaged software examples, as well as direct access to mbed online resources.
+  - user_name: ti
+    name: Texas Instruments
+    logo_url: mouser/vendors/ti.png
+    website: http://www.ti.com/tool/MSP-EXP432P401R
+    board_name: MSP432 Launchpad
+    board_image_url: mouser/boards/launchpad.png
+    board_description: The MSP432P401R LaunchPad enables you to develop high performance applications that benefit from low power operation. It features the MSP432P401R – which includes a 48MHz ARM Cortex M4F, 95uA/MHz active power and 850nA RTC operation, 14-bit 1MSPS differential SAR ADC and AES256 accelerator.
+  - user_name: udoo
+    name: Udoo
+    logo_url: mouser/vendors/udoo.png
+    website: http://shop.udoo.org/home/udoo-neo-full.html
+    board_name: Neo Full
+    board_image_url: mouser/boards/neo.png
+    board_description: The most complete tool for wireless mobile IoT applications. UDOO NEO FULL is the best, all-in-one solution for wireless mobile IoT applications.

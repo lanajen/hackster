@@ -1,0 +1,27 @@
+/!
+  Whatever your mind can conceive and can believe, it can achieve. ~Napoleon Hill
+
+  Whatever we think about and thank about we bring about. ~John Demartini
+
+  Whether you think you can or can’t either way you are right. ~Henry Ford
+
+doctype 5
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="api-uri" id="api-uri" content='http://wwww.mousercontest.localhost.local:5000')
+    meta name='robots' content='noindex, nofollow'
+    link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'
+    title= title
+    meta(name="description" content=meta_desc)
+    = content_for :head
+    /= csrf_meta_tags
+    link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'
+    = stylesheet_link_tag "mouser/style", :media => "all"
+
+  body
+    = yield
+
+    = javascript_include_tag "mouser"

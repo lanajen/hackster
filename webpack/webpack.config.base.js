@@ -1,10 +1,13 @@
 'use strict';
 
 module.exports = {
-  entry: ['babel-polyfill', __dirname + '/../app/assets/javascripts/components.js'],
+  entry: {
+    bundle: ['babel-polyfill', __dirname + '/../app/assets/javascripts/components.js'],
+    mouser_bundle: ['babel-polyfill', __dirname + '/../app/assets/javascripts/mouser_contest/bundleEntry.js']
+  },
   output: {
     path: __dirname + '/../app/assets/javascripts',
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
     preLoaders: [
