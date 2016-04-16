@@ -119,8 +119,7 @@
         display: flex,
         justify-content: center
       ));
-      width: 300px;
-      max-width: 100%;
+      padding: 0 20px;
       .image {
         width: 12%;
         height: 100%;
@@ -178,6 +177,20 @@
         justify-content: center
       ));
     }
+
+    .vendor-links {
+      @include flexbox((
+        flex-direction: column
+      ));
+      height: 300px;
+      .vendor-link-button {
+        .link-container {
+          @include flexbox((
+            justify-content: initial
+          ));
+        }
+      }
+    }
   }
 }
 
@@ -201,6 +214,7 @@
           top: 8%;
           left: 12%;
           width: 15%;
+          z-index: 1;
         }
         .board {
           width: 77%;

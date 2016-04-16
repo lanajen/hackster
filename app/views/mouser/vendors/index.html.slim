@@ -14,7 +14,8 @@
           .board-container
             .backdrop-container
               .backdrop
-                span.logo style="background-image: url('#{asset_url(vendor.logo_url)}')"
+                /span.logo style="background-image: url('#{asset_url(vendor.logo_url)}')"
+                = image_tag vendor.logo_url, class: 'logo'
             .board-img-container
               a href=mouser_vendor_path(vendor.user_name)
                 img src=asset_url(vendor.board_image_url)

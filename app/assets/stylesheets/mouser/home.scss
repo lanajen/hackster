@@ -171,6 +171,16 @@ p {
 
       .backdrop-container {
         display: none;
+
+        .backdrop {
+          .logo {
+            width: 40px;
+            margin-top: 5%;
+            margin-left: 5%;
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+          }
+        }
       }
 
 
@@ -193,16 +203,6 @@ p {
             margin-left: -35%;
             @include box-shadow(0 5px 24px 0 rgba(40, 117, 171, 0.1));
             @include border-radius(6px);
-
-            .logo {
-              background: center center no-repeat;
-              background-size: contain;
-              width: 40px;
-              height: 40px;
-              display: block;
-              margin-top: 5%;
-              margin-left: 5%;
-            }
           }
         }
       }
@@ -215,8 +215,13 @@ p {
         max-width: 325px;
         height: 275px;
         z-index: 6;
+        a {
+          display: block;
+          height: 100%;
+        }
         img {
-          width: 100%;
+          max-width: 100%;
+          max-height: 100%;
         }
       }
 
