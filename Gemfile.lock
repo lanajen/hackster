@@ -13,16 +13,9 @@ GIT
 
 GIT
   remote: https://github.com/hacksterio/mailgunner.git
-  revision: d179d4ab7a63f7c69b50223dd04fd06da6f52870
+  revision: f761db727d54c72108b9769b8c1007a35a9a3326
   specs:
     mailgunner (2.4.0)
-
-GIT
-  remote: https://github.com/hacksterio/mandrill_dm.git
-  revision: ecd75235398f954b234bc65c0eb3937ac7fcae1a
-  specs:
-    mandrill_dm (1.2.0)
-      mandrill-api (~> 1.0.53)
 
 GIT
   remote: https://github.com/hacksterio/omniauth-saml.git
@@ -406,9 +399,6 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mandrill-api (1.0.53)
-      excon (>= 0.16.0, < 1.0)
-      json (>= 1.7.7, < 2.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (0.9.4)
@@ -783,7 +773,6 @@ DEPENDENCIES
   mail (>= 2.6.3)
   mailcatcher!
   mailgunner!
-  mandrill_dm!
   mini_magick (= 3.7.0)
   mixpanel (= 4.0.8)
   momentjs-rails (= 2.8.1)

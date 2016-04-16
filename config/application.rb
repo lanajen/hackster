@@ -98,6 +98,9 @@ module HackerIo
     config.logger = Logger.new(STDOUT)
 
     config.action_mailer.delivery_method = :mailgun
+    config.action_mailer.mailgun_settings = {
+      domain: ENV['MAILGUN_DOMAIN'],
+    }
 
     config.middleware.use Rack::Attack
 

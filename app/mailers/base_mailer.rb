@@ -2,6 +2,8 @@ class BaseMailer < ActionMailer::Base
   DEFAULT_EMAIL = 'Hackster.io<help@hackster.io>'
   add_template_helper ApplicationHelper
   add_template_helper UrlHelper
+  default track_clicks: Rails.env.production?
+  default track_opens: Rails.env.production?
 
   def deliver_email recipient_or_recipients, context, template, opts={}
     puts "#{Time.now.to_s} - Sending email '#{template}'."
@@ -127,7 +129,8 @@ class BaseMailer < ActionMailer::Base
             tag_name = token.gsub(/:/, '_').gsub(/\*/, '').gsub(/\|/, '')
             this_users_vars[tag_name] = substitute
           end
-          recipient_variables[user.email] = this_users_vars if this_users_vars.any?
+          # set dummy variables if there's nothing to substitute to ensure mailgun doesn't send a single email with everyone in the TO field
+          recipient_variables[user.email] = this_users_vars.any? ? this_users_vars : { id: user.id }
         end
         # raise merge_vars.inspect
         if recipient_variables.any?
@@ -135,11 +138,13 @@ class BaseMailer < ActionMailer::Base
         end
       end
 
+      set_header :test_mode, !ENV['SEND_EMAILS']
+
       # raise premailer.to_inline_css.to_s
 
-      # format merge tags for mandrill
-      plain_text = premailer.to_plain_text.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
-      inline_css = premailer.to_inline_css.gsub(/\|[a-z_:]+\|/){|m| "*#{m.gsub(/:/, '_')}*" }
+      # format merge tags for mailgun
+      plain_text = premailer.to_plain_text.gsub(/\|[a-z_:]+\|/){|m| "%recipient.#{m.gsub(/\|/, '').gsub(/:/, '_')}%" }
+      inline_css = premailer.to_inline_css.gsub(/\|[a-z_:]+\|/){|m| "%recipient.#{m.gsub(/\|/, '').gsub(/:/, '_')}%" }
 
       Rails.logger.debug inline_css if Rails.env.development?
 
