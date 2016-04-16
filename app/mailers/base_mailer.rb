@@ -119,23 +119,19 @@ class BaseMailer < ActionMailer::Base
 
       if recipient_or_recipients.kind_of?(Array)
         recipients = recipient_or_recipients
-        merge_vars = []
+        recipient_variables = {}
         recipients.each do |user|
-          this_users_vars ||= []
+          this_users_vars = {}
           premailer.to_plain_text.scan(/\|[a-z_:]+\|/).each do |token|
             substitute = get_value_for_token(token, { user: user })
             tag_name = token.gsub(/:/, '_').gsub(/\*/, '').gsub(/\|/, '')
-            this_users_vars << { 'name' => tag_name, 'content' => substitute }
+            this_users_vars[tag_name] = substitute
           end
-          merge_vars << { 'rcpt' => user.email, 'vars' => this_users_vars } if this_users_vars.any?
+          recipient_variables[user.email] = this_users_vars if this_users_vars.any?
         end
         # raise merge_vars.inspect
-        if merge_vars.any?
-          # it's weird to pass an array to mandrill via the mail headers, so we
-          # pass a string and remake it an array on the mandrill side
-          set_header :merge_vars, merge_vars
-          set_header :merge, true
-          set_header :merge_language, 'mailchimp'
+        if recipient_variables.any?
+          set_header :recipient_variables, recipient_variables
         end
       end
 

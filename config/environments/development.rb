@@ -33,7 +33,7 @@ HackerIo::Application.configure do
   config.eager_load = false
 
   case ENV['MAIL_METHOD']
-  when 'mandrill'
+  when 'mailgun'
   when 'mailtrap'
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
