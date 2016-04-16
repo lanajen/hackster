@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 
 const Vendors = (props) => {
   console.log('Rendering....', props);
-
+  { }
   const platformLogo = props.platformImage || "assets/mouser/vendor-logo.svg";
   const platformBoard = props.platformBoard || "assets/mouser/chipkit-uc-32-copy.png";
   const description = props.description || "Chip combines the ease-of-use of the classic boards with the latest technologies.  The board recognises gestures, and features a six-axis accelerometer and gyroscope.  Control your projects with your phone over Bluetooth connectivity!";
