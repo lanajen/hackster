@@ -1,5 +1,5 @@
-- if false#user_signed_in?
-  = react_component('MouserContest', vendors: @boards, phases: @phases, activePhase: @active_phase)
+- if user_signed_in?
+  = react_component('MouserContest', vendors: @vendors, phases: @phases, activePhase: @active_phase)
 - else
   #mousercontest-landing
     = render partial: 'mouser/vendors/hero'

@@ -2,7 +2,6 @@ import moment from 'moment';
 
 import { Contest } from '../constants';
 import { setVendors } from './vendors';
-<<<<<<< 054b8805ef6936933b0fa2df77dcae5382ada6f8
 
 import { fetchSubmissions } from '../requests';
 
