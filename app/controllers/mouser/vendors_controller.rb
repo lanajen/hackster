@@ -5,6 +5,14 @@ class Mouser::VendorsController < Mouser::BaseController
   before_filter :load_vendors, only: [:index]
 
   def index
+    @decorated_vendors = MouserVendorDecorator.decorate_collection(@vendors).map do |v|
+      link = v.vendor_link
+      board_image_link = v.board_image_link
+      v = v.to_hash
+      v[:vendor_link] = link
+      v[:board_image_link] = board_image_link
+      v
+    end
   end
 
   def show

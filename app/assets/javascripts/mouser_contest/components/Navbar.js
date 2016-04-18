@@ -6,12 +6,9 @@ const Navbar = props => {
 
   return (
     <nav id="navbar">
-      <div className="title-container">
-        <Link to="/" className="title">#MAKERMADNESS</Link>
-      </div>
       <div className="details-button-container">
-        { isAdmin ? <Link to="/admin" className="fa fa-cog"></Link> : null }
-        <button>Event Details</button>
+        { isAdmin ? <Link to="/admin">Admin</Link> : null }
+        <Link to="/">Event Details</Link>
       </div>
     </nav>
   );

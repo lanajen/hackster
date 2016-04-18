@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AuthActions from '../actions/auth';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 class Root extends Component {
@@ -16,7 +15,6 @@ class Root extends Component {
     const isAdminPath = location.pathname && location.pathname !== '/admin';
     return (
       <div id="mousercontest-landing">
-        { isAdminPath ? <Navbar user={user}/> : null }
         { this.props.children }
         { isAdminPath ? <Footer /> : null }
       </div>

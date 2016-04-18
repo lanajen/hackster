@@ -21,11 +21,11 @@ class Vendor extends Component {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, user } = this.props;
 
     return (
       <div>
-        <Hero/>
+        <Hero user={user}/>
         <Vendors/>
       </div>
     );
@@ -38,7 +38,8 @@ Vendor.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    user: state.user
   };
 }
 

@@ -15,7 +15,7 @@ export function postActivePhase(phase) {
   return Promise.resolve(phase);
   return new Promise((resolve, reject) => {
     request
-      .post(`${getApiPath()}/api/phase`)
+      .post(`${getApiPath()}/api/active_phase`)
       .end((err, res) => {
         err ? reject(err) : resolve(res);
       });

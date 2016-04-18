@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import * as AuthActions from '../actions/auth';
 import * as UserActions from '../actions/user';
@@ -21,22 +22,22 @@ class Splash extends Component {
   }
 
   render() {
-    const { auth, contest, vendors } = this.props;
+    const { auth, contest, vendors, user } = this.props;
 
     const boards = vendors.map((vendor, index) => {
       return (
         <div key={index} className="board-container">
           <div className="backdrop-container">
             <div className="backdrop">
-              <span className="logo"></span>
+              <img className="logo" src={`${window.location}assets/${vendor.logo_url}`}></img>
             </div>
           </div>
           <div className="board-img-container">
-            <a href="javascript:void(0);">
-              <img src={index % 2 === 0 ? 'assets/mouser/boards/chipkit.png' : 'assets/mouser/boards/udoo.jpg'} alt=""/>
-            </a>
+            <Link to={vendor.user_name}>
+              <img src={`${window.location}assets/${vendor.board_image_url}`} />
+            </Link>
           </div>
-          <div className="name">{vendor}</div>
+          <div className="name">{vendor.board_name}</div>
         </div>
       );
     });
@@ -73,37 +74,27 @@ class Splash extends Component {
 
     return (
       <div>
-        <Hero />
-        <section id="vendors">
-          <div className="title">The Competition</div>
+        <Hero user={user} />
+        <section id="description">
+          <h2>The Competition</h2>
 
           <div className="description-columns">
-            <div className="description">
-              <span className="bullet">•</span>
-              <span className="brief">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
-              </span>
-            </div>
-            <div className="description">
-              <span className="bullet">•</span>
-              <span className="brief">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
-              </span>
-            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!</p>
           </div>
 
           <div className="boards">
             {boards}
           </div>
+        </section>
 
-          <div className="timeline" id="timeline">
-            <div className="description">
-              <h3>TIMELINE</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur</p>
-            </div>
-            <div className="dates">
-              {phases}
-            </div>
+        <section id="timeline">
+          <div className="description">
+            <h2>Timeline</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur</p>
+          </div>
+          <div className="dates">
+            {phases}
           </div>
         </section>
       </div>
@@ -111,12 +102,12 @@ class Splash extends Component {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     contest: state.contest,
-    vendors: state.vendors
+    vendors: state.vendors,
+    user: state.user
   };
 }
 

@@ -61,20 +61,6 @@ class Admin extends Component {
                           onChange={this.handleFilterUpdate} />
     });
 
-    // const rangeStyle = {
-    //   boxSizing: 'border-box',
-    //   display: 'block',
-    //   width: '100%',
-    //   margin: '20px 0',
-    //   cursor: 'pointer',
-    //   backgroundColor: 'lightblue',
-    //   backgroundClip: 'content-box',
-    //   height: 6,
-    //   borderRadius: 999,
-    //   WebkitAppearance: 'none',
-    //   appearance: 'none'
-    // }
-
     return (
       <div>
         <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, borderBottom: '1px solid #e7e7e7', backgroundColor: '#f8f8f8' }}>
@@ -91,7 +77,7 @@ class Admin extends Component {
                 contest.activePhase < contest.phases.length-1
                   ? (<div style={{ alignSelf: 'center' }}>
                       <div>
-                        <button style={{ backgroundColor: 'lightgrey', borderRadius: 4, padding: '3%', border: 'none', whiteSpace: 'nowrap' }}
+                        <button style={{ backgroundColor: 'lightgrey', borderRadius: 4, padding: '8%', border: 'none', whiteSpace: 'nowrap' }}
                                 onClick={this.handleActivePhasePromotion}>
                           Promote to next phase
                         </button>
