@@ -3,11 +3,11 @@
   h1
     =t '.title', :default => model_class.model_name.human.pluralize
     small
-      ==> link_to t('.new', :default => t("helpers.links.new")), new_admin_short_link_path, :class => 'btn btn-primary btn-sm'
+      => link_to t('.new', :default => t("helpers.links.new")), new_admin_short_link_path, :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -24,7 +24,7 @@ table.table.table-striped
         td= short_link.redirect_to_url
         td= short_link.impressions_count
         td
-          ==> link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_short_link_path(short_link), :class => 'btn btn-default btn-xs'
+          => link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_short_link_path(short_link), :class => 'btn btn-default btn-xs'
           = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_short_link_path(short_link.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center

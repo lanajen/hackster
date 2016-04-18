@@ -16,10 +16,10 @@
 
   small.text-muted
     ' by
-    ==> link_to log.user.name, log.user
-    ==> time_ago_in_words log.created_at
+    => link_to log.user.name, log.user
+    => time_ago_in_words log.created_at
     | ago
     ' -
-    ==> pluralize log.comments.size, 'comment'
+    => pluralize log.comments.size, 'comment'
     ' -
     = render 'shared/share'

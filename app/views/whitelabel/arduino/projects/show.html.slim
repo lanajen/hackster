@@ -40,7 +40,7 @@
                     h1.project-title
                       - if @project.is_idea?
                         i.fa.fa-lightbulb-o.private-project-icon>
-                      ==> @project.name
+                      => @project.name
                       - if @project.license
                         a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
                     p.project-one-liner= @project.one_liner
@@ -180,7 +180,7 @@
                                 | Project log ##{log.sub_id}
 
                               .subtitle
-                                ==> time_ago_in_words log.created_at
+                                => time_ago_in_words log.created_at
                                 ' ago -
                                 = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
 
@@ -216,7 +216,7 @@
                                   | Issue ##{issue.sub_id}
 
                                 .subtitle
-                                  ==> time_ago_in_words issue.created_at
+                                  => time_ago_in_words issue.created_at
                                   ' ago -
                                   = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
 
@@ -307,7 +307,7 @@
                         li
                           - if credit_line.name.present?
                             - if credit_line.work.present?
-                              ==> credit_line.work.try(:capitalize)
+                              => credit_line.work.try(:capitalize)
                               ' by
                             - if credit_line.link.present?
                               = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'

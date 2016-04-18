@@ -28,9 +28,9 @@
 = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success', style: 'margin-left:34%'
 
 .col-md-offset-4.col-md-8
-  ==> f.button :submit, :class => 'btn-primary'
+  => f.button :submit, :class => 'btn-primary'
   input> type="submit" name="preview" class="btn btn-default" value="Save and preview"
-  ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'
+  => link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'
   - if @post.persisted?
     = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_blog_post_path(@post), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
     = link_to 'Direct link', blog_post_path(@post.slug), class: 'btn btn-link'

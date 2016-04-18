@@ -6,7 +6,7 @@ h2.mg-20= link_to 'Find a team mate', skill_requests_path, class: 'hidden-link'
     - if can? :edit, @skill_request
       section.section-thumbs
         h4 Admin actions
-        ==> link_to 'Edit', edit_skill_request_path(@skill_request), class: 'btn btn-sm btn-warning'
+        => link_to 'Edit', edit_skill_request_path(@skill_request), class: 'btn btn-sm btn-warning'
         / # = link_to 'Delete', build_log_path(@skill_request), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
     section.section-thumbs

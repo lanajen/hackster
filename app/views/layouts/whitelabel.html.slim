@@ -58,7 +58,7 @@ html lang="en" class=content_for(:html_class)
           .navbar-in  style='position:relative;'
             .navbar-header
               span.navbar-brand.navbar-btn
-                ==> link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
+                => link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
                 small  style='font-size:11px;'
                   ' powered by
                   = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
@@ -113,9 +113,9 @@ html lang="en" class=content_for(:html_class)
         .footer-nav.clearfix
           ul.list-unstyled.list-inline.pull-right
             li
-              ==> link_to 'Hardware projects portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              => link_to 'Hardware projects portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
               ' powered by
-              ==> link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              => link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
               | &copy; #{Date.today.year}
     - unless user_signed_in?
       = render 'shared/modals/login_popup'

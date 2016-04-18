@@ -1,15 +1,15 @@
 - model_class = BaseArticle
 .page-header
   h1
-    ==> t '.title', :default => model_class.model_name.human.pluralize
+    => t '.title', :default => model_class.model_name.human.pluralize
     small>= link_to 'New normal', new_admin_project_path, :class => 'btn btn-primary btn-sm'
     small>= link_to 'New external', new_admin_project_path(type: 'external'), :class => 'btn btn-primary btn-sm'
     small= link_to 'New product', new_admin_project_path(type: 'product'), :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at type status private made_public_at)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: BaseArticle.workflow_spec.states.keys }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+=> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: BaseArticle.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -30,7 +30,7 @@ table.table.table-striped
           | (#{project.content_type})
         td
           - if project.guest_name.present?
-            ==> project.guest_name
+            => project.guest_name
             - if project.users.any?
               ' - posted by:
           = project.users.map { |u| link_to html_escape(u.name), u }.to_sentence.html_safe

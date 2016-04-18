@@ -6,9 +6,9 @@
   .user-signed-out style='display:none'
     p.sign-up-to-comment
       ' Please
-      ==> link_to 'log in', new_user_session_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: commentable.class.model_name.to_s.underscore, id: commentable.id)
+      => link_to 'log in', new_user_session_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: commentable.class.model_name.to_s.underscore, id: commentable.id)
       ' or
-      ==> link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: commentable.class.model_name.to_s.underscore, id: commentable.id, source: 'popup')
+      => link_to 'sign up', new_user_registration_path(redirect_to: "#{request.path}#comments", reason: 'comment', m: commentable.class.model_name.to_s.underscore, id: commentable.id, source: 'popup')
       | to comment.
 
   - if comments.any?

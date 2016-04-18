@@ -10,7 +10,7 @@
           p
             a href=platform_home_path(platform) class='hidden-link'
               strong> = number_with_delimiter platform.projects_count
-              ==> pluralize_without_count platform.projects_count, 'project'
+              => pluralize_without_count platform.projects_count, 'project'
               strong>= number_with_delimiter platform.followers_count
               = pluralize_without_count platform.followers_count, 'follower'
         .platform-card-links
@@ -22,12 +22,12 @@
   - if user_signed_in?
     - link = user_signed_in? ? new_project_path(project: { platform_tags_string: platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: platform.id, redirect_to: new_project_path(project: { platform_tags_string: platform.name }))
     - if current_user.following? platform
-      ==> link_to "Start #{indefinite_articlerize platform.name} project", link, class: 'btn btn-info btn-sm btn-ellipsis new-platform-project-link'
+      => link_to "Start #{indefinite_articlerize platform.name} project", link, class: 'btn btn-info btn-sm btn-ellipsis new-platform-project-link'
     - else
-      ==> link_to "Follow #{platform.name}", followers_path(followable_type: 'Group', followable_id: platform.id), data: { method: :post, remote: true, container: 'body', placement: 'bottom' }, class: "follow-group-#{platform.id} follow-button btn btn-info btn-sm btn-ellipsis disable-link", rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
-      ==> link_to "<div class=\\'inner-btn-container\\'><div class=\\'inner-btn\\'><i class=\\'fa fa-check\\'></i><div class=\\'btn-text\\'>Start #{indefinite_articlerize platform.name} project</div></div></div><div class=\\'btn-hidden-text\\'>Start #{indefinite_articlerize platform.name} project</div>".html_safe, link, class: "after-follow-group-#{platform.id} btn btn-info btn-sm btn-ellipsis new-platform-project-link", style: 'display:none'
+      => link_to "Follow #{platform.name}", followers_path(followable_type: 'Group', followable_id: platform.id), data: { method: :post, remote: true, container: 'body', placement: 'bottom' }, class: "follow-group-#{platform.id} follow-button btn btn-info btn-sm btn-ellipsis disable-link", rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
+      => link_to "<div class=\\'inner-btn-container\\'><div class=\\'inner-btn\\'><i class=\\'fa fa-check\\'></i><div class=\\'btn-text\\'>Start #{indefinite_articlerize platform.name} project</div></div></div><div class=\\'btn-hidden-text\\'>Start #{indefinite_articlerize platform.name} project</div>".html_safe, link, class: "after-follow-group-#{platform.id} btn btn-info btn-sm btn-ellipsis new-platform-project-link", style: 'display:none'
   - else
-    ==> link_to "Follow #{platform.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), reason: 'follow', m: 'Group'.to_s.underscore, id: platform.id), class: 'follow-button btn btn-info btn-sm btn-ellipsis show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), source: 'platform_card' }, rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
+    => link_to "Follow #{platform.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), reason: 'follow', m: 'Group'.to_s.underscore, id: platform.id), class: 'follow-button btn btn-info btn-sm btn-ellipsis show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), source: 'platform_card' }, rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
 
 javascript:
   $('#platform-card-#{platform.id} .platform-btn-placeholder').replaceWith('#{content_for(:link)}');

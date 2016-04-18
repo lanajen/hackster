@@ -29,9 +29,9 @@
             p.team-widget.user-communities
               - platform = member.group
               span.user
-                ==> link_to image_tag(platform.decorate.avatar(:mini), class: ' img-circle' ), platform, class: ''
+                => link_to image_tag(platform.decorate.avatar(:mini), class: ' img-circle' ), platform, class: ''
                 ' Team
-                ==> link_to platform.name, platform
+                => link_to platform.name, platform
                 - if platform.verified?
                   i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
         = @user.job_availability
@@ -39,9 +39,9 @@
         .stats
           p
             strong>= number_with_delimiter @user.projects_counter.count(current_platform)
-            ==> pluralize_without_count @user.projects_counter.count(current_platform), 'project'
+            => pluralize_without_count @user.projects_counter.count(current_platform), 'project'
             strong>= number_with_delimiter @user.followers_count
-            ==> pluralize_without_count @user.followers_count, 'follower'
+            => pluralize_without_count @user.followers_count, 'follower'
 
         - if current_user.try(:id) != @user.id
           #platform-follow-div.text-center
@@ -93,7 +93,7 @@
             .content.team-widget.user-communities
               - @user.followed_platforms.includes(:avatar).where(groups: { private: false }).each do |c|
                 .community.user
-                  ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
+                  => link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
                   = link_to c.name, c
 
         - if @user.hacker_spaces.any?
@@ -102,7 +102,7 @@
             .content.team-widget.user-communities
               - @user.hacker_spaces.each do |c|
                 .community.user
-                  ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
+                  => link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
                   = link_to c.name, hacker_space_path(c)
 
       - if @user.interest_tags.any?
@@ -110,7 +110,7 @@
           h4 Interests
           .content
             - @user.interest_tags.pluck(:name).each do |tag|
-              ==> link_to tag, "/tags/#{tag}", class: "label label-default"
+              => link_to tag, "/tags/#{tag}", class: "label label-default"
       - elsif user_is_current?
         .display
           h4 Interests
@@ -123,7 +123,7 @@
           h4 Skills
           .content
             - @user.skill_tags.pluck(:name).each do |tag|
-              ==>link_to tag, "/tags/#{tag}", class: "label label-default"
+              =>link_to tag, "/tags/#{tag}", class: "label label-default"
       - elsif user_is_current?
         .display
           h4 Skills

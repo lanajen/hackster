@@ -2,7 +2,7 @@
   .col-md-10.col-md-offset-1
     h2.text-center
       - if @platform.respond_to?(:avatar) and @platform.avatar.present?
-        ==> image_tag @platform.avatar.try(:imgix_url, :mini), class: 'img-thumb'
+        => image_tag @platform.avatar.try(:imgix_url, :mini), class: 'img-thumb'
       = link_to @platform.name, @platform, class: 'hidden-link'
 
     .box

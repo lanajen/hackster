@@ -10,8 +10,8 @@ section.section-container
 
       .subtitle
         ' Posted by
-        ==> link_to announcement.user.name, announcement.user
-        ==> time_ago_in_words announcement.created_at
+        => link_to announcement.user.name, announcement.user
+        => time_ago_in_words announcement.created_at
         ' ago -
         - if announcement.draft?
           = link_to 'Edit this announcement', edit_platform_announcement_path(@platform.user_name, announcement.id)

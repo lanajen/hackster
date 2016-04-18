@@ -1,9 +1,9 @@
 h1= link_to @group.proper_name, @group.hackathon
 h2
-  ==> @group.secondary_name
+  => @group.secondary_name
   small
     ' on
-    strong==> @group.date_range
+    strong=> @group.date_range
     ' in
-    strong==> @group.short_address
+    strong=> @group.short_address
 p= @group.hackathon.try(:mini_resume)

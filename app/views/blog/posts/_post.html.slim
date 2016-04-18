@@ -4,7 +4,7 @@ article.post
       = link_to post.title, blog_post_path(post.slug)
     .author.text-center
       ' By
-      ==> image_tag post.user.decorate.avatar(:mini), class: 'img-circle'
+      => image_tag post.user.decorate.avatar(:mini), class: 'img-circle'
       = link_to post.user.name, post.user, class: 'user-name'
     .posted.text-muted.text-center
       small data-monologue="time"

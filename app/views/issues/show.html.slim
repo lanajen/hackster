@@ -5,7 +5,7 @@
       - if can? :edit, @issue
         section.section-thumbs
           h4 Admin actions
-          ==> link_to 'Edit', edit_project_issue_path(@project.user_name_for_url, @project.slug_hid, @issue.sub_id), class: 'btn btn-sm btn-warning'
+          => link_to 'Edit', edit_project_issue_path(@project.user_name_for_url, @project.slug_hid, @issue.sub_id), class: 'btn btn-sm btn-warning'
           - if @issue.open?
             = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug_hid, @issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-sm'
           - else

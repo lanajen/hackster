@@ -2,11 +2,11 @@
   .col-md-4.col-md-push-8
     .medium-status-bar.affixable data-spy='affix'
       = render partial: 'shared/medium_status', locals: { last_edit: @log.updated_at }
-      ==> content_tag :a, content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, "Finish editing"), class: 'btn btn-success medium-edit-stop btn-sm btn-block', href: build_log_path(@log)
-      ==> link_to "Publish", '', class: 'btn btn-warning btn-sm is-draft btn-block', id: 'publish', style: "#{'display:none;' unless @log.draft? }"
-      ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm is-published btn-block', id: 'unpublish', style: "#{'display:none;' if @log.draft? }"
-      ==> link_to 'Delete', build_log_path(@log), class: 'btn btn-danger btn-sm btn-block', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
-      ==> link_to 'Cancel', project_logs_path(@project), class: 'btn btn-link btn-sm btn-block'
+      => content_tag :a, content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, "Finish editing"), class: 'btn btn-success medium-edit-stop btn-sm btn-block', href: build_log_path(@log)
+      => link_to "Publish", '', class: 'btn btn-warning btn-sm is-draft btn-block', id: 'publish', style: "#{'display:none;' unless @log.draft? }"
+      => link_to "Unpublish", '', class: 'btn btn-warning btn-sm is-published btn-block', id: 'unpublish', style: "#{'display:none;' if @log.draft? }"
+      => link_to 'Delete', build_log_path(@log), class: 'btn btn-danger btn-sm btn-block', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
+      => link_to 'Cancel', project_logs_path(@project), class: 'btn btn-link btn-sm btn-block'
 
   .col-md-8.col-md-pull-4
     .section-container

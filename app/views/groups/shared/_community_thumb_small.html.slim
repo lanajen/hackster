@@ -5,7 +5,7 @@
     = link_to image_tag(community.avatar(:big), class: 'img-rounded media-object'), community
   .member-thumb-body.media-body
     h5.media-heading
-      ==> link_to community.name, community
+      => link_to community.name, community
     - if community.mini_resume.present?
       p= community.mini_resume
     .member-actions

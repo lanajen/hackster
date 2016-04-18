@@ -10,10 +10,10 @@
       / ul.project-stats.list-inline
         li
           strong>= number_with_delimiter community.projects_count
-          ==> pluralize_without_count community.projects_count, 'project'
+          => pluralize_without_count community.projects_count, 'project'
         li
           strong>= number_with_delimiter community.followers_count
-          ==> pluralize_without_count community.followers_count, 'follower'
+          => pluralize_without_count community.followers_count, 'follower'
 
   .input-group-btn
     = render partial: 'followers/button', locals: { followable: community, button_type: 'community_shorter', button_partial: 'button_shorter', display_name: false }

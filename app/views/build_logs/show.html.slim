@@ -5,7 +5,7 @@
     - if can? :edit, @log
       section.section-thumbs
         h4 Admin actions
-        ==> link_to 'Edit', edit_project_log_path(@project.user_name_for_url, @project.slug_hid, @log.id), class: 'btn btn-sm btn-warning'
+        => link_to 'Edit', edit_project_log_path(@project.user_name_for_url, @project.slug_hid, @log.id), class: 'btn btn-sm btn-warning'
         = link_to 'Delete', build_log_path(@log), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
     section.section-thumbs

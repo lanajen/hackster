@@ -8,5 +8,5 @@
 = f.input :workflow_state, collection: Job.workflow_spec.states
 
 .col-md-offset-4.col-md-8
-  ==> f.button :submit, :class => 'btn btn-primary'
+  => f.button :submit, :class => 'btn btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_jobs_path, :class => 'btn btn-default'

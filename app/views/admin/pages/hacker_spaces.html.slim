@@ -4,9 +4,9 @@
     ' HackerSpaces
     small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'HackerSpace' } ), :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -30,11 +30,11 @@ table.table.table-striped
         td= time_ago_in_words group.created_at
         td= group.impressions_count
         td
-          ==> group.projects.count
+          => group.projects.count
           small
             | (#{group.projects.external.count})
         td
-          ==> group.members.size
+          => group.members.size
           small
             | (#{group.members.invitation_accepted_or_not_invited.size})
         td

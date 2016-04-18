@@ -1,12 +1,12 @@
 section#section-signup.section-short.text-center
   p
     span.mobile-breakpoint
-      ==> defined?(message) ? message: 'Start hacking by joining with'
+      => defined?(message) ? message: 'Start hacking by joining with'
     span.mobile-breakpoint
       = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
       = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
       = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-      ==> link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+      => link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
       small or
   = simple_form_for User.new, url: _simplified_registrations_path(source: source), html: { class: 'form-inline disable-on-submit mobile-breakpoint' } do |f|
     - if defined?(redirect_to)

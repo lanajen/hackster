@@ -9,7 +9,7 @@ section.section-container
           | Project log ##{build_log.sub_id}
 
       .subtitle
-        ==> time_ago_in_words build_log.created_at
+        => time_ago_in_words build_log.created_at
         ' ago -
         - if build_log.draft?
           = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug_hid, build_log.id)

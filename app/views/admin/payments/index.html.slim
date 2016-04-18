@@ -1,13 +1,13 @@
 - model_class = Payment
 .page-header
   h1
-    ==> t '.title', :default => model_class.model_name.human.pluralize
+    => t '.title', :default => model_class.model_name.human.pluralize
     small>= link_to 'New', new_admin_payment_path, :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at status)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Payment.workflow_spec.states.keys }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+=> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Payment.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped

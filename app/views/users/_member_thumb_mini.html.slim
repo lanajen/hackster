@@ -5,7 +5,7 @@
 
   .wide-thumb-body
     h5
-      ==> link_to user.name, user
+      => link_to user.name, user
       - if defined?(member) and member and member.contribution.present?
         small
           i.fa.fa-info-circle.ispopover*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }}
@@ -13,10 +13,10 @@
     ul.project-stats.list-inline
       li
         strong>= number_with_delimiter user.projects_counter.count(current_platform)
-        ==> pluralize_without_count user.projects_counter.count(current_platform), 'project'
+        => pluralize_without_count user.projects_counter.count(current_platform), 'project'
       li
         strong>= number_with_delimiter user.followers_count
-        ==> pluralize_without_count user.followers_count, 'follower'
+        => pluralize_without_count user.followers_count, 'follower'
 
     .wide-thumb-body-bottom
       = render partial: 'followers/button', locals: { followable: user, button_type: 'shorter', button_partial: 'button_shorter', display_name: false }

@@ -2,7 +2,7 @@
   .media-left= link_to image_tag(user.avatar(:large), class: 'img-circle media-object'), user
   .member-thumb-body.media-body
     h5.media-heading
-      ==> link_to user.name, user
+      => link_to user.name, user
       - if defined?(contribution) and contribution.present?
         small
           i.fa.fa-info-circle.ispopover*{ data: { title: 'Contribution', content: contribution, container: 'body', placement: 'top', trigger: 'hover' }}

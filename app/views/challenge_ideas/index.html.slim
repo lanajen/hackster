@@ -35,7 +35,7 @@ table.table.table-striped
           td= link_to idea.name, challenge_idea_path(idea, show_all_fields: true)
           td
             - user = idea.user
-            ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+            => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
             = link_to user.name, user
           td= l idea.created_at
           td

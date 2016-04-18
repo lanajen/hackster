@@ -15,21 +15,21 @@
       .panel-heading
         h3.panel-title Total points earned
       .panel-body
-        ==> number_with_delimiter @total_earned
+        => number_with_delimiter @total_earned
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Total redeemable (>#{Rewardino::Event.min_redeemable_points} pts)
       .panel-body
-        ==> number_with_delimiter @total_redeemable
+        => number_with_delimiter @total_redeemable
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Total redeemable this month
       .panel-body
-        ==> number_with_delimiter @total_redeemable_month
+        => number_with_delimiter @total_redeemable_month
 
 .row
   .col-xs-12.col-sm-4
@@ -37,21 +37,21 @@
       .panel-heading
         h3.panel-title Users who can redeem (>#{Rewardino::Event.min_redeemable_points} pts)
       .panel-body
-        ==> number_with_delimiter @total_users
+        => number_with_delimiter @total_users
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Redeemed this month
       .panel-body
-        ==> number_with_delimiter @total_redeemed_month
+        => number_with_delimiter @total_redeemed_month
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Total redeemed
       .panel-body
-        ==> number_with_delimiter @total_redeemed
+        => number_with_delimiter @total_redeemed
 
 .row
   .col-xs-12.col-sm-4
@@ -86,7 +86,7 @@
       .panel-heading
         h3.panel-title= link_to 'Orders that need processing', admin_store_orders_path(filters: { status: :processing })
       .panel-body
-        ==> number_with_delimiter @pending_orders
+        => number_with_delimiter @pending_orders
 
 .row
   .col-xs-12.col-sm-6

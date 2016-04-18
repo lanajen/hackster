@@ -4,7 +4,7 @@
   - if !is_whitelabel? and can? :edit, @announcement
     section.section-thumbs
       h4 Admin actions
-      ==> link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
+      => link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
       = link_to 'Delete', announcement_path(@announcement), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
   section.section-thumbs

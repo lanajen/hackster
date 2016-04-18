@@ -20,7 +20,7 @@
       .panel-heading
         h3.panel-title= link_to 'Registered users', admin_users_path
       .panel-body
-        ==> number_with_delimiter @user_count
+        => number_with_delimiter @user_count
         small.text-muted +#{@new_users_count}
 
   .col-xs-12.col-sm-6
@@ -28,7 +28,7 @@
       .panel-heading
         h3.panel-title= link_to 'Live projects', admin_projects_path
       .panel-body
-        ==> number_with_delimiter @project_count
+        => number_with_delimiter @project_count
         small.text-muted +#{@new_projects_count}
 
 .row
@@ -37,7 +37,7 @@
       .panel-heading
         h3.panel-title Active users - yesterday
       .panel-body
-        ==> number_with_delimiter @active_users1d
+        => number_with_delimiter @active_users1d
         small.text-muted
           | (#{@pct_active_users1d}%)
 
@@ -46,7 +46,7 @@
       .panel-heading
         h3.panel-title Active users - past 7 days
       .panel-body
-        ==> number_with_delimiter @active_users7d
+        => number_with_delimiter @active_users7d
         small.text-muted
           | (#{@pct_active_users7d}%)
 
@@ -55,7 +55,7 @@
       .panel-heading
         h3.panel-title Active users - past 30 days
       .panel-body
-        ==> number_with_delimiter @active_users30d
+        => number_with_delimiter @active_users30d
         small.text-muted
           | (#{@pct_active_users30d}%)
 
@@ -65,7 +65,7 @@
       .panel-heading
         h3.panel-title= link_to 'Comments', admin_comments_path
       .panel-body
-        ==> number_with_delimiter @comment_count
+        => number_with_delimiter @comment_count
         small.text-muted +#{@new_comments_count}
 
   .col-xs-12.col-sm-4
@@ -73,7 +73,7 @@
       .panel-heading
         h3.panel-title= link_to 'Respects', admin_respects_path
       .panel-body
-        ==> number_with_delimiter @like_count
+        => number_with_delimiter @like_count
         small.text-muted +#{@new_likes_count}
 
   .col-xs-12.col-sm-4
@@ -81,7 +81,7 @@
       .panel-heading
         h3.panel-title= link_to 'Engagements', ''
       .panel-body
-        ==> number_with_delimiter @engagements_count
+        => number_with_delimiter @engagements_count
         small.text-muted +#{@new_engagements_count}
 
 .row
@@ -140,7 +140,7 @@
       .panel-heading
         h3.panel-title Users with at least one project
       .panel-body
-        ==> number_with_delimiter @users_with_at_least_one_live_project
+        => number_with_delimiter @users_with_at_least_one_live_project
         small.text-muted
           | (#{(@users_with_at_least_one_live_project.to_f / @user_count * 100).ceil}%)
 
@@ -163,24 +163,24 @@
           = link_to 'platforms', admin_followers_path(filters: { followable_type: 'Group' })
           | )
       .panel-body
-        ==> number_with_delimiter @follow_user_count
+        => number_with_delimiter @follow_user_count
         small.text-muted> +#{@new_user_follows_count}
         ' /
-        ==> number_with_delimiter @follow_platform_count
+        => number_with_delimiter @follow_platform_count
         small.text-muted +#{@new_platform_follows_count}
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title= link_to 'Replicated projects', admin_followers_path(filters: { followable_type: 'BaseArticle' })
       .panel-body
-        ==> number_with_delimiter @replicated_projects_count
+        => number_with_delimiter @replicated_projects_count
         small.text-muted> +#{@new_replicated_projects_count}
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title= link_to 'Owned parts', admin_followers_path(filters: { followable_type: 'Part' })
       .panel-body
-        ==> number_with_delimiter @owned_parts_count
+        => number_with_delimiter @owned_parts_count
         small.text-muted> +#{@new_owned_parts_count}
 .row
   .col-xs-12

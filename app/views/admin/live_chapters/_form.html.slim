@@ -33,7 +33,7 @@
 = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @live_chapter.cover_image.try(:imgix_url, :cover_mini_thumb), attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group', help_block: '' }
 
 .col-md-offset-4.col-md-8
-  ==> f.button :submit, :class => 'btn btn-primary'
+  => f.button :submit, :class => 'btn btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_live_chapters_path, :class => 'btn btn-default'
 
 = content_for :head do

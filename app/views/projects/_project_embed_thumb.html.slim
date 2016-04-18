@@ -27,7 +27,7 @@
               h4
                 - if project.pryvate?
                   i.fa.fa-lock>
-                ==> link_to project.name, project_link, class: 'project-link-with-ref'
+                => link_to project.name, project_link, class: 'project-link-with-ref'
               p
                 => project.content_type_to_human
                 - if project.external?
@@ -36,7 +36,7 @@
                     span.user-name>= project.guest_name
                   - elsif u = project.users.first
                     ' by
-                    span.user-name==> link_to u.name, u
+                    span.user-name=> link_to u.name, u
                   ' on
                   strong= project.website_host
                 - else

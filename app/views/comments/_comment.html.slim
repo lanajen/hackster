@@ -12,10 +12,10 @@
             - if comment.user_id.zero?
               = comment.guest_name
             - else
-              ==> comment.user.decorate.name_link
+              => comment.user.decorate.name_link
 
         span.text-muted.comment-date
-          ==> time_ago_in_words(comment.created_at)
+          => time_ago_in_words(comment.created_at)
           | ago
 
     .comment-body= raw comment.body
