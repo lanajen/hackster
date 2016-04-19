@@ -23,7 +23,7 @@ class Root extends Component {
 }
 
 Root.PropTypes = {
-};
+}
 
 function mapStateToProps(state) {
   return {

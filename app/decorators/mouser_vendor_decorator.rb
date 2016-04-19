@@ -3,7 +3,7 @@ class MouserVendorDecorator < ApplicationDecorator
     h.asset_url model.board_image_url
   end
 
-  def vendor_link
-    h.mouser_vendor_path model.user_name
+  def logo_link
+    h.asset_url model.logo_url
   end
 end

@@ -16,4 +16,8 @@ class Mouser::Api::BaseController < ActionController::Base
       origin << ":#{APP_CONFIG['default_port']}" if APP_CONFIG['port_required']
       headers['Access-Control-Allow-Origin'] = origin
     end
+
+    def redis
+      @redis ||= Redis::Namespace.new('mouser', redis: RedisConn.conn)
+    end
 end

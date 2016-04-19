@@ -10,6 +10,7 @@ HackerIo::Application.routes.draw do
   constraints(MouserContest) do
     scope module: :mouser, as: :mouser do
       scope module: :api, as: :api do
+        resources :phases, only: [:update]
         resources :projects, only: [:index]
         resources :submissions, only: [:create]
         match "*all" => "base#cors_preflight_check", via: :options

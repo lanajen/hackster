@@ -43,10 +43,9 @@ class Admin extends Component {
   }
 
   handleActivePhasePromotion() {
-    this.props.actions.updateActivePhase(parseInt(this.props.contest.activePhase, 10)+1)
-    // window.confirm('Are you sure you want to advance the timeline?')
-    //  ? this.props.actions.updateActivePhase(parseInt(this.props.contest.activePhase, 10)+1)
-    //  : false;
+    window.confirm('Are you sure you want to advance the timeline?')
+     ? this.props.actions.updateActivePhase(parseInt(this.props.contest.activePhase, 10)+1)
+     : false;
   }
 
   render() {
@@ -108,7 +107,7 @@ class Admin extends Component {
 
 Admin.contextTypes = {
   router: () => PropTypes.func
-};
+}
 
 Admin.PropTypes = {
   actions: PropTypes.object.isRequired,
@@ -116,7 +115,7 @@ Admin.PropTypes = {
   auth: PropTypes.object.isRequired,
   contest: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
-};
+}
 
 function mapStateToProps(state, ownProps) {
   return {

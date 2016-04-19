@@ -4,7 +4,7 @@ import { getApiPath } from '../utils/Utils';
 export function fetchSubmissions() {
   return new Promise((resolve, reject) => {
     request
-      .get(`${getApiPath()}/api/submissions`)
+      .get(`${getApiPath()}/submissions`)
       .end((err, res) => {
         err ? reject(err) : resolve(res);
       });
@@ -12,10 +12,10 @@ export function fetchSubmissions() {
 }
 
 export function postActivePhase(phase) {
-  return Promise.resolve(phase);
   return new Promise((resolve, reject) => {
     request
-      .post(`${getApiPath()}/api/active_phase`)
+      .put(`${getApiPath()}/phases/${phase}`)
+      .withCredentials()
       .end((err, res) => {
         err ? reject(err) : resolve(res);
       });

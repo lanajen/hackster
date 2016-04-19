@@ -3,7 +3,6 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 
-
 import Root from './containers/Root';
 import Splash from './containers/Splash';
 import Vendor from './containers/Vendor';
@@ -22,7 +21,7 @@ const MouserContest = (props) => {
   // Really, we can just set the user model and delimit what we need in the controller before hand.  If they're an admin then
   // its they are already flagged, just set the user normally.
   store.dispatch(setUserAsAdmin(true));
-
+  console.log("P", props);
   return (
     <Provider store={store}>
       <Router history={history}>
@@ -39,7 +38,13 @@ const MouserContest = (props) => {
 MouserContest.PropTypes = {
   activePhase: PropTypes.number.isRequired,
   phases: PropTypes.array.isRequired,
-  vendors: PropTypes.array
+  vendors: PropTypes.array.isRequired
+}
+
+MouserContest.defaultProps = {
+  activePhase: 0,
+  phases: [],
+  vendors: []
 }
 
 export default MouserContest;

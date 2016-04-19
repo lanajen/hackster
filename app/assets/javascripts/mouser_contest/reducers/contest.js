@@ -19,7 +19,7 @@ const initialState = {
   phase: '',
   phases: [],
   submissions: []
-};
+}
 
 export default function platforms(state = initialState, action) {
   switch(action.type) {

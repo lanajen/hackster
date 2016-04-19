@@ -29,12 +29,12 @@ class Splash extends Component {
         <div key={index} className="board-container">
           <div className="backdrop-container">
             <div className="backdrop">
-              <img className="logo" src={`${window.location}assets/${vendor.logo_url}`}></img>
+              <img className="logo" src={vendor.logo_url}></img>
             </div>
           </div>
           <div className="board-img-container">
-            <Link to={vendor.user_name}>
-              <img src={`${window.location}assets/${vendor.board_image_url}`} />
+            <Link to={`/${vendor.user_name}`}>
+              <img src={vendor.board_image_url} />
             </Link>
           </div>
           <div className="name">{vendor.board_name}</div>
