@@ -35,4 +35,4 @@ ImportProject.PropTypes = {
   submitProject: PropTypes.func.isRequired
 }
 
-export default connect(mapStateToProps)(ImportProject);
+export default ImportProject;

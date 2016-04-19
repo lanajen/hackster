@@ -4,7 +4,6 @@ const initialState = {
   id: null,
   projects: [],
   isAdmin: false,
-  submission: {},
   submissions: [],
   votes: []
 }
