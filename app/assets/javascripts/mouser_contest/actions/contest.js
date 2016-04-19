@@ -104,3 +104,10 @@ export function updateSubmission(submission) {
     dispatch(setSubmission(submission));
   }
 }
+
+export function toggleMessenger(messenger) {
+  return {
+    type: Contest.TOGGLE_MESSENGER,
+    messenger
+  }
+}
