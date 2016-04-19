@@ -1,8 +1,8 @@
-import constants from '../constants';
+import { User } from '../constants';
 import { determineHost } from '../utils/utils';
 import { fetchProjects, postProject } from '../requests';
 
-const { User } = constants;
+// const { User } = constants;
 
 // Getting projects from Rails API by user_id
 export function getProjects(userId) {

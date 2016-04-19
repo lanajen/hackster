@@ -27,9 +27,5 @@ export default {
 
   Vendors: keymirror({
     SET_VENDORS: null
-  }),
-
-  Platforms: keymirror({
-    SET_PLATFORMS: null
   })
 }
