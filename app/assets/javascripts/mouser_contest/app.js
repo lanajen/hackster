@@ -21,7 +21,7 @@ const MouserContest = (props) => {
   // Really, we can just set the user model and delimit what we need in the controller before hand.  If they're an admin then
   // its they are already flagged, just set the user normally.
   store.dispatch(setUserAsAdmin(true));
-  console.log("P", props);
+
   return (
     <Provider store={store}>
       <Router history={history}>

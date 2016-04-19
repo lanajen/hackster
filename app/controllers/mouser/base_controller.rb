@@ -7,6 +7,7 @@ class Mouser::BaseController < ActionController::Base
   helper_method :active_phase
   helper_method :meta_desc
   helper_method :title
+  helper_method :api_host
 
   private
     def active_phase
@@ -77,5 +78,9 @@ class Mouser::BaseController < ActionController::Base
       else
         @title = 'Mouser Summer Contest'
       end
+    end
+
+    def api_host
+     'mousercontest.' + APP_CONFIG['default_domain']
     end
 end

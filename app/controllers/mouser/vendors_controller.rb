@@ -23,5 +23,4 @@ class Mouser::VendorsController < Mouser::BaseController
         v = v.to_hash
       end
     end
-
 end
