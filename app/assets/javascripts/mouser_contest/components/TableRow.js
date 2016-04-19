@@ -63,6 +63,6 @@ TableRow.PropTypes = {
   onActionClick: PropTypes.func,
   position: PropTypes.string,
   rowData: PropTypes.object.isRequired
-};
+}
 
 export default TableRow;

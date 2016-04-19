@@ -15,7 +15,7 @@ const initialState = {
     Date: [ 'oldest', 'latest' ],
     Status: [ 'approved', 'rejected', 'undecided' ]
   }
-};
+}
 
 export default function admin(state = initialState, action) {
   switch(action.type) {

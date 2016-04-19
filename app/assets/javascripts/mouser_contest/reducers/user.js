@@ -2,9 +2,9 @@ import { User } from '../constants';
 
 const initialState = {
   id: null,
-  projects: null,
+  projects: [],
   isAdmin: false,
-  submission: null,
+  submission: {},
   submissions: [],
   votes: []
 }

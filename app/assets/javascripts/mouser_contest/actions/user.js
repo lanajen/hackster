@@ -3,7 +3,7 @@ import { determineHost } from '../../utils/Mouser'
 
 const API_PATH = determineHost();
 
-/* Getting projects from Rails API by user_id  */
+// Getting projects from Rails API by user_id
 export function getProjects(userId) {
   userId = userId || 1;
   return dispatch => {
@@ -53,8 +53,7 @@ export function submitProject() {
         'Accept': 'application/json'
       })
     })
-    .catch((err) => console.err(err))
-
+    .catch((err) => console.err(err));
   }
 }
 

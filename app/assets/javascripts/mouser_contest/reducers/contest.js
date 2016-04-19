@@ -16,14 +16,16 @@ import { Contest } from '../constants';
 
 const initialState = {
   activePhase: 0,
+  phase: '',
   phases: [],
-  submissions: []
-};
+  submissions: [],
+  messenger: { open: false, msg: '', type: 'error' }
+}
 
 export default function platforms(state = initialState, action) {
   switch(action.type) {
     case Contest.SET_ACTIVE_PHASE:
-      return { ...state, activePhase: action.phase };
+      return { ...state, activePhase: action.activePhase };
 
     case Contest.SET_PHASES:
       return { ...state, phases: action.phases };
@@ -35,6 +37,9 @@ export default function platforms(state = initialState, action) {
 
     case Contest.SET_SUBMISSIONS:
       return { ...state, submissions: action.submissions };
+
+    case Contest.TOGGLE_MESSENGER:
+      return { ...state, messenger: action.messenger };
 
     default:
       return state;

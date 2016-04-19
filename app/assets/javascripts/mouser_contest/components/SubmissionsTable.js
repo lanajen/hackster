@@ -79,6 +79,6 @@ SubmissionsTable.PropTypes = {
   filters: PropTypes.object.isRequired,
   onActionClick: PropTypes.func.isRequired,
   submissions: PropTypes.array.isRequired
-};
+}
 
 export default SubmissionsTable;

@@ -7,14 +7,15 @@ class Mouser::BaseController < ActionController::Base
   helper_method :active_phase
   helper_method :meta_desc
   helper_method :title
+  helper_method :api_host
 
   private
     def active_phase
-      @active_phase ||= redis.get('active_phase') || -1  # Set 'mouser:active_phase' to 0 in your redis db.
+     @active_phase ||= redis.get('active_phase').present? ? redis.get('active_phase').to_i : -1
     end
 
     def config
-      @config ||= YAML.load File.open(File.join(CONFIG_FILE))
+      @config ||= YAML.load File.open(CONFIG_FILE)
     end
 
     def initialize_vendor_from_hash hash
@@ -77,5 +78,9 @@ class Mouser::BaseController < ActionController::Base
       else
         @title = 'Mouser Summer Contest'
       end
+    end
+
+    def api_host
+     'mousercontest.' + APP_CONFIG['default_domain']
     end
 end

@@ -14,6 +14,7 @@ class Admin extends Component {
     super(props);
 
     this.handleFilterUpdate = this.handleFilterUpdate.bind(this);
+    this.handleActivePhasePromotion = this.handleActivePhasePromotion.bind(this);
   }
 
   componentWillMount() {
@@ -41,6 +42,12 @@ class Admin extends Component {
     }
   }
 
+  handleActivePhasePromotion() {
+    window.confirm('Are you sure you want to advance the timeline?')
+     ? this.props.actions.updateActivePhase(parseInt(this.props.contest.activePhase, 10)+1)
+     : false;
+  }
+
   render() {
     const { admin, contest } = this.props;
 
@@ -53,36 +60,42 @@ class Admin extends Component {
                           onChange={this.handleFilterUpdate} />
     });
 
-    const rangeStyle = {
-      boxSizing: 'border-box',
-      display: 'block',
-      width: '100%',
-      margin: '20px 0',
-      cursor: 'pointer',
-      backgroundColor: 'lightblue',
-      backgroundClip: 'content-box',
-      height: 6,
-      borderRadius: 999,
-      WebkitAppearance: 'none',
-      appearance: 'none'
-    }
-
     return (
       <div>
         <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 50, borderBottom: '1px solid #e7e7e7', backgroundColor: '#f8f8f8' }}>
           {'Admin links and stuff'}
         </nav>
         <div style={{ padding: '2% 5%', backgroundColor: 'white' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div>Timeline</div>
-            <div>
-              <h3>Current Phase</h3>
-              <p>{contest.phases[contest.activePhase].event}</p>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2%', borderRadius: 4, backgroundColor: '#DBE5E8' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <h3>{ contest.activePhase < contest.phases.length-1 ? 'Current Phase' : 'Final Phase' }</h3>
+                <p>{contest.phases[contest.activePhase].event}</p>
+              </div>
+              {
+                contest.activePhase < contest.phases.length-1
+                  ? (<div style={{ alignSelf: 'center' }}>
+                      <div>
+                        <button style={{ backgroundColor: 'lightgrey', borderRadius: 4, padding: '8%', border: 'none', whiteSpace: 'nowrap' }}
+                                onClick={this.handleActivePhasePromotion}>
+                          Promote to next phase
+                        </button>
+                      </div>
+                    </div>)
+                  : (null)
+              }
+              {
+                contest.activePhase < contest.phases.length-1
+                  ? (<div style={{ flex: 1, textAlign: 'center' }}>
+                      <h3>Next Phase</h3>
+                      <p>{contest.phases[contest.activePhase+1].event}</p>
+                    </div>)
+                  : (null)
+              }
             </div>
-            <div></div>
           </div>
           <div style={{ display: 'flex', padding: '2% 0' }}>
-            <span style={{ flex: '0.1', fontWeight: 'bold' }}>Filters: </span>
+            <span style={{ flexBasis: '3%', fontWeight: 'bold' }}>Filters: </span>
             { filters }
           </div>
           <SubmissionsTable submissions={contest.submissions} filters={admin.filters} onActionClick={this.props.actions.updateSubmission} />
@@ -94,7 +107,7 @@ class Admin extends Component {
 
 Admin.contextTypes = {
   router: () => PropTypes.func
-};
+}
 
 Admin.PropTypes = {
   actions: PropTypes.object.isRequired,
@@ -102,7 +115,7 @@ Admin.PropTypes = {
   auth: PropTypes.object.isRequired,
   contest: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
-};
+}
 
 function mapStateToProps(state, ownProps) {
   return {
