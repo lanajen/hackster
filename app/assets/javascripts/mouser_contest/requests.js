@@ -1,9 +1,6 @@
 import request from 'superagent';
 import { getApiPath } from '../utils/Utils';
 
-//use this until we get the working version of getApiPath
-import { determineHost } from './utils/utils';
-
 export function fetchSubmissions() {
   return new Promise((resolve, reject) => {
     request
@@ -31,21 +28,13 @@ export function fetchProjects(userId) {
       return response.json();
     })
     .then(data => {
-      console.log('FRIGGIN DATA', data)
       return data.projects.map(project => { return { value: project, label: project.name }; });
     })
     .catch(err => console.error(err));
-  // return new Promise ((resolve, reject) => {
-  //   request
-  //     .get(`${getApiPath()}/api/projects?user_id=${userId}`)
-  //     .end((err, res) => {
-  //       err ? reject(err) : resolve(res);
-  //     });
-  // });
 }
 
 export function postProject(payload) {
-  return fetch(`${getApiPath()}/api/submit`, {
+  return fetch(`${getApiPath()}/submissions`, {
     method: 'post',
     mode: 'no-cors',
     body: JSON.stringify(payload),
@@ -55,4 +44,18 @@ export function postProject(payload) {
     })
   })
   .catch((err) => console.error(err));
+}
+
+
+export function updateProjectStatus(update) {
+  return fetch(`${getApiPath()}/submissions`, {
+    method: 'patch',
+    mode: 'no-cors',
+    body: JSON.stringify(update),
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    })
+  })
+  .catch((err) => console.err(err));
 }

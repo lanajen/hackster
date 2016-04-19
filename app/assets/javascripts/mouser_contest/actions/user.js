@@ -32,13 +32,13 @@ export function selectProject(project) {
 /* Submitting projects via POST to Rails API */
 export function submitProject() {
   return (dispatch, getState) => {
-    const { id, authors, name, communities } = getState().user.submission.value;
-    console.log(getState().user.submission.value);
+    const { id, authors, name, communities, vendor_tags } = getState().user.submission.value;
     const payload = {
       userId: authors[0].id,
       projectId: id,
       description: name,
-      vendor: communities[0].id
+      vendor_tags: vendor_tags || null,
+      vendor_id: communities && communities[0] ? communities[0].id : -1
     }
     return postProject(payload);
   }
