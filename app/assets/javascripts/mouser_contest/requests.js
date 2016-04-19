@@ -26,18 +26,26 @@ export function postActivePhase(phase) {
 }
 
 export function fetchProjects(userId) {
-  return fetch(`${determineHost()}/api/import?user_id=${userId}`)
+  return fetch(`${getApiPath()}/projects?user_id=${userId}`)
     .then(response => {
       return response.json();
     })
     .then(data => {
+      console.log('FRIGGIN DATA', data)
       return data.projects.map(project => { return { value: project, label: project.name }; });
     })
-    .catch(err => console.error('error from useractions', err))
+    .catch(err => console.error(err));
+  // return new Promise ((resolve, reject) => {
+  //   request
+  //     .get(`${getApiPath()}/api/projects?user_id=${userId}`)
+  //     .end((err, res) => {
+  //       err ? reject(err) : resolve(res);
+  //     });
+  // });
 }
 
 export function postProject(payload) {
-  return fetch(`${determineHost()}/api/submit`, {
+  return fetch(`${getApiPath()}/api/submit`, {
     method: 'post',
     mode: 'no-cors',
     body: JSON.stringify(payload),
@@ -46,5 +54,5 @@ export function postProject(payload) {
       'Accept': 'application/json'
     })
   })
-  .catch((err) => console.error(err))
+  .catch((err) => console.error(err));
 }

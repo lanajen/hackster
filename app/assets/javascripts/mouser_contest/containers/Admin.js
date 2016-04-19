@@ -49,17 +49,8 @@ class Admin extends Component {
   }
 
   render() {
-<<<<<<< HEAD
     const { admin, contest } = this.props;
 
-||||||| merged common ancestors
-    const { admin } = this.props;
-
-=======
-    const { admin } = this.props;
-    console.log('FROM ADMIN', admin)
-    console.log('FROM ADMIN', this.props)
->>>>>>> squashing
     const filterKeys = Object.keys(admin.filterOptions);
     const filters = filterKeys.map((key, index) => {
       return <TableFilter key={index}

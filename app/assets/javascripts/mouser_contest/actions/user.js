@@ -2,15 +2,15 @@ import constants from '../constants';
 import { determineHost } from '../utils/utils';
 import { fetchProjects, postProject } from '../requests';
 
-const API_PATH = determineHost();
 const { User } = constants;
 
 // Getting projects from Rails API by user_id
 export function getProjects(userId) {
-  userId = userId || 1;
+  userId = userId || 1207;
   return dispatch => {
     return fetchProjects(userId)
-      .then((projects) => dispatch(setProjects(projects)));
+      .then((projects) => dispatch(setProjects(projects)))
+      .catch((err) => console.error('error?', err))
   }
 }
 
@@ -32,8 +32,8 @@ export function selectProject(project) {
 /* Submitting projects via POST to Rails API */
 export function submitProject() {
   return (dispatch, getState) => {
-    console.log('should be submitting project', getState());
     const { id, authors, name, communities } = getState().user.submission.value;
+    console.log(getState().user.submission.value);
     const payload = {
       userId: authors[0].id,
       projectId: id,

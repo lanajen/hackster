@@ -42,7 +42,7 @@ describe('testing our user actions', () => {
     ];
 
     fetchMock
-      .mock('http://mousercontest.localhost.local:5000/api/import?user_id=1', 'GET', { projects: sampleResponse })
+      .mock('http://mousercontest.localhost.local:5000/projects?user_id=1', 'GET', { projects: sampleResponse })
 
     return store.dispatch(actions.getProjects())
       .then(() => {
@@ -50,9 +50,13 @@ describe('testing our user actions', () => {
       })
   })
 
-  xit('should dispatch SET_SUBMISSION when setProjects is called', () => {
+  it('should dispatch SET_SUBMISSION when selectProject is called', () => {
     const store = mockStore(initialState);
 
+    const  sampleProject = {
+      value: { name: 'wireless tupee'},
+      name: 'wireless tupee'
+    }
     const expectedActions = [{
       type: 'SET_SUBMISSION',
         project: {
@@ -61,9 +65,8 @@ describe('testing our user actions', () => {
         }
       }];
 
-    return store.dispatch(actions.getProjects())
-      .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
-      })
+    store.dispatch(actions.selectProject(sampleProject));
+    expect(store.getActions()).toEqual(expectedActions);
+
   })
 });
