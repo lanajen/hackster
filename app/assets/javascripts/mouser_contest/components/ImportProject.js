@@ -22,6 +22,13 @@ const ImportProject = ({ userData, selectProject, submitProject }) => {
   )
 }
 
+function mapStateToProps (state) {
+  return {
+    userData: state.user
+  }
+}
+
+
 ImportProject.PropTypes = {
   userData: PropTypes.object.isRequired,
   selectProject: PropTypes.func.isRequired,

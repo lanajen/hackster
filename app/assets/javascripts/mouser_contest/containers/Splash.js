@@ -13,8 +13,6 @@ import Hero from '../components/Hero';
 class Splash extends Component {
   constructor(props) {
     super(props);
-
-    props.actions.getProjects();
   }
 
   componentWillMount() {
@@ -99,7 +97,6 @@ class Splash extends Component {
             {phases}
           </div>
         </section>
-        <ImportProject userData={user} selectProject={actions.selectProject} submitProject={actions.submitProject}/>
       </div>
     );
   }
