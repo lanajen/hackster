@@ -8,5 +8,5 @@
           - if date[:format]
             = l date[:date], format: date[:format]
           - else
-            => l date[:date].in_time_zone(PDT_TIME_ZONE)
+            => l date[:date].in_time_zone(PDT_TIME_ZONE), format: :long_date
             | PT

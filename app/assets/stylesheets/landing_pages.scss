@@ -74,6 +74,10 @@
     background-position: bottom center;
     background-repeat: no-repeat;
     background-image: asset-url('landing_pages/intel/hero.jpg');
+    min-height: 700px;
+    background-size: contain;
+    max-width: 1600px;
+    margin: 0 auto;
     h1 {
       margin-bottom: 20px;
       font-weight: 300;
