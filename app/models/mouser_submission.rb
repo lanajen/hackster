@@ -1,6 +1,6 @@
-include Workflow
 
 class MouserSubmission < ActiveRecord::Base
+  include Workflow
 
   belongs_to :projects
   belongs_to :user
