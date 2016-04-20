@@ -13,7 +13,7 @@ HackerIo::Application.routes.draw do
         resources :phases, only: [:update]
         resources :projects, only: [:index]
         resources :submissions, only: [:create] do
-          patch 'workflow' => 'submissions#update_workflow'
+          patch 'workflow' => 'submissions#update_workflow', on: :member
         end
         match "*all" => "base#cors_preflight_check", via: :options
       end
