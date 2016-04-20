@@ -5,6 +5,15 @@
       window.location.href = "#{raw arduino_sign_in_url}";
     }
 
+    // call arduino api
+    // if signed in user different from us then:
+    //   - if we are signed in: logout
+    //   - in all cases, redirect to login
+
+    $.ajax({
+      url: "#{ENV['ARDUINO_API_HOST']}/auth/profile"
+    });
+
 - content_for :html_class do
   = 'arduino-html'
 
