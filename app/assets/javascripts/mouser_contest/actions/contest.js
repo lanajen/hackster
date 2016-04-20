@@ -34,11 +34,11 @@ function makeSubmissions(amount) {
 
 
 export function setInitialData(props) {
-  const { activePhase, phases, vendors, current_user } = props;
+  const { activePhase, phases, vendors, current_user_id } = props;
 
   return dispatch => {
     dispatch(setActivePhase(parseInt(activePhase, 10)));
-    dispatch(setUser(current_user));
+    dispatch(setUser(current_user_id));
     dispatch(setVendors(vendors));
     dispatch(setPhases(
       [].slice.call(phases).map(phase => {
