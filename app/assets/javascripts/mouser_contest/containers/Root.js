@@ -14,11 +14,10 @@ class Root extends Component {
 
   render() {
     const { contest, location, user } = this.props;
-    const isAdminPath = location.pathname && location.pathname !== '/admin';
     return (
       <div id="mousercontest-landing">
         { this.props.children }
-        { isAdminPath ? <Footer /> : null }
+        { location.pathname && location.pathname === '/admin' ? null : <Footer /> }
         { contest.messenger.open ? <Messenger messenger={contest.messenger} dismiss={this.props.actions.toggleMessenger} /> : null }
       </div>
     );

@@ -11,6 +11,7 @@ export default {
     SET_CONTEST_PHASES: null,
     SET_CONTEST_SUBMISSIONS: null,
     SET_CONTEST_SUBMISSION: null,
+    SET_SIGNOUT_URL: null,
     TOGGLE_IS_HANDLING_REQUEST: null,
     TOGGLE_MESSENGER: null
   }),

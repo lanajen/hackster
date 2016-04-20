@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'User authentication', focus: true do
-  scenario 'user signs up', focus: false do
+RSpec.describe 'User authentication', focus: false do
+  scenario 'user signs up' do
     visit new_user_registration_path
 
     within "#new-user-signup" do
@@ -29,7 +29,6 @@ RSpec.describe 'User authentication', focus: true do
     end
 
     expect(current_path).to eql(new_user_session_path)
-    # expect(page).to have_selector '#login-form'
   end
 
   scenario 'user logs in with valid password', :js do

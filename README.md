@@ -3,6 +3,7 @@
 ## Table of Contents
 
 1. [Setting up environment](#setting-up-environment)
+1. [Issue Management](#issue-management)
 1. [Style Guide](#style-guide)
 1. [Testing](#testing)
   1. [Server](#server)
@@ -11,6 +12,12 @@
 ## Setting up environment
 
 [Getting set up Google Doc](https://docs.google.com/document/d/1VUkw7SITynNE7drLXUzgo1F4rTimasn0MqeriwZvvWQ/edit)
+
+## Issue Management
+
+Stories in ready at Waffle.io:
+
+[![Stories in Ready](https://badge.waffle.io/hacksterio/hackster.svg?label=ready&title=Ready)](http://waffle.io/hacksterio/hackster)
 
 ## Style Guide
 

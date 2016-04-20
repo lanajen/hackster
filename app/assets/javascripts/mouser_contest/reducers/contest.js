@@ -20,6 +20,7 @@ const initialState = {
   messenger: { open: false, msg: '', type: 'error' },
   phase: '',
   phases: [],
+  signoutUrl: '',
   submissions: [],
   totalSubmissions: 0
 }
@@ -38,6 +39,9 @@ export default function platforms(state = initialState, action) {
         return action.submission.id === sub.id ? { ...sub, ...action.submission } : sub;
       });
       return { ...state, submissions: updateSubmissions };
+
+    case Contest.SET_SIGNOUT_URL:
+      return { ...state, signoutUrl: action.signoutUrl };
 
     case Contest.SET_CONTEST_SUBMISSIONS:
       return { ...state, submissions: action.submissions, totalSubmissions: action.total };

@@ -67,7 +67,7 @@ class Splash extends Component {
 
     return (
       <div>
-        <Hero user={user} />
+        <Hero signoutUrl={contest.signoutUrl} user={user} />
         <section id="description">
           <h2>The Competition</h2>
 

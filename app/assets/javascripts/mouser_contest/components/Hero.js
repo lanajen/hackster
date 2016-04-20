@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 const Hero = props => {
   return (
     <section id="hero">
-      <Navbar user={props.user} />
+      <Navbar signoutUrl={props.signoutUrl} user={props.user} />
       <h1>#MAKERMADNESS</h1>
       <p>Which board will take it all?</p>
       <div className="bracket-container">
@@ -16,6 +16,7 @@ const Hero = props => {
 }
 
 Hero.PropTypes = {
+  signoutUrl: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
 };
 
