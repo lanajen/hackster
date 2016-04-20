@@ -24,7 +24,6 @@ function setProjects(projects) {
   }
 }
 
-/* Selecting a project / readying it for submission */
 export function selectProject(project) {
   return {
     type: User.SET_SUBMISSION,
@@ -32,7 +31,6 @@ export function selectProject(project) {
   }
 }
 
-/* Submitting projects via POST to Rails API */
 export function submitProject(project, currentVendor) {
   return (dispatch, getState) => {
     const user_id = getState().user.id || -1;
