@@ -4,10 +4,9 @@ class ProjectJsonDecorator < BaseJsonDecorator
       project = {
         id: project.id,
         name: project.name,
-        image: project['cover_image_url'] ? project.cover_image_url  nil,
-        communities: project.platforms || 'unlisted',
-        created_at: project.created_at.strftime('%Y-%m-%d'),
-        end
+        one_liner: project.one_liner,
+        cover_image_url: project.decorate.cover_image(:cover_thumb),
+        created_at: project.created_at.strftime('%Y-%m-%d')
       }
     end
     node

@@ -19,6 +19,7 @@ export default {
   }),
 
   User: keymirror({
+    SET_USER: null,
     SET_PROJECTS: null,
     SET_SUBMISSION: null,
     SUBMIT_PROJECTS: null,
