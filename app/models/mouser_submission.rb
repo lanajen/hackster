@@ -1,3 +1,5 @@
+include Workflow
+
 class MouserSubmission < ActiveRecord::Base
 
   belongs_to :projects
@@ -8,14 +10,13 @@ class MouserSubmission < ActiveRecord::Base
   validates :user_id, :project_id, :vendor_user_name, presence: true
   validates :project_id, uniqueness: { scope: :vendor_user_name }
 
-  include Workflow
-    workflow do
-      state :new do
-        event :approve, transitions_to: :approved
-        event :reject, transitions_to: :rejected
-      end
-      state :approved
-      state :rejected
+  workflow do
+    state :new do
+      event :approve, transitions_to: :approved
+      event :reject, transitions_to: :rejected
     end
+    state :approved
+    state :rejected
+  end
 
 end
