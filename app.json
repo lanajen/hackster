@@ -1,11 +1,6 @@
 {
   "name": "hackster",
-<<<<<<< 8e9d89e9a6536810bccd5071d9fc3123de05091c
-  "scripts": {
-  },
-=======
   "scripts": {},
->>>>>>> app.json for heroku
   "env": {
     "ALGOLIA_API_KEY": {
       "required": true
