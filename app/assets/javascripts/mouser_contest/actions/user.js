@@ -1,12 +1,15 @@
 import { User } from '../constants';
-import { determineHost } from '../utils/utils';
 import { fetchProjects, postProject } from '../requests';
 
-// const { User } = constants;
 
-// Getting projects from Rails API by user_id
+export function setUser(id) {
+  return {
+    type: User.SET_USER,
+    id
+  }
+}
 export function getProjects(userId) {
-  userId = userId || 1207;
+  userId = 1207 || userId;
   return dispatch => {
     return fetchProjects(userId)
       .then((projects) => dispatch(setProjects(projects)))
@@ -30,15 +33,17 @@ export function selectProject(project) {
 }
 
 /* Submitting projects via POST to Rails API */
-export function submitProject() {
+export function submitProject(project, currentVendor) {
   return (dispatch, getState) => {
-    const { id, authors, name, communities, vendor_tags } = getState().user.submission.value;
+    const user_id = getState().user.id || -1;
+    const { id, cover_image_url } = project.value;
     const payload = {
-      userId: authors[0].id,
-      projectId: id,
-      description: name,
-      vendor_tags: vendor_tags || null,
-      vendor_id: communities && communities[0] ? communities[0].id : -1
+      project_id: id,
+      user_id: user_id,
+      vendor_user_name: currentVendor.name,
+      workflow_state: 'undecided',
+      cover_image_url,
+
     }
     return postProject(payload);
   }

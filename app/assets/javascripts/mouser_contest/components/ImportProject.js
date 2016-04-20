@@ -1,33 +1,18 @@
-import React, { PropTypes } from 'react'
-import Select from 'react-select'
-import { connect } from 'react-redux'
+import React, { PropTypes } from 'react';
+import Select from 'react-select';
 
-const ImportProject = ({ userData, selectProject, submitProject }) => {
+const ImportProject = ({ userData, currentVendor, selectProject, submitProject }) => {
+  let currentSelection = null;
   return (
     <div>
       <Select
-        name='Import your project from Hackster!'
+        placeholder={'Import your project from Hackster!'}
         options={userData.projects}
-        onChange={selectProject} />
-      {
-        userData.submission && userData.submission.label
-          ? (<div>
-              {userData.submission.label}
-              <br/>
-              <button onClick={submitProject}>submit!</button>
-            </div>)
-          : null
-      }
+        onChange={ (selection) => { currentSelection = selection } }/>
+      <button onClick={() => submitProject(currentSelection, currentVendor)}>submit!</button>
     </div>
   )
 }
-
-function mapStateToProps (state) {
-  return {
-    userData: state.user
-  }
-}
-
 
 ImportProject.PropTypes = {
   userData: PropTypes.object.isRequired,

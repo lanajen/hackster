@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419172938) do
+ActiveRecord::Schema.define(version: 20160409001718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -445,15 +445,16 @@ ActiveRecord::Schema.define(version: 20160419172938) do
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
   create_table "mouser_submissions", force: :cascade do |t|
-    t.string   "status"
-    t.string   "project_name"
-    t.integer  "user_id"
+    t.string   "workflow_state"
+    t.integer  "user_id",          null: false
     t.integer  "project_id"
-    t.integer  "vendor_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.string   "vendor_tags"
+    t.string   "vendor_user_name", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
+
+  add_index "mouser_submissions", ["user_id"], name: "index_mouser_submissions_on_user_id", using: :btree
+  add_index "mouser_submissions", ["vendor_user_name"], name: "index_mouser_submissions_on_vendor_user_name", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"

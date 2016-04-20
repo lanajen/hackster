@@ -13,6 +13,9 @@ export default function user(state = initialState, action) {
     case User.SET_ADMIN:
       return { ...state, isAdmin: action.bool };
 
+    case User.SET_USER:
+      return { ...state, id: action.id };
+
     case User.SET_PROJECTS:
       return { ...state, projects: action.projects };
 

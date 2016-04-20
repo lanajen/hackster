@@ -23,39 +23,36 @@ export function postActivePhase(phase) {
 }
 
 export function fetchProjects(userId) {
-  return fetch(`${getApiPath()}/projects?user_id=${userId}`)
-    .then(response => {
-      return response.json();
-    })
-    .then(data => {
-      return data.projects.map(project => { return { value: project, label: project.name }; });
-    })
-    .catch(err => console.error(err));
+  return new Promise((resolve, reject) => {
+    request
+      .get(`${getApiPath()}/projects?user_id=${userId}`)
+      .end((err, res) => {
+        const projects = res.body.projects.map(project => { return { value: project, label: project.name }; });
+        err ? reject(err) : resolve(projects);
+      });
+  });
 }
 
 export function postProject(payload) {
-  return fetch(`${getApiPath()}/submissions`, {
-    method: 'post',
-    mode: 'no-cors',
-    body: JSON.stringify(payload),
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    })
-  })
-  .catch((err) => console.error(err));
+  return new Promise((resolve, reject) => {
+    request
+      .post(`${getApiPath()}/submissions`)
+      .send(payload)
+      .withCredentials()
+      .end((err, res) => {
+        err ? reject(err) : resolve(res);
+      });
+  });
 }
 
-
-export function updateProjectStatus(update) {
-  return fetch(`${getApiPath()}/submissions`, {
-    method: 'patch',
-    mode: 'no-cors',
-    body: JSON.stringify(update),
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    })
+export function updateProjectStatus(update, projectId) {
+  return new Promise((resolve, reject) => {
+    request
+      .patch(`${getApiPath()}/submissions/${projectId}`)
+      .send(update)
+      .withCredentials()
+      .end((err, res) => {
+        err ? reject(err) : resolve(res);
+      })
   })
-  .catch((err) => console.err(err));
 }
