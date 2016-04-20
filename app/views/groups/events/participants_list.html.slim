@@ -12,7 +12,7 @@
               strong> Award:
               - if project.awards.any?
                 - award = project.awards.first
-                ==> award.name
+                => award.name
                 | (#{award.prize})
               - else
                 | None
@@ -21,5 +21,5 @@
             ul
               - project.users.each do |user|
                 li
-                  ==> link_to user.name, user
+                  => link_to user.name, user
                   | (#{user.email})

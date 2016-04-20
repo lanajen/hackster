@@ -3,12 +3,12 @@
   h1
     =t '.title', :default => model_class.model_name.human.pluralize
     small
-      ==> link_to t('.new', :default => t("helpers.links.new")), new_admin_job_path, :class => 'btn btn-primary btn-sm'
+      => link_to t('.new', :default => t("helpers.links.new")), new_admin_job_path, :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at state)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Job.workflow_spec.states.keys }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+=> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Job.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -31,7 +31,7 @@ table.table.table-striped
         td= job.workflow_state
         td= job.clicks_count
         td
-          ==> link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_job_path(job), :class => 'btn btn-default btn-xs'
+          => link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_job_path(job), :class => 'btn btn-default btn-xs'
           = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_job_path(job.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center

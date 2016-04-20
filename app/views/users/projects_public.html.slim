@@ -10,7 +10,7 @@
       .main-section-actions.clearfix.mg-30
         - if user_is_current_or_admin?
           .pull-left
-            ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
+            => link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
           .btn-group.pull-right
             = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
             a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -41,7 +41,7 @@
         p
           ' Looks like a great time to
           - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
-          ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
+          => link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
           ' !
       - else
         | #{@user.name} has no public projects.

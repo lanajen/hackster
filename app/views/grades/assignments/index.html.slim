@@ -74,11 +74,11 @@ p
             - gradable = grade.gradable
             - case gradable
             - when User
-              ==> link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
+              => link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
               = link_to gradable.name, gradable, target: '_blank'
             - when Team
               - gradable.users.each do |user|
-                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 br
           td
@@ -104,7 +104,7 @@ p
             tr
               td= link_to project.name, project
               td
-                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
               td
                 - if project.assignment_submitted_at.present?
@@ -124,7 +124,7 @@ p
             td= link_to project.name, project
             td
               - project.team.users.each do |user|
-                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 br
               td

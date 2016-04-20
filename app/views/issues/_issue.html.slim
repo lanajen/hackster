@@ -6,9 +6,9 @@ section.section-container
         | Issue ##{issue.sub_id}
 
       .subtitle
-        ==> time_ago_in_words issue.created_at
+        => time_ago_in_words issue.created_at
         ' ago -
-        ==> link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+        => link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
         ' -
         = render partial: 'issues/label', locals: { issue: issue }
 

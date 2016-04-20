@@ -15,7 +15,7 @@
   = f.input :charge_shipping, as: :boolean, inline_label: 'Charge for shipping', label: false
   = f.input :stored_actions, as: :text, hint: "Careful! This has to be JSON. Please don't change unless you know what you're doing."
   .col-md-offset-4.col-md-8
-    ==> f.button :submit, :class => 'btn-primary'
-    ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_store_products_path, :class => 'btn btn-default'
+    => f.button :submit, :class => 'btn-primary'
+    => link_to t('.cancel', :default => t("helpers.links.cancel")), admin_store_products_path, :class => 'btn btn-default'
     - if @product.persisted?
       = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_store_product_path(@product), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'

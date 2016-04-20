@@ -25,7 +25,7 @@
         #home.product-banner style="background-image: url('#{@product.cover_image}')"
           .product-banner-inner
             h1.product-title
-              ==> @product.name
+              => @product.name
             p.product-one-liner= @product.one_liner
 
         .product-banner-top.clearfix.visible-xs.row
@@ -55,7 +55,7 @@
                   .views-info
                     ' Viewed
                     span.hl
-                      ==> number_with_delimiter @product.impressions_count
+                      => number_with_delimiter @product.impressions_count
                       = pluralize_without_count @product.impressions_count, 'time'
 
               .share

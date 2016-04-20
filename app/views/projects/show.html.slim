@@ -35,7 +35,7 @@
                 .project-group
                   i.fa.fa-challenge>
                   ' This project is part of
-                  ==> link_to @project.event.name, @project.event
+                  => link_to @project.event.name, @project.event
 
               - if @project.certified? current_platform.try(:full_name)
                 .project-group
@@ -51,11 +51,11 @@
                       ' This project is part of
                       - if @project.assignment.present?
                         - if @project.assignment.promotion.avatar
-                          ==> image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
+                          => image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
                         = link_to @project.assignment.to_label, assignment_path(@project.assignment)
                       - elsif @project.event.present?
                         - if @project.event.avatar
-                          ==> image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
+                          => image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
                         = link_to @project.event.name, event_path(@project.event)
                         / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
                           span.project-award<
@@ -76,7 +76,7 @@
                     h1.project-title
                       - if @project.is_idea?
                         i.fa.fa-lightbulb-o.private-project-icon>
-                      ==> @project.name
+                      => @project.name
                       - if @project.license
                         a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
                     p.project-one-liner= @project.one_liner
@@ -309,11 +309,11 @@
                               i.fa.fa-exclamation-circle>
                               - if Time.now < @project.assignment.submit_by_date
                                 ' Assignment due in
-                                b==> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
+                                b=> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
                               - else
                                 b> Assignment submission is past due
                                 ' by
-                                ==> time_ago_in_words @project.assignment.submit_by_date
+                                => time_ago_in_words @project.assignment.submit_by_date
                               | (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
                             - else
                               | This assignment hasn't been submitted.
@@ -384,7 +384,7 @@
                         li
                           - if credit_line.name.present?
                             - if credit_line.work.present?
-                              ==> credit_line.work.try(:capitalize)
+                              => credit_line.work.try(:capitalize)
                               ' by
                             - if credit_line.link.present?
                               = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
@@ -422,7 +422,7 @@
                       p
                         - if entry.awarded?
                           ' Won
-                          ==> entry.prizes.pluck(:name).to_sentence
+                          => entry.prizes.pluck(:name).to_sentence
                           ' in
                         - else
                           ' Participated in

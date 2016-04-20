@@ -36,7 +36,7 @@ table.table.table-striped
               = entry.category.name
           td
             - user = entry.user
-            ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+            => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
             = link_to user.name, user
             - @challenge.challenge_entry_fields.each_with_index do |field, i|
               br

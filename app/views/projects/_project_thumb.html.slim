@@ -34,7 +34,7 @@
             h4
               - if project.pryvate?
                 i.fa.fa-lock>
-              ==> link_to project.name, project_link, class: 'project-link-with-ref'
+              => link_to project.name, project_link, class: 'project-link-with-ref'
               / - if project.external?
                 i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
             p
@@ -45,7 +45,7 @@
                   span.user-name>= project.guest_name
                 - elsif u = project.users.first
                   ' by
-                  span.user-name==> link_to u.name, u
+                  span.user-name=> link_to u.name, u
                 ' on
                 strong= project.website_host
               - else

@@ -77,6 +77,7 @@ class ProjectScraper
       'makezine.com' => :makezine,
       'medium.com' => :medium,
       'pubnub.com' => :pubnub,
+      'scuola.arduino.cc' => :arduino_scuola,
       'seeedstudio.com' => :seeed,
       'e2e.ti.com' => :tie2e,
       'udoo.org' => :udoo,

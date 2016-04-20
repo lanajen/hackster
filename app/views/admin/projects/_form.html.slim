@@ -81,6 +81,6 @@
 
       .form-group
         .col-md-offset-4.col-md-8
-          ==> f.submit "Save changes", class: 'btn btn-primary'
+          => f.submit "Save changes", class: 'btn btn-primary'
           - if @base_article.persisted?
             = link_to 'Delete project', admin_project_path(@base_article), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

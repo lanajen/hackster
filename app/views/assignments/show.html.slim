@@ -8,7 +8,7 @@
             ' Assignment submitted
             - if time = current_user.project_for_assignment(@assignment).first.assignment_submitted_at
               ' on
-              ==> l time.in_time_zone(PDT_TIME_ZONE)
+              => l time.in_time_zone(PDT_TIME_ZONE)
           - when 'created'
             - if @assignment.submit_by_date
               - if Time.now < @assignment.submit_by_date
@@ -17,7 +17,7 @@
               - else
                 b> Assignment submission is past due
                 ' by
-                ==> time_ago_in_words @assignment.submit_by_date
+                => time_ago_in_words @assignment.submit_by_date
               ' (#{l @submit_date})
             = link_to "Check project and submit", current_user.project_for_assignment(@assignment).first, class: 'btn btn-sm btn-warning'
           - when 'none'
@@ -28,7 +28,7 @@
               - else
                 b> Assignment submission is past due
                 ' by
-                ==> time_ago_in_words @assignment.submit_by_date
+                => time_ago_in_words @assignment.submit_by_date
               ' (#{l @submit_date})
             = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to assignment"), "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
 

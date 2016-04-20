@@ -1,16 +1,16 @@
 - model_class = Part
 .page-header
   h1
-    ==>t '.title', :default => model_class.model_name.human.pluralize
+    =>t '.title', :default => model_class.model_name.human.pluralize
     small= link_to t('.new', :default => t("helpers.links.new")), new_admin_part_path, :class => 'btn btn-primary btn-sm'
     small= link_to 'Duplicates', duplicates_admin_parts_path, :class => 'btn btn-primary btn-sm'
     = link_to 'Show those that need review', '/admin/parts?filters%5Bworkflow_state%5D=pending_review&sort_by=created_at&sort_order=ASC&has_platform=1', class: 'btn btn-sm btn-link'
     = link_to 'Show those that need URGENT review', '/admin/parts?filters%5Bworkflow_state%5D=pending_review&sort_by=created_at&sort_order=ASC&has_platform=1&with_slug=1', class: 'btn btn-sm btn-link'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at workflow_state)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'workflow_state', options: Part.workflow_spec.states.keys }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+=> render partial: 'admin/shared/search_form_select_field', locals: { field: 'workflow_state', options: Part.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
 </form>
 

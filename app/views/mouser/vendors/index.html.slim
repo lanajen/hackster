@@ -1,0 +1,44 @@
+- if false#user_signed_in?
+  = react_component('MouserContest', vendors: @boards, phases: @phases, activePhase: @active_phase)
+- else
+  #mousercontest-landing
+    = render partial: 'mouser/vendors/hero'
+
+    section#description
+      h2 The competition
+      .description-columns
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente consequuntur ea itaque quas ipsum doloribus aliquam consectetur
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus ab expedita tempora perspiciatis porro odio possimus repellat hic impedit, esse modi facilis aperiam veniam provident reprehenderit eaque! Eligendi, quibusdam!
+      .boards
+        - @vendors.each do |vendor|
+          .board-container
+            .backdrop-container
+              .backdrop
+                = image_tag vendor.logo_url, class: 'logo'
+            .board-img-container
+              a href=mouser_vendor_path(vendor.user_name)
+                img src=asset_url(vendor.board_image_url)
+            .name= vendor.board_name
+
+    section#timeline
+      .description
+        h2 Timeline
+        p  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit debitis voluptatibus quos mollitia. Earum quos magni in, harum perspiciatis iste reiciendis at molestias voluptatem quaerat libero commodi temporibus dignissimos soluta!
+      .dates
+        - @phases.each_with_index do |phase, index|
+          - if index != 2 # Index 2 contains dupe data from the previous phases's sub_event, ignore it for presentation.
+            .date-container
+              .date-wrapper
+                - date = Date.parse(phase[:date])
+                .date #{date.strftime("%B #{date.day.ordinalize}")}
+                .circle-container
+                  .circle class=(index <= active_phase ? '' : 'doughnut')
+                .event-container
+                  .event #{phase[:event]}
+                  - if phase[:sub_event]
+                    .sub-action #{phase[:sub_event]}
+              -if index != @phases.length-1
+                .line-wrapper
+                  .line
+
+    = render partial: 'mouser/vendors/footer'

@@ -1,0 +1,139 @@
+{
+  "name": "hackster",
+  "scripts": {},
+  "env": {
+    "ALGOLIA_API_KEY": {
+      "required": true
+    },
+    "ALGOLIA_APP_ID": {
+      "required": true
+    },
+    "ALGOLIA_ENV": "dev",
+    "ALGOLIA_SEARCH_KEY": {
+      "required": true
+    },
+    "API_HOST": "api-dev.hackster.io",
+    "ARDUINO_API_HOST": "https://api-dev.arduino.cc",
+    "ARDUINO_API_KEY": {
+      "required": true
+    },
+    "ARDUINO_API_SECRET": {
+      "required": true
+    },
+    "ASSET_FOG_DIRECTORY": "halckemy",
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "CYPRESS_BASE_URL": "http://cypresscomdev.prod.acquia-sites.com",
+    "CYPRESS_CERT": {
+      "required": true
+    },
+    "CYPRESS_ENTITY_ID": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/metadata.php",
+    "CYPRESS_SLO_TARGET_URL": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/SingleLogoutService.php",
+    "CYPRESS_SSO_TARGET_URL": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/SSOService.php",
+    "DB_POOL": "3",
+    "DEFAULT_DOMAIN": "hackster.io",
+    "DEFAULT_HOST": "hackster.io",
+    "ERROR_PAGE_URL": "https://s3.amazonaws.com/halckemy/static/500.html",
+    "FACEBOOK_API_KEY": {
+      "required": true
+    },
+    "FACEBOOK_API_SECRET": {
+      "required": true
+    },
+    "FASTLY_API_KEY": {
+      "required": true
+    },
+    "FASTLY_SERVICE_ID": {
+      "required": true
+    },
+    "FOG_DIRECTORY": "hackster-dev",
+    "FOG_PROVIDER": "AWS",
+    "FOG_REGION": "us-east-1",
+    "GITHUB_API_KEY": {
+      "required": true
+    },
+    "GITHUB_API_SECRET": {
+      "required": true
+    },
+    "GMAPS_BROWSER_KEY": {
+      "required": true
+    },
+    "GMAPS_SERVER_KEY": {
+      "required": true
+    },
+    "HEROKU_API_KEY": {
+      "required": true
+    },
+    "HEROKU_PASSWORD": {
+      "required": true
+    },
+    "IMGIX_HOST": "hackster-dev.imgix.net",
+    "IMGIX_HOST_ALT": "hackster.imgix.net",
+    "IMGIX_TOKEN": {
+      "required": true
+    },
+    "IMGIX_TOKEN_ALT": {
+      "required": true
+    },
+    "LOG_LEVEL": "debug",
+    "MAILGUN_API_KEY": {
+      "required": true
+    },
+    "MAILGUN_DOMAIN": "mg.hackster.io",
+    "MAINTENANCE_PAGE_URL": "https://s3.amazonaws.com/halckemy/static/maintenance.html",
+    "MANDRILL_API_KEY": {
+      "required": true
+    },
+    "MIXPANEL_API_TOKEN": {
+      "required": true
+    },
+    "RAILS_ENV": "production",
+    "RAKE_ENV": "production",
+    "SECRET_KEY_BASE": {
+      "required": true
+    },
+    "SESSION_KEY": "_hackerio_session_dev",
+    "SHORT_LINK_DOMAIN": "hck.st",
+    "SIDEKIQ_DB_POOL": "10",
+    "SITE_PASSWORD": {
+      "required": true
+    },
+    "SITE_USERNAME": {
+      "required": true
+    },
+    "USE_SSL": "false",
+    "WEB_CONCURRENCY": "2",
+    "WINDOWS_LIVE_API_KEY": {
+      "required": true
+    },
+    "WINDOWS_LIVE_API_SECRET": {
+      "required": true
+    },
+    "WORKERS_RUNNING": "true"
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1
+    },
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-postgresql",
+    "logentries",
+    "openredis",
+    "memcachier",
+    "newrelic",
+    "scheduler"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/ddollar/heroku-buildpack-multi.git"
+    }
+  ]
+}

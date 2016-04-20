@@ -7,7 +7,7 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
     p.pull-left
       - if @pending_review_size > 0
         strong>= @pending_review_size
-        ==> pluralize_without_count @pending_review_size, 'project'
+        => pluralize_without_count @pending_review_size, 'project'
         | pending review
       - else
         | All projects reviewed!

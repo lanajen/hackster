@@ -4,10 +4,10 @@
     ' Lists
     small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'List' } ), :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at private)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'private', options: [nil, true, false] }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+=> render partial: 'admin/shared/search_form_select_field', locals: { field: 'private', options: [nil, true, false] }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped

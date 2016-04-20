@@ -4,7 +4,7 @@ section.section-container
       = link_to skill_request.title, skill_request
 
       .subtitle
-        ==> time_ago_in_words skill_request.created_at
+        => time_ago_in_words skill_request.created_at
         ' ago -
         = link_to pluralize(skill_request.comments.size, 'response'), url_for([skill_request, anchor: 'comments'])
 

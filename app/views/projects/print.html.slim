@@ -1,6 +1,6 @@
 .wrapper700.project
   h1.project-title
-    ==> @project.name
+    => @project.name
     - if @project.license
       a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
   p.project-one-liner= @project.one_liner

@@ -51,7 +51,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Page views
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @views_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @views_count
                 small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_views_count}
 
           .col-xs-12.col-sm-6
@@ -59,7 +59,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Project views
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_views_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @project_views_count
                 small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_project_views_count}
         .row
           .col-xs-12
@@ -74,7 +74,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Live projects (linked)
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @project_count
                 small.text-muted.istooltip> title='New today' rel='tooltip' data-container='body' +#{@new_projects_count}
                 | (
                 span.istooltip title='Total all time' rel='tooltip' data-container='body' = number_with_delimiter @external_project_count
@@ -85,7 +85,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Project respects
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @like_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @like_count
                 small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_likes_count}
 
           .col-xs-12.col-sm-4
@@ -93,7 +93,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Project comments
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @comment_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @comment_count
                 small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_comments_count}
 
         .row
@@ -135,7 +135,7 @@ section#projects-list
                     li
                       b>= link_to project.name, project
                       ' by
-                      ==> project.users.map{|u| link_to html_escape(u.name), u }.to_sentence.html_safe
+                      => project.users.map{|u| link_to html_escape(u.name), u }.to_sentence.html_safe
                       ' on
                       = l project.created_at
 
@@ -148,13 +148,13 @@ section#projects-list
                 ul
                   - @most_recent_comments.each do |comment|
                     li
-                      ==> link_to comment.user.name, comment.user
+                      => link_to comment.user.name, comment.user
                       ' commented on
-                      ==> link_to comment.commentable.name, comment.commentable
+                      => link_to comment.commentable.name, comment.commentable
                       ' on
-                      ==> l comment.created_at
+                      => l comment.created_at
                       ' and said:
-                      ==> raw comment.body
+                      => raw comment.body
 
         .row
           .col-xs-12
@@ -169,7 +169,7 @@ section#projects-list
               .panel-heading
                 h3.panel-title Followers
               .panel-body
-                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @follow_count
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' => number_with_delimiter @follow_count
                 small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_follows_count}
 
         .row

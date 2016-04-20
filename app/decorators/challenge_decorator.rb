@@ -46,11 +46,11 @@ class ChallengeDecorator < ApplicationDecorator
     when :new
       if model.ready
         date = if model.activate_pre_registration
-          "#{l model.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+          "#{l model.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE), format: :long_date} PT"
         elsif model.activate_pre_contest
-          "#{l model.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+          "#{l model.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE), format: :long_date} PT"
         else
-          "#{l model.start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+          "#{l model.start_date.in_time_zone(PDT_TIME_ZONE), format: :long_date} PT"
         end
         "Launch scheduled for #{date}"
       else

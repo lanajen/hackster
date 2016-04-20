@@ -5,7 +5,7 @@ section#conversations.section-container
         ' Messages
       / .btn-group.pull-left
         button.btn.btn-default.dropdown-toggle aria-expanded="false" data-toggle="dropdown" type="button"
-          ==> @box.capitalize
+          => @box.capitalize
           span.caret
         ul.dropdown-menu role="menu"
           li
@@ -29,10 +29,10 @@ section#conversations.section-container
                 h5.media-heading.clearfix
                   strong= user ? user.name : 'Former Hackster user'
                   .small.text-muted
-                    ==> time_diff_in_natural_language conversation.updated_at, Time.now
+                    => time_diff_in_natural_language conversation.updated_at, Time.now
                     | ago
                 p
-                  strong==> conversation.subject
+                  strong=> conversation.subject
                   / # = strip_tags(conversation.last_message(current_user, @box).body).truncate 200
       - else
         p You don't have any active conversations.

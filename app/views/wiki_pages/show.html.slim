@@ -5,8 +5,8 @@
         = @page.title
 
           / ' Posted by
-          / ==> link_to @page.user.name, @page.user
-          / ==> time_ago_in_words @page.created_at
+          / => link_to @page.user.name, @page.user
+          / => time_ago_in_words @page.created_at
           / ' ago
         - if can? :edit, @page
           .subtitle

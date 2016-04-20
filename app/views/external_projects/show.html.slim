@@ -26,7 +26,7 @@
             .project-banner style="background-image: url(#{@project.cover_image})"
               .project-banner-inner
                 h1.project-title
-                  ==> @project.name
+                  => @project.name
                   - if @project.license
                     a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
                 p.project-one-liner= @project.one_liner
@@ -63,8 +63,8 @@
                   - u = users.first.user
                   span.user-name>= link_to u.name, u
               ' on
-              ==> link_to content_tag(:span, @project.website_host) + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
-            ==> link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
+              => link_to content_tag(:span, @project.website_host) + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
+            => link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
 
           - if @project.part_joins.exists?
             section#components.section-container.section-collapsible

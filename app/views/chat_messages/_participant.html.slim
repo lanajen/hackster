@@ -1,3 +1,3 @@
 li class="participant-#{participant.id}" data-user-name=participant.name
-  ==> link_to image_tag(participant.decorate.avatar(:mini), alt: participant.name, style: "width:20px", class: 'img-rounded'), participant
+  => link_to image_tag(participant.decorate.avatar(:mini), alt: participant.name, style: "width:20px", class: 'img-rounded'), participant
   span.user-name= link_to participant.name, participant

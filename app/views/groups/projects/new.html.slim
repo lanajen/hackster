@@ -3,7 +3,7 @@
     .col-md-4.col-md-offset-4.col-xs-12
       h2.text-center
         - if @group.avatar.present?
-          ==> image_tag @group.avatar(:mini), class: 'img-thumb'
+          => image_tag @group.avatar(:mini), class: 'img-thumb'
         = link_to @group.name, @group, class: 'hidden-link'
 
       .box
@@ -64,9 +64,9 @@
         h2.text-center
           - if @group.respond_to? :avatar and @group.avatar.present?
             - if @group.avatar.respond_to?(:file_url)
-              ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
+              => image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
             - else
-              ==> image_tag @group.avatar(:mini), class: 'img-thumb'
+              => image_tag @group.avatar(:mini), class: 'img-thumb'
           = link_to @group.name, @group, class: 'hidden-link'
 
         .box

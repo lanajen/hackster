@@ -51,12 +51,12 @@
             - if @group.model.respond_to?(:secondary_name)
               h1= @group.proper_name
               h2
-                ==> @group.secondary_name
+                => @group.secondary_name
                 small
                   ' on
-                  strong==> @group.date_range
+                  strong=> @group.date_range
                   ' in
-                  strong==> @group.short_address
+                  strong=> @group.short_address
             - else
               h1
                 = @group.name

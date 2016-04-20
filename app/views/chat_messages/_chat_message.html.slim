@@ -1,7 +1,7 @@
 li.chat-message id="chat-message-#{chat_message.id}"
   time> datetime=chat_message.created_at.strftime('%Y-%m-%dT%H:%M:%S%:z')
     = time_for_chat chat_message.created_at || Time.now
-  ==> link_to image_tag(chat_message.user.decorate.avatar(:mini), alt: chat_message.user.name, style: "width:20px", class: 'img-rounded'), chat_message.user
+  => link_to image_tag(chat_message.user.decorate.avatar(:mini), alt: chat_message.user.name, style: "width:20px", class: 'img-rounded'), chat_message.user
   span.user-name= link_to chat_message.user.name, chat_message.user
   ' :
   = raw chat_message.body

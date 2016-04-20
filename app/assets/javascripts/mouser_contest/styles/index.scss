@@ -1,0 +1,25 @@
+/** Nav */
+
+/** Timeline slider */
+.slider_input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 30px;
+  width: 30px;
+  border-radius: 100px;
+  background: #ADD8E6;
+  cursor: pointer;
+}
+
+.slider_input::-moz-range-thumb {
+  height: 30px;
+  width: 30px;
+  border-radius: 100px;
+  background: #ADD8E6;
+  cursor: pointer;
+}
+
+.slider_input {
+  &:focus {
+    outline: none;
+  }
+}

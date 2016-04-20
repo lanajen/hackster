@@ -9,24 +9,24 @@
       .row
         .col-xs-12
           b> Project:
-          ==> link_to @project.name, @project, target: '_blank'
+          => link_to @project.name, @project, target: '_blank'
           ' -
           - case @gradable
           - when User
             b> Student:
-            ==> link_to image_tag(@gradable.decorate.avatar(:mini), style: 'width: 20px' ), @gradable
-            ==> link_to @gradable.name, @gradable, target: '_blank'
+            => link_to image_tag(@gradable.decorate.avatar(:mini), style: 'width: 20px' ), @gradable
+            => link_to @gradable.name, @gradable, target: '_blank'
             - member = Member.where(user_id: @gradable.id, group_id: @project.team_id).first
             - if member.contribution.present?
               ' -
               strong> Contribution:
-              ==> member.contribution
+              => member.contribution
           - when Team
             b> Team:
             - @gradable.members.includes(:user).each do |member|
               - user = member.user
-              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
-              ==> link_to user.name, user, target: '_blank'
+              => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+              => link_to user.name, user, target: '_blank'
               - if member.contribution.present?
                 i.fa.fa-question-circle.istooltip  title="Contribution: #{member.contribution}"
                 ' &nbsp;

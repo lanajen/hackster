@@ -1,0 +1,35 @@
+- if false#user_signed_in?
+  = react_component('MouserContest', platforms: @platforms )
+- else
+  #mousercontest-landing
+    = render partial: 'mouser/vendors/hero'
+    #vendor-details
+      .details-wrapper
+        .image-container
+          .image-wrap
+            = image_tag @vendor.logo_url, class: 'logo'
+            = image_tag @vendor.board_image_url, class: 'board'
+        .description-container
+          .description
+            strong= @vendor.board_name
+            p= @vendor.board_description
+            .buttons
+              = link_to 'Visit site', @vendor.website, class: 'button', target: '_blank'
+              a.button Share
+      .vendor-links
+        a.vendor-link-button href=mouser_vendor_path(@previous.user_name)
+          .link-container
+            .image
+              = image_tag @previous.board_image_url
+            .info
+              p Previous
+              .vendor-name= @previous.board_name
+        a.vendor-link-button href=mouser_vendor_path(@next.user_name)
+          .link-container
+            .image
+              = image_tag @next.board_image_url
+            .info
+              p Up next
+              .vendor-name= @next.board_name
+
+    = render partial: 'mouser/vendors/footer'

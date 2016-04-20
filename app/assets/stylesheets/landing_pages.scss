@@ -74,6 +74,10 @@
     background-position: bottom center;
     background-repeat: no-repeat;
     background-image: asset-url('landing_pages/intel/hero.jpg');
+    min-height: 700px;
+    background-size: contain;
+    max-width: 1600px;
+    margin: 0 auto;
     h1 {
       margin-bottom: 20px;
       font-weight: 300;
@@ -84,8 +88,9 @@
       font-weight: 300;
     }
     .us-china {
-      width: 150px;
-      margin: 10% auto 0;
+      width: 350px;
+      margin: 3% auto 0;
+      max-width: 50%;
     }
     .submit-btn {
       margin-top: 40px;

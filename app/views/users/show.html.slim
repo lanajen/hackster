@@ -10,7 +10,7 @@
       .main-section-actions.clearfix.mg-30
         - if user_is_current_or_admin?
           .pull-left
-            ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
+            => link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
           .btn-group.pull-right
             = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
             a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -36,7 +36,7 @@
         p
           ' Looks like a great time to
           - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
-          ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
+          => link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
           ' !
       - else
         | #{@user.name} has no public projects.
@@ -136,7 +136,7 @@
       - elsif user_is_current?
         p
           ' You haven't replicated any projects yet.
-          ==> link_to 'Browse around', projects_path
+          => link_to 'Browse around', projects_path
           | for cool projects!
       - else
         | #{@user.name} hasn't replicated any projects yet.
@@ -158,7 +158,7 @@
       - elsif user_is_current?
         p
           ' You haven't respected any projects yet.
-          ==> link_to 'Browse around', projects_path
+          => link_to 'Browse around', projects_path
           | for cool projects!
       - else
         | #{@user.name} hasn't respected any projects yet.
@@ -176,15 +176,15 @@
           - @comments.each do |comment|
             li.comment
               h5.comment-project
-                ==> link_to comment.commentable.name, project_path(comment.commentable, anchor: 'widget-comments')
+                => link_to comment.commentable.name, project_path(comment.commentable, anchor: 'widget-comments')
                 small
-                  ==> time_ago_in_words(comment.created_at)
+                  => time_ago_in_words(comment.created_at)
                   | ago
               .comment-text= raw comment.body
       - elsif user_is_current?
         p
           ' You haven't commented on any projects yet.
-          ==> link_to 'Browse around', projects_path
+          => link_to 'Browse around', projects_path
           ' for projects you can get involved in!
       - else
         | #{@user.name} hasn't commented on any projects yet.

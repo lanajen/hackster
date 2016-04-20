@@ -4,9 +4,9 @@
     ' Platforms
     small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'Platform' } ), :class => 'btn btn-primary btn-sm'
 
-==> render 'admin/shared/search_form_tag'
+=> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|
-  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+  => render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped

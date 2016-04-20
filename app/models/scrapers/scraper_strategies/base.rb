@@ -36,7 +36,7 @@ module ScraperStrategies
       format_text
       parse_cover_image
       if model_class == Project
-        # parse_images
+        parse_images
         parse_embeds
         parse_files
         parse_code

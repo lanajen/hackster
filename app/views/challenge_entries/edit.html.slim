@@ -2,27 +2,27 @@
   #grader
     #grader-main.container
       p style="margin-top:20px"
-        ==> link_to @challenge.name, @challenge, target: '_blank'
+        => link_to @challenge.name, @challenge, target: '_blank'
         small
           ' Judging entries
       .row
         .col-xs-12
           b> Project:
           - if @project
-            ==> link_to @project.name, @project, target: '_blank'
+            => link_to @project.name, @project, target: '_blank'
           - else
             ' Project not found
           ' -
           b> Entrant:
           - user = @entry.user
-          ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user, target: '_blank'
-          ==> link_to user.name, user, target: '_blank'
+          => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user, target: '_blank'
+          => link_to user.name, user, target: '_blank'
           - if @project and @project.team_members_count > 1
             b> Team:
             - @project.team_members.includes(:user).each do |member|
               - user = member.user
-              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user, target: '_blank'
-              ==> link_to user.name, user, target: '_blank'
+              => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user, target: '_blank'
+              => link_to user.name, user, target: '_blank'
               - if member.contribution.present?
                 i.fa.fa-question-circle.istooltip  title="Contribution: #{member.contribution}"
                 ' &nbsp;
