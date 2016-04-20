@@ -5,14 +5,18 @@
       window.location.href = "#{raw arduino_sign_in_url}";
     }
 
-    // call arduino api
-    // if signed in user different from us then:
-    //   - if we are signed in: logout
-    //   - in all cases, redirect to login
+- if user_signed_in?
+  = content_for :js do
 
-    $.ajax({
-      url: "#{ENV['ARDUINO_API_HOST']}/auth/profile"
-    });
+    javascript:
+      $(function(){
+        var arduinoToken = window.localStorage.getItem("ideapp.token");
+        if (arduinoToken != "#{current_user.authorizations.where(provider: 'arduino').first.try(:uid)}") {
+          $('#sign-out-form')
+            .append('<input type="hidden" name="redirect_to" value="#{raw arduino_sign_in_url}" />')
+            .submit();
+        }
+      });
 
 - content_for :html_class do
   = 'arduino-html'
