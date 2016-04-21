@@ -2,7 +2,6 @@ import moment from 'moment';
 
 import { Contest } from '../constants';
 import { setVendors } from './vendors';
-import { setUser } from './user';
 
 import { fetchSubmissions, postActivePhase } from '../requests';
 
@@ -34,11 +33,10 @@ function makeSubmissions(amount) {
 
 
 export function setInitialData(props) {
-  const { activePhase, phases, vendors, current_user_id } = props;
+  const { activePhase, phases, vendors } = props;
 
   return dispatch => {
     dispatch(setActivePhase(parseInt(activePhase, 10)));
-    dispatch(setUser(current_user_id));
     dispatch(setVendors(vendors));
     dispatch(setPhases(
       [].slice.call(phases).map(phase => {

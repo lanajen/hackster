@@ -1,6 +1,6 @@
 import { Vendors } from '../constants';
 
-export default function vendors(state = [], action) {
+export default function platforms(state = [], action) {
   switch(action.type) {
 
     case Vendors.SET_VENDORS:

@@ -22,7 +22,6 @@ class Splash extends Component {
   }
 
   render() {
-    console.log('P', this.props);
     const { auth, contest, vendors, user } = this.props;
 
     const boards = vendors.map((vendor, index) => {
