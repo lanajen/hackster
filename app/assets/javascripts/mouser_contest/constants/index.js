@@ -19,10 +19,11 @@ export default {
   }),
 
   User: keymirror({
+    SET_ADMIN: null,
     SET_PROJECTS: null,
     SET_SUBMISSION: null,
-    SUBMIT_PROJECTS: null,
-    SET_ADMIN: null
+    SET_USER: null,
+    SUBMIT_PROJECTS: null
   }),
 
   Vendors: keymirror({
