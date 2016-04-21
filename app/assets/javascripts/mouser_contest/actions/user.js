@@ -1,19 +1,21 @@
 import { User } from '../constants';
-import { fetchProjects, postProject } from '../requests';
+import { determineHost } from '../../utils/Mouser'
 
+const API_PATH = determineHost();
 
-export function setUser(id) {
-  return {
-    type: User.SET_USER,
-    id
-  }
-}
+// Getting projects from Rails API by user_id
 export function getProjects(userId) {
-  userId = 1207 || userId;
+  userId = userId || 1;
   return dispatch => {
-    return fetchProjects(userId)
-      .then((projects) => dispatch(setProjects(projects)))
-      .catch((err) => console.error('error?', err))
+    return fetch(API_PATH + userId )
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        const projects = data.projects.map(project => { return { value: project, label: project.name }; });
+        dispatch(setProjects(projects));
+      })
+      .catch(err => console.log('ERROR', err))
   }
 }
 
@@ -24,6 +26,7 @@ function setProjects(projects) {
   }
 }
 
+/* Selecting a project / readying it for submission */
 export function selectProject(project) {
   return {
     type: User.SET_SUBMISSION,
@@ -31,19 +34,26 @@ export function selectProject(project) {
   }
 }
 
-export function submitProject(project, currentVendor) {
+/* Submitting projects via POST to Rails API */
+export function submitProject() {
   return (dispatch, getState) => {
-    const user_id = getState().user.id || -1;
-    const { id, cover_image_url } = project.value;
+    const { id, authors, name, communities } = getState().user.submission.value;
     const payload = {
-      project_id: id,
-      user_id: user_id,
-      vendor_user_name: currentVendor.name,
-      workflow_state: 'undecided',
-      cover_image_url,
-
+      userId: authors[0].id,
+      projectId: id,
+      description: name,
+      vendor: communities[0].id
     }
-    return postProject(payload);
+    fetch(API_PATH, {
+      method: 'post',
+      mode: 'no-cors',
+      body: JSON.stringify(payload),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
+    })
+    .catch((err) => console.err(err));
   }
 }
 
