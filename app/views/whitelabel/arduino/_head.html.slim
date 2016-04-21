@@ -10,8 +10,8 @@
 
     javascript:
       $(function(){
-        var arduinoToken = window.localStorage.getItem("ideapp.token");
-        if (arduinoToken != "#{current_user.authorizations.where(provider: 'arduino').first.try(:uid)}") {
+        var arduinoUid = window.localStorage.getItem("ideapp.uid");
+        if (arduinoUid && arduinoUid !== "" && arduinoUid !== "#{current_user.authorizations.where(provider: 'arduino').first.try(:uid)}") {
           $('#sign-out-form')
             .append('<input type="hidden" name="redirect_to" value="#{raw arduino_sign_in_url}" />')
             .submit();
