@@ -1,21 +1,19 @@
 import { User } from '../constants';
-import { determineHost } from '../../utils/Mouser'
+import { fetchProjects, postProject } from '../requests';
 
-const API_PATH = determineHost();
 
-// Getting projects from Rails API by user_id
+export function setUser(id) {
+  return {
+    type: User.SET_USER,
+    id
+  }
+}
 export function getProjects(userId) {
-  userId = userId || 1;
+  userId = 1207 || userId;
   return dispatch => {
-    return fetch(API_PATH + userId )
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        const projects = data.projects.map(project => { return { value: project, label: project.name }; });
-        dispatch(setProjects(projects));
-      })
-      .catch(err => console.log('ERROR', err))
+    return fetchProjects(userId)
+      .then((projects) => dispatch(setProjects(projects)))
+      .catch((err) => console.error('error?', err))
   }
 }
 
@@ -26,7 +24,6 @@ function setProjects(projects) {
   }
 }
 
-/* Selecting a project / readying it for submission */
 export function selectProject(project) {
   return {
     type: User.SET_SUBMISSION,
@@ -34,26 +31,19 @@ export function selectProject(project) {
   }
 }
 
-/* Submitting projects via POST to Rails API */
-export function submitProject() {
+export function submitProject(project, currentVendor) {
   return (dispatch, getState) => {
-    const { id, authors, name, communities } = getState().user.submission.value;
+    const user_id = getState().user.id || -1;
+    const { id, cover_image_url } = project.value;
     const payload = {
-      userId: authors[0].id,
-      projectId: id,
-      description: name,
-      vendor: communities[0].id
+      project_id: id,
+      user_id: user_id,
+      vendor_user_name: currentVendor.name,
+      workflow_state: 'undecided',
+      cover_image_url,
+
     }
-    fetch(API_PATH, {
-      method: 'post',
-      mode: 'no-cors',
-      body: JSON.stringify(payload),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      })
-    })
-    .catch((err) => console.err(err));
+    return postProject(payload);
   }
 }
 
