@@ -1,29 +1,15 @@
 class Mouser::Api::SubmissionsController < Mouser::Api::BaseController
   def create
-    submission_data = JSON.parse(request.body.read)
+    @submission = JSON.parse(request.body.read)
 
-    submission_data = {
-      project_id: submission_data['project_id'],
-      user_id: submission_data['user_id'],
-      vendor_user_name: submission_data['vendor_user_name']
-    }
+    logger.info @submission
 
-    submission = MouserSubmission.new submission_data
-
-    if submission.save
-      render status: :ok, nothing: true
-    else
-      render status: :unprocessable_entity, json: submission.errors
+    MouserSubmission.find_or_create_by(user_id: @submission['userId'], project_id: @submission['projectId']) do |user|
+      user.project_name = @submission['description']
+      user.vendor_id = @submission['vendor']
+      user.status = 'undecided'
     end
-  end
 
-  def update_workflow
-    submission = MouserSubmission.find params[:id]
-
-    if submission.send("#{params[:event]}!")
-      render status: :ok, nothing: true
-    else
-      render status: :unprocessable_entity, json: submission.errors
-    end
+    render text: 'POST successful'
   end
 end

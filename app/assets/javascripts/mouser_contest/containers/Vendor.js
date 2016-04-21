@@ -4,17 +4,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import Hero from '../components/Hero'
-import ImportProject from '../components/ImportProject'
 
 import * as AuthActions from '../actions/auth';
-import * as UserActions from '../actions/user';
 
 class Vendor extends Component {
   constructor(props) {
     super(props);
-
-    props.actions.getProjects(props.user.id);
-
   }
 
   // React router and connect will complain if we move this up into the constructor.
@@ -25,7 +20,7 @@ class Vendor extends Component {
   }
 
   render() {
-    const { location, user, vendors, actions } = this.props;
+    const { location, user, vendors } = this.props;
 
     let currentVendorIndex = 0;
     const currentVendor = vendors.filter((vendor, index) => {
@@ -63,7 +58,6 @@ class Vendor extends Component {
               </div>
             </div>
           </div>
-          <ImportProject userData={user} currentVendor={currentVendor} selectProject={actions.selectProject} submitProject={actions.submitProject}/>
 
           <div className="vendor-links">
             {this._composeVendorLink(previousVendor, 'Previous')}
@@ -104,7 +98,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({ ...AuthActions, ...UserActions} , dispatch) };
+  return { actions: bindActionCreators(AuthActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Vendor);
