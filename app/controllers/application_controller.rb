@@ -349,6 +349,8 @@ class ApplicationController < ActionController::Base
     def load_project_with_hid
       return @project if @project
 
+      return not_found unless params[:project_slug].present?
+
       hid = params[:project_slug].match /-?([a-f0-9]{6})\Z/
 
       if hid and @project = BaseArticle.find_by_hid(hid[1])
