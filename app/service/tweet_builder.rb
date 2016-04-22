@@ -65,7 +65,7 @@ class TweetBuilder
     end
 
     def get_size message, url_included=false
-      size = message.size + URL_SIZE
+      size = message.size + (URL_SIZE * 2)  # one URL for project link, one for image link
       size -= url.size - 1 if url_included
       size
     end
