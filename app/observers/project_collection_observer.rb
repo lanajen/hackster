@@ -1,6 +1,6 @@
 class ProjectCollectionObserver < ActiveRecord::Observer
   def after_create record
-    update_project record.project if record.collectable_type == 'Assignment'
+    expire_cache record unless record.collectable.class == Platform
   end
 
   def after_destroy record
@@ -9,8 +9,6 @@ class ProjectCollectionObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    update_project record.project if record.collectable_id_changed? and record.collectable_type == 'Assignment'
-
     if record.workflow_state_changed?
       record.project.update_counters only: [:communities] if record.project_id and record.project
       if record.certified_changed?
@@ -40,7 +38,7 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       return unless record.project
 
       # memcache
-      keys = extra_keys + ["project-#{project.id}"]
+      keys = extra_keys + ["project-#{project.id}-teaser", "project-#{project.id}"]
       Cashier.expire *keys
 
       # fastly
@@ -59,11 +57,5 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       counters += [:external_projects, :private_projects] if record.collectable.class.in? [List, Platform]
       counters += [:products] if record.collectable.class.in? [Platform]
       record.collectable.update_counters only: counters
-    end
-
-    def update_project project
-      Cashier.expire "project-#{project.id}-teaser"
-
-      project.reject! if project.pending_review? and project.force_hide?
     end
 end

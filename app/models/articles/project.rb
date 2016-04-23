@@ -1,6 +1,9 @@
 class Project < BaseProject
   PUBLIC_CONTENT_TYPES = {
+    'Getting started guide' => :getting_started,
+    'Protip' => :protip,
     'Showcase (no or partial instructions)' => :showcase,
+    'Teardown/Unboxing' => :teardown,
     'Tutorial (complete instructions)' => :tutorial,
     'Work in progress' => :wip,
   }.freeze

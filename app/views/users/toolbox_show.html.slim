@@ -7,22 +7,7 @@
 - cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}-toolbox", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list
     .wrapper
-      .main-section-actions.clearfix.mg-30
-        - if user_is_current_or_admin?
-          .pull-left
-            => link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
-          .btn-group.pull-right
-            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "New project"), new_project_path, class: 'btn btn-default'
-            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-              i.fa.fa-ellipsis-v
-            ul.dropdown-menu.pull-right
-              li= link_to "Submit a link", new_project_path(type: 'external')
-
-      ul.user-profile-nav
-        li= link_to 'Public projects', user_projects_path(@user)
-        - if user_is_current_or_admin?
-          li= link_to 'Private projects', user_projects_drafts_path(@user)
-        li= link_to 'Respected projects', user_projects_respected_path(@user)
+      = render 'subpage_nav'
 
       .clearfix
         h2.pull-left

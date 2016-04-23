@@ -3,23 +3,11 @@
   .popup-overlay-outer
     .popup-overlay-inner
       button.close.unselectable data-target='#embed-popup' data-effect='fade' &times;
-      h3.top Share
-      = render 'projects/share_by_author'
-      .add-to-list
       h3 Embed the widget on your own site
       #project-embed
         p
           | Add the following snippet to your HTML:
-          input.embed-code  type='text' onclick="this.select();" value="<iframe frameborder='0' height='270' scrolling='no' src='#{project_embed_url(@project, host: site_host)}' width='360'></iframe>"
-        .row= render partial: 'projects/project_embed_thumb', locals: { project: @project, host: site_host }
+          textarea.embed-code  type='text' onclick="this.select();"
+            | <iframe frameborder='0' height='327.5' scrolling='no' src='#{project_embed_url(@project, host: site_host)}' width='350'></iframe>
+        = render partial: 'projects/project_embed_thumb', locals: { project: @project, host: site_host }
         .clearfix
-
-<!-- AddThis Button BEGIN -->
-javascript:
-  var addthis_share = {
-    "data_track_addressbar":false,
-    url: "#{project_url(@project)}",
-    title: "#{@project.decorate.to_share_message}"
-  };
-<!-- AddThis Button END -->
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>

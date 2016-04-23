@@ -28,6 +28,29 @@ class BaseArticleDecorator < ApplicationDecorator
     BaseArticle::DIFFICULTIES.invert[model.difficulty.to_sym] if model.difficulty.present?
   end
 
+  def difficulty_label opts={}
+    if model.difficulty.present?
+      text = BaseArticle::DIFFICULTIES.invert[model.difficulty.to_sym]
+      css_class = case model.difficulty
+      when 'beginner'
+        'success'
+      when 'intermediate'
+        'warning'
+      when 'advanced'
+        'danger'
+      when 'hardcore'
+        text = h.content_tag(:i, '', class: 'fa fa-exclamation') + h.content_tag(:i, '', class: 'fa fa-exclamation') + h.content_tag(:span, text)
+        'danger'
+      end
+
+      if opts[:clickable]
+        h.link_to(text, h.projects_path(difficulty: model.difficulty), class: "project-difficulty text-#{css_class}")
+      else
+        h.content_tag(:span, text, class: "label label-#{css_class} label-hollow")
+      end
+    end
+  end
+
   def duration
     return if model.duration.blank? or model.duration.zero?
 
@@ -42,7 +65,7 @@ class BaseArticleDecorator < ApplicationDecorator
       prefix + h.pluralize(_duration.floor, 'day')
     else
       h.pluralize (model.duration % 1 == 0 ? model.duration.floor : model.duration), 'hour'
-    end + ' to complete'
+    end
   end
 
   def description mode=:normal, options={}

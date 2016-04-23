@@ -75,7 +75,7 @@ class BaseArticleObserver < ActiveRecord::Observer
 
     cache_keys = []
 
-    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date respects_count comments_count)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date difficulty duration conetnt_type)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       cache_keys << "project-#{record.id}-teaser"
     end
 
@@ -88,7 +88,7 @@ class BaseArticleObserver < ActiveRecord::Observer
       cache_keys << "project-#{record.id}-widgets"
     end
 
-    if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count workflow_state content_type)).any?
+    if (record.changed & %w(name guest_name cover_image one_liner private slug respects_count comments_count workflow_state content_type difficulty)).any?
       cache_keys << "project-#{record.id}-thumb"
     end
 

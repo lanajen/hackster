@@ -97,8 +97,10 @@ export default class Comment extends Component {
                     </li>)
                 : (<li className="text-muted">(Discussion closed)</li>);
 
+    let counterText = likingUsers.length == 1 ? 'thank' : 'thanks';
+
     let counter = likingUsers.length > 0
-                ? (<li className="r-comments-counter"><i className="fa fa-thumbs-o-up"></i><span>{likingUsers.length}</span></li>)
+                ? (<li className="r-comments-counter"><span>{likingUsers.length} {counterText}</span></li>)
                 : (null);
 
     let trailingMiddot = counter ? (<li className="middot">•</li>) : (null);

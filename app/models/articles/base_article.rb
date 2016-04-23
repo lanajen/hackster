@@ -127,7 +127,7 @@ class BaseArticle < ActiveRecord::Base
     :community_ids, :new_group_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
-    :locale, :article
+    :locale, :article, :discovery_settings
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed, :updater_id
   accepts_nested_attributes_for :images, :team_members,
@@ -145,6 +145,7 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
+  validates :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   # before_validation :check_if_current
@@ -186,7 +187,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :toc, :array, default: []
   hstore_column :hproperties, :tweeted_at, :datetime
 
-  self.per_page = 18
+  self.per_page = 21
 
   workflow do
     state :unpublished do
@@ -508,6 +509,11 @@ class BaseArticle < ActiveRecord::Base
     (Time.now - (made_public_at || created_at)) / SECONDS_IN_A_DAY
   end
 
+  # highly unoptimized, use cautiously
+  def all_platforms
+    (Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", platform_tags_cached.map{|t| t.downcase }).uniq + part_platforms.default_scope + part_secondary_platforms.default_scope).uniq
+  end
+
   def buy_link_host
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
@@ -521,6 +527,32 @@ class BaseArticle < ActiveRecord::Base
 
   def disable_tweeting?
     assignment.present?
+  end
+
+  def discovery_settings
+    if pryvate
+      'private'
+    elsif workflow_state == 'unpublished'
+      'unpublished'
+    else
+      'published'
+    end
+  end
+
+  def discovery_settings=(val)
+    case val
+    when 'private'
+      self.pryvate = true
+      self.workflow_state = 'unpublished'
+    when 'unpublished'
+      self.pryvate = false
+      self.workflow_state = 'unpublished'
+    when 'published'
+      self.pryvate = false
+      if workflow_state == 'unpublished'
+        self.workflow_state = 'pending_review'
+      end
+    end
   end
 
   def external
@@ -635,6 +667,18 @@ class BaseArticle < ActiveRecord::Base
     images.first
   end
 
+  def is_protip?
+    content_type.in? %w(protip getting_started teardown)
+  end
+
+  def is_tutorial?
+    content_type == 'tutorial'
+  end
+
+  def is_wip?
+    content_type == 'wip'
+  end
+
   def languages
     widgets.where(type: %w(CodeWidget)).map(&:language).uniq - ['text']
   end
@@ -695,7 +739,7 @@ class BaseArticle < ActiveRecord::Base
   def post_new_tweet_at! time
     message = prepare_tweet
     self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update', message
+    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:file_url)
   end
 
   def prepare_tweet
@@ -705,6 +749,10 @@ class BaseArticle < ActiveRecord::Base
 
   def product_tags_string_changed?
     (product_tags_string_was || '').split(',').map{|t| t.strip } != (product_tags_string || '').split(',').map{|t| t.strip }
+  end
+
+  def slug_hid
+    [slug, hid].join('-')
   end
 
   def should_tweet?
@@ -780,10 +828,6 @@ class BaseArticle < ActiveRecord::Base
     define_method "#{type}_id=" do |val|
       set_collection_id val, type
     end
-  end
-
-  def slug_hid
-    [slug, hid].join('-')
   end
 
   private

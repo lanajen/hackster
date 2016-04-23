@@ -1,0 +1,55 @@
+- ref = defined?(ref) ? ref : nil
+- ref_id = defined?(ref_id) ? ref_id : nil
+- offset = defined?(offset) ? offset : nil
+- col = (defined?(col) and col.present?) ? col : 'col-sm-6 col-md-4'
+- style = (defined?(width) and width) ? "width:#{width}px" : nil
+- host = (defined?(host) && host.present? ? host : request.host)
+- locale = defined?(locale) ? locale : params[:locale]
+- project_link = project_url(project, host: host, locale: locale, path_prefix: params[:path_prefix])
+
+.project-embed-thumb data-ref=ref data-ref-id=ref_id data-offset=offset class="#{col} #{'has-data' if ref and ref_id}" style=style
+  .project-thumb-container
+    - cache [I18n.locale, "project-#{project.id}-embed-thumb", host, params[:path_prefix]], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 24.hours do
+      - project = project.decorate
+      div class="project-#{project.id}"
+        .thumb.project-thumb
+          .thumb-image.has-link-overlay
+            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
+            = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: '_blank'
+            .thumb-image-inner-top
+              .award-container
+              p.description.show-on-hover
+                = project.one_liner
+                - unless is_whitelabel?
+                  .featured-logo.show-on-hover
+                    = link_to ("featured on " + image_tag('hackster_logo_text_white.png', alt: 'Hackster.io', title: SLOGAN)).html_safe, root_url(host: host), target: '_blank'
+            .thumb-image-inner
+              h4
+                - if project.pryvate?
+                  i.fa.fa-lock>
+                => link_to project.name, project_link, class: 'project-link-with-ref'
+              p
+                => project.content_type_to_human
+                - if project.external?
+                  - if project.guest_name.present?
+                    ' by
+                    span.user-name>= project.guest_name
+                  - elsif u = project.users.first
+                    ' by
+                    span.user-name=> link_to u.name, u
+                  ' on
+                  strong= project.website_host
+                - else
+                  = render partial: 'projects/by_team', locals: { project: project }
+
+              ul.list-inline.project-stats
+                li
+                  span.stat-figure> = number_with_delimiter project.impressions_count
+                  = pluralize_without_count project.impressions_count, 'view'
+                li
+                  span.stat-figure> = number_with_delimiter project.comments_count
+                  = pluralize_without_count project.comments_count, 'comment'
+                li
+                  span.stat-figure> = number_with_delimiter project.respects_count
+                  = pluralize_without_count project.respects_count, 'respect'
+            .thumb-super

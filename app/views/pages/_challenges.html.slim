@@ -3,7 +3,7 @@
     .container
       .row
         .suggestions.col-sm-12
-          h3 Live challenges:
+          h3 Live contests:
           ul
             - @challenges.each do |challenge|
               li= link_to challenge.decorate.alternate_name, challenge

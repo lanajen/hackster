@@ -8,7 +8,7 @@
   - cache [I18n.locale, 'home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
 
     section#home-banner
-      .home-slide#hello-hackster
+      .home-slide#hello-hackster style=(Time.now < Time.parse('2016-04-22 23:59 -0700') ? "background-image:url('#{asset_url('home/prairie.jpg')}')" : nil)
         .container.text-center
           h1 Hackster is a community dedicated to learning hardware.
           .hack-selector-container

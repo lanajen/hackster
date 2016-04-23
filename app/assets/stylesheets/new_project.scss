@@ -1,4 +1,18 @@
 /* Project page */
+.wrapper780, .wrapper680, .wrapper764 {
+  max-width: 100%;
+  margin: 0 auto;
+}
+.wrapper780 {
+  width: 780px;
+}
+.wrapper680 {
+  width: 680px;
+}
+.wrapper764 {
+  width: 764px;
+}
+
 @media (max-width: 768px) {
   .container-desktop {
     padding-right: 0;
@@ -316,6 +330,9 @@
     font-weight: 600;
     color: #888;
   }
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .section-container {
@@ -330,7 +347,8 @@
   word-break: break-word;
   background: #fff;
   & + .section-container {
-    border-top: 1px solid #ddd;
+    // border-top: 1px solid #ddd;
+    margin-top: 20px;
   }
   h1, h2, h3, h4 {
     font-weight: normal;
@@ -359,13 +377,15 @@
   .title-toggle {
     font-weight: bold;
     text-transform: uppercase;
-    &:hover {
-      text-decoration: none;
-      color: #999;
-    }
     i {
       font-size: 50%;
       float: right;
+    }
+  }
+  a.title-toggle {
+    &:hover {
+      text-decoration: none;
+      color: #999;
     }
   }
   .subtitle {

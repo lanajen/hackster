@@ -1,11 +1,13 @@
 {
   "name": "hackster",
-<<<<<<< 8e9d89e9a6536810bccd5071d9fc3123de05091c
-  "scripts": {
-  },
-=======
+  "comments": [
+    "need to set manually after deploy:",
+    "API_HOST=host",
+    "FULL_HOST=host",
+    "SUBDOMAIN=subdomain",
+    "DATABASE_URL=dev DB (or copy over DB if big changes needed)"
+  ],
   "scripts": {},
->>>>>>> app.json for heroku
   "env": {
     "ALGOLIA_API_KEY": {
       "required": true
@@ -17,7 +19,6 @@
     "ALGOLIA_SEARCH_KEY": {
       "required": true
     },
-    "API_HOST": "api-dev.hackster.io",
     "ARDUINO_API_HOST": "https://api-dev.arduino.cc",
     "ARDUINO_API_KEY": {
       "required": true
@@ -129,12 +130,9 @@
     }
   },
   "addons": [
-    "heroku-postgresql",
-    "logentries",
     "openredis",
     "memcachier",
-    "newrelic",
-    "scheduler"
+    "heroku-postgresql"
   ],
   "buildpacks": [
     {

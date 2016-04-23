@@ -7,5 +7,5 @@
     = render 'projects/project_embed_button'
     - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
       = render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
-- if @project.buy_link.present?
+/- if @project.buy_link.present?
   = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'

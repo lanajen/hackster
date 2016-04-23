@@ -93,7 +93,7 @@ export default class Comments extends Component {
                                      parentIsDeleted={false}
                                      updateComment={this.updateComment} />
                      })
-                     : ( <div>Be the first to comment!</div> );
+                     : ( <div className="first-comment">Be the first to comment!</div> );
 
     return (
       <div>
