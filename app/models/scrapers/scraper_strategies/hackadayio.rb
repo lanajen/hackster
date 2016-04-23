@@ -48,7 +48,7 @@ module ScraperStrategies
         end
 
         logs = parsed_logs.try(:css, '.buildlogs-list > li')
-        return unless logs.any?
+        return unless logs and logs.any?
 
         logs.each do |log|
           post = @project.build_logs.new
