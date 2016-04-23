@@ -220,58 +220,57 @@
                                 ' This project is part of
                                 = link_to @project.event.name, @project.event
 
-                      section.section-thumbs
-                        h4 About this project
-                        p.project-one-liner= @project.one_liner
+                      - if @project.one_liner.present? or @tags.any?
+                        section.section-thumbs
+                          h4 About this project
+                          p.project-one-liner= @project.one_liner
 
-                        - if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
-                          ul.list-inline.tags
-                            - unknown_platforms = @project.platform_tags_cached.select do |tag|
-                              - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+                          - if @tags.any?
+                            ul.list-inline.tags
+                              - @tags.each do |tag|
+                                li.tag-link
+                                  i.fa.fa-tag
+                                  span= link_to tag, tag_path(tag)
 
-                            - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
-                              li.tag-link
-                                i.fa.fa-tag
-                                span= link_to tag, tag_path(tag)
+                      - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown)) or @project.difficulty.present? or @project.duration.present? or @project.made_public_at or @project.license
+                        section.section-thumbs
+                          h4 Project info
+                          .project-info
+                            - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
+                              .project-info-row
+                                .info-label Type
+                                .info
+                                  - case @project.content_type
+                                    - when 'protip', 'getting_started', 'teardown'
+                                      i.fa.fa-bullseye
+                                      span Protip
+                                    - when 'tutorial'
+                                      i.fa.fa-book
+                                      span Full instructions provided
+                                    - when 'wip'
+                                      i.fa.fa-battery-half
+                                      span Work in progress
 
-                      section.section-thumbs
-                        h4 Project info
-                        .project-info
-                          - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
-                            .project-info-row
-                              .info-label Type
-                              .info
-                                - case @project.content_type
-                                  - when 'protip', 'getting_started', 'teardown'
-                                    i.fa.fa-bullseye
-                                    span Protip
-                                  - when 'tutorial'
-                                    i.fa.fa-book
-                                    span Full instructions provided
-                                  - when 'wip'
-                                    i.fa.fa-battery-half
-                                    span Work in progress
+                            - if @project.difficulty.present?
+                              .project-info-row
+                                .info-label Difficulty
+                                .info= @project.difficulty_label(clickable: true)
 
-                          - if @project.difficulty.present?
-                            .project-info-row
-                              .info-label Difficulty
-                              .info= @project.difficulty_label(clickable: true)
+                            - if @project.duration.present?
+                              .project-info-row
+                                .info-label Estimated time
+                                .info= @project.duration
 
-                          - if @project.duration.present?
-                            .project-info-row
-                              .info-label Estimated time
-                              .info= @project.duration
+                            - if @project.made_public_at
+                              .project-info-row
+                                .info-label Published
+                                .info= l @project.made_public_at, format: :long_date
 
-                          - if @project.made_public_at
-                            .project-info-row
-                              .info-label Published
-                              .info= l @project.made_public_at, format: :long_date
-
-                          - if @project.license
-                            .project-info-row
-                              .info-label License
-                              .info
-                                a target='_blank' href=@project.license.url = @project.license.abbr
+                            - if @project.license
+                              .project-info-row
+                                .info-label License
+                                .info
+                                  a target='_blank' href=@project.license.url = @project.license.abbr
 
                       - if @project.publyc?
                         section#respects-section.section-thumbs
@@ -290,17 +289,17 @@
                                   - cache [I18n.locale, "user-#{user.id}-thumb", 'no-link'], tag: ["user-#{user.id}-thumb"] do
                                     = image_tag user.decorate.avatar(:thumb), class: 'user-img img-circle'
 
-                      section.section-thumbs
-                        .primary-action-container
-                          = render partial: 'respects/button', locals: { respectable: @project }
-                        .secondary-actions-container
-                          = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary' }
+                        section.section-thumbs
+                          .primary-action-container
+                            = render partial: 'respects/button', locals: { respectable: @project }
+                          .secondary-actions-container
+                            = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary' }
 
-                          a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
-                            i.fa.fa-share-square-o
-                            span Share
+                            a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
+                              i.fa.fa-share-square-o
+                              span Share
 
-                          = link_to content_tag(:i, '', class: 'fa fa-code') + content_tag(:span, "Embed"), 'javascript:void(0)', 'data-target' => '#embed-popup', class: 'btn btn-secondary btn-sm modal-open'
+                            = link_to content_tag(:i, '', class: 'fa fa-code') + content_tag(:span, "Embed"), 'javascript:void(0)', 'data-target' => '#embed-popup', class: 'btn btn-secondary btn-sm modal-open'
 
       section.section-description
         - cache [I18n.locale, @project, 'left-column', site_user_name, user_signed_in?], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
@@ -341,15 +340,16 @@
                               - @tool_parts.each do |part|
                                 = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
-                - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-                  section#about-project.section-container.collapsed
-                    h2.section-title
-                      span.title.title-toggle
-                        ' Story
-                    .section-content.hljs-active
-                      .medium-editor= @description
-                    .read-more
-                      a.btn.btn-primary href='javascript:void(0)' Read more
+                - cache [I18n.locale, "project-#{@project.id}-story"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                  - if @description.present?
+                    section#about-project.section-container.collapsed
+                      h2.section-title
+                        span.title.title-toggle
+                          ' Story
+                      .section-content.hljs-active
+                        .medium-editor= @description
+                      .read-more
+                        a.btn.btn-primary href='javascript:void(0)' Read more
 
                 - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                   - if @cad_widgets.any?
@@ -503,14 +503,15 @@
                             li
                               a.smooth-scroll href="#things"
                                 | Things
-                        li
-                          a.smooth-scroll href="#about-project"
-                            | Story
-                        - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-                          - @project.toc.each do |title|
-                            li.small-toc
-                              a.smooth-scroll href=id_for_toc(title)
-                                = title_for_toc title
+                        - cache [I18n.locale, "project-#{@project.id}-contents-story"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                          - if @description.present?
+                            li
+                              a.smooth-scroll href="#about-project"
+                                | Story
+                            - @project.toc.each do |title|
+                              li.small-toc
+                                a.smooth-scroll href=id_for_toc(title) data-offset="-10"
+                                  = title_for_toc title
                         - cache ["project-#{@project.id}-contents-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                           - if @cad_widgets.any?
                             li

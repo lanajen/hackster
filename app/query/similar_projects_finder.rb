@@ -21,7 +21,7 @@ class SimilarProjectsFinder
     # respected by same people
 
     # base
-    @results = BaseArticle.where.not(id: @project.id)
+    @results = BaseArticle.publyc.approved.where.not(id: @project.id)
 
     # filter
     @results = @results.joins(:project_collections).where(project_collections: { collectable_id: @project.visible_platforms.pluck(:id), collectable_type: 'Group' })
