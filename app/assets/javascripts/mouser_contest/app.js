@@ -11,16 +11,12 @@ import Admin from './containers/Admin';
 import configureStore from './configStore';
 
 import { setInitialData } from './actions/contest';
-import { setUserAsAdmin } from './actions/user';  // Move this to setInitialData.
 
 const store = configureStore();
 const history = syncHistoryWithStore(browserHistory, store);
 
 const MouserContest = (props) => {
   store.dispatch(setInitialData(props));
-  // Really, we can just set the user model and delimit what we need in the controller before hand.  If they're an admin then
-  // its they are already flagged, just set the user normally.
-  store.dispatch(setUserAsAdmin(true));
 
   return (
     <Provider store={store}>

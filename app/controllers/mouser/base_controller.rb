@@ -34,7 +34,7 @@ class Mouser::BaseController < ActionController::Base
       vendor_data.each_with_index do |v, i|
         if v['user_name'] == user_name
           new_index = i + index
-          if (new_index + 1) >= vendor_data.length
+          if (new_index + 1) > vendor_data.length
             new_index = 0
           elsif new_index < 0
             new_index = vendor_data.length - 1

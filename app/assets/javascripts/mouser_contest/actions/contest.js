@@ -1,52 +1,30 @@
 import moment from 'moment';
 
 import { Contest } from '../constants';
+import { setSubmissionsPage } from './admin';
 import { setVendors } from './vendors';
-import { setUser } from './user';
+import { setUserData, getProjects } from './user';
 
-import { fetchSubmissions, postActivePhase } from '../requests';
-
-function makeSubmissions(amount) {
-  amount = amount || 5;
-  const vendors = [ 'TI', 'Intel', 'NXP', 'ST Micro', 'Cypress', 'Diligent', 'UDOO', 'Seeed Studio' ];
-  const authors = [ 'Duder', 'Satan', 'Bowie', 'IndiaGuy', 'OtherDuder' ];
-  const projects = [ 'Blinky lights', 'Water gun', 'Moar lights', 'VR porn', 'Drugs' ];
-
-  function random(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  }
-
-  return Array.from(new Array(amount), () => {
-    return {
-      id: Math.floor(Math.random() * 100000),
-      author: random(authors),
-      date: randomDate(new Date(2012, 0, 1), new Date()),
-      project: random(projects),
-      status: random([ 'undecided', 'approved', 'rejected' ]),
-      vendor: random(vendors)
-    };
-  });
-}
-
+import { fetchSubmissionsByPage, postActivePhase, updateSubmissionStatus } from '../requests';
 
 export function setInitialData(props) {
-  const { activePhase, phases, vendors, current_user_id } = props;
+  const { activePhase, currentUser, phases, vendors } = props;
 
   return dispatch => {
+    // Contest
     dispatch(setActivePhase(parseInt(activePhase, 10)));
-    dispatch(setUser(current_user_id));
-    dispatch(setVendors(vendors));
     dispatch(setPhases(
       [].slice.call(phases).map(phase => {
         phase.date = moment(phase.date, 'DD-MM-YYYY').format('MMMM Do');
         return phase;
       })
     ));
-  }
+    //User
+    dispatch(setUserData(currentUser));
+    dispatch(getProjects(currentUser.id));
+    //Vendors
+    dispatch(setVendors(vendors));
+  };
 }
 
 export function updateActivePhase(phase) {
@@ -65,51 +43,63 @@ export function setActivePhase(activePhase) {
   return {
     type: Contest.SET_ACTIVE_PHASE,
     activePhase
-  }
+  };
 }
 
 function setPhases(phases) {
   return {
-    type: Contest.SET_PHASES,
+    type: Contest.SET_CONTEST_PHASES,
     phases
-  }
+  };
 }
 
-function setSubmissions(submissions) {
+function setSubmissions(submissions, total) {
   return {
-    type: Contest.SET_SUBMISSIONS,
-    submissions
-  }
+    type: Contest.SET_CONTEST_SUBMISSIONS,
+    submissions,
+    total
+  };
 }
 
 function setSubmission(submission) {
   return {
-    type: Contest.SET_SUBMISSION,
+    type: Contest.SET_CONTEST_SUBMISSION,
     submission
-  }
+  };
 }
 
-export function getSubmissions() {
+export function getSubmissionsByPage(page) {
   return dispatch => {
-    dispatch(setSubmissions(makeSubmissions(30)));
-    // return fetchSubmissions()
-    //   .then(subs => {
-    //     dispatch(setSubmissions(subs));
-    //   })
-    //   .catch(err => console.error('getSubmissions Error: ', err));
-  }
+    return fetchSubmissionsByPage(page)
+      .then(subData => {
+        dispatch(setSubmissionsPage(page));
+        dispatch(setSubmissions(subData.submissions, subData.total));
+      })
+      .catch(err => console.error('getSubmissions Error: ', err));
+  };
 }
 
 export function updateSubmission(submission) {
   return dispatch => {
-    // Make the request, on 200 update the store.
-    dispatch(setSubmission(submission));
-  }
+    return updateSubmissionStatus(submission)
+      .then(res => {
+        dispatch(setSubmission(submission));
+        dispatch(toggleIsHandlingRequest(false));
+      })
+      .catch(err => console.error('updateSubmissionStatus Error ', err));
+  };
+}
+
+export function toggleIsHandlingRequest(bool) {
+  return {
+    type: Contest.TOGGLE_IS_HANDLING_REQUEST,
+    bool
+  };
 }
 
 export function toggleMessenger(messenger) {
   return {
     type: Contest.TOGGLE_MESSENGER,
     messenger
-  }
+  };
 }

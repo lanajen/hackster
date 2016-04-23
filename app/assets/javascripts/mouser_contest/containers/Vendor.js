@@ -6,22 +6,11 @@ import { Link } from 'react-router';
 import Hero from '../components/Hero'
 import ImportProject from '../components/ImportProject'
 
-import * as AuthActions from '../actions/auth';
 import * as UserActions from '../actions/user';
 
 class Vendor extends Component {
   constructor(props) {
     super(props);
-
-    props.actions.getProjects(props.user.id);
-
-  }
-
-  // React router and connect will complain if we move this up into the constructor.
-  componentWillMount() {
-    if(!this.props.auth.authorized) {
-      this.props.actions.authorizeUser(true);
-    }
   }
 
   render() {
@@ -97,14 +86,13 @@ Vendor.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
     user: state.user,
     vendors: state.vendors
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({ ...AuthActions, ...UserActions} , dispatch) };
+  return { actions: bindActionCreators(UserActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Vendor);

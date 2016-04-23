@@ -12,7 +12,7 @@ HackerIo::Application.routes.draw do
       scope module: :api, as: :api do
         resources :phases, only: [:update]
         resources :projects, only: [:index]
-        resources :submissions, only: [:create] do
+        resources :submissions, only: [:index, :create] do
           patch 'workflow' => 'submissions#update_workflow', on: :member
         end
         match "*all" => "base#cors_preflight_check", via: :options

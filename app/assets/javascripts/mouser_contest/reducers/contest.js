@@ -16,10 +16,12 @@ import { Contest } from '../constants';
 
 const initialState = {
   activePhase: 0,
+  isHandlingRequest: false,
+  messenger: { open: false, msg: '', type: 'error' },
   phase: '',
   phases: [],
   submissions: [],
-  messenger: { open: false, msg: '', type: 'error' }
+  totalSubmissions: 0
 }
 
 export default function platforms(state = initialState, action) {
@@ -27,16 +29,21 @@ export default function platforms(state = initialState, action) {
     case Contest.SET_ACTIVE_PHASE:
       return { ...state, activePhase: action.activePhase };
 
-    case Contest.SET_PHASES:
+    case Contest.SET_CONTEST_PHASES:
       return { ...state, phases: action.phases };
 
-    case Contest.SET_SUBMISSION:
-      return { ...state, submissions: state.submissions.map(sub => {
-        return action.submission.id === sub.id ? action.submission : sub;
-      })};
+    case Contest.SET_CONTEST_SUBMISSION:
+      console.log("UPDATING", action.submission);
+      const updateSubmissions = state.submissions.map(sub => {
+        return action.submission.id === sub.id ? { ...sub, ...action.submission } : sub;
+      });
+      return { ...state, submissions: updateSubmissions };
 
-    case Contest.SET_SUBMISSIONS:
-      return { ...state, submissions: action.submissions };
+    case Contest.SET_CONTEST_SUBMISSIONS:
+      return { ...state, submissions: action.submissions, totalSubmissions: action.total };
+
+    case Contest.TOGGLE_IS_HANDLING_REQUEST:
+      return { ...state, isHandlingRequest: action.bool };
 
     case Contest.TOGGLE_MESSENGER:
       return { ...state, messenger: action.messenger };

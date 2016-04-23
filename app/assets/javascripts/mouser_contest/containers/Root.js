@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as AuthActions from '../actions/auth';
 import * as ContestActions from '../actions/contest';
 
 import Messenger from '../components/Messenger';
@@ -31,14 +30,13 @@ Root.PropTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
     contest: state.contest,
     user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({...AuthActions, ...ContestActions}, dispatch) };
+  return { actions: bindActionCreators(ContestActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);
