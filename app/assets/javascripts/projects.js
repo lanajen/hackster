@@ -29,8 +29,8 @@ $select2target = null;
 
 (function ($, window, document, undefined) {
   $(function() {
-    $('.project-page-single-column .section-description').resize(function(){
-      setAffixableBottom();
+    $('.project-page-single-column').resize(function(){
+      updatedScrollEventHandlers();
     });
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();

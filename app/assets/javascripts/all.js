@@ -2,7 +2,6 @@ function setAffixableBottom() {
   if ($('#project-side-nav').length){
     var cont = $('.project-page-single-column').length ? $('.project-page-single-column .section-description') : $('#content .container');
     var bottom = cont.offset().top + cont.outerHeight() - parseInt(cont.css('padding-bottom'));
-    console.log('bottom', bottom);
     $('#project-side-nav').data('affix-bottom', bottom);
   }
 }
