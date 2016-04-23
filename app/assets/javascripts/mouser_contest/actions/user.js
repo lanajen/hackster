@@ -40,7 +40,7 @@ function setSubmissions(submissions) {
   return {
     type: User.SET_USER_SUBMISSIONS,
     submissions
-  }
+  };
 }
 
 export function submitProject(project, currentVendor) {
@@ -56,7 +56,7 @@ export function submitProject(project, currentVendor) {
     };
 
     return postSubmission(submission)
-      .then(res => dispatch(setSubmission(submission)));
+      .then(res => dispatch(setSubmission(submission)))
       .catch(err => console.error('postSubmission Error ', err));
   };
 }
