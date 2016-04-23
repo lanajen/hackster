@@ -2,14 +2,6 @@
   .box
     .box-title
       h2 Start a new project
-      .subheading
-        p
-          | Projects describe devices that you created, whether you're writing a full tutorial, showcasing the end result, or documenting your work in progress.
-          br
-          ' Not what you want?
-          => link_to 'Write an article', new_project_path(type: 'article')
-          ' instead.
-          = link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
 
     .box-content
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
