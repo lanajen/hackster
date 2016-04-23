@@ -27,8 +27,6 @@
             - if @group.company_logo
               = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
             = @group.name
-            - if @group.verified?
-              i.fa.fa-check-circle.istooltip.verified title="Verified"
             - if @group.disclaimer.present?
               i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
 
@@ -102,7 +100,7 @@
                 = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', button_partial: 'button_text', display_name: true }
 
       - if @platform.projects_count > 0
-        section#projects.section-feature
+        section#projects.section-feature.white-bg
           .container
             .header-with-more-buttons.clearfix
               h2.section-title.pull-left
@@ -111,34 +109,13 @@
               = link_to 'View more projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
             .row
               - if @platform.projects_count == 1
-                .col-md-4.col-sm-3
+                .col-md-4.col-sm-2
               - elsif @platform.projects_count == 2
-                .col-md-2
+                .col-md-3
               - @projects.each_with_index do |col, i|
-                - css = i == 2 ? '4 hidden-sm' : nil
-                = render partial: 'projects/project_thumb', locals: { project: col.project, col: css, ref: 'platform', ref_id: [@platform.id, 'trending', nil, nil, nil].join('_'), offset: i, certifier: (col.certified? ? @platform.name: nil) }
+                - col_css = i == 2 ? '4 hidden-sm' : nil
+                = render partial: 'projects/project_thumb', locals: { project: col.project, col: col_css, ref: 'platform', ref_id: [@platform.id, 'trending', nil, nil, nil].join('_'), offset: i, certifier: (col.certified? ? @platform.name: nil) }
             = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
-
-      - if @platform.enable_products and @platform.products_count > 0
-        section#products.section-feature
-          .container
-            .header-with-more-buttons.clearfix
-              h2.section-title.pull-left
-                = @platform.products_text
-                span.bdg= @platform.products_count
-              - if @platform.products_count > 3
-                = link_to 'View more startups &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
-            .row
-              - if @platform.products_count == 1
-                .col-md-4.col-sm-3
-              - elsif @platform.products_count == 2
-                .col-md-2
-              - @products.each_with_index do |col, i|
-                - css = i == 2 ? '4 hidden-sm' : nil
-                = render partial: 'projects/product_thumb', locals: { project: col.project, col: css }
-
-            - if @platform.products_count > 3
-              = link_to 'View more &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       - if @platform.enable_sub_parts and @platform.sub_platforms_count > 0
         section#parts.section-feature

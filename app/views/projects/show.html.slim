@@ -8,445 +8,489 @@
 
   javascript:
     $(function(){
-      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span> #{pluralize_without_count @project.impressions_count, 'view'}";
-      $('.impression-stats').html(s);
-      s = "<span class='stat-figure'>#{number_with_delimiter @project.comments_count}</span> #{pluralize_without_count @project.comments_count, 'comment'}";
-      $('.comment-stats').html(s);
-      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span> #{pluralize_without_count @project.respects_count, 'respect'}";
-      $('.respect-stats').html(s);
+      var s = "<span class='stat-figure'>#{number_with_delimiter @project.impressions_count}</span>";
+      $('.impression-stats .stat-figure').replaceWith(s);
+      s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span>";
+      $('.respect-stats .stat-figure').replaceWith(s);
     });
 
 = content_for :no_container do
 
-  - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 5.days, skip_digest: true do
+  #content.project-page.project-page-single-column class="project-#{@project.id}"
+    - if @can_edit or @project.pryvate?
+      = content_for :js do
 
-    = render 'projects/project_embed_popup'
+        javascript:
+          $('.close-admin-section').click(function(e){
+            $('.admin-section').slideUp();
+          });
 
-    = render 'projects/switcher'
+      section.admin-section
+        .container
+          .row
+            .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+              .project-edit-block
+                .box
+                  .box-title
+                    h3
+                      i.fa.fa-cog
+                      span Project admin
+                      .pull-right.close-admin-section= link_to '&times'.html_safe, 'javascript:void(0)'
+                  .box-content
+                    - if @can_edit
+                      - if is_whitelabel? and @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
+                        .alert.alert-warning
+                          p
+                            strong> Heads up!
+                            ' This write-up is currently visible only to you on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the components, tools or apps lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
 
-    #content.project-page class="project-#{@project.id}"
-      .container-desktop.container
-        = render 'projects/project_type'
-        .row
-          - cache_unless @can_edit, [I18n.locale, @project, 'left-column', site_user_name], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
+                      / Status
+                      section.section-thumbs
+                        h4 Project status
+                        p.project-status.small
+                          - if @project.publyc?
+                            - if @project.unpublished?
+                              i.fa.fa-eye-slash
+                              span Unlisted - Accessible via link and visible on profile
+                            - elsif @project.pending_review?
+                              i.fa.fa-eye
+                              span Public - Pending review
+                            - else
+                              i.fa.fa-eye
+                              span Public
+                          - else
+                            - who = %w(you)
+                            - who += ['team members'] if @project.team_members_count > 1
+                            - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
+                            span
+                              i.fa.fa-lock
+                              span Private - Only #{who.to_sentence} can see it
+                        .btn-group
+                          = link_to 'Publication settings', publish_project_path(@project), class: "btn btn-default btn-sm"
 
-            .col-md-8.left-column
-              - if !is_whitelabel? and @project.event
-                .project-group
-                  i.fa.fa-challenge>
-                  ' This project is part of
-                  => link_to @project.event.name, @project.event
+                      / Manage actions
+                      section.section-thumbs
+                        h4 Project settings
+                        .btn-group
+                          - if !@project.model.respond_to?(:unlocked?) or @project.unlocked? or can? :edit_locked, @project
+                            = link_to 'Edit', edit_project_path(@project), class: "btn btn-default btn-sm"
+                          - else
+                            = link_to 'Locked for editing', 'javascript:void(0)', class: "btn btn-default disabled btn-sm"
 
-              - if @project.certified? current_platform.try(:full_name)
-                .project-group
-                  i.fa.fa-certificate.text-gold>
-                  ' This project is certified by
-                  = @project.certifier_names(current_platform.try(:full_name)).to_sentence
+                          a.btn.btn-default.btn-sm.dropdown-toggle href='javascript:void(0)' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            i.fa.fa-ellipsis-v
+                          ul.dropdown-menu
+                            li= link_to 'Project logs', project_logs_path(@project)
+                            /li= link_to 'Issue tracker', project_issues_path(@project)
+                              li.divider
+                            - if @project.pryvate?
+                              li= link_to 'Private sharing link', 'javascript:void(0)', class: 'modal-open', data: { target: '#project-private-share' }
+                              = content_for :js do
 
-              - cache [I18n.locale, "project-#{@project.id}-teaser", is_whitelabel?], tag: ["project-#{@project.id}-teaser"], skip_digest: true do
-                - unless is_whitelabel?
-                  - if ProjectCollection.assignment_or_event_for_project?(@project.id)
-                    .project-group
-                      i.fa.fa-graduation-cap>
-                      ' This project is part of
+                                #project-private-share.popup-overlay.modal-popup
+                                  .popup-overlay-bg
+                                  .popup-overlay-outer
+                                    .popup-overlay-inner
+                                      button.close.btn-close.unselectable data-target='#project-private-share' data-effect='fade' &times;
+                                      p You can share your #{@project.identifier} with others while keeping it private. For this, send them the following link:
+                                      input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
+
+                              li.divider
+                            - else
+                              li= link_to 'Moderator review', review_project_path(@project)
+                              li.divider
+                            li= link_to "Delete this #{@project.identifier}", @project, method: :delete, data: { confirm: "Are you sure you want to delete this #{@project.identifier}? There's no way to undo it!" }
+
+                      / Assignment settings
                       - if @project.assignment.present?
-                        - if @project.assignment.promotion.avatar
-                          => image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
-                        = link_to @project.assignment.to_label, assignment_path(@project.assignment)
-                      - elsif @project.event.present?
-                        - if @project.event.avatar
-                          => image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
-                        = link_to @project.event.name, event_path(@project.event)
-                        / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-                          span.project-award<
-                            i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+                        section.section-thumbs
+                          h4 Assignment settings
+                          - if @project.assignment_submitted_at.present?
+                            p
+                              ' Submitted on
+                              = l @project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+                          - else
+                            .alert.alert-danger.text-center
+                              span
+                                p
+                                  - if @project.assignment.submit_by_date.present?
+                                    i.fa.fa-exclamation-circle>
+                                    - if Time.now < @project.assignment.submit_by_date
+                                      ' Assignment due in
+                                      b==> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
+                                    - else
+                                      b> Assignment submission is past due
+                                      ' by
+                                      ==> time_ago_in_words @project.assignment.submit_by_date
+                                    | (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
+                                  - else
+                                    | This assignment hasn't been submitted.
+                                p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
+                      - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.own.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
+                        section.section-thumbs
+                          h4 Assignment
+                          .alert.alert-warning.text-center
+                            span
+                              p
+                                | It looks like you have due assignments
+                              p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
-                  - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
-                  - if @winning_entry
-                    .project-group
-                      span.project-award>
-                        i.fa.fa-trophy
-                      ' This project won
-                      => @winning_entry.prizes.pluck(:name).to_sentence
-                      ' in
-                      = link_to @winning_entry.challenge.name, @winning_entry.challenge
+                    - elsif @project.pryvate?
+                      .alert.alert-warning.text-center
+                        p
+                          i.fa.fa-lock>
+                          | This project is private.
 
-                #home.project-banner style="background-image: url('#{@project.cover_image(:large)}')"
-                  .project-banner-inner
-                    h1.project-title
-                      - if @project.is_idea?
-                        i.fa.fa-lightbulb-o.private-project-icon>
-                      => @project.name
-                      - if @project.license
-                        a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
-                    p.project-one-liner= @project.one_liner
+    - cache [I18n.locale, @project, site_user_name, user_signed_in?], tag: ["project-#{@project.id}"], expires_in: 5.days, skip_digest: true do
 
-                    - if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
-                      ul.list-inline.tags
-                        - unknown_platforms = @project.platform_tags_cached.select do |tag|
-                          - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+      = render 'projects/project_embed_popup'
 
-                        - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
-                          li= link_to tag, tag_path(tag), class: 'tag'
+      = render 'projects/switcher'
 
-                    ul.list-inline.project-stats
-                      li.impression-stats
-                        span.stat-figure> = number_with_delimiter @project.impressions_count
-                        = pluralize_without_count @project.impressions_count, 'view'
-                      li.comment-stats
-                        span.stat-figure> = number_with_delimiter @project.comments_count
-                        = pluralize_without_count @project.comments_count, 'comment'
-                      li.respect-stats
-                        span.stat-figure> = number_with_delimiter @project.respects_count
-                        = pluralize_without_count @project.respects_count, 'respect'
-                      - if @project.replications_count > 0
-                        li
-                          span.stat-figure> = number_with_delimiter @project.replications_count
-                          = pluralize_without_count @project.replications_count, 'replication'
+      section.section-teaser
+        .container-desktop.container
+          - cache [I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?], tag: ["project-#{@project.id}-teaser", "team-#{@project.team_id}"], skip_digest: true do
 
-              - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-                section#about-project.section-container.section-collapsible
-                  h2.section-title
-                    a.title.title-toggle href=''
-                      ' About this project
-                      i.fa.fa-chevron-down
-                      i.fa.fa-chevron-up
-                  .section-content.hljs-active
-                    .medium-editor= @description
-
-              - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
-                - if @hardware_parts.any?
-                  section#components.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Components and supplies
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      table.sortable-table.table.table-hover.fields-container
-                        / thead
-                          th.text-right colspan=4
-                            = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, 'Buy all'), 'javascript:void(0)', class: 'modal-open btn btn-primary btn-sm', 'data-target' => '#buy-all-quote'
-                        tbody
-                          - @hardware_parts.each do |part|
-                            = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
-
-              - cache [I18n.locale, "project-#{@project.id}-tool-parts", site_user_name], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
-                - if @tool_parts.any?
-                  section#tools.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Necessary tools and machines
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      table.sortable-table.table.table-hover.fields-container
-                        tbody
-                          - @tool_parts.each do |part|
-                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
-
-              - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
-                - if @cad_widgets.any?
-                  section#cad.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Custom parts and enclosures
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      - @cad_widgets.each do |widget|
-                        = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
-
-              - cache [I18n.locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"], skip_digest: true do
-                - if @schematic_widgets.any?
-                  section#schematics.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Schematics
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      - @schematic_widgets.each do |widget|
-                        = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
-
-              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
-                - if @software_parts.any?
-                  section#apps.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Apps and online services
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      table.sortable-table.table.table-hover.fields-container
-                        tbody
-                          - @software_parts.each do |part|
-                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
-
-              - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
-                - if @code_widgets.any?
-                  section#code.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Code
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      = render partial: "api/embeds/code_widgets", locals: { widgets: @code_file_widgets }
-                      - @code_repo_widgets.each do |widget|
-                        = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
-
-              - cache [I18n.locale, "project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"], skip_digest: true do
-                - if (@project.build_logs_count > 0 and !@project.private_logs)
-                  section#logs.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        - if @project.private_logs
-                          i.fa.fa-lock.istooltip>  title='Project logs are private' data-container='body'
-                        ' Project logs
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      - if log = @project.build_logs.published.last.try(:decorate)
-                        .section-inset
-                          .section-title
-                            h3.title
-                              = link_to log.title, log_path(@project, log)
-                              .annotation
-                                | Project log ##{log.sub_id}
-
-                              .subtitle
-                                ' On
-                                => l log.created_at
-                                ' -
-                                = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
-
-                          .section-content.medium-editor
-                            = raw log.decorate.body
-
+              #home
+                .project-title
+                  h1
+                    ==> @project.name
+                  ul.list-with-dividers.project-credits
+                    li
+                      ' Made by
+                      - if @project.guest_name.present?
+                        => @project.guest_name
                       - else
-                        p No project logs yet.
+                        - if @project.team.full_name.present?
+                          => @project.team.name
+                          | (
+                        = @project.users.map{|u| link_to(u.name, u) }.to_sentence.html_safe
+                        - if @project.team.full_name.present?
+                          | )
 
-                      - if @can_edit
-                        = link_to 'See and manage all logs (including drafts)', project_logs_path(@project), class: 'btn btn-default btn-sm'
-                      - elsif @project.build_logs_count > 1
-                        = link_to 'Read previous logs', project_logs_path(@project), class: 'btn btn-default btn-sm btn-block'
+                      - if @project.guest_name.present? and poster = @project.users.first
+                        li
+                          ' Posted by
+                          = link_to poster.name, poster
 
-              - cache [I18n.locale, "project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"], skip_digest: true do
-                - if (@project.issues_count > 0 and !@project.private_issues)
-                  section#issues.section-container.section-collapsible
+                    - unless is_whitelabel?
+                      - cache [I18n.locale, "project-#{@project.id}-communities", user_signed_in?], tag: ["project-#{@project.id}-communities"], skip_digest: true do
+                        - if @communities.exists? #@project.communities_count > 0
+                          li
+                            ' Published in
+                            = @communities.map{|c| link_to c.name, c }.to_sentence.html_safe
+
+                .row.project-teaser
+                  .col-md-7.col-md-offset-0-5.left-column
+                    .project-banner style="background-image: url('#{@project.cover_image(:large)}')"
+
+                  .col-md-4.right-column
+                    .container-mobile
+                      - if @project.certified? current_platform.try(:full_name)
+                        .section-thumbs
+                          i.fa.fa-certificate.text-gold
+                          span
+                            ' This project is certified by
+                            = @project.certifier_names(current_platform.try(:full_name)).to_sentence
+
+                      - unless is_whitelabel?
+                        - if @project.assignment
+                          .section-thumbs
+                            p.text-muted.small
+                              i.fa.fa-graduation-cap.small
+                              span
+                                ' This project is part of
+                                = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+
+                        - if @winning_entry
+                          .section-thumbs
+                            p.text-muted.small
+                              i.fa.fa-trophy.small
+                              span
+                                ' This project won
+                                => @winning_entry.prizes.pluck(:name).to_sentence
+                                ' in
+                                = link_to @winning_entry.challenge.name, @winning_entry.challenge
+
+                        - if @project.event
+                          .section-thumbs
+                            p.text-muted.small
+                              i.fa.fa-beer.small
+                              span
+                                ' This project is part of
+                                = link_to @project.event.name, @project.event
+
+                      section.section-thumbs
+                        h4 About this project
+                        p.project-one-liner= @project.one_liner
+
+                        - if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
+                          ul.list-inline.tags
+                            - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                              - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+
+                            - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                              li.tag-link
+                                i.fa.fa-tag
+                                span= link_to tag, tag_path(tag)
+
+                      section.section-thumbs
+                        h4 Project info
+                        .project-info
+                          - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
+                            .project-info-row
+                              .info-label Type
+                              .info
+                                - case @project.content_type
+                                  - when 'protip', 'getting_started', 'teardown'
+                                    i.fa.fa-bullseye
+                                    span Protip
+                                  - when 'tutorial'
+                                    i.fa.fa-book
+                                    span Full instructions provided
+                                  - when 'wip'
+                                    i.fa.fa-battery-half
+                                    span Work in progress
+
+                          - if @project.difficulty.present?
+                            .project-info-row
+                              .info-label Difficulty
+                              .info= @project.difficulty_label(clickable: true)
+
+                          - if @project.duration.present?
+                            .project-info-row
+                              .info-label Estimated time
+                              .info= @project.duration
+
+                          - if @project.made_public_at
+                            .project-info-row
+                              .info-label Published
+                              .info= l @project.made_public_at, format: :long_date
+
+                          - if @project.license
+                            .project-info-row
+                              .info-label License
+                              .info
+                                a target='_blank' href=@project.license.url = @project.license.abbr
+
+                      - if @project.publyc?
+                        section#respects-section.section-thumbs
+                          ul.list-inline.text-muted.small.project-stats-inline
+                            li.impression-stats.istooltip title="Views"
+                              i.fa.fa-eye
+                              span.stat-figure= number_with_delimiter @project.impressions_count
+                            li.respect-stats.istooltip title="Respects"
+                              i.fa.fa-thumbs-o-up
+                              span.stat-figure= number_with_delimiter @project.respects_count
+
+                          - cache [I18n.locale, "project-#{@project.id}-respects"], tag: ["project-#{@project.id}-respects"] do
+                            - if @project.respects_count > 0
+                              .respecting-faces
+                                - @respecting_users.each do |user|
+                                  - cache [I18n.locale, "user-#{user.id}-thumb", 'no-link'], tag: ["user-#{user.id}-thumb"] do
+                                    = image_tag user.decorate.avatar(:thumb), class: 'user-img img-circle'
+
+                      section.section-thumbs
+                        .primary-action-container
+                          = render partial: 'respects/button', locals: { respectable: @project }
+                        .secondary-actions-container
+                          = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary' }
+
+                          a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
+                            i.fa.fa-share-square-o
+                            span Share
+
+                          = link_to content_tag(:i, '', class: 'fa fa-code') + content_tag(:span, "Embed"), 'javascript:void(0)', 'data-target' => '#embed-popup', class: 'btn btn-secondary btn-sm modal-open'
+
+      section.section-description
+        - cache [I18n.locale, @project, 'left-column', site_user_name, user_signed_in?], tag: ["project-#{@project.id}-left-column"], skip_digest: true do
+
+          .container
+            .row
+              .col-md-7.col-md-offset-0-5.left-column.container-mobile
+                - cache [I18n.locale, "project-#{@project.id}-parts", site_user_name], tag: ["project-#{@project.id}-parts"], skip_digest: true do
+
+                  - if @hardware_parts.any? or @software_parts.any? or @tool_parts.any?
+                    section#things.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          ' Things used in this project
+
+                      .section-content
+                        - if @hardware_parts.any?
+                          .title
+                            strong Hardware components:
+                          table.sortable-table.table.table-hover.fields-container
+                            tbody
+                              - @hardware_parts.each do |part|
+                                = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
+
+                        - if @software_parts.any?
+                          .title
+                            strong Software apps and online services:
+                          table.sortable-table.table.table-hover.fields-container
+                            tbody
+                              - @software_parts.each do |part|
+                                = render partial: 'widgets/embeds/show/part', locals: { part: part }
+
+                        - if @tool_parts.any?
+                          .title
+                            strong Hand tools and fabrication machines:
+                          table.sortable-table.table.table-hover.fields-container
+                            tbody
+                              - @tool_parts.each do |part|
+                                = render partial: 'widgets/embeds/show/part', locals: { part: part }
+
+                - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                  section#about-project.section-container.collapsed
                     h2.section-title
-                      a.title.title-toggle href=''
-                        - if @project.private_issues
-                          i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
-                        ' Issues
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      - if issues = @project.issues.where(type: 'Issue').open and issues.exists?
-                        - issues.each do |issue|
+                      span.title.title-toggle
+                        ' Story
+                    .section-content.hljs-active
+                      .medium-editor= @description
+                    .read-more
+                      a.btn.btn-primary href='javascript:void(0)' Read more
+
+                - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
+                  - if @cad_widgets.any?
+                    section#cad.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          ' Custom parts and enclosures
+                      .section-content
+                        - @cad_widgets.each do |widget|
+                          = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+                - cache [I18n.locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"], skip_digest: true do
+                  - if @schematic_widgets.any?
+                    section#schematics.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          ' Schematics
+                      .section-content
+                        - @schematic_widgets.each do |widget|
+                          = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+                - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
+                  - if @code_widgets.any?
+                    section#code.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          ' Code
+                      .section-content
+                        = render partial: "api/embeds/code_widgets", locals: { widgets: @code_file_widgets }
+                        - @code_repo_widgets.each do |widget|
+                          = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+                - cache [I18n.locale, "project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"], skip_digest: true do
+                  - if (@project.build_logs_count > 0 and !@project.private_logs)
+                    section#logs.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          - if @project.private_logs
+                            i.fa.fa-lock.istooltip>  title='Project logs are private' data-container='body'
+                          ' Project logs
+                      .section-content
+                        - if log = @project.build_logs.published.last.try(:decorate)
                           .section-inset
                             .section-title
                               h3.title
-                                = link_to issue.title, issue_path(@project, issue)
+                                = link_to log.title, log_path(@project, log)
                                 .annotation
-                                  | Issue ##{issue.sub_id}
+                                  | Project log ##{log.sub_id}
 
                                 .subtitle
                                   ' On
-                                  => l issue.created_at
+                                  => l log.created_at
                                   ' -
-                                  = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+                                  = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
 
-                            .section-content
-                              = raw issue.body
+                            .section-content.medium-editor
+                              = raw log.decorate.body
 
-                      - else
-                        p No issues yet.
-
-                      = link_to 'See all issues', project_issues_path(@project), class: 'btn btn-default btn-sm'
-
-              section#comments.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    ' Comments
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
-
-          .col-md-4.right-column
-            .container-mobile
-              - if @can_edit
-                - if is_whitelabel? and @project.publyc? and @project.has_platform? and !@project.has_part_related_to_origin_platform?
-                  .alert.alert-warning
-                    p
-                      strong> Heads up!
-                      ' This write-up is currently visible only to you on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the components, tools or apps lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
-                section.section-thumbs
-                  / h4 Manage this project
-                  = render 'base_articles/manage_actions', { btn_size: '' }
-
-              - elsif @project.pryvate?
-                .alert.alert-warning.text-center
-                  p
-                    i.fa.fa-lock>
-                    | This project is private.
-
-              - if @can_edit
-                - if @project.assignment.present?
-                  section.section-thumbs
-                    h4 Assignment
-                    - if @project.assignment_submitted_at.present?
-                      p
-                        ' Submitted on
-                        = l @project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
-                    - else
-                      .alert.alert-danger.text-center
-                        span
-                          p
-                            - if @project.assignment.submit_by_date.present?
-                              i.fa.fa-exclamation-circle>
-                              - if Time.now < @project.assignment.submit_by_date
-                                ' Assignment due in
-                                b=> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
-                              - else
-                                b> Assignment submission is past due
-                                ' by
-                                => time_ago_in_words @project.assignment.submit_by_date
-                              | (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
-                            - else
-                              | This assignment hasn't been submitted.
-                          p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
-                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.own.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
-                  section.section-thumbs
-                    h4 Assignment
-                    .alert.alert-warning.text-center
-                      span
-                        p
-                          | It looks like you have due assignments
-                        p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
-
-              - if @project.publyc?
-                section.section-thumbs
-                  = render 'actions'
-
-              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
-                - if @project.guest_name.present?
-                  section.section-thumbs
-                    h4 Created by
-                    p.user-name= @project.guest_name
-
-                    p
-                      ' Are you
-                      span.user-name= @project.guest_name
-                      ' ?
-                      span.text-muted Claim this project and add it to your profile.
-                    - if user_signed_in?
-                      = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
-                    - else
-                      = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
-
-                  - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
-                    section.section-thumbs
-                      h4 Posted by
-                      = render partial: 'users/member_thumb_mini', locals: { user: poster }
-
-                - else
-                  section.section-thumbs#team
-                    h4
-                      - if @project.team.full_name.present?
-                        = @project.team.name
-                      - elsif @project.team_members_count > 1
-                        | Team members
-                      - else
-                        | Author
-                    - @project.team_members.includes(:user, user: :avatar).each do |member|
-                      = render partial: 'users/member_thumb_mini', locals: { member: member }
-
-              - if @project.event
-                - if can? :request_access, @project.team
-                  span.team-request
-                    - if user_signed_in? and member = current_user.is_team_member?(@project)
-                      - if member.request_pending?
-                        span.label.label-default Request to join team pending
-                    - else
-                      = link_to 'I want to join the team!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
-                  javascript:
-                    $(function(){ $('.team-request').insertAfter('#team h4'); });
-
-              - cache [I18n.locale, "project-#{@project.id}-credits"], tag: ["project-#{@project.id}-credits"], skip_digest: true do
-                - if @credit_lines.any?
-                  section.section-thumbs
-                    h4 Additional contributors
-                    ul
-                      - @credit_lines.each do |credit_line|
-                        li
-                          - if credit_line.name.present?
-                            - if credit_line.work.present?
-                              => credit_line.work.try(:capitalize)
-                              ' by
-                            - if credit_line.link.present?
-                              = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
-                            - else
-                              span.user-name= credit_line.name
-
-              - if !is_whitelabel? and @communities.exists? #@project.communities_count > 0
-                section.section-thumbs
-                  h4
-                    | Communities this project is part of
-                    /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                  - @communities.each do |community|
-                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
-
-              - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"], skip_digest: true do
-                - if @project.publyc?
-                  - if @respecting_users.count > 0
-                    section.section-thumbs
-                      h4 Members who respect this project
-                      = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
-                  - if @replicating_users.count > 0
-                    section.section-thumbs
-                      h4 Project replicated by
-                      = render partial: 'widgets/replication_widget', locals: { users: @replicating_users }
-
-                / # - if hacker_space = @project.hacker_space
-                  section.section-thumbs
-                    h4 Made at
-                    = link_to hacker_space.name, hacker_space_path(hacker_space)
-
-                - if !is_whitelabel? and @challenge_entries.exists?
-                  section.section-thumbs
-                    h4 Challenges
-                    - @challenge_entries.each do |entry|
-                      p
-                        - if entry.awarded?
-                          ' Won
-                          => entry.prizes.pluck(:name).to_sentence
-                          ' in
                         - else
-                          ' Participated in
-                        = link_to entry.challenge.name, entry.challenge
+                          p No project logs yet.
 
-              - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other", skip_digest: true do
-                - if @other_projects.count > 0
-                  section.section-thumbs
-                    h4 Similar projects you might like
-                    - @other_projects.each_with_index do |project, i|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_small)}')"
-                        = link_to '', project_path(project, ref: 'similar', ref_id: @project.id, offset: i), class: 'link-overlay'
-                        .project-thumb-mini-inner
-                          h4= link_to project.name, project
-                          / # p= render partial: 'projects/by_team', locals: { project: project }
+                        - if @can_edit
+                          = link_to 'See and manage all logs (including drafts)', project_logs_path(@project), class: 'btn btn-default btn-sm'
+                        - elsif @project.build_logs_count > 1
+                          = link_to 'Read previous logs', project_logs_path(@project), class: 'btn btn-default btn-sm btn-block'
 
-              - if @project.made_public_at
-                section.section-thumbs
-                  h4 Published on
-                  = l @project.made_public_at, format: :long_date
+                - cache [I18n.locale, "project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"], skip_digest: true do
+                  - if (@project.issues_count > 0 and !@project.private_issues)
+                    section#issues.section-container
+                      h2.section-title
+                        span.title.title-toggle
+                          - if @project.private_issues
+                            i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
+                          ' Issues
+                      .section-content
+                        - if issues = @project.issues.where(type: 'Issue').open and issues.exists?
+                          - issues.each do |issue|
+                            .section-inset
+                              .section-title
+                                h3.title
+                                  = link_to issue.title, issue_path(@project, issue)
+                                  .annotation
+                                    | Issue ##{issue.sub_id}
 
-              - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
+                                  .subtitle
+                                    ' On
+                                    => l issue.created_at
+                                    ' -
+                                    = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+
+                              .section-content
+                                = raw issue.body
+
+                        - else
+                          p No issues yet.
+
+                        = link_to 'See all issues', project_issues_path(@project), class: 'btn btn-default btn-sm'
+
+                - cache [I18n.locale, "project-#{@project.id}-team", @project.guest_name, user_signed_in?], tag: ["project-#{@project.id}-team", "project-#{@project.id}-credits", "team-#{@project.team_id}"], skip_digest: true do
+                  section#team.section-container
+                    h2.section-title
+                      span.title Credits
+                    .section-content
+                      - if @project.guest_name.present?
+                        .member-thumb
+                          p.user-name= @project.guest_name
+
+                          p
+                            ' Are you
+                            span.user-name= @project.guest_name
+                            ' ?
+                            span.text-muted Claim this project and add it to your profile.
+                          - if user_signed_in?
+                            = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
+                          - else
+                            = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
+                        - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user).try(:decorate)
+                          .member-thumb.posted-by
+                            ' Posted by
+                            => link_to image_tag(poster.avatar(:mini), class: 'img-circle'), poster
+                            = link_to poster.name, poster
+                      - else
+                        - @project.team_members.each do |member|
+                          = render partial: 'users/user_thumb_wide', locals: { user: member.user.decorate, contribution: member.contribution }
+
+                      - if @credit_lines.any?
+                        .member-thumb
+                          ' Thanks to
+                          = @credit_lines.map{|c| render('credit_line', credit_line: c) }.to_sentence.html_safe
+                          | .
+
+                section#comments.section-container
+                  h2.section-title
+                    span.title.title-toggle
+                      ' Comments
+                  .section-content
+                    = render partial: 'widgets/comments_react', locals: { commentable: @project, placeholder: 'Share your thoughts! What do you like about this project? How could it be improved? Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
+
+              .col-md-4.right-column
                 section.section-thumbs.hidden-xs.hidden-sm
-                  h4
+                  / h4
                     | Table of contents
                   #project-side-nav.affixable style='top:20px' data-top=20
                     #scroll-nav.section-container
@@ -454,24 +498,19 @@
                         li.active
                           a.smooth-scroll href="#home" data-offset='-40'
                             = @project.name
+                        - cache ["project-#{@project.id}-contents-parts"], tag: ["project-#{@project.id}-parts"], skip_digest: true do
+                          - if @parts.any?
+                            li
+                              a.smooth-scroll href="#things"
+                                | Things
                         li
                           a.smooth-scroll href="#about-project"
-                            | About this project
+                            | Story
                         - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
                           - @project.toc.each do |title|
                             li.small-toc
                               a.smooth-scroll href=id_for_toc(title)
                                 = title_for_toc title
-                        - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
-                          - if @hardware_parts.any?
-                            li
-                              a.smooth-scroll href="#components"
-                                | Components and supplies
-                        - cache ["project-#{@project.id}-contents-tool-parts"], tag: ["project-#{@project.id}-tool-parts"], skip_digest: true do
-                          - if @tool_parts.any?
-                            li
-                              a.smooth-scroll href="#tools"
-                                | Necessary tools and machines
                         - cache ["project-#{@project.id}-contents-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                           - if @cad_widgets.any?
                             li
@@ -482,11 +521,6 @@
                             li
                               a.smooth-scroll href="#schematics"
                                 | Schematics
-                        - cache ["project-#{@project.id}-contents-software-parts"], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
-                          - if @software_parts.any?
-                            li
-                              a.smooth-scroll href="#apps"
-                                | Apps and online services
                         - cache ["project-#{@project.id}-contents-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
                           - if @code_widgets.any?
                             li
@@ -509,6 +543,9 @@
                                 = @project.issues_count
                                 | )
                         li
+                          a.smooth-scroll href="#team"
+                            | Credits
+                        li
                           a.smooth-scroll href="#comments"
                             | Comments
                             span.nav-count
@@ -517,13 +554,17 @@
                               | )
 
                     - if @project.publyc?
-                      .show-on-affix style='margin-top:20px;'
-                        = render 'actions'
+                      .show-on-affix style='margin-top:15px;'
+                        = render partial: 'respects/button', locals: { respectable: @project }
+                        = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary', icon_only: true }
+
+                        a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
+                          i.fa.fa-share-square-o
 
     - if @project.publyc?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other", expires_in: 5.days do
         - if @other_projects.count > 0
-          section.other-projects
+          section.section-other-projects
             .container
               section.section-thumbs
                 h4 style='border:0' Similar projects you might like

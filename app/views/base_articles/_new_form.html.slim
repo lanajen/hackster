@@ -38,27 +38,6 @@
         = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
         .form-group
-          .col-md-4
-            label.control-label Template
-          .col-md-8
-            .template-chooser-container.clearfix
-              input type="radio" name="base_article[type]" value="Project" id="base_article_type_project" checked=(@project.type == 'Project')
-              label for="base_article_type_project"
-                span.option-title
-                  i.fa.fa-check.text-success
-                  span Project
-                span.option-description Describe a standalone device you made.
-              input type="radio" name="base_article[type]" value="Article" id="base_article_type_article" checked=(@project.type == 'Article')
-              label for="base_article_type_article"
-                span.option-title
-                  i.fa.fa-check.text-success
-                  span Article
-                span.option-description A more flexible, blog post-like format for everything else.
-            p.help-block
-              ' Not sure which one to choose?
-              = link_to 'Learn more about templates.', 'https://hackster.uservoice.com/knowledgebase/articles/755955-what-s-the-difference-between-a-project-and-an-art', target: '_blank'
-
-        .form-group
           .col-md-8.col-md-offset-4
             = f.button :submit, 'Continue', class: 'btn-block btn-primary'
 
@@ -73,7 +52,7 @@
         | Enter the URL below and we'll import it.
         br
         strong> Note:
-        | Our bot doesn't know how to import full websites, please enter only one project or article page at a time.
+        | Our bot doesn't know how to import full websites, please enter only one web page at a time.
         br
         = link_to 'Click here to import multiple pages at once.', new_project_import_path
 

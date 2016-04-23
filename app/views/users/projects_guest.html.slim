@@ -6,7 +6,7 @@
 
 - cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}-projects-guest", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list
-    .wrapper
+    .wrapper.white-bg
       = render 'subpage_nav'
 
       - if @guest_projects.any?
@@ -16,4 +16,4 @@
         .thumb-list
           .row.project-list
             - @guest_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }

@@ -88,16 +88,17 @@ class ApplicationController < ActionController::Base
   end
 
   def current_site
-    return if request.host == APP_CONFIG['default_host'] or request.host == api_host
+    return if ENV['CLIENT_SUBDOMAIN'].blank? and (request.host == APP_CONFIG['default_host'] or request.host == api_host)
 
     return @current_site if @current_site
-
 
     redirect_to root_url(subdomain: ENV['SUBDOMAIN'], path_prefix: nil) and return unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
   end
 
   def set_current_site domain, subdomain, host
-    if domain == APP_CONFIG['default_domain']
+    if ENV['CLIENT_SUBDOMAIN'].present?
+      ClientSubdomain.find_by_subdomain(ENV['CLIENT_SUBDOMAIN'])
+    elsif domain == APP_CONFIG['default_domain']
       site = ClientSubdomain.find_by_subdomain(subdomain)
       site.present? and site.host == host ? site : nil
     else
@@ -106,7 +107,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_platform
-    return if request.host == APP_CONFIG['default_host'] or request.host == api_host
+    return if ENV['CLIENT_SUBDOMAIN'].blank? and (request.host == APP_CONFIG['default_host'] or request.host == api_host)
 
     return @current_platform if @current_platform
 
@@ -394,7 +395,7 @@ class ApplicationController < ActionController::Base
 
     def path_prefix_valid? path_prefix
       # path always valid when not a whitelabel or isn't configured with a prefix
-      if is_whitelabel? and request.host == current_site.host and current_site.has_path_prefix?
+      if is_whitelabel? and (ENV['CLIENT_SUBDOMAIN'].present? or request.host == current_site.host) and current_site.has_path_prefix?
         current_site.path_prefix == path_prefix
       else
         path_prefix.blank?

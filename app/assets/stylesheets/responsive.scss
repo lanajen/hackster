@@ -98,14 +98,14 @@
     }
   }
   // Globals
-  .slick-prev, .slick-next{
+  .slick-prev, .slick-next, .slick-prev-arr, .slick-next-arr {
     display: none !important;
   }
 }
 
 @media (min-width: 1300px) {
   #nav-non-logo{
-    #nav-actions .nav-link, #nav-actions .nav-link:focus{
+    #nav-actions .nav-link, #nav-actions .nav-link:focus {
       min-width: 130px;
     }
   }

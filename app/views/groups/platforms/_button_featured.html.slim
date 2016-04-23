@@ -1,8 +1,5 @@
 - if request.path !~ /embed/
   - if col.featured?
-    .project-award
-      i.fa.fa-star>
-      | Featured
-    = link_to 'Unfeature this project', platform_project_feature_path(@platform, col.project), data: { method: :delete, remote: true }, class: 'project-feature btn btn-info btn-xs'
-  - else
-    = link_to 'Feature this project', platform_project_feature_path(@platform, col.project), data: { method: :post, remote: true }, class: 'project-feature btn btn-info btn-xs'
+    p.project-award
+      i.fa.fa-star
+      span.award-label Featured by #{col.collectable.name}

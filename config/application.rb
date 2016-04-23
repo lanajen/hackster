@@ -37,7 +37,7 @@ module HackerIo
       :order_observer, :order_line_observer, :address_observer,
       :payment_observer, :prize_observer, :challenge_registration_observer,
       :challenge_idea_observer, :faq_entry_observer,
-      :product_observer, :external_project_observer, :article_observer,
+      :product_observer, :external_project_observer,
       :review_decision_observer, :review_thread_observer,
       :sponsor_relation_observer
 

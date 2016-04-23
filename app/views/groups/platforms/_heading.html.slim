@@ -2,15 +2,6 @@ h1
   - if @group.company_logo
     = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
   = @group.name
-  - if @group.verified
-    i.fa.fa-check-circle.istooltip.verified title="Verified"
-  / ul.list-inline.tags.pull-left
-    li
-      a.tag href='' Beginners
-    li
-      a.tag href='' Wearables
-    li
-      a.tag href='' Wifi
 p
   = @group.mini_resume
   - if @group.disclaimer.present?

@@ -3,7 +3,7 @@
     = content_for :js do
 
       javascript:
-        $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
+        $(".project-#{entry.project_id} .award-container").html("<p class='project-award'><i class='fa fa-trophy'></i><span class='award-label'>#{entry.prizes.pluck(:name).to_sentence}</span></p>");
 
 - else
   - if @projects.any?
@@ -31,7 +31,7 @@
         .thumb-list
           .row.project-list
             - @other_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4, ref: 'challenge', ref_id: @challenge.id, offset: (i + ((safe_page_params || 1) - 1) * Challenge.per_page) + @winning_entries_count }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'challenge', ref_id: @challenge.id, offset: (i + ((safe_page_params || 1) - 1) * Challenge.per_page) + @winning_entries_count }
 
           .row.text-center= will_paginate @other_projects
 
@@ -44,7 +44,7 @@
             - elsif @challenge.open_for_submissions? and !@is_challenge_entrant
               = render partial: 'enter_thumb', locals: { challenge: @challenge }
             - @projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4, ref: 'challenge', ref_id: @challenge.id, offset: i }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'challenge', ref_id: @challenge.id, offset: i }
 
         .row.text-center= will_paginate @projects
       - else
