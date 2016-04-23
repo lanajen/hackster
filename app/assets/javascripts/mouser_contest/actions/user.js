@@ -29,19 +29,19 @@ function setProjects(projects) {
   };
 }
 
+function setSubmission(submission) {
+  return {
+    type: User.SET_USER_SUBMISSION,
+    submission
+  };
+}
+
 function setSubmissions(submissions) {
   return {
     type: User.SET_USER_SUBMISSIONS,
     submissions
   }
 }
-
-// export function selectProject(project) {
-//   return {
-//     type: User.SET_SUBMISSION,
-//     project
-//   };
-// }
 
 export function submitProject(project, currentVendor) {
   return (dispatch, getState) => {
@@ -54,7 +54,9 @@ export function submitProject(project, currentVendor) {
       workflow_state: 'undecided',
       cover_image_url
     };
-    // TODO: We need to set user submissions, so that we can filter out projects that already have been submitted.
-    return postSubmission(submission);
+
+    return postSubmission(submission)
+      .then(res => dispatch(setSubmission(submission)));
+      .catch(err => console.error('postSubmission Error ', err));
   };
 }

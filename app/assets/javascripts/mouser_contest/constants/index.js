@@ -17,8 +17,9 @@ export default {
 
   User: keymirror({
     SET_USER_PROJECTS: null,
-    SET_USER_SUBMISSIONS: null,
-    SET_USER_DATA: null
+    SET_USER_DATA: null,
+    SET_USER_SUBMISSION: null,
+    SET_USER_SUBMISSIONS: null
   }),
 
   Vendors: keymirror({

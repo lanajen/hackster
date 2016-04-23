@@ -22,6 +22,9 @@ export default function user(state = initialState, action) {
     case User.SET_USER_PROJECTS:
       return { ...state, projects: action.projects };
 
+    case User.SET_USER_SUBMISSION:
+      return { ...state, submissions: state.submissions.push(action.submission) };
+
     case User.SET_USER_SUBMISSIONS:
       return { ...state, submissions: action.submissions };
 

@@ -91,7 +91,7 @@ class Admin extends Component {
             backgroundColor: admin.submissionsPage === i+1 ? '#EDF9FD' : '#F9F9F9' }}
           onClick={this.handlePaginationClick.bind(this, i+1)}>{i+1}
         </button>
-      )
+      );
     });
 
     return (
