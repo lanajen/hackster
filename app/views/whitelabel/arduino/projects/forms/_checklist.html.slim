@@ -1,6 +1,6 @@
 #checklist
   ul.fa-ul.checklist
-    - @project.checklist_todo(:april_2016).each do |item|
+    - @project.checklist_todo.each do |item|
       li
         i.fa.fa-li.fa-square-o
         = link_to item[:label], '', class: 'goto', data: { target: eval(item[:goto]) }

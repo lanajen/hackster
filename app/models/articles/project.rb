@@ -41,6 +41,14 @@ class Project < BaseProject
   add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
+  add_checklist :name, 'Name', 'name.present? and !has_default_name?', group: :april_2016
+  add_checklist :one_liner, 'Elevator pitch', nil, group: :april_2016
+  add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url', group: :april_2016
+  add_checklist :description, 'Story', 'Sanitize.clean(description).try(:strip).present? or story_json.present?', group: :april_2016
+  add_checklist :hardware_parts, 'Components', 'hardware_parts.any?', group: :april_2016
+  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?', group: :april_2016
+  add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?', group: :april_2016
+
   def self.model_name
     BaseArticle.model_name
   end

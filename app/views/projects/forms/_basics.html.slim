@@ -17,16 +17,14 @@
     h2 The basics
     .subheading Get started with your project
 
-  .row
-    .col-md-8.col-md-offset-2
-      = f.error_notification
+  = f.error_notification
 
-      .box
-        .box-content
-          = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
-          = f.input :one_liner, as: :text, input_html: { rows: 3 },
-            hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
-          div data-anchor='cover_image'
-            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
+  .box
+    .box-content
+      = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
+      = f.input :one_liner, as: :text, input_html: { rows: 3 },
+        hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
+      div data-anchor='cover_image'
+        = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.decorate.cover_image(:cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format. 1200x900px or higher recommended.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'base_article' }
 
-    = render 'projects/forms/pe_save'
+  = render 'projects/forms/pe_save'

@@ -13,28 +13,26 @@
     .subheading
       | What does one need to replicate this project? This is an extended bill of materials.
 
-  .row
-    .col-md-8.col-md-offset-2
-      = f.error_notification
+  = f.error_notification
 
-      .box data-anchor='hardware_parts'
-        .box-title.small-title
-          h4 Hardware components
-          / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
-        .box-content
-          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :hardware, human_type: 'component', options: { prompt: 'Select a component', label: 'Component', part_type: 'hardware', show_quantity: true, link_type: 'store_link' } }
+  .box data-anchor='hardware_parts'
+    .box-title.small-title
+      h4 Hardware components
+      / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
+    .box-content
+      = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :hardware, human_type: 'component', options: { prompt: 'Select a component', label: 'Component', part_type: 'hardware', show_quantity: true, link_type: 'store_link' } }
 
-      .box data-anchor='tools'
-        .box-title.small-title
-          h4 Software OSs, Apps and online services
-        .box-content
-          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :software, human_type: 'app', options: { prompt: 'Select an app', label: 'App', part_type: 'software', link_type: 'product_page_link' } }
+  .box data-anchor='tools'
+    .box-title.small-title
+      h4 Software OSs, Apps and online services
+    .box-content
+      = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :software, human_type: 'app', options: { prompt: 'Select an app', label: 'App', part_type: 'software', link_type: 'product_page_link' } }
 
-      .box data-anchor='tools'
-        .box-title.small-title
-          h4 Hand tools and fabrication machines
-          / p Here go things like screwdrivers, 3D printers, CNC machines and all things that were used during the making of your project but are not a part of it.
-        .box-content
-          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :tool, human_type: 'tool', options: { prompt: 'Select a tool', label: 'Tool', part_type: 'tool', link_type: 'store_link' } }
+  .box data-anchor='tools'
+    .box-title.small-title
+      h4 Hand tools and fabrication machines
+      / p Here go things like screwdrivers, 3D printers, CNC machines and all things that were used during the making of your project but are not a part of it.
+    .box-content
+      = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :tool, human_type: 'tool', options: { prompt: 'Select a tool', label: 'Tool', part_type: 'tool', link_type: 'store_link' } }
 
-    = render 'projects/forms/pe_save'
+  = render 'projects/forms/pe_save'

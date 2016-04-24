@@ -47,6 +47,12 @@
           = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
           .form-group
             .col-md-4
+              label.control-label Checklist
+            .col-md-8
+              p style='padding:6px 0;margin-bottom:0'= link_to "#{@project.checklist_completion}% complete", edit_project_path(@project)
+
+          .form-group
+            .col-md-4
               label.control-label Privacy settings
             .col-md-8
               .radio.small
