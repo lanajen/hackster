@@ -99,7 +99,7 @@
           - if project_collection.featured?(I18n.short_locale)
             javascript:
               text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
-              $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
+              $(text).appendTo($('.project-#{project_collection.project_id} .project-card .award-container'));
 
     .text-center= will_paginate @projects
 

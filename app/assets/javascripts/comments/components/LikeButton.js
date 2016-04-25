@@ -7,13 +7,13 @@ export default class LikeButton extends Component {
   }
 
   handleClick(content) {
-    content === 'Like' ? this.props.postLike(this.props.commentId, this.props.parentId)
+    content === 'Thank' ? this.props.postLike(this.props.commentId, this.props.parentId)
                        : this.props.deleteLike(this.props.commentId, this.props.parentId);
   }
 
   render() {
     let { likingUsers, currentUserId } = this.props;
-    let content = likingUsers.indexOf(currentUserId) >= 0 ? 'Liked' : 'Like';
+    let content = likingUsers.indexOf(currentUserId) >= 0 ? 'Thanked' : 'Thank';
 
     return (
       <li className="r-comment-like-button">

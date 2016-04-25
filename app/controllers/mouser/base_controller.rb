@@ -11,7 +11,7 @@ class Mouser::BaseController < ActionController::Base
 
   private
     def active_phase
-     @active_phase ||= redis.get('active_phase').present? ? redis.get('active_phase').to_i : -1
+      @active_phase ||= redis.exists('active_phase') ? redis.get('active_phase').to_i : -1  # Set 'mouser:active_phase' to 0 in your redis db.
     end
 
     def config
@@ -34,7 +34,7 @@ class Mouser::BaseController < ActionController::Base
       vendor_data.each_with_index do |v, i|
         if v['user_name'] == user_name
           new_index = i + index
-          if (new_index + 1) >= vendor_data.length
+          if (new_index + 1) > vendor_data.length
             new_index = 0
           elsif new_index < 0
             new_index = vendor_data.length - 1

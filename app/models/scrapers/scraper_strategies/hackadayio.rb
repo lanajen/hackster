@@ -47,8 +47,8 @@ module ScraperStrategies
           Nokogiri::HTML(content)
         end
 
-        logs = parsed_logs.css('.buildlogs-list > li')
-        return unless logs.any?
+        logs = parsed_logs.try(:css, '.buildlogs-list > li')
+        return unless logs and logs.any?
 
         logs.each do |log|
           post = @project.build_logs.new

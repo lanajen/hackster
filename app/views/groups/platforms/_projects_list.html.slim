@@ -48,13 +48,13 @@ h1.section-title Community-built projects, powered by #{@platform.name}
         = content_for :js do
           javascript:
             text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { col: col } )}";
-            $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
+            $(text).appendTo($('.project-#{col.project_id} .project-card .award-container'));
       - else
         - if col.featured?(I18n.short_locale)
           = content_for :js do
             javascript:
               text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: col.project } )}";
-              $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
+              $(text).appendTo($('.project-#{col.project_id} .project-card .award-container'));
 
   .row.text-center= will_paginate @projects
 - else

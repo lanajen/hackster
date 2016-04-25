@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AdminActions from '../actions/admin';
-import * as AuthActions from '../actions/auth';
 import * as ContestActions from '../actions/contest';
 
 import SubmissionsTable from '../components/SubmissionsTable';
@@ -15,15 +14,26 @@ class Admin extends Component {
 
     this.handleFilterUpdate = this.handleFilterUpdate.bind(this);
     this.handleActivePhasePromotion = this.handleActivePhasePromotion.bind(this);
+    this.handleSubmissionAction = this.handleSubmissionAction.bind(this);
+    this.handlePaginationClick = this.handlePaginationClick.bind(this);
+
+    this.state = { isFetching: { is: false, id: null } };
   }
 
   componentWillMount() {
-    this.props.actions.getSubmissions();
+    this.props.actions.getSubmissionsByPage(this.props.admin.submissionsPage);
   }
 
   componentDidMount() {
     if(!this.props.user.isAdmin) {
-      this.props.actions.redirectToLogin(this.context.router);
+      this.context.router.push('/');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // Toggles off isFetching when a request is complete.
+    if(this.props.contest.isHandlingRequest && !nextProps.contest.isHandlingRequest) {
+      this.setState({ isFetching: { is: false, id: null }});
     }
   }
 
@@ -48,6 +58,16 @@ class Admin extends Component {
      : false;
   }
 
+  handleSubmissionAction(submission) {
+    this.props.actions.updateSubmission(submission);
+    this.props.actions.toggleIsHandlingRequest(true);
+    this.setState({ isFetching: { is: true, id: submission.id }});
+  }
+
+  handlePaginationClick(page) {
+    this.props.actions.getSubmissionsByPage(page);
+  }
+
   render() {
     const { admin, contest } = this.props;
 
@@ -58,6 +78,20 @@ class Admin extends Component {
                           options={admin.filterOptions[key]}
                           value={admin.filters[key.toLowerCase()]}
                           onChange={this.handleFilterUpdate} />
+    });
+
+    const paginationTabCount = Math.ceil(parseInt(contest.totalSubmissions, 10) / 20);
+    const paginationButtons = Array.from(new Array(paginationTabCount), (x, i) => {
+      return (
+        <button
+          key={i}
+          style={{
+            marginRight: '0.5%',
+            border: '1px solid #E4E2E2',
+            backgroundColor: admin.submissionsPage === i+1 ? '#EDF9FD' : '#F9F9F9' }}
+          onClick={this.handlePaginationClick.bind(this, i+1)}>{i+1}
+        </button>
+      );
     });
 
     return (
@@ -96,9 +130,12 @@ class Admin extends Component {
           </div>
           <div style={{ display: 'flex', padding: '2% 0' }}>
             <span style={{ flexBasis: '3%', fontWeight: 'bold' }}>Filters: </span>
-            { filters }
+            {filters}
           </div>
-          <SubmissionsTable submissions={contest.submissions} filters={admin.filters} onActionClick={this.props.actions.updateSubmission} />
+          <SubmissionsTable submissions={contest.submissions} filters={admin.filters} isFetching={this.state.isFetching} onActionClick={this.handleSubmissionAction} />
+          <div style={{ paddingTop: '1%'}}>
+            {paginationButtons}
+          </div>
         </div>
       </div>
     );
@@ -112,7 +149,6 @@ Admin.contextTypes = {
 Admin.PropTypes = {
   actions: PropTypes.object.isRequired,
   admin: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
   contest: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 }
@@ -120,14 +156,13 @@ Admin.PropTypes = {
 function mapStateToProps(state, ownProps) {
   return {
     admin: state.admin,
-    auth: state.auth,
     contest: state.contest,
     user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({...AdminActions, ...AuthActions, ...ContestActions}, dispatch) };
+  return { actions: bindActionCreators({...AdminActions, ...ContestActions}, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);

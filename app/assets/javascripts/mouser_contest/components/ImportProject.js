@@ -3,6 +3,7 @@ import Select from 'react-select';
 
 const ImportProject = ({ userData, currentVendor, selectProject, submitProject }) => {
   let currentSelection = null;
+
   return (
     <div>
       <Select

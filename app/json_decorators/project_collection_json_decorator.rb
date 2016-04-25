@@ -1,0 +1,2 @@
+class ProjectCollectionJsonDecorator < BaseCollectionJsonDecorator
+end

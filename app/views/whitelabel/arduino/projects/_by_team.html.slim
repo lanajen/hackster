@@ -1,0 +1,13 @@
+- full_url = defined?(full_url) ? full_url : false
+
+' by
+- if project.guest_name.present?
+  span.user-name= project.guest_name
+- elsif project.team.full_name.present?
+  span.user-name= project.team.name
+- else
+  - users = project.users
+  - if project.team_members_count <= 2
+    = project.users.map { |u| content_tag(:span, link_to(html_escape(u.name), (full_url ? user_url(u, subdomain: 'www', locale: I18n.default_www_locale) : u)), class: 'user-name') }.to_sentence.html_safe
+  - else
+    span.user-name= pluralize project.team_members_count, 'developer'

@@ -11,17 +11,22 @@ const initialState = {
 
 export default function user(state = initialState, action) {
   switch(action.type) {
-    case User.SET_ADMIN:
-      return { ...state, isAdmin: action.bool };
 
-    case User.SET_USER:
-      return { ...state, id: action.id };
+    case User.SET_USER_DATA:
+      return {
+        ...state,
+        id: action.id,
+        isAdmin: action.roles.indexOf('admin') !== -1
+      };
 
-    case User.SET_PROJECTS:
+    case User.SET_USER_PROJECTS:
       return { ...state, projects: action.projects };
 
-    case User.SET_SUBMISSION:
-      return { ...state, submission: action.project };
+    case User.SET_USER_SUBMISSION:
+      return { ...state, submissions: state.submissions.push(action.submission) };
+
+    case User.SET_USER_SUBMISSIONS:
+      return { ...state, submissions: action.submissions };
 
     default:
       return state;

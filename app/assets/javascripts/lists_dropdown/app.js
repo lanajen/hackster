@@ -23,10 +23,11 @@ const App = React.createClass({
   render: function() {
 
     let label = this.props.iconOnly === true ? null : (<span>Bookmark</span>);
+    let btnClass = this.props.btnClass ? this.props.btnClass : 'btn-link';
 
     return (
       <div className='lists-dropdown'>
-        <a href="javascript:void(0)" className="btn btn-link btn-sm toggle-lists-btn" onClick={this.handleListButtonClick} title={this.props.iconOnly === true ? "Bookmark" : null}>
+        <a href="javascript:void(0)" className={`btn ${btnClass} btn-sm toggle-lists-btn`} onClick={this.handleListButtonClick} title={this.props.iconOnly === true ? "Bookmark" : null}>
           <i className="fa fa-bookmark-o"></i>
           {label}
         </a>

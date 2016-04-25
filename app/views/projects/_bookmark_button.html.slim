@@ -1,0 +1,7 @@
+- btn_class = local_assigns[:btn_class] || 'btn-secondary'
+
+- if user_signed_in?
+  = react_component('ListsDropdown', { path: api_private_lists_url(host: api_host), projectId: project.id, btnClass: btn_class, iconOnly: local_assigns[:icon_only] }, { class: 'react-btn', style: 'display:inline-block;' })
+- else
+  - content = local_assigns[:icon_only] ? content_tag(:i, '', class: 'fa fa-bookmark-o') : content_tag(:i, '', class: 'fa fa-bookmark-o') + content_tag(:span, 'Bookmark')
+  = link_to content, new_user_session_path(redirect_to: url_for(project)), class: "btn btn-sm #{btn_class}"

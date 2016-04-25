@@ -1,7 +1,7 @@
 class MouserSubmission < ActiveRecord::Base
   include Workflow
 
-  belongs_to :projects
+  belongs_to :project
   belongs_to :user
 
   attr_accessible :project_id, :user_id, :vendor_user_name, :workflow_state

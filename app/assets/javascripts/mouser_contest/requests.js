@@ -1,12 +1,14 @@
 import request from 'superagent';
 import { getApiPath } from '../utils/Utils';
 
-export function fetchSubmissions() {
+export function fetchSubmissionsByPage(page) {
+  page = page || 1;
   return new Promise((resolve, reject) => {
     request
       .get(`${getApiPath()}/submissions`)
+      .query({ page: page })
       .end((err, res) => {
-        err ? reject(err) : resolve(res);
+        err ? reject(err) : resolve(res.body);
       });
   });
 }
@@ -14,7 +16,7 @@ export function fetchSubmissions() {
 export function postActivePhase(phase) {
   return new Promise((resolve, reject) => {
     request
-      .put(`${getApiPath()}/phases/${phase}`)
+      .patch(`${getApiPath()}/phases/${phase}`)
       .withCredentials()
       .end((err, res) => {
         err ? reject(err) : resolve(res);
@@ -27,13 +29,17 @@ export function fetchProjects(userId) {
     request
       .get(`${getApiPath()}/projects?user_id=${userId}`)
       .end((err, res) => {
-        const projects = res.body.projects.map(project => { return { value: project, label: project.name }; });
-        err ? reject(err) : resolve(projects);
+        err
+          ? reject(err)
+          : resolve({
+              projects: res.body.projects.map(project => { return { value: project, label: project.name } }),
+              submissions: res.body.submissions
+            });
       });
   });
 }
 
-export function postProject(payload) {
+export function postSubmission(payload) {
   return new Promise((resolve, reject) => {
     request
       .post(`${getApiPath()}/submissions`)
@@ -45,11 +51,16 @@ export function postProject(payload) {
   });
 }
 
-export function updateProjectStatus(update, projectId) {
+export function updateSubmissionStatus(submission, projectId) {
+  const subMap = {
+    'approved': 'approve',
+    'rejected': 'reject'
+  };
+
   return new Promise((resolve, reject) => {
     request
-      .patch(`${getApiPath()}/submissions/${projectId}`)
-      .send(update)
+      .patch(`${getApiPath()}/submissions/${submission.id}/workflow`)
+      .send({ event: subMap[submission.status] })
       .withCredentials()
       .end((err, res) => {
         err ? reject(err) : resolve(res);

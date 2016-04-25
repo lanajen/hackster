@@ -218,10 +218,10 @@ textarea:focus {
 }
 .alert-danger {
   background-color: #F1C40F;
-  // position: relative;
+  /*position: relative;*/
 }
 .alert-success {
-  // position: relative;
+  /*position: relative;*/
   background-color: #7F8C8D;
 }
 .react-editor-error-message .error-message-body {
@@ -603,7 +603,7 @@ div#user-profile-box div.user-info a.follow-button + a {
   border-right: 1px solid #d4d4d4;
   padding-right: 25px;
   padding: 10px 0;
-  background-image: asset-url("whitelabel/arduino/icon-components-placeholder.svg");
+  background-image: asset-url('whitelabel/arduino/icon-components-placeholder.svg');
   background-repeat: no-repeat;
   background-size: 21px;
   background-position: 30px 50%;
@@ -700,7 +700,7 @@ section.protip-section-heading .btn:last-child {
 
 /* PLACEHOLDER COMPONENTS */
 table.sortable-table tr.fields.part-row td.part-img {
-  background-image: asset-url("whitelabel/arduino/icon-components-placeholder.svg");
+  background-image: asset-url('whitelabel/arduino/icon-components-placeholder.svg');
   background-repeat: no-repeat;
   background-size: 21px;
   background-position: 50%;
@@ -761,7 +761,8 @@ ul.list-inline.protip-parts i.fa-circle-o {
 }
 
 .table>thead>tr>th, .table-condensed-bordered>thead>tr>th, .table>thead>tr>td, .table-condensed-bordered>thead>tr>td, .table>tbody>tr>th, .table-condensed-bordered>tbody>tr>th, .table>tbody>tr>td, .table-condensed-bordered>tbody>tr>td, .table>tfoot>tr>th, .table-condensed-bordered>tfoot>tr>th, .table>tfoot>tr>td, .table-condensed-bordered>tfoot>tr>td {
-  padding: 20px 15px;
+  /*padding: 20px 15px;*/
+  padding: 0;
 }
 
 
@@ -810,7 +811,7 @@ a.similar-proj-btn {
   height: 181px;
   background-color: #F47A20;
   display: inline-block;
-  background-image: asset-url("whitelabel/arduino/icon-similar-projects.svg");
+  background-image: asset-url('whitelabel/arduino/icon-similar-projects.svg');
   color: white;
   background-repeat: none;
   background-repeat: no-repeat;
@@ -1266,7 +1267,7 @@ body.whitelabel .navbar .navbar-brand {
 }
 
 .dropdown-menu li.active a {
-  background-image: asset-url("whitelabel/arduino/icon-checked.svg");
+  background-image: asset-url('whitelabel/arduino/icon-checked.svg');
   background-repeat: no-repeat;
   background-size: 15px;
   background-position-x: calc(100% - 10px);
@@ -1394,7 +1395,7 @@ div.pe-panel div.box div.form-group a[data-method="patch"] {
   width: 47px;
 }
 .btn-primary.add-project span {
-  background-image: asset-url("whitelabel/arduino/Global-Plus.svg");
+  background-image: asset-url('whitelabel/arduino/Global-Plus.svg');
   background-size: 11px;
   background-repeat: no-repeat;
   display: inline-block;
@@ -1413,10 +1414,10 @@ div.pe-panel div.box div.form-group a[data-method="patch"] {
   top: -4px;
 }
 .btn-primary i.fa-cloud-download {
-  background-image: asset-url("whitelabel/arduino/icon-download.svg");
+  background-image: asset-url('whitelabel/arduino/icon-download.svg');
 }
 .btn-primary i.fa-clipboard {
-  background-image: asset-url("whitelabel/arduino/icon-copy.svg");
+  background-image: asset-url('whitelabel/arduino/icon-copy.svg');
   left: 2px;
 }
 
@@ -1529,7 +1530,7 @@ div.pe-panel div.box div.form-group a[data-method="patch"] {
   color: #7f8c8d;
 }
 button#burger-menu {
-  background-image: asset-url("whitelabel/arduino/burger-icon.svg");
+  background-image: asset-url('whitelabel/arduino/burger-icon.svg');
   background-size: 18px;
   background-repeat: no-repeat;
   height: 24px;
@@ -1578,7 +1579,7 @@ div#error.col-md-offset-2 {
 }
 
 
-#navbar-search .form-control {
+#navbar-search .form-control, #navbar-search-mobile .form-control {
   font-size: 13px;
   line-height: 13px;
   letter-spacing: 0.9px;
@@ -1594,7 +1595,7 @@ div#error.col-md-offset-2 {
   border-radius: 0;
   border: 1px solid #DADADA;
 }
-#navbar-search input[type=text] {
+#navbar-search input[type=text], #navbar-search-mobile input[type=text] {
   text-transform: none;
   font-weight: 400;
   color: #7f8c8d;
@@ -1773,6 +1774,9 @@ div.panel-heading h4 {
 
 
 
+
+
+
 /* PROFILE PAGE > TOOLBOX */
 .part-thumb {
   border: none;
@@ -1791,6 +1795,7 @@ div.panel-heading h4 {
 }
 .part-thumb .img-container {
   min-height: 270px;
+  background-color: #f4f4f4;
 }
 .part-thumb h3 {
   padding: 30px 20px;
@@ -1900,10 +1905,59 @@ div.panel-heading h4 {
     padding-left: 10px;
   }
   .table>tbody>tr>td {
-    padding: 20px 5px;
+    /*padding: 20px 5px;*/
+    padding: 0;
   }
 }
 /* END RESPONSIVE COMPONENTS AND SUPPLIES */
+
+
+
+
+
+
+
+
+/* COMPONENTS HOVER */
+  #components tr a {
+    color: #879191;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    padding-top: 56px;
+    padding-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 140px;
+  }
+  #components tr a:hover {
+    color: #879191;
+  }
+  #components tr td.part-img a {
+    padding: 0;
+  }
+  @media screen and (max-width: 500px) {
+    #components tr td.part-img a {
+      padding-top: 30px;
+    }
+  }
+  @media screen and (max-width: 400px) {
+    #components tr td.part-img a {
+      padding-top: 9px;
+    }
+    #components tr a {
+      padding-top: 15px;
+      min-height: 70px;
+    }
+  }
+/* END COMPONENTS HOVER */
+
+
+
+
+
+
+
 
 /* RESPONSIVE CODE BLOCK */
 @media screen and (max-width: 500px) {
@@ -2067,7 +2121,7 @@ div#feed_cont {
 }
 .create-logo {
   float: left;
-  background-image: asset-url("whitelabel/arduino/ProjectHub-logo_compressed.svg");
+  background-image: asset-url('whitelabel/arduino/ProjectHub-logo_compressed.svg');
   background-size: 237px;
   background-repeat: no-repeat;
   height: 36px;
@@ -2086,7 +2140,7 @@ div#feed_cont {
 }
 
 .arduino-bbq.affix #navigation .create-logo {
-  background-image: asset-url("whitelabel/arduino/ProjectHub-logo_compressed.svg");
+  background-image: asset-url('whitelabel/arduino/ProjectHub-logo_compressed.svg');
   margin-top: 10px;
   height: 36px;
   background-size: 237px;
@@ -2159,13 +2213,13 @@ i.fa.fa-circle-o.small {
 }
 
 i.fa-code-fork {
-  background-image: asset-url("whitelabel/arduino/icon-fork.svg");
+  background-image: asset-url('whitelabel/arduino/icon-fork.svg');
 }
 i.fa-share-square-o {
-  background-image: asset-url("whitelabel/arduino/icon-share.svg");
+  background-image: asset-url('whitelabel/arduino/icon-share.svg');
 }
 i.fa-bookmark-o {
-  background-image: asset-url("whitelabel/arduino/icon-bookmark.svg");
+  background-image: asset-url('whitelabel/arduino/icon-bookmark.svg');
 }
 
 
@@ -2182,10 +2236,10 @@ div.pe-panel#software i.fa-link {
   margin-right: 9px;
 }
 i.fa-cloud-upload {
-  background-image: asset-url("whitelabel/arduino/icon-upload.svg");
+  background-image: asset-url('whitelabel/arduino/icon-upload.svg');
 }
 i.fa-link {
-  background-image: asset-url("whitelabel/arduino/icon-link.svg");
+  background-image: asset-url('whitelabel/arduino/icon-link.svg');
   background-size: 18px;
   width: 18px;
 }
@@ -2195,7 +2249,7 @@ i.fa-times-circle-o {
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
-  background-image: asset-url("whitelabel/arduino/Global-Close.svg");
+  background-image: asset-url('whitelabel/arduino/Global-Close.svg');
   background-position: 50% 50%;
   position: relative;
   top: 5px;
@@ -2215,7 +2269,7 @@ div#mini-footer {
   /* END LOCAL PREVIEW ONLY */
 }
 div#mini-footer a.logoArduinoGenuino {
-  background-image: asset-url("whitelabel/arduino/ArduinoGenuino.svg");
+  background-image: asset-url('whitelabel/arduino/ArduinoGenuino.svg');
   background-size: 225px;
   background-repeat: no-repeat;
   position: relative;
@@ -2236,7 +2290,7 @@ div#mini-footer p {
   margin-top: 31px;
 }
 div#mini-footer a#hackster-logo {
-  background-image: asset-url("whitelabel/arduino/hackster_logo.png");
+  background-image: asset-url('whitelabel/arduino/hackster_logo.png');
   background-size: 160px;
   background-repeat: no-repeat;
   position: relative;
@@ -2277,6 +2331,91 @@ div.info-header {
 .protip-show h1 {
   margin-bottom: 30px;
 }
+
+
+
+
+/* SINGLE TOOL PAGE */
+.part-box .img-tool-container {
+  background-color: #f4f4f4;
+}
+.part-box h3 {
+  font-size: 34px;
+  line-height: 40px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-align: left;
+  margin: 30px 0;
+}
+.part-box h3 a {
+  color: #666;
+}
+.part-box h3 a:hover {
+  color: #00979C;
+}
+.part-box.box ul.links.list-inline {
+  margin-bottom: 20px;
+}
+.part-box.box ul.links.list-inline a {
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  vertical-align: middle;
+}
+.part-box.box ul.links.list-inline a.btn-secondary {
+  line-height: 15px;
+  color: #7f8c8d;
+  padding-bottom: 26px;
+}
+.part-box.box .image {
+  margin-top: 40px;
+  padding-left: 27px;
+}
+.part-box.box .image .action-buttons {
+  text-align: left;
+  margin-top: 20px;
+}
+.part-box.box .image .action-buttons button {
+  display: inline-block;
+  width: auto;
+  margin-bottom: 20px;
+}
+.part-box.box .image .action-buttons a.btn.btn-link {
+  text-align: left;
+}
+.main-section-actions .btn-group button.dropdown-toggle {
+  border-left: 3px solid white;
+}
+.main-section-actions .btn-group button.dropdown-toggle:hover {
+  border-left: 3px solid #DAE3E3;
+}
+.main-section-actions .btn-group button.dropdown-toggle:active,
+.main-section-actions .btn-group button.dropdown-toggle:focus {
+  border-left: 3px solid #DADADA;
+}
+.create-first-project {
+  background-color: white;
+  padding: 20px;
+}
+.create-first-project .btn {
+  margin: 10px 0;
+}
+@media screen and (max-width: 1000px) {
+  .part-box.box .image  {
+    padding-left: 15px;
+  }
+  .part-box.box .image {
+    margin-top: 0;
+  }
+}
+/* END SINGLE TOOL PAGE */
+
+
+
+
+
+
 div.project-page h3, div.project-page .h3 {
     font-size: 27px;
     line-height: 31px;
@@ -2641,13 +2780,13 @@ div#main-content .header.clearfix .pull-right {
 
 
 /*div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay {
-  background-image: asset-url("whitelabel/arduino/placeholder_proj_cover.svg");
+  background-image: asset-url('whitelabel/arduino/placeholder_proj_cover.svg');
   transition-property: background-image;
   transition-duration: 0.3s;
   transition-delay: 0s;
 }
 div.thumb-list div.thumb.project-thumb div.thumb-image.has-link-overlay:hover {
-  background-image: asset-url("whitelabel/arduino/placeholder_proj_cover_hover.svg");
+  background-image: asset-url('whitelabel/arduino/placeholder_proj_cover_hover.svg');
   transition-property: background-image;
   transition-duration: 0.3s;
   transition-delay: 0.1s;
@@ -2985,6 +3124,9 @@ a#my_dashboard-mobile {
 .arduino-bbq.affix-top #ham.hamNoBack {
   z-index: 2;
 }
+#navbar-search-mobile {
+  display: none;
+}
 
 @media screen and (max-width: 320px) {
   .thumb .project-stats li {
@@ -3091,13 +3233,84 @@ a#my_dashboard-mobile {
     width: 290px;
     margin: -4px auto 28px;
   }
+  #navbar-search {
+    display: none;
+  }
+  #navbar-search-mobile {
+    display: block;
+    width: 290px;
+    margin: 0 auto 13px auto;
+  }
+  #navbar-search-mobile .form-control {
+    text-align: center;
+    padding: 0;
+    width: 290px;
+    padding: 0 45px;
+  }
+  #navbar-search-mobile .form-control,
+  #navbar-search-mobile .input-group-addon {
+    background-color: white;
+    border: none;
+  }
+  #navbar-search-mobile .input-group-addon {
+    padding: 0;
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  #navbar-search-mobile .input-group-addon i.fa-search {
+    left: 20px;
+    position: relative;
+    z-index: 3;
+    top: 13px;
+  }
+  #navbar-search-mobile .navbar-form {
+    margin: 0;
+    padding: 0;
+  }
+
+}
+@media screen and (max-width: 768px) {
+  .user-profile .default-usr-pic {
+    width: 33px;
+    height: 33px;
+  }
+  .user-profile {
+    top: 16px;
+  }
+  #ham>svg {
+    width: 24px;
+    height: 24px;
+  }
+  .navbar-form {
+    width: 100%;
+  }
+  .navbar-default .navbar-form {
+    border: none;
+  }
+  #navbar-search + .pull-right {
+    width: 350px;
+    text-align: right;
+    display: inline-block;
+  }
+}
+@media screen and (max-width: 960px) {
+  #navbar-search {
+    /*display: inline-block;*/
+    width: 203px;
+    text-align: right;
+  }
+  #navigation {
+    height: 115px;
+  }
 }
 @media screen and (max-width: 1024px) {
   .pull-right a#new_project span {
     display: none;
   }
   .pull-right a#new_project span.icon-minified {
-    background-image: asset-url("whitelabel/arduino/Global-Plus.svg");
+    background-image: asset-url('whitelabel/arduino/Global-Plus.svg');
     background-size: 11px;
     background-repeat: no-repeat;
     display: inline-block;
@@ -3107,7 +3320,8 @@ a#my_dashboard-mobile {
 }
 @media screen and (max-width: 1200px) {
   #navbar-search .form-control {
-    width: 185px;
+    /*width: 185px;*/
+    width: 203px;
   }
 }
 /* END RESPONSIVE HEADER */
@@ -3168,7 +3382,7 @@ a#my_dashboard-mobile {
   }
   .create-logo {
     float: left;
-    background-image: asset-url("whitelabel/arduino/ProjectHub-logo.svg");
+    background-image: asset-url('whitelabel/arduino/ProjectHub-logo.svg');
     background-size: 308px;
     background-repeat: no-repeat;
     height: 83px;

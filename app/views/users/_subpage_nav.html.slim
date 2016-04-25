@@ -1,4 +1,5 @@
 ul.user-profile-nav
+  li= link_to 'Full profile', @user
   - unless request.path == user_projects_path(@user)
     li= link_to 'Public projects', user_projects_path(@user)
   - if user_is_current_or_admin? and request.path != user_projects_path(@user)

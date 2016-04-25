@@ -16,49 +16,76 @@
   - cache [I18n.locale, "project-#{project.id}-thumb", host, params[:path_prefix], certifier], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
     - project = project.decorate
     div class="project-#{project.id}"
-      .thumb.project-thumb
-        .thumb-image.has-link-overlay
-          img.project-thumb-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif') alt=project.name
+      .project-card
+        .card-image
+          img.cover-img data-async-src=project.cover_image(:cover_thumb) src=asset_url('transparent.gif') alt=project.name
           noscript
-            img.project-thumb-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
+            img.cover-img.loaded src=project.cover_image(:cover_thumb) alt=project.name
           = link_to '', project_link, class: 'link-overlay project-link-with-ref', target: (host.present? ? '_blank' : nil)
-          .thumb-image-inner-top
-            .award-container
-            p.description.show-on-hover
-              = project.one_liner
-          .thumb-image-inner
-            - if certifier
-              small.text-gold
-                i.fa.fa-certificate
-                span Certified by #{certifier}
-            h4
-              - if project.pryvate?
-                i.fa.fa-lock>
-              => link_to project.name, project_link, class: 'project-link-with-ref'
-              / - if project.external?
-                i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
-            p
-              => project.content_type_to_human
-              - if project.external?
-                - if project.guest_name.present?
-                  ' by
-                  span.user-name>= project.guest_name
-                - elsif u = project.users.first
-                  ' by
-                  span.user-name=> link_to u.name, u
-                ' on
-                strong= project.website_host
-              - else
-                = render partial: 'projects/by_team', locals: { project: project }
 
-            ul.list-inline.project-stats
+          .card-image-inner.clearfix
+            .project-difficulty.pull-left= project.difficulty_label
+            - if project.content_type.in?(%w(protip tutorial wip getting_started teardown))
+              .pull-left.project-content-type
+                - case project.content_type
+                  - when 'protip', 'getting_started', 'teardown'
+                    i.fa.fa-bullseye
+                  - when 'tutorial'
+                    i.fa.fa-book
+                  - when 'wip'
+                    i.fa.fa-battery-half
+
+            .award-container.pull-left
+              - if certifier
+                .project-award
+                  i.fa.fa-certificate.text-gold
+
+            ul.list-inline.project-stats.pull-right
               li
+                i.fa.fa-eye
                 span.stat-figure> = number_with_delimiter project.impressions_count
-                = pluralize_without_count project.impressions_count, 'view'
               li
-                span.stat-figure> = number_with_delimiter project.comments_count
-                = pluralize_without_count project.comments_count, 'comment'
-              li
+                i.fa.fa-thumbs-o-up
                 span.stat-figure> = number_with_delimiter project.respects_count
-                = pluralize_without_count project.respects_count, 'respect'
-          .thumb-super
+
+          .card-image-overlay
+            .award-container
+              - if certifier
+                .project-award
+                  i.fa.fa-certificate.text-gold
+                  span.award-label Certified by #{certifier}
+
+            - if project.content_type.in?(%w(protip tutorial wip getting_started teardown))
+              p.project-content-type
+                - case project.content_type
+                  - when 'protip', 'getting_started', 'teardown'
+                    i.fa.fa-bullseye
+                    span Protip
+                  - when 'tutorial'
+                    i.fa.fa-book
+                    span Full instructions
+                  - when 'wip'
+                    i.fa.fa-battery-half
+                    span Work in progress
+
+            p= project.one_liner
+
+        .card-text
+          h4
+            - if project.pryvate?
+              i.fa.fa-lock>
+            ==> link_to project.name, project_link, class: 'project-link-with-ref'
+            / - if project.external?
+              i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
+          p
+            - if project.external?
+              - if project.guest_name.present?
+                ' by
+                span.user-name>= project.guest_name
+              - elsif u = project.users.first
+                ' by
+                span.user-name==> link_to u.name, u
+              ' on
+              strong= project.website_host
+            - else
+              = render partial: 'projects/by_team', locals: { project: project }

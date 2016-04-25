@@ -1,0 +1,79 @@
+= content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"
+
+= content_for :js do
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"
+
+  javascript:
+    $(function(){
+      $("#base_article_product_tags_array").select2({
+        tags: true,
+        tokenSeparators: [','],
+        width: '100%'
+      });
+    });
+
+= simple_nested_form_for @project, url: project_path(@project), html: { class: 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='view' value='publish'
+
+  .pe-header
+    h2 Publication settings
+
+  .row
+    .col-md-8.col-md-offset-2
+      = f.error_notification
+
+      .box
+        .box-content
+          = react_component 'ContentTypeSelector', { initialContentType: @project.content_type, initialHasError: :content_type.in?(@project.errors.messages) }, {}
+
+          .form-group
+            .col-md-4
+              label.control-label Tagged platforms
+            .col-md-8
+              - if @project.all_platforms.any?
+                ul.list-inline style='padding:6px 0;margin-bottom:0'
+                  - @project.all_platforms.each do |platform|
+                    li= link_to platform.name, platform, class: 'label label-default'
+              - else
+                p style='padding:6px 0;margin-bottom:0' None
+              p.help-block We automatically tag platforms by looking at your project's list of Things (aka Bill of materials).
+          = f.input :product_tags_array, label: 'Categories', collection: (Project::DEFAULT_TAGS + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }, hint: "Select up to three tags to categorize your project. You can specify the components you used in the hardware section, and we will automatically link your project to platforms based on those, so you do not need to add them here. Eg: avoid using tags such as 'Arduino' or 'Raspberry Pi', prefer 'Home automation' or 'Wearables'."
+          = f.input :difficulty, collection: BaseArticle::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Difficulty', wrapper_html: { 'data-anchor' => 'difficulty' }
+          = f.input :duration, label: 'Required time', hint: 'How long would it take someone to build this project?', wrapper: :addon do
+            = f.input_field :duration
+            span.input-group-addon hours
+          = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
+          .form-group
+            .col-md-4
+              label.control-label Checklist
+            .col-md-8
+              p style='padding:6px 0;margin-bottom:0'= link_to "#{@project.checklist_completion}% complete", edit_project_path(@project)
+
+          .form-group
+            .col-md-4
+              label.control-label Privacy settings
+            .col-md-8
+              .radio.small
+                label
+                  - who = %w(you)
+                  - who += ['team members'] if @project.team_members_count > 1
+                  - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
+
+                  = radio_button 'base_article', :discovery_settings, 'private', checked: @project.discovery_settings == 'private'
+                  i.fa.fa-lock
+                  span Accessible only to #{who.to_sentence}
+                label
+                  = radio_button 'base_article', :discovery_settings, 'unpublished', checked: @project.discovery_settings == 'unpublished'
+                  i.fa.fa-eye-slash
+                  span Accessible to people with the link and visible on my profile
+                label
+                  = radio_button 'base_article', :discovery_settings, 'published', checked: @project.discovery_settings == 'published'
+                  i.fa.fa-eye
+                  span Discoverable in the search and on platform hubs
+
+          .form-group
+            .col-md-offset-4.col-md-8
+              = f.submit 'Save changes', class: 'btn btn-primary'
+              = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'

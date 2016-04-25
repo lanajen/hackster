@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import * as AuthActions from '../actions/auth';
 import * as UserActions from '../actions/user';
 
 import ImportProject from '../components/ImportProject';
@@ -15,14 +14,8 @@ class Splash extends Component {
     super(props);
   }
 
-  componentWillMount() {
-    if(!this.props.auth.authorized) {
-      this.props.actions.authorizeUser(true);
-    }
-  }
-
   render() {
-    const { auth, contest, vendors, user } = this.props;
+    const { contest, vendors, user } = this.props;
 
     const boards = vendors.map((vendor, index) => {
       return (
@@ -104,7 +97,6 @@ class Splash extends Component {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
     contest: state.contest,
     vendors: state.vendors,
     user: state.user
@@ -112,7 +104,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({ ...AuthActions, ...UserActions }, dispatch) };
+  return { actions: bindActionCreators(UserActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Splash);
