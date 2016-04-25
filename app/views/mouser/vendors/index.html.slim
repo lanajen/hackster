@@ -32,8 +32,6 @@
                 - date = Date.parse(phase[:date])
                 .date #{date.strftime("%B #{date.day.ordinalize}")}
                 .circle-container
-                  - p 'YOYOYOOYOYOOYOYOYOYOYO'
-                  - p active_phase
                   .circle class=(index <= active_phase ? '' : 'doughnut')
                 .event-container
                   .event #{phase[:event]}
