@@ -8,11 +8,12 @@ import { setUserData, getProjects } from './user';
 import { fetchSubmissionsByPage, postActivePhase, updateSubmissionStatus } from '../requests';
 
 export function setInitialData(props) {
-  const { activePhase, currentUser, phases, vendors } = props;
+  const { activePhase, currentUser, phases, signoutUrl, vendors } = props;
 
   return dispatch => {
     // Contest
     dispatch(setActivePhase(parseInt(activePhase, 10)));
+    dispatch(setSignoutUrl(signoutUrl));
     dispatch(setPhases(
       [].slice.call(phases).map(phase => {
         phase.date = moment(phase.date, 'DD-MM-YYYY').format('MMMM Do');
@@ -102,4 +103,11 @@ export function toggleMessenger(messenger) {
     type: Contest.TOGGLE_MESSENGER,
     messenger
   };
+}
+
+function setSignoutUrl(signoutUrl) {
+  return {
+    type: Contest.SET_SIGNOUT_URL,
+    signoutUrl
+  }
 }

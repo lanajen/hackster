@@ -12,6 +12,7 @@ module.exports = function (config) {
     ],
     preprocessors: {
       './spec/javascripts/unit/**/*_test.js': ['webpack']
+      // './spec/javascripts/unit/**/*_test.js': ['webpack', 'sourcemap']
     },
     // logLevel: 'LOG_INFO',
     reporters: [ 'mocha' ],

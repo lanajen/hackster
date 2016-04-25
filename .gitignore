@@ -31,3 +31,4 @@ npm-debug.log/*
 .DS_Store
 log/
 /notes
+mouser_bundle.js

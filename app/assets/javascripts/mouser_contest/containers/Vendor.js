@@ -14,7 +14,7 @@ class Vendor extends Component {
   }
 
   render() {
-    const { location, user, vendors, actions } = this.props;
+    const { contest, location, user, vendors, actions } = this.props;
 
     let currentVendorIndex = 0;
     const currentVendor = vendors.filter((vendor, index) => {
@@ -31,7 +31,7 @@ class Vendor extends Component {
 
     return (
       <div>
-        <Hero user={user}/>
+        <Hero signoutUrl={contest.signoutUrl} user={user}/>
         <div id="vendor-details">
           <div className="details-wrapper">
             <div className="image-container">
@@ -81,11 +81,13 @@ class Vendor extends Component {
 }
 
 Vendor.PropTypes = {
- user: PropTypes.object.isRequired
+  signoutUrl: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
   return {
+    contest: state.contest,
     user: state.user,
     vendors: state.vendors
   };

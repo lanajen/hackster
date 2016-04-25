@@ -54,7 +54,7 @@ class Users::SessionsController < Devise::SessionsController
       if is_whitelabel? and current_site.has_custom_logout_url?
         current_site.logout_redirect_url
       else
-        out = super resource
+        out = params[:redirect_to].presence || super(resource)
         UrlParam.new(out).add_param(:logged_out, '1')
       end
     end

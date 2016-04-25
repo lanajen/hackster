@@ -4,6 +4,7 @@ class Mouser::BaseController < ActionController::Base
   CONFIG_FILE = File.join(Rails.root, 'config', 'mouser.yml')
 
   layout 'mouser'
+  # protect_from_forgery except: [:not_found]
   helper_method :active_phase
   helper_method :meta_desc
   helper_method :title
