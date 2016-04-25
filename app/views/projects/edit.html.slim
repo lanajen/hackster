@@ -14,22 +14,32 @@
       /li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
-  .pe-container style='height:100px'
-    .busy-overlay
-      .center-align-wrapper
-        .center-align-inner
-          i.fa.fa-spin.fa-refresh
+  .row
+    .col-md-8
+      .pe-container style='height:100px'
+        .busy-overlay
+          .center-align-wrapper
+            .center-align-inner
+              i.fa.fa-spin.fa-refresh
 
-    #loader.pe-panel.text-center style='display:block'
+        #loader.pe-panel.text-center style='display:block'
+          p
+            i.fa.fa-spin.fa-spinner
+          p.small Editor not loading? Try refreshing the page.
+
+        #basics.pe-panel = render 'projects/forms/basics'
+        #team.pe-panel = render 'projects/forms/team'
+        #things.pe-panel= render 'projects/forms/things'
+        #story.pe-panel= render 'projects/forms/story'
+        #attachments.pe-panel= render 'projects/forms/attachments'
+
+    .col-md-3.col-md-offset-1
       p
-        i.fa.fa-spin.fa-spinner
-      p.small Editor not loading? Try refreshing the page.
-
-    #basics.pe-panel = render 'projects/forms/basics'
-    #team.pe-panel = render 'projects/forms/team'
-    #things.pe-panel= render 'projects/forms/things'
-    #story.pe-panel= render 'projects/forms/story'
-    #attachments.pe-panel= render 'projects/forms/attachments'
+        strong Checklist for publication
+      .box
+        .box-content
+          = render 'projects/forms/checklist'
+          p.small.text-right= link_to 'Read the content guidelines &rarr;'.html_safe, guidelines_path
 
     /#checklist-tab.pe-panel= render 'projects/forms/checklist_tab'
 
@@ -38,7 +48,7 @@
   .pe-save
     .container
       .row
-        .col-md-8.col-md-offset-2
+        .col-md-8
           .clearfix
             .pe-error Error saving
             .pull-right

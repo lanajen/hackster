@@ -805,7 +805,7 @@
     img {
       width: 30px;
       height: 30px;
-      margin-left: -16px;
+      margin-left: -12px;
       &:first-child {
         margin-left: 0;
       }
@@ -844,8 +844,11 @@
   .medium-editor {
     h3 {
       color: #555;
-      margin-top: 10px;
-      padding-top: 20px;
+      margin-top: 20px;
+      padding-top: 10px;
+    }
+    p {
+      margin-bottom: 20px;
     }
     .embed-frame {
       margin: 20px 0;
@@ -853,6 +856,9 @@
         img {
           max-width: 100%;
           max-height: 90vh;
+        }
+        figcaption {
+          font-style: normal;
         }
       }
     }

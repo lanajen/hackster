@@ -87,6 +87,17 @@ class ProjectsController < ApplicationController
       @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge).includes(:prizes).first
       @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
+      unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?])
+        @tags = if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
+          unknown_platforms = @project.platform_tags_cached.select do |tag|
+            Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+          end
+          tags = (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq
+        else
+          []
+        end
+      end
+
       unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-parts"])
         # we load parts and widgets all at once and then split them into their own
         # categories. That way we limit the number of db queries
@@ -136,7 +147,7 @@ class ProjectsController < ApplicationController
 
     @project = ProjectDecorator.decorate(@project)
     # preload widgets and images
-    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
+    unless (current_platform.try(:user_name) == 'arduino' ? Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"]) : Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-story"]) and Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-contents-story"]))
       @description = if @project.story_json.empty?
         @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
         @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))

@@ -36,10 +36,8 @@ class BaseArticle < ActiveRecord::Base
     'Product' => 'Product',
   }
   MACHINE_TYPES = {
-    'article' => 'Article',
     'external' => 'ExternalProject',
     'normal' => 'Project',
-    'product' => 'Product',
   }
 
   include Checklist

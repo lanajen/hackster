@@ -280,6 +280,20 @@ $select2target = null;
         var form = $('.pe-panel:visible form.remote');
         form.find('input[name=save]').val('0');
         form.submit();
+      },
+
+      updateChecklist: function() {
+        var form = $('.pe-panel form.remote:first');
+        var url = form.attr('action');
+        $.ajax({
+          url: url + '.js',
+          data: { save: false, panel: 'checklist' },
+          method: 'PATCH',
+          dataType: 'script',
+          xhrFields: {
+            withCredentials: true
+          }
+        });
       }
     }
 

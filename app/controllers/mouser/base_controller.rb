@@ -11,7 +11,7 @@ class Mouser::BaseController < ActionController::Base
 
   private
     def active_phase
-     @active_phase ||= redis.get('active_phase').present? ? redis.get('active_phase').to_i : -1
+      @active_phase ||= redis.exists('active_phase') ? redis.get('active_phase').to_i : -1  # Set 'mouser:active_phase' to 0 in your redis db.
     end
 
     def config
