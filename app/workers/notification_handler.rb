@@ -261,6 +261,10 @@ class NotificationHandler
         else
           context[:users] = []  # send no email
         end
+      when :mouser_submission
+        context[:submission] = submission = MouserSubmission.find context_id
+        context[:project] = submission.project
+        context[:user] = submission.user
       when :project
         context[:model] = project = context[:project] = BaseArticle.find(context_id)
         context[:users] = project.users
