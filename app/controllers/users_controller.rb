@@ -28,7 +28,7 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc).limit(3)
+    @public_projects = @user.projects.publyc.own.for_thumb_display.order(made_public_at: :desc, created_at: :desc).limit(3)
     @private_projects = @user.projects.pryvate.for_thumb_display.limit(3)
     @guest_projects = @user.projects.live.guest.for_thumb_display.limit(3)
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC').limit(3)
@@ -100,7 +100,7 @@ class UsersController < ApplicationController
     title "#{@user.name}'s public projects"
     meta_desc "#{@user.name}'s public projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_projects = @user.projects.publyc.own.for_thumb_display.order(made_public_at: :desc, created_at: :desc)
     if is_whitelabel?
       @public_projects = @public_projects.with_group(current_platform)
       ids = @user.projects.with_group(current_platform, all_moderation_states: true).pluck(:id)
@@ -111,7 +111,7 @@ class UsersController < ApplicationController
   def projects_embed
     not_found and return if is_whitelabel?
 
-    @projects = @user.projects.publyc.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @projects = @user.projects.publyc.own.for_thumb_display.order(made_public_at: :desc, created_at: :desc)
 
     surrogate_keys = ["users/#{@user.id}/projects/embed"]
     set_surrogate_key_header *surrogate_keys
@@ -233,7 +233,7 @@ class UsersController < ApplicationController
           ids = params[:project_ids]
           @projects = BaseArticle.where(id: ids.split(','))
         else
-          @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+          @user.projects.live.for_thumb_display.order(made_public_at: :desc, created_at: :desc)
         end
         @projects = @projects.map do |project|
           project.to_js(private_url: true)
