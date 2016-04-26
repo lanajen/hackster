@@ -5,9 +5,13 @@ import TableRow from './TableRow';
 
 const SubmissionsTable = props => {
 
+  function getValue(obj, property) {
+    return ['author', 'project'].indexOf(property) !== -1 ? obj[property]['name'] : obj[property];
+  }
+
   function limitingFilter(list, filters, filterKey) {
     return list.filter(item => {
-      return item[filterKey] === filters[filterKey] || filters[filterKey] === 'default';
+      return item[filterKey] === filters[filterKey] || filters[filterKey] === 'default' || filters[filterKey] === 'new';
     });
   }
 
@@ -16,12 +20,12 @@ const SubmissionsTable = props => {
 
     return list.sort((a, b) => {
       if(direction === 'ascending' || direction === 'oldest') {
-        if(a[property] < b[property]) return -1;
-        if(a[property] > b[property]) return 1;
+        if(getValue(a, property) < getValue(b, property)) return -1;
+        if(getValue(a, property) > getValue(b, property)) return 1;
         return 0;
       } else {
-        if(a[property] > b[property]) return -1;
-        if(a[property] < b[property]) return 1;
+        if(getValue(a, property) > getValue(b, property)) return -1;
+        if(getValue(a, property) < getValue(b, property)) return 1;
         return 0;
       }
     });
@@ -62,8 +66,9 @@ const SubmissionsTable = props => {
       return <TableRow key={index}
                        firstRow={index === 0}
                        lastRow={index === list.length-1}
-                       position={index % 2 === 0 ? 'even' : 'odd'}
-                       rowData={{ buttons: true, ...submission }}
+                       position={index}
+                       rowData={{ ...submission, buttons: true }}
+                       isFetching={props.isFetching}
                        onActionClick={props.onActionClick} />
     });
 
@@ -77,8 +82,9 @@ const SubmissionsTable = props => {
 
 SubmissionsTable.PropTypes = {
   filters: PropTypes.object.isRequired,
+  isFetching: PropTypes.object,
   onActionClick: PropTypes.func.isRequired,
   submissions: PropTypes.array.isRequired
-};
+}
 
 export default SubmissionsTable;

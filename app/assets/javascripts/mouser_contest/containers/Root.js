@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as AuthActions from '../actions/auth';
-import Navbar from '../components/Navbar';
+import * as ContestActions from '../actions/contest';
+
+import Messenger from '../components/Messenger';
 import Footer from '../components/Footer';
 
 class Root extends Component {
@@ -12,30 +13,29 @@ class Root extends Component {
   }
 
   render() {
-    const { location, user } = this.props;
-    const isAdminPath = location.pathname && location.pathname !== '/admin';
+    const { contest, location, user } = this.props;
     return (
       <div id="mousercontest-landing">
-        { isAdminPath ? <Navbar user={user}/> : null }
         { this.props.children }
-        { isAdminPath ? <Footer /> : null }
+        { location.pathname && location.pathname === '/admin' ? null : <Footer /> }
+        { contest.messenger.open ? <Messenger messenger={contest.messenger} dismiss={this.props.actions.toggleMessenger} /> : null }
       </div>
     );
   }
 }
 
 Root.PropTypes = {
-};
+}
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
+    contest: state.contest,
     user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(AuthActions, dispatch) };
+  return { actions: bindActionCreators(ContestActions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

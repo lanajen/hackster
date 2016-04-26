@@ -148,9 +148,9 @@ end
 
 group :development, :test do
   gem 'foreman'
-  # gem 'guard-livereload'
-  # gem 'guard-rspec'
-  # gem 'guard-spork'
+  gem 'guard-livereload'
+  gem 'guard-rspec'
+  gem 'guard-spork'
   # gem 'launchy'
   gem 'mailcatcher', git: 'https://github.com/sj26/mailcatcher.git'
   gem 'pry'
