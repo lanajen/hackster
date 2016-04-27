@@ -29,6 +29,25 @@ class TwitterQueue < BaseWorker
     end
   end
 
+  def update_with_media message, media_url
+    LogLine.create(log_type: 'error', source: 'twitter', message: "Invalid arguments: media_url is empty") and return if media_url.blank?
+
+    begin
+      content = open(media_url).read
+      full_file_name = File.basename media_url
+      file_name = full_file_name.split(/\./)[0]
+      extension = full_file_name.split(/\./)[-1]
+
+      file = Tempfile.new([file_name, ".#{extension}"], nil, encoding: 'ascii-8bit')
+      file.write content
+      file.rewind
+      ENV['ENABLE_TWEETS'] == 'true' ? twitter_client.update_with_media(message, file) : puts("Twitter message: #{message} (media: #{media_url})")
+
+    # rescue => e
+    #   LogLine.create(log_type: 'error', source: 'twitter', message: "Error: #{e.inspect} // Tweet: \"#{message}\"")
+    end
+  end
+
   private
     def last_update
       return @last_update if @last_update

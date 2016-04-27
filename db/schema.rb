@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160409001718) do
+ActiveRecord::Schema.define(version: 20160422015935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -274,19 +274,14 @@ ActiveRecord::Schema.define(version: 20160409001718) do
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
 
   create_table "group_impressions", force: :cascade do |t|
-    t.integer  "group_id",        null: false
-    t.integer  "user_id"
-    t.string   "controller_name"
-    t.string   "action_name"
-    t.string   "view_name"
-    t.string   "request_hash"
-    t.string   "ip_address"
+    t.integer  "group_id",     null: false
     t.string   "session_hash"
     t.text     "message"
-    t.text     "referrer"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",   null: false
   end
+
+  add_index "group_impressions", ["group_id"], name: "index_group_impressions_on_group_id", using: :btree
+  add_index "group_impressions", ["session_hash"], name: "index_group_impressions_on_session_hash", using: :btree
 
   create_table "groups", force: :cascade do |t|
     t.string   "user_name",         limit: 100
@@ -445,14 +440,16 @@ ActiveRecord::Schema.define(version: 20160409001718) do
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
   create_table "mouser_submissions", force: :cascade do |t|
-    t.string   "status"
-    t.string   "project_name"
-    t.integer  "user_id"
+    t.string   "workflow_state"
+    t.integer  "user_id",          null: false
     t.integer  "project_id"
-    t.integer  "vendor_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.string   "vendor_user_name", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
+
+  add_index "mouser_submissions", ["user_id"], name: "index_mouser_submissions_on_user_id", using: :btree
+  add_index "mouser_submissions", ["vendor_user_name"], name: "index_mouser_submissions_on_vendor_user_name", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
@@ -489,19 +486,14 @@ ActiveRecord::Schema.define(version: 20160409001718) do
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
   create_table "part_impressions", force: :cascade do |t|
-    t.integer  "part_id",         null: false
-    t.integer  "user_id"
-    t.string   "controller_name"
-    t.string   "action_name"
-    t.string   "view_name"
-    t.string   "request_hash"
-    t.string   "ip_address"
+    t.integer  "part_id",      null: false
     t.string   "session_hash"
     t.text     "message"
-    t.text     "referrer"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",   null: false
   end
+
+  add_index "part_impressions", ["part_id"], name: "index_part_impressions_on_part_id", using: :btree
+  add_index "part_impressions", ["session_hash"], name: "index_part_impressions_on_session_hash", using: :btree
 
   create_table "part_joins", force: :cascade do |t|
     t.integer  "part_id",                                       null: false
@@ -623,24 +615,14 @@ ActiveRecord::Schema.define(version: 20160409001718) do
   end
 
   create_table "project_impressions", force: :cascade do |t|
-    t.integer  "project_id",      null: false
-    t.integer  "user_id"
-    t.string   "controller_name"
-    t.string   "action_name"
-    t.string   "view_name"
-    t.string   "request_hash"
-    t.string   "ip_address"
+    t.integer  "project_id",   null: false
     t.string   "session_hash"
     t.text     "message"
-    t.text     "referrer"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",   null: false
   end
 
-  add_index "project_impressions", ["controller_name", "action_name", "ip_address"], name: "pi_controlleraction_ip_index", using: :btree
-  add_index "project_impressions", ["controller_name", "action_name", "request_hash"], name: "pi_controlleraction_request_index", using: :btree
-  add_index "project_impressions", ["controller_name", "action_name", "session_hash"], name: "pi_controlleraction_session_index", using: :btree
-  add_index "project_impressions", ["user_id"], name: "index_project_impressions_on_user_id", using: :btree
+  add_index "project_impressions", ["project_id"], name: "index_project_impressions_on_project_id", using: :btree
+  add_index "project_impressions", ["session_hash"], name: "index_project_impressions_on_session_hash", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "name",                    limit: 255

@@ -21,6 +21,17 @@
   background: #fff;
 }
 .project-embed-thumb {
+  .project-card {
+    margin-bottom: 0;
+    .card-text {
+      border: 1px solid #ddd;
+      border-top: 0;
+    }
+  }
+  .hackster-logo {
+    height: 15px;
+    vertical-align: baseline;
+  }
   .featured-logo {
     a {
       color: #fff;
@@ -46,6 +57,12 @@
         bottom: 0;
       }
     }
+  }
+}
+
+.row {
+  .project-card {
+    margin-bottom: 30px;
   }
 }
 

@@ -40,6 +40,10 @@
     margin-right: 10px;
 }
 
+.bitbucket-widget .repo-header .repo-logo {
+    display: none;
+}
+
 .bitbucket-widget .repo-header .repo-name,
 .bitbucket-widget .repo-header .repo-last-update {
     vertical-align: middle;

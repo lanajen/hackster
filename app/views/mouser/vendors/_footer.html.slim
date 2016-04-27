@@ -2,18 +2,9 @@ footer#footer
   .stars
   .content
     .brief Join in on the competition and 20,000 other Hackers and hobbyists.
-    / .signup-form-container
-      .input-wrapper
-        span.icon class="fa fa-user"
-        input type="text" placeholder="Your Name"
-      .input-wrapper
-        span.icon class="fa fa-envelope-o"
-        input type="text" placeholder="Email"
-      .input-wrapper
-        span.icon class="fa fa-lock"
-        input type="text" placeholder="Create Password"
-      button.signup-button Get Started
-    /.login-container
-      span Already a member?
-      a href="javascript:void(0);" Sign In
-
+    .brief
+      span
+      = link_to "Sign Up", new_user_registration_url(host: APP_CONFIG['default_host'], redirect_to: mouser_vendors_url)
+      |  or
+      = link_to " Log In", new_user_session_url(host: APP_CONFIG['default_host'], redirect_to: mouser_vendors_url)
+      |  with Hackster

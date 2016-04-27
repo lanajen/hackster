@@ -20,7 +20,7 @@ end
 
 class MainSite
   def self.matches?(request)
-    if ENV['FULL_HOST'].present?
+    if ENV['FULL_HOST'].present? and ENV['CLIENT_SUBDOMAIN'].blank?
       request.host == ENV['FULL_HOST']
     else
       request.subdomains[0] == ENV['SUBDOMAIN'] and request.domain == APP_CONFIG['default_domain']
@@ -30,7 +30,9 @@ end
 
 class ClientSite
   def self.matches?(request)
-    if request.domain == APP_CONFIG['default_domain']
+    if ENV['CLIENT_SUBDOMAIN'].present?
+      true
+    elsif request.domain == APP_CONFIG['default_domain']
       subdomain = request.subdomains[0]
       !subdomain.in? (API_SUBDOMAINS + %w(beta) + [ENV['SUBDOMAIN']])
     else
@@ -77,12 +79,6 @@ end
 class ExternalProjectPage < BaseArticlePage
   def self.matches?(request)
     article_is_type? 'ExternalProject', request
-  end
-end
-
-class ArticlePage < BaseArticlePage
-  def self.matches?(request)
-    article_is_type? 'Article', request
   end
 end
 

@@ -1,3 +1,65 @@
+/*
+ * Web Fonts from fontspring.com
+ *
+ * All OpenType features and all extended glyphs have been removed.
+ * Fully installable fonts can be purchased at http://www.fontspring.com
+ *
+ * The fonts included in this stylesheet are subject to the End User License you purchased
+ * from Fontspring. The fonts are protected under domestic and international trademark and
+ * copyright law. You are prohibited from modifying, reverse engineering, duplicating, or
+ * distributing this font software.
+ *
+ * (c) 2010-2016 Fontspring
+ *
+ *
+ *
+ *
+ * The fonts included are copyrighted by the vendor listed below.
+ *
+ * Vendor:      Mark Simonson Studio
+ * License URL: https://www.fontspring.com/licenses/mark-simonson-studio/webfont
+ *
+ *
+ */
+
+@font-face{
+  font-family:"proxima-nova";
+  font-weight: normal;
+  font-style: italic;
+  src:font-url("proxima-nova-regular-italic.eot");
+  src:font-url("proxima-nova-regular-italic.eot?#iefix") format("embedded-opentype"),
+      font-url("proxima-nova-regular-italic.woff2") format("woff2"),
+      font-url("proxima-nova-regular-italic.woff") format("woff"),
+      font-url("proxima-nova-regular-italic.ttf") format("truetype");
+}
+@font-face{
+  font-family:"proxima-nova";
+  font-weight: 300;
+  src:font-url("proxima-nova-light.eot");
+  src:font-url("proxima-nova-light.eot?#iefix") format("embedded-opentype"),
+      font-url("proxima-nova-light.woff2") format("woff2"),
+      font-url("proxima-nova-light.woff") format("woff"),
+      font-url("proxima-nova-light.ttf") format("truetype");
+}
+@font-face{
+  font-family:"proxima-nova";
+  font-weight: normal;
+  src:font-url("proxima-nova-regular.eot");
+  src:font-url("proxima-nova-regular.eot?#iefix") format("embedded-opentype"),
+      font-url("proxima-nova-regular.woff2") format("woff2"),
+      font-url("proxima-nova-regular.woff") format("woff"),
+      font-url("proxima-nova-regular.ttf") format("truetype");
+}
+@font-face{
+  font-family:"proxima-nova";
+  font-weight: 700;
+  src:font-url("proxima-nova-bold.eot");
+  src:font-url("proxima-nova-bold.eot?#iefix") format("embedded-opentype"),
+      font-url("proxima-nova-bold.woff2") format("woff2"),
+      font-url("proxima-nova-bold.woff") format("woff"),
+      font-url("proxima-nova-bold.ttf") format("truetype");
+}
+
 html, body {
   height: 100%;
 }

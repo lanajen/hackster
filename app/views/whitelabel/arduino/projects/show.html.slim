@@ -254,7 +254,7 @@
                     i.fa.fa-lock>
                     | This project is private.
 
-              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
+              - cache [I18n.locale, "project-#{@project.id}-team", @project.guest_name, site_user_name == 'arduino'], tag: ["team-#{@project.team_id}"], skip_digest: true do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
@@ -437,5 +437,5 @@
               section.section-thumbs
                 h4 style='border:0' Similar projects you might like
               .row
-                - @other_projects.each_with_index do |project, i|
+                - @other_projects[0..5].each_with_index do |project, i|
                   = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar', ref_id: @project.id, offset: i }

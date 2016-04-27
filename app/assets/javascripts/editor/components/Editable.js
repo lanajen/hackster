@@ -276,8 +276,11 @@ const Editable = React.createClass({
     let input = document.getElementById('story-json-input');
     form.contains(input) ? form.removeChild(input) : false;
 
-    /** Reserialize the form so pe && jQuery know we have NO unsaved changes.t */
-    if(window && window.pe ) window.pe.serializeForm();
+    /** Reserialize the form so pe && jQuery know we have NO unsaved changes. **/
+    if (window && window.pe) {
+      window.pe.serializeForm();
+      window.pe.updateChecklist();
+    }
 
     this.props.actions.toggleErrorMessenger(true, 'Saved successfully!', 'success');
   },

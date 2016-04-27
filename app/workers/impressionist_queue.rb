@@ -5,7 +5,6 @@ end
 
 class ImpressionistQueue < BaseWorker
   include ImpressionistController::InstanceMethods
-  extend ::NewRelic::Agent::MethodTracer
   sidekiq_options queue: :low, retry: false
 
   def action_name
@@ -26,9 +25,7 @@ class ImpressionistQueue < BaseWorker
     opts = {}
     tmp_opts.each{|k,v| opts[:"#{k}"] = v }
     obj = obj_type.constantize.find obj_id
-    self.class.trace_execution_scoped(['Custom/ImpressionistQueue/count']) do
-      impressionist(obj, message, opts)
-    end
+    impressionist(obj, message, opts)
   rescue => e
     # debugging
     raise "Error in ImpressionistQueue: #{e.message} // action_name: #{action_name} // controller_name: #{controller_name} // params: #{params} // obj_id: #{obj_id} // obj_type: #{obj_type}"
@@ -53,4 +50,12 @@ class ImpressionistQueue < BaseWorker
   def unique_query(unique_opts)
     super unique_opts.map{|o| o.to_sym }
   end
+
+  protected
+    # we only care about the record ID and session_hash
+    def associative_create_statement(query_params={})
+      query_params.reverse_merge!(
+        :session_hash => session_hash
+        )
+    end
 end

@@ -3,21 +3,33 @@
 tr.fields.part-row  id="part-#{part.id}"
   td.part-img
     - if part.part.image
-      = image_tag part.part.decorate.image(:part_thumb_big)
+      - if part.part.vendor_link.present? or part.part.store_link.present? or part.part.product_page_link.present?
+        = link_to image_tag(part.part.decorate.image(:part_thumb_big)), (part.part.vendor_link.presence || part.part.store_link || part.part.product_page_link)
+      - else
+        = image_tag part.part.decorate.image(:part_thumb_big)
   td
     table  style='width:100%'
       tbody
         tr
           td
-            - if part.part.has_own_page? and !is_whitelabel?
-              = link_to part.part.full_name, part.part
+            - if part.part.vendor_link.present? or part.part.store_link.present? or part.part.product_page_link.present?
+              = link_to part.part.full_name, (part.part.vendor_link.presence || part.part.store_link || part.part.product_page_link)
             - else
               = part.part.full_name
         tr
           td style='color: #888;font-size:75%;' = part.comment
   - if options[:show_quantity]
-    td style='width:30px;text-align:center;vertical-align:middle' &times;
-    td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
+    td style='width:30px;text-align:center;vertical-align:middle'
+
+      - if part.part.vendor_link.present? or part.part.store_link.present? or part.part.product_page_link.present?
+        = link_to '&times;'.html_safe, (part.part.vendor_link.presence || part.part.store_link || part.part.product_page_link)
+      - else
+        | &times;
+    td style='width:10%;min-width:20px;text-align:center;vertical-align:middle'
+      - if part.part.vendor_link.present? or part.part.store_link.present? or part.part.product_page_link.present?
+        = link_to part.quantity, (part.part.vendor_link.presence || part.part.store_link || part.part.product_page_link)
+      - else
+        = part.quantity
   td style='vertical-align:middle'
     - if part.part.vendor_link.present? or part.part.store_link.present?
       = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), (part.part.vendor_link.presence || part.part.store_link), target: '_blank', style: 'color:#333', rel: 'nofollow'

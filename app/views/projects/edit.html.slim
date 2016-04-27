@@ -6,43 +6,49 @@
     ol.pe-nav
       li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'
       li= link_to 'Team', '#team', id: 'team-nav', class: 'tab'
-      - unless is_whitelabel?
-        li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab'
+      li= link_to 'Things', '#things', id: 'things-nav', class: 'tab'
       li= link_to 'Story', '#story', id: 'story-nav', class: 'tab'
-      li= link_to 'Hardware', '#hardware', id: 'hardware-nav', class: 'tab'
-      li= link_to 'Software', '#software', id: 'software-nav', class: 'tab'
+      li= link_to 'Attachments', '#attachments', id: 'attachments-nav', class: 'tab'
 
     ol.pe-nav
-      li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
+      /li= link_to 'Checklist', '#checklist-tab', id: 'checklist-tab-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
-  .pe-container style='height:100px'
-    .busy-overlay
-      .center-align-wrapper
-        .center-align-inner
-          i.fa.fa-spin.fa-refresh
+  .row
+    .col-md-8
+      .pe-container style='height:100px'
+        .busy-overlay
+          .center-align-wrapper
+            .center-align-inner
+              i.fa.fa-spin.fa-refresh
 
-    #loader.pe-panel.text-center style='display:block'
+        #loader.pe-panel.text-center style='display:block'
+          p
+            i.fa.fa-spin.fa-spinner
+          p.small Editor not loading? Try refreshing the page.
+
+        #basics.pe-panel = render 'projects/forms/basics'
+        #team.pe-panel = render 'projects/forms/team'
+        #things.pe-panel= render 'projects/forms/things'
+        #story.pe-panel= render 'projects/forms/story'
+        #attachments.pe-panel= render 'projects/forms/attachments'
+
+    .col-md-3.col-md-offset-1
       p
-        i.fa.fa-spin.fa-spinner
-      p.small Editor not loading? Try refreshing the page.
+        strong Checklist for publication
+      .box
+        .box-content
+          = render 'projects/forms/checklist'
+          p.small.text-right= link_to 'Read the content guidelines &rarr;'.html_safe, guidelines_path
 
-    #basics.pe-panel = render 'projects/forms/basics'
-    #team.pe-panel = render 'projects/forms/team'
-    - unless is_whitelabel?
-      #communities.pe-panel= render 'projects/forms/communities'
-    #story.pe-panel= render 'projects/forms/story'
-    #hardware.pe-panel= render 'projects/forms/hardware'
-    #software.pe-panel= render 'projects/forms/software'
-
-    #checklist-tab.pe-panel= render 'projects/forms/checklist_tab'
+    /#checklist-tab.pe-panel= render 'projects/forms/checklist_tab'
 
 = content_for :js do
 
   .pe-save
     .container
       .row
-        .col-md-8.col-md-offset-2
+        .col-md-8
           .clearfix
             .pe-error Error saving
             .pull-right

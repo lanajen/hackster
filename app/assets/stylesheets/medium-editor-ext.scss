@@ -134,6 +134,8 @@
   .embed-img {
     display: block;
     position: relative;
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in;
   }
   .image:not(.slick-active) {
     margin-bottom: 30px;
@@ -529,6 +531,14 @@ code.gist {
 }
 
 .medium-editor {
+  h3 {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 30px;
+  }
+  & > h3:first-child {
+    margin-top: 0;
+  }
   .code-widget {
     .highlight {
       pre {

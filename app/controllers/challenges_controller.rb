@@ -198,7 +198,7 @@ class ChallengesController < ApplicationController
     def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
       @link_params = Rails.cache.fetch "challenge-#{@challenge.id}-link_params", tag: ["challenge-#{@challenge.id}-sponsors"] do
-        { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id }, type: 'project' }
+        { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id } }
       end
       @prizes = @challenge.prizes.includes(:image)
     end
@@ -217,7 +217,7 @@ class ChallengesController < ApplicationController
 
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
-        @user_projects = current_user.projects.own.where(projects: { type: %w(Project) }).where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
+        @user_projects = current_user.projects.own.where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
       else
         @user_projects = []
       end

@@ -26,7 +26,7 @@
             javascript:
               $('.project-list').prepend($('.project-#{award.project_id}').parent());
           javascript:
-            var text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
+            var text = "<div class='project-award'><i class='fa fa-trophy'></i><span class='award-label'>#{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</span></div>";
             $('.project-#{award.project_id} .award-container').html(text);
 
         - if @event.voting_active?

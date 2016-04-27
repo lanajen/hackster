@@ -5,7 +5,7 @@ class Admin::PagesController < Admin::BaseController
   def analytics
     title "Admin / Analytics"
 
-    @project_count = BaseArticle.indexable.count
+    @project_count = Project.indexable.count
     @external_project_count = ExternalProject.approved.count
     @waiting_for_approval_project_count = BaseArticle.need_review.count
     @comment_count = Comment.where(commentable_type: 'BaseArticle').count

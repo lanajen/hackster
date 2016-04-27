@@ -17,8 +17,6 @@
             - if @group.company_logo
               = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
             = @group.name
-            - if @group.verified
-              i.fa.fa-check-circle.istooltip.verified title="Verified"
             - if @group.disclaimer.present?
               i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
 

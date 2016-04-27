@@ -1,0 +1,49 @@
+.part-box.box
+  .box-content.row
+    .col-xs-12
+      h3= link_to part.name, part
+
+    .col-md-4.image
+      .img-tool-container
+        - if part.image
+          = image_tag part.image(:medium)
+      .action-buttons
+        - if !is_whitelabel? and can? :manage, part
+          = link_to 'Edit', edit_group_product_path(part.platform, part), class: 'btn btn-warning btn-sm btn-block'
+        = render partial: 'followers/button', locals: { followable: part, button_type: 'part', button_partial: 'part_button', display_name: false }
+        = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
+        - if part.owners_count > 0
+          .text-muted.small #{number_with_delimiter part.owners_count} own it
+
+    .col-md-7.description
+      - if part.description.present?
+        = raw part.description
+      - elsif part.one_liner.present?
+        p= part.one_liner
+      / - if part.parent_parts.any?
+        ul.list-inline
+          li
+            strong> Found in:
+          - part.parent_parts.each do |linked_part|
+            = link_to linked_part.full_name, linked_part
+      - if part.child_parts.any?
+        ul.list-inline
+          li
+            strong> Uses:
+          - part.child_parts.each do |linked_part|
+            = link_to linked_part.full_name, linked_part
+      ul.links.list-inline
+        - if part.store_link.present?
+          li= link_to 'Buy it', part.store_link, target: '_blank', rel: 'nofollow'
+        - if part.product_page_link.present?
+          li= link_to 'Official page', part.product_page_link, target: '_blank', rel: 'nofollow'
+        - if part.get_started_link.present?
+          li= link_to 'Get started', part.get_started_link, target: '_blank', rel: 'nofollow'
+        - if part.documentation_link.present?
+          li= link_to 'Full documentation', part.documentation_link, target: '_blank', rel: 'nofollow'
+        - if part.libraries_link.present?
+          li= link_to 'Libraries', part.libraries_link, target: '_blank', rel: 'nofollow'
+        - if part.datasheet_link.present?
+          li= link_to 'Datasheet', part.datasheet_link, target: '_blank', rel: 'nofollow'
+        - if part.review_link.present?
+          li= link_to 'Hackster review', part.review_link, target: '_blank', rel: 'nofollow'

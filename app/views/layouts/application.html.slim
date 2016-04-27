@@ -214,7 +214,3 @@ html(lang="en")
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
-
-    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-    javascript:
-       try{Typekit.load({async: true});}catch(e){}

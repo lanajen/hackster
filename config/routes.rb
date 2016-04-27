@@ -10,8 +10,11 @@ HackerIo::Application.routes.draw do
   constraints(MouserContest) do
     scope module: :mouser, as: :mouser do
       scope module: :api, as: :api do
+        resources :phases, only: [:update]
         resources :projects, only: [:index]
-        resources :submissions, only: [:create]
+        resources :submissions, only: [:index, :create] do
+          patch 'workflow' => 'submissions#update_workflow', on: :member
+        end
         match "*all" => "base#cors_preflight_check", via: :options
       end
 
@@ -588,22 +591,21 @@ HackerIo::Application.routes.draw do
 
           resources :projects, only: [:new, :create] do
             patch '' => 'projects#update', on: :member
-            patch 'submit' => 'projects#submit', on: :member
-            get 'settings' => 'external_projects#edit', on: :member
-            patch 'settings' => 'external_projects#update', on: :member
-            post 'claim' => 'projects#claim', on: :member
-            get 'last' => 'projects#redirect_to_last', on: :collection
             get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] =~ /[0-9]+/ }
+            post 'claim' => 'projects#claim', on: :member
             get 'embed', as: :old_embed
             get 'embed' => 'projects#embed_collection', on: :collection
+            patch 'guest_name' => 'members#update_guest_name'
+            get 'last' => 'projects#redirect_to_last', on: :collection
             get 'next' => 'projects#next', on: :member
-            get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
-            patch 'permissions' => 'permissions#update'
+            get 'publish' => 'projects#publish', on: :member
+            get 'review' => 'review_threads#show', on: :member
+            get 'settings' => 'external_projects#edit', on: :member
+            patch 'settings' => 'external_projects#update', on: :member
+            patch 'submit' => 'projects#submit', on: :member
             get 'team/edit' => 'members#edit', as: :edit_team
             patch 'team' => 'members#update'
-            patch 'guest_name' => 'members#update_guest_name'
             patch 'update_workflow' => 'projects#update_workflow', on: :member
-            get 'review' => 'review_threads#show', on: :member
             collection do
               resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
             end
@@ -623,13 +625,7 @@ HackerIo::Application.routes.draw do
             get 'projects/:id/edit' => 'projects#edit', as: :edit_project
           end
 
-          constraints(ArticlePage) do
-            get 'projects/:id/edit' => 'articles#edit', as: :edit_article
-          end
-
           get 'projects/e/:user_name/:id' => 'external_projects#redirect_to_show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/  # legacy route (google has indexed them)
-
-          get ':user_name/powers/:slug' => 'products#show', as: :product
 
           resources :issues, only: [] do
             resources :comments, only: [:create]
@@ -721,9 +717,6 @@ HackerIo::Application.routes.draw do
           end
           constraints(ExternalProjectPage) do
             get ':user_name/:project_slug' => 'external_projects#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
-          end
-          constraints(ArticlePage) do
-            get ':user_name/:project_slug' => 'articles#show', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/
           end
           scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]*/, project_slug: /[A-Za-z0-9_\-]*-?[a-f0-9]{6}/ do
             patch '' => 'projects#update'

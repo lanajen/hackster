@@ -2,26 +2,25 @@ import keymirror from 'keymirror';
 
 export default {
   Admin: keymirror({
-    SET_FILTERS: null,
-    SET_SUBMISSIONS: null
-  }),
-
-  Auth: keymirror({
-    SET_AUTHORIZED: null
+    SET_ADMIN_FILTERS: null,
+    SET_ADMIN_SUBMISSIONS_PAGE: null
   }),
 
   Contest: keymirror({
     SET_ACTIVE_PHASE: null,
-    SET_PHASES: null,
-    SET_SUBMISSIONS: null,
-    SET_SUBMISSION: null
+    SET_CONTEST_PHASES: null,
+    SET_CONTEST_SUBMISSIONS: null,
+    SET_CONTEST_SUBMISSION: null,
+    SET_SIGNOUT_URL: null,
+    TOGGLE_IS_HANDLING_REQUEST: null,
+    TOGGLE_MESSENGER: null
   }),
 
   User: keymirror({
-    SET_PROJECTS: null,
-    SET_SUBMISSION: null,
-    SUBMIT_PROJECTS: null,
-    SET_ADMIN: null
+    SET_USER_PROJECTS: null,
+    SET_USER_DATA: null,
+    SET_USER_SUBMISSION: null,
+    SET_USER_SUBMISSIONS: null
   }),
 
   Vendors: keymirror({

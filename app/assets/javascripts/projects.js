@@ -29,6 +29,9 @@ $select2target = null;
 
 (function ($, window, document, undefined) {
   $(function() {
+    $('.project-page-single-column').resize(function(){
+      updatedScrollEventHandlers();
+    });
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
       var redirLink = $(this).data('redirect-to');
@@ -277,6 +280,20 @@ $select2target = null;
         var form = $('.pe-panel:visible form.remote');
         form.find('input[name=save]').val('0');
         form.submit();
+      },
+
+      updateChecklist: function() {
+        var form = $('.pe-panel form.remote:first');
+        var url = form.attr('action');
+        $.ajax({
+          url: url + '.js',
+          data: { save: false, panel: 'checklist' },
+          method: 'PATCH',
+          dataType: 'script',
+          xhrFields: {
+            withCredentials: true
+          }
+        });
       }
     }
 
@@ -982,6 +999,12 @@ $select2target = null;
       }
     }
   });
+
+  $('#about-project .read-more a').on('click', function(e){
+    e.preventDefault();
+    $('#about-project').removeClass('collapsed');
+  });
+
 })(jQuery, window, document);
 
 function setPreviewPaneHeight(target){
@@ -1118,7 +1141,9 @@ function loadSlickSlider(opts){
     speed: 500,
     fade: true,
     dots: true,
-    adaptiveHeight: true
+    adaptiveHeight: true,
+    nextArrow: '<button type="button" class="slick-next-arr fa fa-chevron-right">Next</button>',
+    prevArrow: '<button type="button" class="slick-prev-arr fa fa-chevron-left">Previous</button>'
   };
   for (var attrname in opts) { slickOpts[attrname] = opts[attrname]; }
   target.slick(slickOpts);

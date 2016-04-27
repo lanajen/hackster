@@ -1,0 +1,150 @@
+= begin; render "whitelabel/#{site_user_name}/all"; rescue => e; logger.error e.inspect unless e.kind_of? ActionView::MissingTemplate; ''; end;
+/= render "whitelabel/#{current_site.subdomain}/all"
+
+/!
+  | Whatever your mind can conceive and can believe, it can achieve. ~Napoleon Hill
+
+  | Whatever we think about and thank about we bring about. ~John Demartini
+
+  | Whether you think you can or can’t either way you are right. ~Henry Ford
+
+doctype 5
+html lang="en" class=content_for(:html_class)
+  head
+    = content_for :head_top
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    meta(property="fb:app_id" content="414718878625776")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="api-uri" id="api-uri" content=api_host)
+    title= title
+    meta(name="description" content=meta_desc)
+    = csrf_meta_tags
+    /! Le HTML5 shim, for IE6-8 support of HTML elements
+    /![if lt IE 9]
+      = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
+    = stylesheet_link_tag "application", :media => "all"
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+      try{Typekit.load({async: true});}catch(e){}
+
+    - if current_site.favicon.try(:file_url)
+      link href=current_site.favicon.file_url rel="shortcut icon"
+    - else
+      - cache ['favicons', '2015-12-20'] do
+        = render 'shared/favicons'
+    meta name="apple-mobile-web-app-title" content=site_name
+    meta name="application-name" content=site_name
+
+    - if ENV['ENABLE_ANALYTICS']
+      = raw current_site.analytics_code
+      - unless current_user and current_user.is? :admin
+        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
+    = content_for :head
+    = javascript_include_tag "application"
+
+  body.whitelabel data-user-signed-in=user_signed_in?
+    #outer-wrapper
+      - if !content_for?(:header) and user_signed_in?
+        = render 'shared/important_notifs'
+
+      - unless user_signed_in?
+        = render 'shared/modals/simplified_signup_popup'
+      - if content_for? :header
+        = content_for :header
+      - else
+        .navbar.navbar-default.navbar-static-top#navigation
+          #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
+          .navbar-in  style='position:relative;'
+            .navbar-header
+              span.navbar-brand.navbar-btn
+                => link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
+                small  style='font-size:11px;'
+                  ' powered by
+                  = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+            #nav-non-logo.show-on-desktop
+              - if user_signed_in?
+                ul#user-navigation-links.navbar-nav.navbar-right
+                  li.btn-group.navbar-btn.dropdown
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
+                    ul.dropdown-menu#nav-user-menu
+                      li= link_to 'My profile', current_user
+                      li= link_to 'My projects', user_projects_path(current_user)
+                      li.divider
+                      li= link_to 'Messages', conversations_path
+                      li.divider
+                      li= link_to 'Account settings', edit_user_registration_path
+                      li= link_to 'Invite friends', new_user_invitation_path
+                      li.divider
+                      li= link_to 'Log out', destroy_user_session_path, method: :delete
+
+              - else
+                ul#navbar-right.clearfix
+                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
+
+                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
+
+              ul#left-nav.navbar-right.top-menu-nav
+                - if user_signed_in?
+                  li= link_to 'My projects', user_projects_path(current_user), class: 'nav-link'
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
+                - else
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+
+              #navbar-search
+                = render 'shared/search_form'
+
+      #main
+        - if content_for?(:bootstrap_flash)
+          = yield(:bootstrap_flash)
+        - else
+          = bootstrap_flash
+        - if content_for?(:no_container)
+          = yield(:no_container)
+        - else
+          .container
+            #content
+              #navbar-search-mobile
+                form.navbar-form action="/projecthub/search" method="get"
+                  .form-group
+                    .input-group
+                      span.input-group-addon
+                        i.fa.fa-search
+                      input#q.form-control name="q" placeholder=("Search projects") type="text" /
+
+              = yield
+
+    - if content_for? :footer
+      = content_for :footer
+    - else
+      footer.clearfix
+        .footer-nav.clearfix
+          ul.list-unstyled.list-inline.pull-right
+            li
+              => link_to 'Hardware projects portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              ' powered by
+              => link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
+              | &copy; #{Date.today.year}
+    - unless user_signed_in?
+      = render 'shared/modals/login_popup'
+
+    #mobile-nav-overlay.hide-on-desktop
+      #mobile-nav-overlay-close.fa.fa-times
+    #mobile-navigation.hide-on-desktop
+      = render 'shared/search_form'
+      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'mo-nav-link'
+      - if user_signed_in?
+        = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'My projects', user_projects_path(current_user), class: 'mo-nav-link'
+        = link_to 'Messages', conversations_path, class: 'mo-nav-link'
+        = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
+        = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
+      - else
+        = link_to 'Sign up / Login', new_user_registration_path(source: 'nav'), class: 'mo-nav-link'
+
+    = content_for :js
+
+    -# using flash[:js] to insert custom platform JS on logout
+    - if flash[:js].present?
+      script type='text/javascript'
+        = flash[:js].html_safe

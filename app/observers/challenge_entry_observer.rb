@@ -33,7 +33,7 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   def after_give_award record
     NotificationCenter.notify_all :awarded, :challenge_entry, record.id
 
-    Cashier.expire "project-#{record.project_id}-teaser"
+    Cashier.expire "project-#{record.project_id}-teaser", "project-#{record.project_id}"
   end
 
   def after_destroy record

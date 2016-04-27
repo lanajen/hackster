@@ -1,7 +1,7 @@
 function setAffixableBottom() {
   if ($('#project-side-nav').length){
-    var cont = $('#content .container');
-    var bottom = cont.offset().top + cont.outerHeight();
+    var cont = $('.project-page-single-column').length ? $('.project-page-single-column .section-description') : $('#content .container');
+    var bottom = cont.offset().top + cont.outerHeight() - parseInt(cont.css('padding-bottom'));
     $('#project-side-nav').data('affix-bottom', bottom);
   }
 }
@@ -171,7 +171,8 @@ $(function () {
 
   $('#project-side-nav')
     .on('affix-bottom-on', function(e){
-      var top = $('#content .container').outerHeight() - $(this).outerHeight();
+      var cont = $('.project-page-single-column').length ? $('.project-page-single-column .section-description') : $('#content .container');
+      var top = cont.outerHeight() - $(this).outerHeight() - parseInt(cont.css('padding-top')) - parseInt(cont.css('padding-bottom'));
       $(this).css('top', top);
     })
     .on('affix-bottom-off', function(e){

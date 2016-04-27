@@ -36,10 +36,8 @@ class BaseArticle < ActiveRecord::Base
     'Product' => 'Product',
   }
   MACHINE_TYPES = {
-    'article' => 'Article',
     'external' => 'ExternalProject',
     'normal' => 'Project',
-    'product' => 'Product',
   }
 
   include Checklist
@@ -117,19 +115,18 @@ class BaseArticle < ActiveRecord::Base
   register_sanitizer :sanitize_description, :before_validation, :description
   register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :remove_whitespaces_from_html, :before_save, :description
-  attr_accessible :description, :end_date, :name, :start_date, :current,
+  attr_accessible :description, :name,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :license, :slug,
-    :permissions_attributes, :slug_histories_attributes, :hide,
-    :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source, :buy_link,
-    :hacker_space_id, :mark_as_idea, :event_id, :assignment_id,
+    :slug_histories_attributes,
+    :graded, :guest_name,
+    :hacker_space_id, :event_id, :assignment_id,
     :community_ids, :new_group_id,
-    :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
+    :team_attributes, :made_public_at, :difficulty, :type,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
-    :locale, :article
-  attr_accessor :current, :private_changed, :needs_platform_refresh,
-    :approved_changed, :updater_id
+    :locale, :discovery_settings
+  attr_accessor :private_changed, :needs_platform_refresh, :approved_changed,
+    :updater_id
   accepts_nested_attributes_for :images, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, allow_destroy: true
@@ -145,9 +142,9 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
+  validates :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
-  # before_validation :check_if_current
   before_validation :delete_empty_part_ids
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
@@ -186,7 +183,7 @@ class BaseArticle < ActiveRecord::Base
   hstore_column :hproperties, :toc, :array, default: []
   hstore_column :hproperties, :tweeted_at, :datetime
 
-  self.per_page = 18
+  self.per_page = 21
 
   workflow do
     state :unpublished do
@@ -234,7 +231,7 @@ class BaseArticle < ActiveRecord::Base
 
   # beginning of search methods
   include AlgoliaSearchHelpers
-  has_algolia_index 'pryvate or hide or !approved?'
+  has_algolia_index 'pryvate or !approved?'
 
   def to_indexed_json
     elements = Sanitize::Config::RELAXED[:elements].dup
@@ -345,11 +342,11 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.indexable
-    live.approved.where(hide: false).where("projects.made_public_at < ?", Time.now)
+    live.approved.where("projects.made_public_at < ?", Time.now)
   end
 
   def self.indexable_and_external
-    where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.workflow_state <> 'rejected')")#.magic_sort
+    where("(projects.workflow_state = 'approved' AND projects.private = 'f') OR (projects.type = 'ExternalProject' AND projects.workflow_state <> 'rejected')")#.magic_sort
   end
 
   def self.in_toolbox opts={}
@@ -438,7 +435,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.wip opts={}
-    indexable.where(wip: true).last_updated
+    indexable.with_type('wip').last_updated
   end
 
   def self.with_group group, opts={}
@@ -508,10 +505,9 @@ class BaseArticle < ActiveRecord::Base
     (Time.now - (made_public_at || created_at)) / SECONDS_IN_A_DAY
   end
 
-  def buy_link_host
-    URI.parse(buy_link).host.gsub(/^www\./, '')
-  rescue
-    buy_link
+  # highly unoptimized, use cautiously
+  def all_platforms
+    (Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", platform_tags_cached.map{|t| t.downcase }).uniq + part_platforms.default_scope + part_secondary_platforms.default_scope).uniq
   end
 
   def cover_image_id=(val)
@@ -521,6 +517,32 @@ class BaseArticle < ActiveRecord::Base
 
   def disable_tweeting?
     assignment.present?
+  end
+
+  def discovery_settings
+    if pryvate
+      'private'
+    elsif workflow_state == 'unpublished'
+      'unpublished'
+    else
+      'published'
+    end
+  end
+
+  def discovery_settings=(val)
+    case val
+    when 'private'
+      self.pryvate = true
+      self.workflow_state = 'unpublished'
+    when 'unpublished'
+      self.pryvate = false
+      self.workflow_state = 'unpublished'
+    when 'published'
+      self.pryvate = false
+      if workflow_state == 'unpublished'
+        self.workflow_state = 'pending_review'
+      end
+    end
   end
 
   def external
@@ -635,6 +657,18 @@ class BaseArticle < ActiveRecord::Base
     images.first
   end
 
+  def is_protip?
+    content_type.in? %w(protip getting_started teardown)
+  end
+
+  def is_tutorial?
+    content_type == 'tutorial'
+  end
+
+  def is_wip?
+    content_type == 'wip'
+  end
+
   def languages
     widgets.where(type: %w(CodeWidget)).map(&:language).uniq - ['text']
   end
@@ -695,7 +729,7 @@ class BaseArticle < ActiveRecord::Base
   def post_new_tweet_at! time
     message = prepare_tweet
     self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update', message
+    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:file_url)
   end
 
   def prepare_tweet
@@ -705,6 +739,10 @@ class BaseArticle < ActiveRecord::Base
 
   def product_tags_string_changed?
     (product_tags_string_was || '').split(',').map{|t| t.strip } != (product_tags_string || '').split(',').map{|t| t.strip }
+  end
+
+  def slug_hid
+    [slug, hid].join('-')
   end
 
   def should_tweet?
@@ -782,17 +820,9 @@ class BaseArticle < ActiveRecord::Base
     end
   end
 
-  def slug_hid
-    [slug, hid].join('-')
-  end
-
   private
     def can_be_public?
       name.present? and description.present? and cover_image.try(:file_url).present?
-    end
-
-    def check_if_current
-      self.end_date = nil if current
     end
 
     def clean_permissions
@@ -813,7 +843,6 @@ class BaseArticle < ActiveRecord::Base
 
     def ensure_website_protocol
       self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
-      self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
     end
 
     def extract_content_from_story_json item

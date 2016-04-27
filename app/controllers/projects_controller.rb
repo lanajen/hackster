@@ -11,13 +11,13 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
 
-    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
-    @by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
+    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = BaseArticle.indexable.for_thumb_display
+    @projects = Project.indexable.for_thumb_display
 
-    if @by and @by.in? BaseArticle::FILTERS.keys
-      @projects = @projects.send(BaseArticle::FILTERS[@by], user: current_user)
+    if @by and @by.in? Project::FILTERS.keys
+      @projects = @projects.send(Project::FILTERS[@by], user: current_user)
       if @by == 'toolbox'
         @projects = @projects.distinct('projects.id')  # see if this can be moved out
       end
@@ -34,14 +34,14 @@ class ProjectsController < ApplicationController
     end
 
     if params[:sort]
-      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
+      @projects = @projects.send(Project::SORTING[params[:sort]])
     end
 
-    if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
       @projects = @projects.where(difficulty: params[:difficulty])
     end
 
-    if params[:type].try(:to_sym).in? BaseArticle.content_types(%w(Project Article)).values
+    if params[:type].try(:to_sym).in? Project.content_types(%w(Project Article)).values
       @projects = @projects.with_type(params[:type])
     end
 
@@ -59,7 +59,7 @@ class ProjectsController < ApplicationController
 
     if user_signed_in?
       impressionist_async @project, '', unique: [:session_hash]
-    else
+    elsif @project.publyc?  # don't cache if project is private
       surrogate_keys = [@project.record_key, 'project']
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
@@ -68,20 +68,50 @@ class ProjectsController < ApplicationController
 
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
 
-    @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
-    @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
-    # we load parts and widgets all at once and then split them into their own
-    # categories. That way we limit the number of db queries
-    @parts = @project.part_joins.includes(part: [:image, :platform])
+    # we have to support two different templates
+    if current_platform.try(:user_name) == 'arduino'
+      # we load parts and widgets all at once and then split them into their own
+      # categories. That way we limit the number of db queries
+      @parts = @project.part_joins.includes(part: [:image, :platform])
 
-    @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
-    @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
-    @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
+      @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-hardware-parts"])
+      @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-tool-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-tool-parts"])
+      @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-software-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-software-parts"])
 
-    @widgets = @project.widgets.order(:position, :id)
-    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
-      @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
-      @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+      @widgets = @project.widgets.order(:position, :id)
+      unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-credits"])
+        @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+        @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+      end
+    else
+      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge).includes(:prizes).first
+      @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
+
+      unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?])
+        @tags = if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
+          unknown_platforms = @project.platform_tags_cached.select do |tag|
+            Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+          end
+          tags = (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq
+        else
+          []
+        end
+      end
+
+      unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-parts", site_user_name]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-parts"])
+        # we load parts and widgets all at once and then split them into their own
+        # categories. That way we limit the number of db queries
+        @parts = @project.part_joins.includes(part: [:image, :platform])
+        @hardware_parts = @parts.select{|p| p.part.type == 'HardwarePart' }
+        @tool_parts = @parts.select{|p| p.part.type == 'ToolPart' }
+        @software_parts = @parts.select{|p| p.part.type == 'SoftwarePart' }
+      end
+
+      @widgets = @project.widgets.order(:position, :id)
+      unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-team"])
+        @credits_widget = @widgets.select{|w| w.type == 'CreditsWidget' }.first
+        @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
+      end
     end
 
     @cad_widgets = @widgets.select{|w| w.type.in? %w(CadRepoWidget CadFileWidget) } unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-cad"]) and Rails.cache.exist?(['views', "project-#{@project.id}-contents-cad"])
@@ -95,18 +125,6 @@ class ProjectsController < ApplicationController
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
-    @project = ProjectDecorator.decorate(@project)
-
-    # call with already loaded widgets and images
-    unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"])
-      @description = if @project.story_json.empty?
-        @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
-        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
-        @project.description(nil, widgets: @widgets, images: @images)
-      else
-        @project.story_json.html_safe
-      end
-    end
 
     @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
     @other_projects = @other_projects.with_group current_platform if is_whitelabel?
@@ -114,7 +132,7 @@ class ProjectsController < ApplicationController
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
     if @project.publyc?
-      @respecting_users = @project.respecting_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @respecting_users = @project.respecting_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(current_platform.try(:user_name) == 'arduino' ? 8 : 9)
       @replicating_users = @project.replicated_users.publyc.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
       if is_whitelabel?
         @respecting_users = @respecting_users.where(users: { enable_sharing: true })
@@ -127,11 +145,17 @@ class ProjectsController < ApplicationController
       @comments = @comments.joins(:user).where(users: { enable_sharing: true })
     end
 
-    if @project.has_assignment?
-      @issue = Feedback.where(threadable_type: 'BaseArticle', threadable_id: @project.id).first
-      @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
+    @project = ProjectDecorator.decorate(@project)
+    # preload widgets and images
+    unless (current_platform.try(:user_name) == 'arduino' ? Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-widgets"]) : Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-story"]) and Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-contents-story"]))
+      @description = if @project.story_json.empty?
+        @image_widgets = @widgets.select{|w| w.type == 'ImageWidget' }
+        @images = Image.where(attachable_type: 'Widget', attachable_id: @image_widgets.map(&:id))
+        @project.description(nil, widgets: @widgets, images: @images)
+      else
+        @project.story_json.html_safe
+      end
     end
-
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
@@ -290,13 +314,17 @@ class ProjectsController < ApplicationController
           elsif type_was != @project.type
             notice = "The project template was updated."
           end
-          flash[:notice] = notice
+          redirect_to @project, notice: notice
         else
           if params[:base_article].try(:[], 'private') == '0'
             flash[:alert] = "Couldn't make the project public, please email us at help@hackster.io to get help."
           end
+          if params[:view].present?
+            render params[:view]
+          else
+            redirect_to @project
+          end
         end
-        redirect_to @project
       end
 
       format.js do
@@ -310,7 +338,7 @@ class ProjectsController < ApplicationController
           @project.updater_id = current_user.id
           if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:base_article]
             # ProjectWorker.perform_async 'create_review_event', @project.id, current_user.id, :project_update, changed: changed if did_change
-            if @panel.in? %w(hardware publish team software protip_parts_and_attachments)
+            if @panel.in? %w(hardware things publish team software protip_parts_and_attachments attachments)
               render 'projects/forms/update'
             else
               render 'projects/forms/checklist', status: :ok
@@ -374,6 +402,13 @@ class ProjectsController < ApplicationController
         flash[:notice] = "Write-up #{params[:event]}'ed."
       end
     end
+  end
+
+  def publish
+    @project = BaseArticle.find params[:id]
+    authorize! :manage, @project
+
+    title "Publication settings - #{@project.name}"
   end
 
   def destroy
