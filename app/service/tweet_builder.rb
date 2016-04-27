@@ -47,8 +47,6 @@ class TweetBuilder
       elsif @project.team_members_count > 1
         if @project.team.name.present?
           output << " by #{@project.team.name.strip}"
-        else
-          output << " by #{@project.team_members_count} developers"
         end
       else
         user = @project.users.first
