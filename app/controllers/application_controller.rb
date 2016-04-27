@@ -390,7 +390,17 @@ class ApplicationController < ActionController::Base
     end
 
     def mark_last_seen!
-      TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
+      opts = {
+        ip: request.ip,
+        time: Time.now.to_i,
+        event: "#{controller_path}##{self.action_name}",
+        referrer: request.referrer,
+        session_id: session.id,
+        landing_page: cookies[:landing_page],
+        initial_referrer: cookies[:initial_referrer],
+        request_url: request.original_url,
+      }
+      TrackerQueue.perform_async 'mark_last_seen', current_user.id, opts if user_signed_in? and tracking_activated?
     end
 
     def path_prefix_valid? path_prefix
@@ -439,7 +449,7 @@ class ApplicationController < ActionController::Base
     end
 
     def tracking_activated?
-      Rails.env.production? and !current_user.try(:is?, :admin) and !(request.user_agent.present? and '23.0.1271.97'.in? request.user_agent)
+      Rails.env.production? and !current_user.try(:is?, :admin)
     end
 
     def tracker

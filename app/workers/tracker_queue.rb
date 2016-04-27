@@ -30,9 +30,20 @@ class TrackerQueue < BaseWorker
     Tracker.new({ env: env }).send method_name, *args
   end
 
-  def mark_last_seen user_id, ip, timestamp, event=nil
-    time = Time.at(timestamp)
-    UserActivity.create user_id: user_id, created_at: time, event: event, ip: ip
+  def mark_last_seen user_id, opts={}
+    time = Time.at(opts['time'])
+    attributes = {
+      user_id: user_id,
+      created_at: time,
+      event: opts['event'],
+      ip: opts['ip'],
+      referrer_url: opts['referrer_url'],
+      session_id: opts['session_id'],
+      landing_url: opts['landing_url'],
+      initial_referrer: opts['initial_referrer'],
+      request_url: opts['request_url'],
+    }
+    UserActivity.create attributes
     User.find(user_id).update_last_seen! time
   end
 end
