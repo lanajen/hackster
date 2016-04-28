@@ -1,0 +1,28 @@
+- if can? :read, @live_chapter
+  - if @now_events.any?
+    h3 Events happening now
+    .row.project-list
+      - @now_events.each do |event|
+        = render partial: 'groups/events/event_thumb', locals: { event: EventDecorator.decorate(event), col: (@live_chapter.twitter_widget_id.present? ? 'col-md-6' : nil) }
+
+  - if @upcoming_events.any?
+    h3 Upcoming events
+    .row.project-list
+      - @upcoming_events.each do |event|
+        = render partial: 'groups/events/event_thumb', locals: { event: EventDecorator.decorate(event), col: (@live_chapter.twitter_widget_id.present? ? 'col-md-6' : nil) }
+
+  - if @past_events.any?
+    h3 Past events
+    .row.project-list
+      - @past_events.each do |event|
+        = render partial: 'groups/events/event_thumb', locals: { event: EventDecorator.decorate(event), col: (@live_chapter.twitter_widget_id.present? ? 'col-md-6' : nil) }
+
+    / .row.text-center= will_paginate @past_events
+
+  - if @now_events.empty? and @upcoming_events.empty? and @past_events.empty?
+    p
+      ' There are no planned events yet.
+
+- else
+  .alert.alert-warning
+    | The contents of this group are only visible to members.

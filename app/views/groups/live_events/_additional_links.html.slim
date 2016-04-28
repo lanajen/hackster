@@ -1,0 +1,2 @@
+- if @group.in_the_future? and @group.tickets_link.present?
+  = link_to @group.cta_text, @group.tickets_link, class: 'btn btn-primary'

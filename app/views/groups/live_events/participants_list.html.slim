@@ -1,0 +1,25 @@
+.row
+  .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+    .box
+      .box-title
+        h2 Participants list
+      .box-content
+        - @projects.each do |col|
+          - project = col.project
+          div.mg-40
+            h4= link_to project.name, project
+            p
+              strong> Award:
+              - if project.awards.any?
+                - award = project.awards.first
+                => award.name
+                | (#{award.prize})
+              - else
+                | None
+            p
+              strong Team members:
+            ul
+              - project.users.each do |user|
+                li
+                  => link_to user.name, user
+                  | (#{user.email})

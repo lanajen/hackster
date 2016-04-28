@@ -1,0 +1,23 @@
+= content_for :head do
+  meta(name="robot" content="noindex nofollow")
+
+.container
+  - if can? :read, @event
+    - if @participants.any?
+      .row
+        <div class="col-md-6"><div class="row">
+        - @participants.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div></div>
+    - else
+      p This event has no participants.
+
+  - else
+    .alert.alert-warning
+      | The content of this group is only visible to members.
+      / if @event.access_level == 'anyone'
+        = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+      / elsif @event.access_level == 'request'
+        = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

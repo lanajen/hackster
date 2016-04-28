@@ -334,6 +334,32 @@ HackerIo::Application.routes.draw do
             get 'admin/participants' => 'events#participants_list', as: :participants_list
           end
         end
+
+        resources :live_events, except: [:show, :update, :destroy]
+        scope 'live/:user_name', as: :live_chapter do
+          get '' => 'live_chapters#show', as: ''
+          delete '' => 'live_chapters#destroy'
+          patch '' => 'live_chapters#update'
+          # get 'events/new' => 'live_events#new', as: :new_event
+          # post 'events' => 'live_events#create', as: :events
+          resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+          get 'pages/:slug' => 'wiki_pages#show'
+
+          # scope ':live_event_name', as: :event do
+          resources :events, as: :event, controller: 'live_events' do
+            # get '' => 'live_events#show', as: ''
+            # delete '' => 'live_events#destroy'
+            # patch '' => 'live_events#update'
+            resources :projects, only: [:new, :create], controller: 'groups/projects'
+            patch 'projects/link' => 'groups/projects#link'
+            resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+            get 'pages/:slug' => 'wiki_pages#show'
+            get 'info' => 'live_events#info'
+            get 'projects' => 'live_events#projects'
+            get 'embed' => 'live_events#embed'
+            get 'admin/participants' => 'live_events#participants_list', as: :participants_list
+          end
+        end
         # end groups
 
         resources :assignments, only: [] do
