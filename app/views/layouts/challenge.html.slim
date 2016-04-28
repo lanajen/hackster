@@ -1,6 +1,6 @@
 - @challenge = @challenge.decorate
 
-= inserts_stats_for @challenge
+= insert_stats @challenge
 
 = content_for :head do
   - cache ["challenge-#{@challenge.id}-meta"], tag: ["challenge-#{@challenge.id}-meta", "challenge-#{@challenge.id}-sponsors", "challenge-#{@challenge.id}-prizes"], skip_digest: true do

@@ -1,7 +1,7 @@
 - unless @group.decorated?
   - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
 
-= inserts_stats_for @group
+= insert_stats @group
 
 = content_for :head do
   = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
