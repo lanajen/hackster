@@ -2,7 +2,7 @@
   - content_for :head do
     meta name='robots' content='noindex'
 
-= insert_stats @user
+- insert_stats @user
 
 - cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}-toolbox", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list

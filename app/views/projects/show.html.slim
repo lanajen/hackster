@@ -1,7 +1,7 @@
 = content_for :head do
   = render 'meta_tags'
 
-= insert_stats @project
+- insert_stats @project
 
 / update counters via JS so we can cache the views longer
 - content_for :js do
