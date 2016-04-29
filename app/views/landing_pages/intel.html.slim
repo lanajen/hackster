@@ -1,15 +1,8 @@
 = content_for :head do
-  meta name='robots' content='noindex, nofollow'
   meta name='api-uri' content='null' id='api-uri'
   = render 'shared/favicons'
 
-= content_for :js do
-  = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-  javascript:
-     try{Typekit.load({async: true});}catch(e){}
-
 #intel-landing
-
   section#hero
     .top-nav.clearfix
       = image_tag 'landing_pages/intel/competition_logo.png', alt: "China-US Young Maker Competition", class: 'logo'
