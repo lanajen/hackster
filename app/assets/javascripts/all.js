@@ -515,6 +515,12 @@ $(function () {
   });
 
   updateProjectThumbLinks();
+
+  $('.live-chapter-about-more').click(function(e){
+    e.preventDefault();
+    $('.live-chapter-about-excerpt').hide();
+    $('.live-chapter-about-full').show();
+  });
 });
 
 function closeNav(nav) {

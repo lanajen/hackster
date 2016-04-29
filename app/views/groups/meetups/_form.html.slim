@@ -1,4 +1,4 @@
-= simple_nested_form_for @live_chapter, url: live_chapter_path(@live_chapter), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @meetup, url: meetup_path(@meetup), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -9,9 +9,9 @@
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
-              li= link_to 'Edit as admin', edit_admin_group_path(@live_chapter), class: 'btn btn-sm btn-warning'
+              li= link_to 'Edit as admin', edit_admin_group_path(@meetup), class: 'btn btn-sm btn-warning'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', @live_chapter, class: 'btn-link btn-sm'
+            li= link_to 'Cancel', @meetup, class: 'btn-link btn-sm'
 
       hr
 
@@ -27,6 +27,6 @@
         span.input-group-addon #{site_domain}/live/
         = f.input_field :user_name
 
-      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @live_chapter.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+      /= render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @meetup.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
       = f.input :home_link, label: 'Website link'

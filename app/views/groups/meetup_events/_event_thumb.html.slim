@@ -9,8 +9,10 @@
 
   .media-body
     h4.media-heading= link_to event.name, event
-    - if event.about.present?
-      p= event.about.truncate(180)
+    p
+      - if event.about.present?
+        => event.about.truncate(180, separator: /\s/)
+      = link_to 'Learn more', event, class: 'small'
     .info-table
       .info-row
         .info-label Date

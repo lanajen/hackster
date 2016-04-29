@@ -11,7 +11,7 @@ class EventsController < ApplicationController
   end
 
   def export
-    event = Group.find(params[:id])  # using group so it works for both Event and LiveEvent
+    event = Group.find(params[:id])  # using group so it works for both Event and MeetupEvent
     @event = "#{event.class.name}Decorator".constantize.decorate event
 
     out = render_to_string 'export.ics'

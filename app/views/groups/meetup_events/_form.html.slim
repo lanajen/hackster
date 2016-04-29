@@ -29,7 +29,7 @@
       });
     });
 
-= simple_nested_form_for @live_event, url: group_path(@live_event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @meetup_event, url: group_path(@meetup_event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -40,9 +40,9 @@
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
-              li= link_to 'Edit as admin', edit_admin_group_path(@live_event), class: 'btn btn-sm btn-warning'
+              li= link_to 'Edit as admin', edit_admin_group_path(@meetup_event), class: 'btn btn-sm btn-warning'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', @live_event, class: 'btn-link btn-sm'
+            li= link_to 'Cancel', @meetup_event, class: 'btn-link btn-sm'
 
       hr
 

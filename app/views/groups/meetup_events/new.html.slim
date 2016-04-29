@@ -30,10 +30,10 @@
   .col-xs-12.col-md-offset-2.col-md-8
     .box
       .box-title
-        h2 New event for #{@live_chapter.name}
+        h2 New event for #{@meetup.name}
 
       .box-content
-        = simple_nested_form_for @event, url: live_chapter_events_path(@live_chapter.user_name), html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+        = simple_nested_form_for @event, url: meetup_events_path(@meetup.user_name), html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
           = f.error_notification
 
           = f.input :full_name, label: 'Event name'

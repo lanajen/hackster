@@ -7,8 +7,8 @@
     => link_to 'New event', new_admin_group_path(group: { type: 'Event' }), :class => 'btn btn-primary btn-sm'
     => link_to 'New course', new_admin_group_path(group: { type: 'Course' }), :class => 'btn btn-primary btn-sm'
     => link_to 'New class', new_admin_group_path(group: { type: 'Promotion' }), :class => 'btn btn-primary btn-sm'
-    => link_to 'New Live chapter', new_admin_group_path(group: { type: 'LiveChapter' }), :class => 'btn btn-primary btn-sm'
-    => link_to 'New Live event', new_admin_group_path(group: { type: 'LiveEvent' }), :class => 'btn btn-primary btn-sm'
+    => link_to 'New Live chapter', new_admin_group_path(group: { type: 'Meetup' }), :class => 'btn btn-primary btn-sm'
+    => link_to 'New Live event', new_admin_group_path(group: { type: 'MeetupEvent' }), :class => 'btn btn-primary btn-sm'
 
 => render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at type)).each do |field|

@@ -99,10 +99,10 @@ module UrlHelper
       edit_hackathon_event_page_path(group.hackathon.user_name, group.user_name, page.id)
     when 'Hackathon'
       edit_hackathon_page_path(group.user_name, page.id)
-    when 'LiveEvent'
-      edit_live_chapter_event_page_path(group.live_chapter.user_name, group.user_name, page.id)
-    when 'LiveChapter'
-      edit_live_chapter_page_path(group.user_name, page.id)
+    when 'MeetupEvent'
+      edit_meetup_event_page_path(group.meetup.user_name, group.user_name, page.id)
+    when 'Meetup'
+      edit_meetup_page_path(group.user_name, page.id)
     end
   end
 
@@ -112,10 +112,10 @@ module UrlHelper
       hackathon_event_page_path(group.hackathon.user_name, group.user_name, page.slug)
     when 'Hackathon'
       hackathon_page_path(group.user_name, page.slug)
-    when 'LiveEvent'
-      live_chapter_event_page_path(group.live_chapter.user_name, group.user_name, page.slug)
-    when 'LiveChapter'
-      live_chapter_page_path(group.user_name, page.slug)
+    when 'MeetupEvent'
+      meetup_event_page_path(group.meetup.user_name, group.user_name, page.slug)
+    when 'Meetup'
+      meetup_page_path(group.user_name, page.slug)
     end
   end
 
@@ -140,10 +140,10 @@ module UrlHelper
         # super params_for_group(group).merge(opts)
       when 'Event'
         event_path group, opts
-      when 'LiveChapter'
-        live_chapter_path(group, opts)
-      when 'LiveEvent'
-        live_event_path group, opts
+      when 'Meetup', 'LiveChapter'
+        meetup_path(group, opts)
+      when 'MeetupEvent'
+        meetup_event_path group, opts
       when 'Platform'
         platform_home_path group, opts
       when 'List'
@@ -172,10 +172,10 @@ module UrlHelper
       super params_for_group(group).merge(opts)
     when 'Event'
       event_url group, opts
-    when 'LiveChapter'
-      live_chapter_url(group, opts)
-    when 'LiveEvent'
-      live_event_url group, opts
+    when 'Meetup', 'LiveChapter'
+      meetup_url(group, opts)
+    when 'MeetupEvent'
+      meetup_event_url group, opts
     when 'Platform'
       platform_home_url group, opts
     when 'List'
@@ -225,28 +225,28 @@ module UrlHelper
     super list.user_name, opts
   end
 
-  def live_chapter_path group, opts={}
+  def meetup_path group, opts={}
     super group.user_name, opts
   end
 
-  def live_chapter_url group, opts={}
+  def meetup_url group, opts={}
     super group.user_name, opts
   end
 
-  def live_event_path event, opts={}
-    live_chapter_event_path params_for_live_event(event).merge(opts)
+  def meetup_event_path event, opts={}
+    super params_for_meetup_event(event).merge(opts)
   end
 
-  def live_event_url event, opts={}
-    live_chapter_event_url params_for_live_event(event).merge(opts)
+  def meetup_event_url event, opts={}
+    super params_for_meetup_event(event).merge(opts)
   end
 
-  def live_event_info_path event, opts={}
-    live_chapter_event_info_path event.live_chapter.user_name, event.id, opts
+  def meetup_event_info_path event, opts={}
+    super event.meetup.user_name, event.id, opts
   end
 
-  def live_event_projects_path event, opts={}
-    live_chapter_event_projects_path event.live_chapter.user_name, event.id, opts
+  def meetup_event_projects_path event, opts={}
+    super event.meetup.user_name, event.id, opts
   end
 
   def login_as_path user
@@ -559,7 +559,6 @@ module UrlHelper
         user_name: assignment.promotion.course.user_name,
         promotion_name: assignment.promotion.user_name,
         id: assignment.id_for_promotion,
-        # use_route: 'course_promotion_assignment',
       }
     end
 
@@ -582,7 +581,6 @@ module UrlHelper
       {
         user_name: event.hackathon.user_name,
         event_name: event.user_name,
-        # use_route: 'hackathon_event',
       }
     end
 
@@ -591,22 +589,19 @@ module UrlHelper
         uni_name: promotion.course.university.user_name,
         user_name: promotion.course.user_name,
         promotion_name: promotion.user_name,
-        # use_route: 'course_promotion',
       }
     end
 
     def params_for_group group, route='group'
       {
         user_name: group.user_name,
-        # use_route: route,
       }
     end
 
-    def params_for_live_event event
+    def params_for_meetup_event event
       {
-        user_name: event.live_chapter.user_name,
+        user_name: event.meetup.user_name,
         id: event.id,
-        # use_route: 'hackathon_event',
       }
     end
 

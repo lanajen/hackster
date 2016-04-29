@@ -1,0 +1,48 @@
+.col-md-8.col-md-offset-2
+  h2.text-center
+    - if @group.avatar.present?
+      => image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
+    = link_to @group.name, @group, class: 'hidden-link'
+
+  .box
+    .box-title
+      h2 Manage members
+
+    .box-content
+      = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
+        = f.error_notification
+        table#sortable.table.table-condensed
+          thead
+            th User
+            th Role
+            th
+          tbody
+            - @group.members.includes(:user).sort_by{|m| m.user.name || m.user.email }.each do |member|
+              = f.simple_fields_for :members, member, wrapper: false do |f_member|
+                tr.fields
+                  - if member.persisted?
+                    td
+                      - if member.user.name.present?
+                        = link_to member.user.name, member.user
+                      - else
+                        = member.user.email
+                  - else
+                    td
+                      = f_member.input :grantee_id, collection: @group.members.invitation_accepted_or_not_invited.includes(:user).map(&:user).reject{|u| u.invited_to_sign_up? }.sort_by{|u| u.name }, label: false
+                      = f_member.input :grantee_type, as: :hidden, input_html: { value: 'User' }
+                  td
+                    - if member.persisted?
+                      - if member.invitation_pending?
+                        - if member.user.invited_to_sign_up?
+                          | Pending sign up
+                        - else
+                          | Invitation pending
+                      - else
+                        = f_member.input :group_roles, collection: MeetupMember.group_roles, label: false
+                    - else
+                      | Not saved
+                  td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
+
+        .form-actions
+          = f.submit 'Save changes', class: 'btn btn-primary'
+          = link_to 'Cancel', @group, class: 'btn btn-link btn-sm'

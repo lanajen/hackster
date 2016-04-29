@@ -129,6 +129,8 @@ class Ability
       end
     end
 
+    can :destroy, Member, user_id: @user.id
+
     can :request_access, Group do |group|
       group.access_level == 'request' and !@user.is_member?(group)
     end

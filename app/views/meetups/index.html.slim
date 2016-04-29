@@ -60,18 +60,9 @@
 
     section#events style='background:#fafafa'
       .container
-        h2 Global Chapters
-        - closed = false
-        - @chapters.each_with_index do |chapter, i|
-          - closed = false
-          - if (i == 0 or i % 3 == 0)
-            <div class="row">
-          = render 'live_chapters/live_chapter_thumb', chapter: chapter.decorate
-          - if (i+1) % 3 == 0
-            </div>
-            - closed = true
-        - unless closed
-          </div>
+        h2 style='margin-bottom:50px' Global Chapters
+        - @chapters.each_with_index do |chapter|
+          = render 'meetups/meetup_thumb', chapter: chapter.decorate
 
     / section#members
       .container

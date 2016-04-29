@@ -1,4 +1,4 @@
-class LiveChapterMember < Member
+class MeetupMember < Member
   set_roles :group_roles, %w(member organizer)
   attr_protected #none
 

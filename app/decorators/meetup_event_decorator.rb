@@ -1,4 +1,4 @@
-class LiveEventDecorator < GeographicCommunityDecorator
+class MeetupEventDecorator < GeographicCommunityDecorator
   def cal_start_date
     model.start_date.strftime('%Y%m%dT%H%M00Z')
   end

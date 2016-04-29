@@ -1,7 +1,7 @@
-class LiveEvent < GeographicCommunity
+class MeetupEvent < GeographicCommunity
   include HasDefault
 
-  belongs_to :live_chapter, foreign_key: :parent_id
+  belongs_to :meetup, foreign_key: :parent_id, class_name: 'Group'
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
 
@@ -11,7 +11,7 @@ class LiveEvent < GeographicCommunity
     :start_date_dummy, :end_date_dummy,
     :start_date, :end_date
 
-  validates :live_chapter, :name, :start_date, :end_date, :address, :city, :country,
+  validates :meetup, :name, :start_date, :end_date, :address, :city, :country,
     :start_date_dummy, :end_date_dummy, presence: true
 
   hstore_column :hproperties, :about, :string

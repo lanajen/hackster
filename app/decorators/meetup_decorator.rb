@@ -1,4 +1,4 @@
-class LiveChapterDecorator < GroupDecorator
+class MeetupDecorator < GroupDecorator
   def country
     {
       'United States' => 'USA',

@@ -163,7 +163,7 @@ HackerIo::Application.routes.draw do
           resources :groups, except: [:show]
           resources :invitations, only: [:new, :create]
           resources :jobs, except: [:show]
-          resources :live_chapters, except: [:show]
+          resources :meetups, except: [:show]
           resources :parts, except: [:show] do
             get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
             get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -240,7 +240,7 @@ HackerIo::Application.routes.draw do
         end
         post 'claims' => 'claims#create'
 
-        resources :members, only: [] do
+        resources :members, only: [:destroy] do
           patch 'process' => 'members#process_request'
         end
 
@@ -335,21 +335,23 @@ HackerIo::Application.routes.draw do
           end
         end
 
-        resources :live_events, except: [:show, :update, :destroy]
-        scope 'live/:user_name', as: :live_chapter do
-          get '' => 'live_chapters#show', as: ''
-          delete '' => 'live_chapters#destroy'
-          patch '' => 'live_chapters#update'
-          resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
-          get 'pages/:slug' => 'wiki_pages#show'
+        get 'live' => 'meetups#index'
+        get 'live/new' => 'meetups#new', as: :new_meetup
+        post 'live/chapters' => 'meetups#create', as: :meetups
+        scope 'live/:user_name', as: :meetup do
+          get '' => 'meetups#show', as: ''
+          delete '' => 'meetups#destroy'
+          patch '' => 'meetups#update'
+          # resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+          # get 'pages/:slug' => 'wiki_pages#show'
 
-          resources :events, controller: 'live_events' do
+          resources :events, controller: 'meetup_events' do
             resources :projects, only: [:new, :create], controller: 'groups/projects'
             patch 'projects/link' => 'groups/projects#link'
-            resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
-            get 'pages/:slug' => 'wiki_pages#show'
-            get 'embed' => 'live_events#embed'
-            get 'admin/participants' => 'live_events#participants_list', as: :participants_list
+            # resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+            # get 'pages/:slug' => 'wiki_pages#show'
+            get 'embed' => 'meetup_events#embed'
+            get 'admin/participants' => 'meetup_events#participants_list', as: :participants_list
           end
         end
         # end groups
@@ -503,9 +505,6 @@ HackerIo::Application.routes.draw do
         get 'terms' => 'pages#terms'
         get 'press' => 'pages#press'
         get 'resources' => 'pages#resources'
-
-        # live
-        get 'live' => 'live_chapters#index'
 
         # updates counter for cached pages
         get 'users/stats' => 'stats#index'

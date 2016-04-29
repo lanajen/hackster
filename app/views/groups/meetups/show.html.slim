@@ -1,0 +1,93 @@
+.live-chapter-page
+  .row
+    .col-md-11.col-md-offset-0-5.event-header
+      h1= @meetup.name
+      ul.list-unstyled.list-inline.text-muted.small
+        - if @meetup.hackster_live?
+          li
+            i.fa.fa-bolt
+            span Hackster Live Meetup
+        li
+          i.fa.fa-map-marker
+          span= @meetup.location
+        - if @meetup.home_link.present?
+          li= link_to content_tag(:i, '', class: 'fa fa-link') + content_tag(:span, 'More info'), @meetup.home_link
+      - if @meetup.about.present?
+        p.live-chapter-about-excerpt
+          => @meetup.about.truncate(120, separator: /\s/)
+          - if @meetup.about.size > 120
+            = link_to 'Read more', 'javascript:void(0)', class: 'small live-chapter-about-more'
+        .live-chapter-about-full= to_paragraph @meetup.about
+
+      .mg-10
+        - if going = (user_signed_in? and current_user.is_member?(@group))
+          span.text-success
+            i.fa.fa-check
+            span You're a member
+          span.btn-group
+            a.btn.btn-link.btn-link-hidden.btn-sm.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+              i.fa.fa-ellipsis-v
+            ul.dropdown-menu role="menu"
+              li= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Leave group'), member_path(going), data: { method: :delete }
+
+        - else
+          = link_to 'Join group', group_accept_invitation_path(@group), class: 'btn btn-primary btn-sm'
+
+      - if can? :manage, @group
+        .btn-group
+          a.btn.btn-secondary.btn-sm.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+            span.visible-sm-inline
+              i.fa.fa-cog
+            span.hidden-sm
+              ' Manage page
+            span.caret
+          ul.dropdown-menu role="menu"
+            li= link_to 'Edit settings', url_for([:edit, @group])
+            / li= link_to 'Add a new page', new_meetup_page_path(@group.user_name)
+            li.divider
+            li= link_to 'Manage members', group_edit_members_path(@group)
+            li= link_to 'Invite members', group_new_invitations_path(@group)
+            li.divider
+            li= link_to 'Add an event', new_meetup_event_path(@group.user_name)
+
+  .row
+    .col-md-7.col-md-offset-0-5
+      .chapter-events-section-header
+        h2 Events
+      - if @meetup.events_count > 0
+        - if @now_events.any?
+          .chapter-events-section
+            h3 Happening now
+            - @now_events.each do |event|
+              = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
+
+        - if @upcoming_events.any?
+          .chapter-events-section
+            h3 Upcoming
+            - @upcoming_events.each do |event|
+              = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
+
+        - if @past_events.any?
+          .chapter-events-section
+            h3 Past
+            - @past_events.each do |event|
+              = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
+
+      - else
+        p No events have been planned yet.
+
+    .col-md-4.event-participants
+      section.section-thumbs
+        h4
+          - if @meetup.hackster_live?
+            | Meetup Ambassadors
+          - else
+            | Meetup Organizers
+        - @organizers.each do |member|
+          = render partial: 'users/member_thumb_mini', locals: { member: member }
+
+      - if @meetup.members_count > 0
+        section.section-thumbs
+          h4 Members (#{@meetup.members_count})
+          - @participants.each do |member|
+            = render partial: 'users/member_thumb_mini', locals: { member: member }
