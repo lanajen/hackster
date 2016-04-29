@@ -586,7 +586,7 @@ class ProjectsController < ApplicationController
 
         when 'user'
           if user = User.find_by_id(params[:ref_id])
-            projects = user.projects.publyc.own.order(start_date: :desc, created_at: :desc)
+            projects = user.projects.publyc.own.order(created_at: :desc)
             projects = projects.with_group(current_platform) if is_whitelabel?
             projects
           end
