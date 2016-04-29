@@ -124,7 +124,7 @@ class PagesController < ApplicationController
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.publyc.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.where(id: %w(35 34))  #publyc.active.ends_first.limit(2)
+      @challenges = Challenge.where(id: %w(35 33))  #publyc.active.ends_first.limit(2)
 
       @typeahead_tags = Collection.publyc.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
