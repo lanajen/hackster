@@ -4,4 +4,10 @@ class MeetupEventObserver < ActiveRecord::Observer
   end
 
   alias_method :after_destroy, :after_create
+
+  def after_update record
+    if record.private_changed? and record.publyc?
+      NotificationCenter.notify_all :new, :meetup_event, record.id
+    end
+  end
 end

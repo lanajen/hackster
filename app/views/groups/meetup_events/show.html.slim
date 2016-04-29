@@ -17,12 +17,18 @@
   .row
     .col-md-7.col-md-offset-0-5
       .event-header
-        h1= @event.name
+        h1
+          - if @event.pryvate?
+            i.fa.fa-lock.istooltip.text-muted.small title="Private draft" data-container='body'
+          span= @event.name
         div
           ' By
           = link_to @event.meetup.name, @event.meetup
         - if can? :edit, @event
-          div style='margin-top:10px'= link_to 'Edit event', edit_group_path(@event), class: 'btn btn-secondary btn-sm'
+          div style='margin-top:10px'
+            = link_to 'Edit event', edit_group_path(@event), class: 'btn btn-secondary btn-sm'
+            - if @event.pryvate?
+              = link_to 'Publish event', group_path(@event, group: { pryvate: false }), data: { method: :patch, confirm: 'Are you sure you want to publish this event? All meetup members will be alerted by email.' }, class: 'btn btn-secondary btn-sm'
 
       .info-table.event-info
         - if @event.start_date
@@ -31,7 +37,11 @@
             .info
               strong= l @event.start_date, format: :full_date
           .info-row
-            .info-label Start
+            .info-label Starts
+            .info
+              strong= @event.start_date.strftime '%l:%M %p'
+          .info-row
+            .info-label Ends
             .info
               strong= @event.start_date.strftime '%l:%M %p'
         .info-row
@@ -64,11 +74,11 @@
             button.btn.btn-secondary.btn-sm.dropdown-toggle href='javascript:void(0)' data-toggle="dropdown"
               i.fa.fa-calendar-o
               span Add to calendar
-          ul.dropdown-menu.add-to-cal
-            li= link_to content_tag(:i, '', class: 'fa fa-apple') + content_tag(:span, 'Apple Calendar'), export_event_path(@event)
-            li= link_to content_tag(:i, '', class: 'fa fa-google') + content_tag(:span, 'Google'), google_calendar_link(@event), target: '_blank'
-            li= link_to content_tag(:i, '', class: 'fa fa-windows') + content_tag(:span, 'Outlook'), export_event_path(@event)
-            li= link_to content_tag(:i, '', class: 'fa fa-yahoo') + content_tag(:span, 'Yahoo'), yahoo_calendar_link(@event), target: '_blank'
+            ul.dropdown-menu.add-to-cal
+              li= link_to content_tag(:i, '', class: 'fa fa-apple') + content_tag(:span, 'Apple Calendar'), export_event_path(@event)
+              li= link_to content_tag(:i, '', class: 'fa fa-google') + content_tag(:span, 'Google'), google_calendar_link(@event), target: '_blank'
+              li= link_to content_tag(:i, '', class: 'fa fa-windows') + content_tag(:span, 'Outlook'), export_event_path(@event)
+              li= link_to content_tag(:i, '', class: 'fa fa-yahoo') + content_tag(:span, 'Yahoo'), yahoo_calendar_link(@event), target: '_blank'
 
         a.btn.btn-secondary.btn-sm.a2a_dd href='javascript:void(0)'
           i.fa.fa-share-square-o

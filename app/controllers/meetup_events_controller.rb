@@ -37,6 +37,7 @@ class MeetupEventsController < ApplicationController
     @event = @meetup.events.new(params[:group])
     authorize! :create, @event
 
+    @event.pryvate = true  # draft mode by default
     admin = @event.members.new(user_id: current_user.id, group_roles: ['organizer'])
 
     if @event.save
@@ -51,17 +52,15 @@ class MeetupEventsController < ApplicationController
 
   def update
     authorize! :update, @event
-    old_event = @event.dup
+    @meetup_event = @event
 
     if @event.update_attributes(params[:group])
       respond_to do |format|
-        format.html { redirect_to @event, notice: 'Profile updated.' }
-
-        track_event 'Updated event'
+        format.html { redirect_to @event, notice: 'Event updated.' }
       end
     else
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render 'groups/shared/edit' }
         format.js { render json: { group: @event.errors }, status: :unprocessable_entity }
       end
     end

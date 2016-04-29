@@ -13,6 +13,7 @@ class MeetupEvent < GeographicCommunity
 
   validates :meetup, :name, :start_date, :end_date, :address, :city, :country,
     :start_date_dummy, :end_date_dummy, presence: true
+  validate :dates_are_valid, if: proc{|e| !e.persisted? or e.start_date_changed? or e.end_date_changed? }
 
   hstore_column :hproperties, :about, :string
 
@@ -69,4 +70,13 @@ class MeetupEvent < GeographicCommunity
   def start_date_dummy
     start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
   end
+
+  private
+    def dates_are_valid
+      return unless start_date.present? and end_date.present?
+
+      errors.add :start_date_dummy, 'must be in the future' if start_date < Time.now
+      errors.add :end_date_dummy, 'must be in the future' if end_date < Time.now
+      errors.add :end_date_dummy, 'must be after the start date' if end_date < start_date
+    end
 end

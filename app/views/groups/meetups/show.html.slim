@@ -11,7 +11,7 @@
           i.fa.fa-map-marker
           span= @meetup.location
         - if @meetup.home_link.present?
-          li= link_to content_tag(:i, '', class: 'fa fa-link') + content_tag(:span, 'More info'), @meetup.home_link
+          li= link_to content_tag(:i, '', class: 'fa fa-link') + content_tag(:span, 'More info'), @meetup.home_link, target: '_blank'
       - if @meetup.about.present?
         p.live-chapter-about-excerpt
           => @meetup.about.truncate(120, separator: /\s/)
@@ -54,20 +54,28 @@
     .col-md-7.col-md-offset-0-5
       .chapter-events-section-header
         h2 Events
+      - if can?(:manage, :group) and @draft_events.exists?
+        .chapter-events-section
+          h3
+            i.fa.fa-lock
+            span Drafts
+          - @draft_events.each do |event|
+            = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
+
       - if @meetup.events_count > 0
-        - if @now_events.any?
+        - if @now_events.exists?
           .chapter-events-section
             h3 Happening now
             - @now_events.each do |event|
               = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
 
-        - if @upcoming_events.any?
+        - if @upcoming_events.exists?
           .chapter-events-section
             h3 Upcoming
             - @upcoming_events.each do |event|
               = render partial: 'groups/meetup_events/event_thumb', locals: { event: EventDecorator.decorate(event) }
 
-        - if @past_events.any?
+        - if @past_events.exists?
           .chapter-events-section
             h3 Past
             - @past_events.each do |event|
