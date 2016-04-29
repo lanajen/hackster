@@ -2,7 +2,7 @@
   javascript:
     var arduinoToken = window.localStorage.getItem("ideapp.token");
     if (arduinoToken && arduinoToken !== "") {
-      window.location.href = "#{raw arduino_sign_in_url}";
+      //window.location.href = "#{raw arduino_sign_in_url}";
     }
 
 - if user_signed_in?
@@ -12,8 +12,9 @@
       $(function(){
         var arduinoUid = window.localStorage.getItem("ideapp.uid");
         if (arduinoUid && arduinoUid !== "" && arduinoUid !== "#{current_user.authorizations.where(provider: 'arduino').first.try(:uid)}") {
+          //.append('<input type="hidden" name="redirect_to" value="#{raw arduino_sign_in_url}" />')
           $('#sign-out-form')
-            .append('<input type="hidden" name="redirect_to" value="#{raw arduino_sign_in_url}" />')
+            .append('<input type="hidden" name="redirect_to" value="#{raw request.original_url}" />')
             .submit();
         }
       });

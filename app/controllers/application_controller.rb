@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   before_filter :ensure_valid_path_prefix
   before_action :set_locale, except: [:not_found]
   before_filter :ensure_logged_in
-  before_filter :mark_last_seen!
+  before_filter :mark_last_seen!, if: proc{|c| c.request.xhr? }
   before_filter :store_location_before
   before_filter :track_visitor
   before_filter :check_new_badge
@@ -328,6 +328,10 @@ class ApplicationController < ActionController::Base
       @group = @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
     end
 
+    def load_live_event
+      @group = @event = LiveEvent.includes(:live_chapter).where(groups: { user_name: params[:live_event_name] }, live_chapters_groups: { user_name: params[:user_name] }).first!
+    end
+
     def load_project
       return @project if @project
       user_name = params[:user_name] if params[:project_slug] and params[:user_name]
@@ -389,18 +393,23 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def mark_last_seen!
+    def mark_last_seen! opts={}
+      controller = opts[:controller] || controller_path
+      action = opts[:action] || self.action_name
+      request_url = opts[:request_url] || request.original_url
+      referrer_url = opts[:referrer_url] || request.referrer.presence || request.headers['HTTP_ORIGIN']
+
       opts = {
         ip: request.ip,
         time: Time.now.to_i,
-        event: "#{controller_path}##{self.action_name}",
-        referrer: request.referrer,
+        event: "#{controller}##{action}",
+        referrer_url: referrer_url,
         session_id: session.id,
-        landing_page: cookies[:landing_page],
+        landing_url: cookies[:landing_page],
         initial_referrer: cookies[:initial_referrer],
-        request_url: request.original_url,
+        request_url: request_url,
       }
-      TrackerQueue.perform_async 'mark_last_seen', current_user.id, opts if user_signed_in? and tracking_activated?
+      TrackerQueue.perform_async 'mark_last_seen', current_user.try(:id), opts# if tracking_activated?
     end
 
     def path_prefix_valid? path_prefix

@@ -134,6 +134,7 @@ html lang="en" class=content_for(:html_class)
       - else
         = link_to 'Sign up / Login', new_user_registration_path(source: 'nav'), class: 'mo-nav-link'
 
+    = content_tag(:script, insert_stats, type: 'text/javascript')
     = content_for :js
 
     -# using flash[:js] to insert custom platform JS on logout
