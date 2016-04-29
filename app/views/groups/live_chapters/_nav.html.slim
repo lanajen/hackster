@@ -24,7 +24,7 @@ section.group-nav.affixable
             li= link_to 'Manage members', group_edit_members_path(@group)
             li= link_to 'Invite members', group_new_invitations_path(@group)
             li.divider
-            li= link_to 'Add an event', live_chapter_new_event_path(@group.user_name)
+            li= link_to 'Add an event', new_live_chapter_event_path(@group.user_name)
 
     ul.websites.list-inline.pull-right
       - @group.websites.select{|t,u| u.present? }.each do |type, url|
@@ -51,4 +51,4 @@ section.group-nav.affixable
         li= link_to 'Manage members', group_edit_members_path(@group)
         li= link_to 'Invite members', group_new_invitations_path(@group)
         li.divider
-        li= link_to 'Add an event', live_chapter_new_event_path(@group.user_name)
+        li= link_to 'Add an event', new_live_chapter_event_path(@group.user_name)

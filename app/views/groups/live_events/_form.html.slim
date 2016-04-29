@@ -17,7 +17,7 @@
       });
 
       $('#start_date_dummy').on('change', function(){
-        var date = $(this).data("DateTimePicker").getDate();
+        var date = $(this).data("DateTimePicker").getDate().format("YYYY-MM-DDTHH:mm");
         $('#start_date').val(date);
         if ($('#end_date').val() == '') {
           $('#end_date').val(date);
@@ -25,21 +25,11 @@
         }
       });
       $('#end_date_dummy').on('change', function(){
-        $('#end_date').val($(this).data("DateTimePicker").getDate());
-      });
-      $('#voting_end_date_dummy').on('change', function(){
-        $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
-      });
-      $('#group_activate_voting').on('change', function(){
-        if ($(this).is(':checked')) {
-          $('#voting_end_date_dummy').slideDown();
-        } else {
-          $('#voting_end_date_dummy').slideUp();
-        }
+        $('#end_date').val($(this).data("DateTimePicker").getDate().format("YYYY-MM-DDTHH:mm"));
       });
     });
 
-= simple_nested_form_for @event, url: event_path(@event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @live_event, url: group_path(@live_event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -50,26 +40,15 @@
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
-              li= link_to 'Edit as admin', edit_admin_group_path(@event), class: 'btn btn-sm btn-warning'
+              li= link_to 'Edit as admin', edit_admin_group_path(@live_event), class: 'btn btn-sm btn-warning'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', @event, class: 'btn-link btn-sm'
+            li= link_to 'Cancel', @live_event, class: 'btn-link btn-sm'
 
       hr
 
   .row
     .col-md-6
-      .form-group
-        .col-md-4
-          label.control-label Hackathon name
-        .col-md-8
-          input.form-control type='text' disabled='disabled' value=@event.hackathon.name
       = f.input :full_name, label: 'Event name'
-      = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
-        span.input-group-addon #{site_domain}/hackathons/#{@event.hackathon.user_name.truncate(10)}/
-        = f.input_field :user_name
-      / = f.input :email
-      = f.input :mini_resume, label: 'Event info', as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters. Will use hackathon one line description if empty.'
 
       = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
         #datepicker.input-group
@@ -85,38 +64,11 @@
             i.fa.fa-calendar
       = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
 
-      = f.input :activate_voting, as: :boolean, inline_label: 'Activate voting', label: false
-      = f.input :voting_end_date_dummy, label: 'Voting ends on', wrapper_html: { id: 'voting_end_date_dummy', class: 'datetimepicker', autocomplete: 'off', style: "#{'display:none' unless @event.activate_voting}" } do
-        #datepicker.input-group
-          = f.input_field :voting_end_date_dummy, as: :string, label: false
-          span.input-group-addon
-            i.fa.fa-calendar
-      = f.input :voting_end_date, as: :hidden, input_html: { id: 'voting_end_date' }
-
-      / # = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @event.avatar.try(:imgix_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
-
-      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @event.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
-
       = f.input :address
       = f.input :city
-      = f.input :state, hint: 'US and Canada only', input_html: { class: 'form-control' }
-      = f.input :zipcode
+      = f.input :state, hint: 'Include state only if necessary in your country', input_html: { class: 'form-control' }
       = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
-      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog', instagram: 'Instagram', pinterest: 'Pinterest', flickr: 'Flickr', reddit: 'Reddit' }.sort.each do |link, text|
-        = f.input :"#{link}_link", label: "#{text} link", input_html: { value: @event.websites["#{link}_link"]}
-      /
-        = f.input :facebook_link, label: 'Facebook link'
-        = f.input :github_link, label: 'Github link'
-        = f.input :google_plus_link, label: 'Google+ link'
-        = f.input :linked_in_link, label: 'LinkedIn link'
-        = f.input :twitter_link, label: 'Twitter link'
-        = f.input :youtube_link, label: 'Youtube link'
-        = f.input :website_link, label: 'Website link'
-        = f.input :blog_link, label: 'Blog link'
-      = f.input :tickets_link, label: 'Page to buy tickets'
-      = f.input :cta_text, label: 'Call-to-action text', hint: "This will be the text for the link that points to the tickets page.", collection: Event::CTA_TEXT
-
-      = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
-      = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
+      = f.input :about, label: 'About this event', as: :text, input_html: { rows: 10 }
+      = f.input :website_link, label: 'Event website'

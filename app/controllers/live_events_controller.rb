@@ -2,30 +2,20 @@ class LiveEventsController < ApplicationController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
   before_filter :load_live_event, except: [:new, :create]
   before_filter :load_live_chapter, only: [:new, :create]
-  layout 'group_shared', except: [:embed, :new, :create, :update]
   after_action :allow_iframe, only: :embed
   respond_to :html
 
   def show
-    redirect_to (@event.in_the_future? ? live_event_info_path(@event) : live_event_projects_path(@event))
-  end
-
-  def info
     title @event.name
     meta_desc "Join the event #{@event.name} on Hackster.io!"
 
     @group = @event = LiveEventDecorator.decorate(@event)
-
-    render "groups/live_events/info"
-  end
-
-  def projects
-    title @event.name
-    meta_desc "See what's cooking at #{@event.name}."
-
+    @going = user_signed_in? and current_user.is_member? @event
+    @organizers = @event.members.with_group_roles('organizer').order(:created_at).includes(:user)
+    @participants = @event.members.with_group_roles('participant').order(:created_at).includes(:user)
     @projects = @event.project_collections.visible.includes(:project).visible.merge(BaseArticle.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
 
-    render "groups/live_events/projects"
+    render "groups/live_events/show"
   end
 
   def embed

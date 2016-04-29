@@ -340,22 +340,14 @@ HackerIo::Application.routes.draw do
           get '' => 'live_chapters#show', as: ''
           delete '' => 'live_chapters#destroy'
           patch '' => 'live_chapters#update'
-          # get 'events/new' => 'live_events#new', as: :new_event
-          # post 'events' => 'live_events#create', as: :events
           resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
           get 'pages/:slug' => 'wiki_pages#show'
 
-          # scope ':live_event_name', as: :event do
-          resources :events, as: :event, controller: 'live_events' do
-            # get '' => 'live_events#show', as: ''
-            # delete '' => 'live_events#destroy'
-            # patch '' => 'live_events#update'
+          resources :events, controller: 'live_events' do
             resources :projects, only: [:new, :create], controller: 'groups/projects'
             patch 'projects/link' => 'groups/projects#link'
             resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
             get 'pages/:slug' => 'wiki_pages#show'
-            get 'info' => 'live_events#info'
-            get 'projects' => 'live_events#projects'
             get 'embed' => 'live_events#embed'
             get 'admin/participants' => 'live_events#participants_list', as: :participants_list
           end
@@ -369,6 +361,8 @@ HackerIo::Application.routes.draw do
           patch 'grades(/:project_id(/:user_id))' => 'grades#update'
         end
         resources :grades, only: [:index]
+
+        get 'events/:id/export' => 'events#export', as: :export_event
 
         resources :wiki_pages, only: [:destroy]
 

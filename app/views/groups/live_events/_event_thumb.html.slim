@@ -1,25 +1,20 @@
-- col = (defined?(col) and col) ? col : 'col-md-4 col-sm-6'
+.live-event-thumb.media
+  .media-left
+    .media-object
+      a.cal-page href=group_path(event)
+        .cal-month= event.start_date.strftime('%b')
+        .cal-date= event.start_date.day
+      - if event.in_the_future?
+        .rsvp-container= link_to 'RSVP', event, class: 'btn btn-secondary btn-sm btn-block'
 
-.mobile-scroll-row-item class=col
-  .thumb.event-thumb
-    .thumb-image.has-link-overlay style="background-image:url('#{event.cover_image(:cover_thumb)}')"
-      = link_to '', event, class: 'link-overlay'
-      .thumb-image-inner-top
-        p.description.show-on-hover
-          strong= event.date_range
-          br
-          = event.mini_resume
-      .thumb-image-inner
-      .thumb-bottom
-        a.thumb-bottom-over-top href=url_for(event)
-          = image_tag event.model.avatar.try(:imgix_url, :medium)
-        h4
-          = link_to event.name, event
-        ul.list-inline.project-stats
-          li
-            span.stat-figure> = number_with_delimiter event.projects_count
-            = pluralize_without_count event.projects_count, 'project'
-          li
-          li
-            span.stat-figure> = number_with_delimiter event.participants_count
-            = pluralize_without_count event.participants_count, 'participant'
+  .media-body
+    h4.media-heading= link_to event.name, event
+    - if event.about.present?
+      p= event.about.truncate(180)
+    .info-table
+      .info-row
+        .info-label Date
+        .info= l event.start_date, format: :full_date_time
+      .info-row
+        .info-label Location
+        .info= event.full_street_address

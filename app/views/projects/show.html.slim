@@ -235,9 +235,9 @@
                       - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown)) or @project.difficulty.present? or @project.duration.present? or @project.made_public_at or @project.license
                         section.section-thumbs
                           h4 Project info
-                          .project-info
+                          .info-table
                             - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
-                              .project-info-row
+                              .info-row
                                 .info-label Type
                                 .info
                                   - case @project.content_type
@@ -252,22 +252,22 @@
                                       span Work in progress
 
                             - if @project.difficulty.present?
-                              .project-info-row
+                              .info-row
                                 .info-label Difficulty
                                 .info= @project.difficulty_label(clickable: true)
 
                             - if @project.duration.present?
-                              .project-info-row
+                              .info-row
                                 .info-label Estimated time
                                 .info= @project.duration
 
                             - if @project.made_public_at
-                              .project-info-row
+                              .info-row
                                 .info-label Published
                                 .info= l @project.made_public_at, format: :long_date
 
                             - if @project.license
-                              .project-info-row
+                              .info-row
                                 .info-label License
                                 .info
                                   a target='_blank' href=@project.license.url = @project.license.abbr

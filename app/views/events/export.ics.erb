@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+STATUS:CONFIRMED
+DTSTART:<%= @event.cal_start_date %>
+DTEND:<%= @event.cal_end_date %>
+SUMMARY:<%= @event.name %>
+DESCRIPTION:<%= raw @event.about %>
+LOCATION:<%= @event.full_street_address %>
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

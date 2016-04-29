@@ -1,8 +1,8 @@
 class LiveChapterMember < Member
-  set_roles :group_roles, %w(participant organizer)
+  set_roles :group_roles, %w(member organizer)
   attr_protected #none
 
   def default_roles
-    %w(participant)
+    %w(member)
   end
 end

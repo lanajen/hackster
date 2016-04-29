@@ -1,7 +1,6 @@
 class LiveChaptersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_live_chapter
-  layout 'group_shared', except: [:update]
+  before_filter :load_live_chapter, except: [:index]
   respond_to :html
 
   def index
@@ -18,22 +17,15 @@ class LiveChaptersController < ApplicationController
     title @live_chapter.name
     meta_desc "Join the event #{@live_chapter.name} on Hackster.io!"
 
-    # @projects = @live_chapter.projects.for_thumb_display.paginate(page: safe_page_params)
-    @upcoming_events = if can? :manage, @live_chapter
-      @live_chapter.events
-    else
-      @live_chapter.events.publyc
-    end
-    @upcoming_events = @upcoming_events.upcoming.paginate(page: safe_page_params)
+    @upcoming_events = @live_chapter.events.publyc.upcoming.paginate(page: safe_page_params)
     @past_events = @live_chapter.events.publyc.past.paginate(page: safe_page_params)
     @now_events = @live_chapter.events.publyc.now.paginate(page: safe_page_params)
-    @event = @live_chapter.closest_event
+    @organizers = @live_chapter.members.with_group_roles('organizer').order(created_at: :asc).includes(:user)
+    @participants = @live_chapter.members.with_group_roles('member').order(created_at: :desc).includes(:user)
+
+    @live_chapter = @live_chapter.decorate
 
     render "groups/live_chapters/show"
-  end
-
-  def edit_schedule
-    render "groups/shared/edit_schedule"
   end
 
   def update

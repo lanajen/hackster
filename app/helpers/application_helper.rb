@@ -259,6 +259,12 @@ module ApplicationHelper
     TokenParser.new(model, text).replace
   end
 
+  def to_paragraph text
+    return unless text
+
+    ('<p>' + text.gsub(/\n/, '</p><p>') + '</p>').html_safe
+  end
+
   def token_tags_for model, cache_key
     return [] unless model.token_tags
 

@@ -1,4 +1,11 @@
 class LiveEventDecorator < GeographicCommunityDecorator
+  def cal_start_date
+    model.start_date.strftime('%Y%m%dT%H%M00Z')
+  end
+
+  def cal_end_date
+    model.end_date.strftime('%Y%m%dT%H%M00Z')
+  end
 
   def date_range
     if model.start_date.present? and model.end_date.present?
@@ -18,13 +25,15 @@ class LiveEventDecorator < GeographicCommunityDecorator
     end
   end
 
+  def venue_address
+    model.full_street_address
+  end
+
   def status
     if model.in_the_future?
       'Upcoming'
     elsif model.end_date and model.end_date > Time.now
       'Happening now'
-    elsif model.voting_active?
-      'Voting in progress'
     else
       'Ended'
     end

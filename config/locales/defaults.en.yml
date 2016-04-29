@@ -196,9 +196,12 @@ en:
     am: am
     formats:
       default: ! '%b %e, %Y at %l:%M %p'
+      full_date: ! '%A, %b %e, %Y'
+      full_date_time: ! '%A, %b %e, %Y at %l:%M %p'
       short_date: ! '%b %e, %Y'
       long: ! '%B %d, %Y %H:%M'
       long_date: ! '%B %e, %Y'
+      long_date_time: ! '%B %e, %Y at %l:%M %p'
       short: ! '%d %b %H:%M'
       datetime: ! '%Y-%m-%d %H:%M'
       date: ! '%Y-%m-%d'

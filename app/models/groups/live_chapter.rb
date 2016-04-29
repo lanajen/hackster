@@ -5,12 +5,13 @@ class LiveChapter < GeographicCommunity
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'LiveChapterMember'
   has_many :pages, as: :threadable
 
+  hstore_column :hproperties, :about, :string
   hstore_column :hproperties, :event_type, :string, default: 'meetup'
-  hstore_column :hproperties, :topic, :string
 
   add_websites :home
 
   has_counter :events, 'events.publyc.count'
+  has_counter :members, 'members.with_group_roles("member").count', accessor: false
 
   def self.default_permission roles=nil
     roles ||= []
@@ -20,6 +21,10 @@ class LiveChapter < GeographicCommunity
       organizer: 'manage',
       member: 'read',
     }[roles.first.try(:to_sym)]
+  end
+
+  def self.default_access_level
+    'anyone'
   end
 
   def closest_event

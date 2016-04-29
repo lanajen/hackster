@@ -1002,10 +1002,10 @@
   }
 }
 
-.project-info {
+.info-table {
   font-size: 0.9em;
   display: table;
-  .project-info-row {
+  .info-row {
     display: table-row;
     &:last-of-type {
       .info-label, .info {

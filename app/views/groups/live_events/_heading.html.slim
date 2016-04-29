@@ -1,9 +1,0 @@
-h1= link_to @group.proper_name, @group.live_chapter
-h2
-  => @group.secondary_name
-  small
-    ' on
-    strong=> @group.date_range
-    ' in
-    strong=> @group.short_address
-p= @group.live_chapter.try(:mini_resume)

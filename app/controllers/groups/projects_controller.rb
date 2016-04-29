@@ -123,8 +123,8 @@ class Groups::ProjectsController < ApplicationController
     def load_group
       @group = if params[:event_name]
         @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
-      elsif params[:live_event_name]
-        @event = LiveEvent.includes(:live_chapter).where(groups: { user_name: params[:live_event_name] }, live_chapters_groups: { user_name: params[:user_name] }).first!
+      elsif params[:event_id]
+        @event = LiveEvent.find params[:event_id]
       elsif params[:promotion_name]
         load_assignment
       elsif params[:user_name]

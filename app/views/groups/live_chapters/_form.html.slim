@@ -20,7 +20,7 @@
       = f.input :full_name, label: 'Chapter name'
       = f.input :city, label: 'City, State', hint: "No need to include the state if it's not relevant in your country"
       = f.input :country, input_html: { class: 'form-control' }
-      = f.input :topic, label: 'About this chapter', as: :text, input_html: { rows: 6 }
+      = f.input :about, label: 'About this chapter', as: :text, input_html: { rows: 6 }
 
     .col-md-6
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do

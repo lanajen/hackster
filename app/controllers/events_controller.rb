@@ -1,13 +1,25 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update, :participants_list]
-  before_filter :load_event, except: [:new, :create]
+  before_filter :load_event, except: [:new, :create, :export]
   before_filter :load_hackathon, only: [:new, :create]
-  layout 'group_shared', except: [:embed, :new, :create, :update]
+  layout 'group_shared', except: [:embed, :new, :create, :update, :export]
   after_action :allow_iframe, only: :embed
   respond_to :html
 
   def show
     redirect_to (@event.in_the_future? ? event_info_path(@event) : event_projects_path(@event))
+  end
+
+  def export
+    event = Group.find(params[:id])  # using group so it works for both Event and LiveEvent
+    @event = "#{event.class.name}Decorator".constantize.decorate event
+
+    out = render_to_string 'export.ics'
+
+    send_data out,
+      filename: 'event.ics',
+      type: 'text/calendar',
+      disposition: 'attachment'
   end
 
   def info

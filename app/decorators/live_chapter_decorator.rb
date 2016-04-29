@@ -10,11 +10,7 @@ class LiveChapterDecorator < GroupDecorator
   end
 
   def location
-    if model.virtual
-      'Online'
-    else
-      [model.city, country].select{|v| v.present? }.join(', ')
-    end
+    [model.city, model.state, country].select{|v| v.present? }.join(', ')
   end
 
   def organizer_collection_for_form

@@ -11,13 +11,20 @@ class LiveEvent < GeographicCommunity
     :start_date_dummy, :end_date_dummy,
     :start_date, :end_date
 
-  validates :live_chapter, presence: true
+  validates :live_chapter, :name, :start_date, :end_date, :address, :city, :country,
+    :start_date_dummy, :end_date_dummy, presence: true
+
+  hstore_column :hproperties, :about, :string
 
   add_websites :website
 
   has_counter :participants, "members.joins(:user).request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').count"
 
   has_algolia_index 'pryvate'
+
+  def self.default_access_level
+    'anyone'
+  end
 
   def self.now
     where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc, end_date: :desc)

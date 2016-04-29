@@ -48,7 +48,7 @@ class Ability
 
   def admin
     can :manage, :all
-    cannot [:join, :request_access], Group
+    # cannot [:join, :request_access], Group
   end
 
   def beta_tester
