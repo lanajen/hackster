@@ -31,8 +31,6 @@ class TweetBuilder
         if new_size < MAX_SIZE
           message << " #{tag}"
           size += " #{tag}".size
-        else
-          break
         end
       end
     end
@@ -49,8 +47,6 @@ class TweetBuilder
       elsif @project.team_members_count > 1
         if @project.team.name.present?
           output << " by #{@project.team.name.strip}"
-        else
-          output << " by #{@project.team_members_count} developers"
         end
       else
         user = @project.users.first
@@ -65,7 +61,7 @@ class TweetBuilder
     end
 
     def get_size message, url_included=false
-      size = message.size + (URL_SIZE * 2)  # one URL for project link, one for image link
+      size = 1 + message.size + (URL_SIZE * 2)  # one URL for project link, one for image link
       size -= url.size - 1 if url_included
       size
     end

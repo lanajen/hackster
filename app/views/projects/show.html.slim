@@ -1,10 +1,13 @@
 = content_for :head do
   = render 'meta_tags'
 
-= inserts_stats_for @project
+- insert_stats @project
 
 / update counters via JS so we can cache the views longer
 - content_for :js do
+
+  .async-respect-btn.hide
+    = render partial: 'respects/button', locals: { respectable: @project }
 
   javascript:
     $(function(){
@@ -12,6 +15,9 @@
       $('.impression-stats .stat-figure').replaceWith(s);
       s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span>";
       $('.respect-stats .stat-figure').replaceWith(s);
+
+      var respectBtn = $('.async-respect-btn').html();
+      $('.async-respect-btn-placeholder').replaceWith(respectBtn);
     });
 
 = content_for :no_container do
@@ -291,7 +297,7 @@
 
                         section.section-thumbs
                           .primary-action-container
-                            = render partial: 'respects/button', locals: { respectable: @project }
+                            .async-respect-btn-placeholder
                           .secondary-actions-container
                             = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary' }
 
@@ -556,7 +562,7 @@
 
                     - if @project.publyc?
                       .show-on-affix style='margin-top:15px;'
-                        = render partial: 'respects/button', locals: { respectable: @project }
+                        .async-respect-btn-placeholder
                         = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary', icon_only: true }
 
                         a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'
