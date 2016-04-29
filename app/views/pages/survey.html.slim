@@ -1,0 +1,55 @@
+= content_for :body_class do
+  | white
+
+= content_for :no_container do
+
+  #survey-landing
+    section.section-header.hero-header
+      .container
+        .hero-content
+          h1 Our Big 2016 Survey
+          p Take part in the world's largest maker survey, win free hardware, and be heard!
+          p Answer 25 questions and help us create a better world.
+          = link_to 'Take the survey', '/nowhere', class: 'btn btn-primary btn-sm'
+
+    section.survey-about
+      h2 About this survey
+      p Welcome to the world's largest maker survey, sponsored by the top hardware and community leaders on earth. We want to hear from you so we can build better products, smarter services and fitting events for people like you. Whether you're a seasoned engineer or just starting out, a life long hobbyist or a parent, the following 25 questions will help us create a better world for the global community we all call home.
+
+    section.survey-sponsors
+      h2 Sponsors
+      .logos
+        = link_to image_tag('landing_pages/survey/hackster.png'), 'https://www.hackster.io'
+        = link_to image_tag('partners/mouser.jpg'), 'http://www.mouser.com'
+        = link_to image_tag('partners/intel.png'), 'https://software.intel.com/en-us/'
+        = link_to image_tag('landing_pages/survey/make.png'), 'http://makezine.com'
+        = link_to image_tag('hwweek/partners/sparkfun.png'), 'https://www.sparkfun.com'
+        = link_to image_tag('landing_pages/survey/arduino.png'), 'http://www.arduino.cc'
+        = link_to image_tag('landing_pages/survey/avnet.png'), 'http://www.avnet.com'
+
+    section.survey-boards
+      p We will be giving away 100+ free boards for survey takers
+      .container
+        .row
+          .col-sm-4
+            .survey-board-thumb
+              = image_tag 'landing_pages/survey/arduino101.png'
+              h5 Arduino 101
+          .col-sm-4
+            .survey-board-thumb
+              = image_tag 'landing_pages/survey/sparkfun.png'
+              h5 Sparkfun
+          .col-sm-4
+            .survey-board-thumb
+              = image_tag 'landing_pages/survey/edison.png'
+              h5 Intel Edison
+
+    section.survey-about
+      p Don't hesitate - take the survey now and help us create a better world.
+      p= link_to 'Take the survey', '/nowhere', class: 'btn btn-primary'
+
+    section.survey-share
+      p
+        ' Share with your friends and help us get heard
+        = link_to image_tag('landing_pages/survey/facebook.png'), '/nowhere'
+        = link_to image_tag('landing_pages/survey/twitter.png'), '/nowhere'

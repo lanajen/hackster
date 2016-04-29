@@ -473,15 +473,14 @@ HackerIo::Application.routes.draw do
 
 
         get 'about' => 'pages#about'
-        get 'business' => 'pages#business'
-        # get 'help' => 'pages#help'
         get 'achievements' => 'pages#achievements'
+        get 'business' => 'pages#business'
+        get 'conduct' => 'pages#conduct'
         get 'home', to: redirect('/')
         get 'infringement_policy' => 'pages#infringement_policy'
         get 'privacy' => 'pages#privacy'
-        get 'conduct' => 'pages#conduct'
+        get 'survey' => 'pages#survey'
         get 'terms' => 'pages#terms'
-        get 'press' => 'pages#press'
         get 'resources' => 'pages#resources'
 
         # live
