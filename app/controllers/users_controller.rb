@@ -178,12 +178,13 @@ class UsersController < ApplicationController
   end
 
   def toolbox_show
-    not_found if is_whitelabel?
-
     title "#{@user.name}'s toolbox"
     meta_desc "#{@user.name}'s toolbox on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
     @parts = @user.owned_parts
+    if is_whitelabel?
+      @parts = @parts.with_platform current_platform.id
+    end
   end
 
   def comments

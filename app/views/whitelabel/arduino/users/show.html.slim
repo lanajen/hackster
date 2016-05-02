@@ -79,11 +79,12 @@
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
 
       - elsif user_is_current?
-        p
-          ' Looks like a great time to
-          - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
-          => link_to link_text, new_project_path
-          ' !
+        #showcase-first-project
+          p
+            ' Looks like a great time to
+            - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
+            => link_to link_text, new_project_path
+            ' !
       - else
         | #{@user.name} has no public projects.
 
@@ -143,12 +144,11 @@
           h2.pull-left#toolbox
             ' Toolbox
             = content_tag(:span, @parts_count, class: 'badge')
-          - if user_is_current?
-            .pull-right
-              = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
-          - elsif @parts_count > 3
+          - if @parts_count > 3
             .pull-right
               = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
+        - if user_is_current?
+          .mg-20= link_to 'Find products to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
         .row
           - @parts.each do |part|
             .col-md-4.col-sm-6= render partial: 'parts/part_thumb', locals: { part: part.decorate }

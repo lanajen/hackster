@@ -15,7 +15,7 @@
           = content_tag(:span, @parts.count, class: 'badge')
         - if user_is_current?
           .pull-right
-            = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
+            = link_to 'Find products to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
 
       - if @parts.any?
         .row

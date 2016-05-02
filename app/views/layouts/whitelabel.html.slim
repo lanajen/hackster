@@ -45,54 +45,55 @@ html lang="en" class=content_for(:html_class)
 
   body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
-      - if !content_for?(:header) and user_signed_in?
+      - if !params[:blank_frame] and !content_for?(:header) and user_signed_in?
         = render 'shared/important_notifs'
 
       - unless user_signed_in?
         = render 'shared/modals/simplified_signup_popup'
-      - if content_for? :header
-        = content_for :header
-      - else
-        .navbar.navbar-default.navbar-static-top#navigation
-          #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
-          .navbar-in  style='position:relative;'
-            .navbar-header
-              span.navbar-brand.navbar-btn
-                => link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
-                small  style='font-size:11px;'
-                  ' powered by
-                  = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
-            #nav-non-logo.show-on-desktop
-              - if user_signed_in?
-                ul#user-navigation-links.navbar-nav.navbar-right
-                  li.btn-group.navbar-btn.dropdown
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
-                    ul.dropdown-menu#nav-user-menu
-                      li= link_to 'My profile', current_user
-                      li= link_to 'My projects', user_projects_path(current_user)
-                      li.divider
-                      li= link_to 'Messages', conversations_path
-                      li.divider
-                      li= link_to 'Account settings', edit_user_registration_path
-                      li= link_to 'Invite friends', new_user_invitation_path
-                      li.divider
-                      li= link_to 'Log out', destroy_user_session_path, method: :delete
-
-              - else
-                ul#navbar-right.clearfix
-                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
-
-                  li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
-
-              ul#left-nav.navbar-right.top-menu-nav
+      - unless params[:blank_frame]
+        - if content_for? :header
+          = content_for :header
+        - else
+          .navbar.navbar-default.navbar-static-top#navigation
+            #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
+            .navbar-in  style='position:relative;'
+              .navbar-header
+                span.navbar-brand.navbar-btn
+                  => link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : site_name), root_path, class: ''
+                  small  style='font-size:11px;'
+                    ' powered by
+                    = link_to image_tag('hackster_logo_text.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+              #nav-non-logo.show-on-desktop
                 - if user_signed_in?
-                  li= link_to 'My projects', user_projects_path(current_user), class: 'nav-link'
-                  li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
-                - else
-                  li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+                  ul#user-navigation-links.navbar-nav.navbar-right
+                    li.btn-group.navbar-btn.dropdown
+                      = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
+                      ul.dropdown-menu#nav-user-menu
+                        li= link_to 'My profile', current_user
+                        li= link_to 'My projects', user_projects_path(current_user)
+                        li.divider
+                        li= link_to 'Messages', conversations_path
+                        li.divider
+                        li= link_to 'Account settings', edit_user_registration_path
+                        li= link_to 'Invite friends', new_user_invitation_path
+                        li.divider
+                        li= link_to 'Log out', destroy_user_session_path, method: :delete
 
-              #navbar-search
-                = render 'shared/search_form'
+                - else
+                  ul#navbar-right.clearfix
+                    li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
+
+                    li= link_to 'Log in', new_user_session_path, class: 'btn btn-primary login-link', id: 'show-login-form'
+
+                ul#left-nav.navbar-right.top-menu-nav
+                  - if user_signed_in?
+                    li= link_to 'My projects', user_projects_path(current_user), class: 'nav-link'
+                    li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', title: 'New project', rel: 'tooltip', data: { placement: 'bottom' }
+                  - else
+                    li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+
+                #navbar-search
+                  = render 'shared/search_form'
 
       #main
         - if content_for?(:bootstrap_flash)

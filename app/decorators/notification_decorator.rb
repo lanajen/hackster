@@ -212,7 +212,7 @@ class NotificationDecorator < ApplicationDecorator
     msg.try(:html_safe)
 
   rescue => e
-    AppLogger.new(message, 'error', 'notification_decorator', e).log_and_notify_with_stdout
+    AppLogger.new("Notification: #{model.inspect}", 'error', 'notification_decorator', e).log_and_notify_with_stdout
 
     raise e if Rails.env.development?
   end
