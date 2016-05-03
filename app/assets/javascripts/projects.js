@@ -231,7 +231,7 @@ $select2target = null;
 
           _.serializeForm();
 
-          window.scroll(0, 0);  // so it doesn't scroll to the div
+          //window.scroll(0, 0);  // so it doesn't scroll to the div
         }
       },
 
@@ -321,6 +321,7 @@ $select2target = null;
       } else {
         pe.showEditorTab('#basics');
       }
+
       $(window).bind('hashchange', function() {
         pe.showEditorTab(window.location.hash);
       });

@@ -14,7 +14,7 @@ require('expose?ImageUploader!./image_uploader/app');
 require('expose?ListsDropdown!./lists_dropdown/app');
 require('expose?MouserContest!./mouser_contest/app');
 require('expose?NotificationDropdown!./notification_dropdown/app');
-require('expose?ReactEditor!./editor/app');
+require('expose?ReactEditor!./draft/app');
 require('expose?ReputationUpdateButton!./reputation_update_button/app');
 require('expose?ReviewTool!./review_tool/containers/Root');
 require('expose?TimeLeft!./time_left/app');
