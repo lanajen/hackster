@@ -4,6 +4,7 @@
 
 = content_for :header do
 
+  #create-nav
   .arduino-bbq data-offset-top="5" data-spy="affix"
     #ham.hamNoBack
       svg#toggleNav.toggleNav xmlns:xlink="http://www.w3.org/2000/xlink"
@@ -126,6 +127,9 @@
       }
     });
   = javascript_include_tag 'whitelabel/arduino/application'
+  script src="//cdn-dev.arduino.cc/header-footer/loader.js" type="text/javascript"
+  javascript:
+    ArduinoHeaderAndFooter.init({parts: ['create-nav']});
   = button_to 'Sign out', destroy_user_session_path, method: :delete, form: { id: 'sign-out-form', class: 'hidden' }
 
 = content_for :footer do
