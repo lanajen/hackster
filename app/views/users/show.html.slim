@@ -100,7 +100,7 @@
           h2.pull-left
             ' Toolbox
             = content_tag(:span, @parts_count, class: 'badge')
-          - elsif @parts_count > 3
+          - if @parts_count > 3
             .pull-right
               = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
         - if user_is_current?
