@@ -584,13 +584,6 @@
 
 .content-type-indicator {
   form {
-    @include flexbox((
-      display: flex,
-      align-items: center
-    ));
-    input[type='submit'] {
-      width: 100%;
-    }
     a {
       margin-left: 3px;
     }

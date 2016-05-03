@@ -2,125 +2,127 @@
   meta name='api-uri' content='null' id='api-uri'
   = render 'shared/favicons'
 
-#intel-landing
-  section#hero
-    .top-nav.clearfix
-      = image_tag 'landing_pages/intel/competition_logo.png', alt: "China-US Young Maker Competition", class: 'logo'
-      ul.nav-list
-        li= link_to 'Competition', '#details', class: 'smooth-scroll'
-        li= link_to 'US Semi-Finalists', '#finalists', class: 'smooth-scroll'
-        li= link_to 'Timeline', '#timeline', class: 'smooth-scroll'
-        li= link_to 'Prizes', '#prizes', class: 'smooth-scroll'
-        li= link_to 'Judging Criteria', '#criteria', class: 'smooth-scroll'
-        li= link_to 'Resources', '#resources', class: 'smooth-scroll'
+- cache 'intel_landing' do
 
-    .content
-      .us-china= image_tag 'landing_pages/intel/logo_header.png'
-      h1 Co-Making the Future
-      p.title.subtitle 2016 China - US Young Maker Competition
-      p.title April 25th - June 17th
+  #intel-landing
+    section#hero
+      .top-nav.clearfix
+        = image_tag 'landing_pages/intel/competition_logo.png', alt: "China-US Young Maker Competition", class: 'logo'
+        ul.nav-list
+          li= link_to 'Competition', '#details', class: 'smooth-scroll'
+          li= link_to 'US Semi-Finalists', '#finalists', class: 'smooth-scroll'
+          li= link_to 'Timeline', '#timeline', class: 'smooth-scroll'
+          li= link_to 'Prizes', '#prizes', class: 'smooth-scroll'
+          li= link_to 'Judging Criteria', '#criteria', class: 'smooth-scroll'
+          li= link_to 'Resources', '#resources', class: 'smooth-scroll'
+
+      .content
+        .us-china= image_tag 'landing_pages/intel/logo_header.png'
+        h1 Co-Making the Future
+        p.title.subtitle 2016 China - US Young Maker Competition
+        p.title April 25th - June 17th
+        = link_to 'Enter now', 'https://www.hackster.io/challenges/chinausyoungmakercompetition', class: 'btn btn-primary submit-btn'
+
+    section#details
+      h2 Competition
+      p Join our competition and build innovative projects that solve real world problems. Compete against makers and tinkerers from China and become the ultimate global maker!
+
+      .categories
+        .container
+          .row
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/team.png'
+              .title Community development
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/eco.png'
+              .title Environmental protection
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/yoga.png'
+              .title Health &amp; Fitness
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/book.png'
+              .title Education
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/traffic.png'
+              .title Transportation
+            .col-sm-2.col-xs-4.category
+              .img= image_tag 'landing_pages/intel/energy.png'
+              .title Energy
+
+    section#finalists
+      h2 US Semi-Finalists
+      p The best US projects will be announced on July 1st.
       = link_to 'Enter now', 'https://www.hackster.io/challenges/chinausyoungmakercompetition', class: 'btn btn-primary submit-btn'
 
-  section#details
-    h2 Competition
-    p Join our competition and build innovative projects that solve real world problems. Compete against makers and tinkerers from China and become the ultimate global maker!
+    section#timeline
+      h2 Timeline
 
-    .categories
-      .container
-        .row
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/team.png'
-            .title Community development
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/eco.png'
-            .title Environmental protection
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/yoga.png'
-            .title Health &amp; Fitness
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/book.png'
-            .title Education
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/traffic.png'
-            .title Transportation
-          .col-sm-2.col-xs-4.category
-            .img= image_tag 'landing_pages/intel/energy.png'
-            .title Energy
+      .timeline
+        .step
+          .step-description
+            h3 Stage 1
+            p Submit your project #{link_to 'here', 'https://www.hackster.io/challenges/chinausyoungmakercompetition'} by June&nbsp;17th.
+          .step-img= image_tag 'landing_pages/intel/notebook.png'
+          .step-empty
+        .step
+          .step-empty
+          .step-img= image_tag 'landing_pages/intel/graph.png'
+          .step-description
+            h3 Stage 2
+            p Judging begins June 18th for US entries. 10 US semi-finalists will be announced by&nbsp;July 1st.
+        .step
+          .step-description
+            h3 Stage 3
+            p
+              | The final competition will take place in Beijing, China
+              br
+              | from August 14th to August 19th.
+          .step-img= image_tag 'landing_pages/intel/plane.png'
+          .step-empty
 
-  section#finalists
-    h2 US Semi-Finalists
-    p The best US projects will be announced on July 1st.
-    = link_to 'Enter now', 'https://www.hackster.io/challenges/chinausyoungmakercompetition', class: 'btn btn-primary submit-btn'
+    section#prizes
+      h2 Prizes
 
-  section#timeline
-    h2 Timeline
+      .illustrations
+        .illustration
+          = image_tag 'landing_pages/intel/medal.png'
+          .title US Semi-Finalists
+          p All-expense paid trip to Beijing to compete in the final competition.
+        .illustration
+          = image_tag 'landing_pages/intel/victory.png'
+          .title Final Competition
+          p First prize: approximately $15,000 USD. Second prize: approximately $8,000 USD. Third prize: approximately $5,000 USD.
 
-    .timeline
-      .step
-        .step-description
-          h3 Stage 1
-          p Submit your project #{link_to 'here', 'https://www.hackster.io/challenges/chinausyoungmakercompetition'} by June&nbsp;17th.
-        .step-img= image_tag 'landing_pages/intel/notebook.png'
-        .step-empty
-      .step
-        .step-empty
-        .step-img= image_tag 'landing_pages/intel/graph.png'
-        .step-description
-          h3 Stage 2
-          p Judging begins June 18th for US entries. 10 US semi-finalists will be announced by&nbsp;July 1st.
-      .step
-        .step-description
-          h3 Stage 3
-          p
-            | The final competition will take place in Beijing, China
-            br
-            | from August 14th to August 19th.
-        .step-img= image_tag 'landing_pages/intel/plane.png'
-        .step-empty
+    section#criteria
+      h2 US Judging Criteria
 
-  section#prizes
-    h2 Prizes
+      .illustrations
+        .illustration
+          = image_tag 'landing_pages/intel/criteria_idea.png'
+          .title Innovation and Creativity
+          p Is the product innovative and creative?
+        .illustration
+          = image_tag 'landing_pages/intel/commercial.png'
+          .title Application Prospects
+          p Does the product have application prospects?
+        .illustration
+          = image_tag 'landing_pages/intel/feasibility.png'
+          .title Integrality
+          p Is the product integral?
 
-    .illustrations
-      .illustration
-        = image_tag 'landing_pages/intel/medal.png'
-        .title US Semi-Finalists
-        p All-expense paid trip to Beijing to compete in the final competition.
-      .illustration
-        = image_tag 'landing_pages/intel/victory.png'
-        .title Final Competition
-        p First prize: approximately $15,000 USD. Second prize: approximately $8,000 USD. Third prize: approximately $5,000 USD.
+    section#resources
+      .illustrations
+        .illustration
+          h2 Resources
+          p Need hardware to complete your submission? We are giving away a limited number of Intel&reg; Edison&#8482; Developer Kits.  Get yours by submitting your #{link_to 'application', 'https://www.hackster.io/challenges/chinausyoungmakercompetition/ideas/new'} by June 17, 2016 which we will review on a first come, first served basis. One device maximum per team, while supplies last.
 
-  section#criteria
-    h2 US Judging Criteria
+        .illustration
+          h2 Terms &amp; Conditions
+          p Read more about the competition on our Hackster #{link_to 'page.', 'https://www.hackster.io/challenges/chinausyoungmakercompetition#rules'}
 
-    .illustrations
-      .illustration
-        = image_tag 'landing_pages/intel/criteria_idea.png'
-        .title Innovation and Creativity
-        p Is the product innovative and creative?
-      .illustration
-        = image_tag 'landing_pages/intel/commercial.png'
-        .title Application Prospects
-        p Does the product have application prospects?
-      .illustration
-        = image_tag 'landing_pages/intel/feasibility.png'
-        .title Integrality
-        p Is the product integral?
-
-  section#resources
-    .illustrations
-      .illustration
-        h2 Resources
-        p Need hardware to complete your submission? We are giving away a limited number of Intel&reg; Edison&#8482; Developer Kits.  Get yours by submitting your #{link_to 'application', 'https://www.hackster.io/challenges/chinausyoungmakercompetition/ideas/new'} by June 17, 2016 which we will review on a first come, first served basis. One device maximum per team, while supplies last.
-
-      .illustration
-        h2 Terms &amp; Conditions
-        p Read more about the competition on our Hackster #{link_to 'page.', 'https://www.hackster.io/challenges/chinausyoungmakercompetition#rules'}
-
-  section#organizers
-    .logos
-      = link_to image_tag('landing_pages/intel/cscse_logo.png', style: '  max-width: none;width: 380px;'), 'http://www.cscse.edu.cn/publish/portal0/tab132/default.htm'
-      = link_to image_tag('landing_pages/intel/tsinghua_logo.png', style: 'width: 120px; max-height: none;'), 'http://www.tsinghua.edu.cn/publish/newthuen/index.html'
-      = link_to image_tag('landing_pages/intel/intel_logo.png'), 'http://www.intel.com/content/www/us/en/do-it-yourself/maker.html'
-      = link_to image_tag('landing_pages/intel/gehua_logo.png'), 'http://www.gehua.com/'
+    section#organizers
+      .logos
+        = link_to image_tag('landing_pages/intel/cscse_logo.png', style: '  max-width: none;width: 380px;'), 'http://www.cscse.edu.cn/publish/portal0/tab132/default.htm'
+        = link_to image_tag('landing_pages/intel/tsinghua_logo.png', style: 'width: 120px; max-height: none;'), 'http://www.tsinghua.edu.cn/publish/newthuen/index.html'
+        = link_to image_tag('landing_pages/intel/intel_logo.png'), 'http://www.intel.com/content/www/us/en/do-it-yourself/maker.html'
+        = link_to image_tag('landing_pages/intel/gehua_logo.png'), 'http://www.gehua.com/'

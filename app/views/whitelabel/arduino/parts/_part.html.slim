@@ -1,7 +1,5 @@
 .part-box.box
   .box-content.row
-    .col-xs-12
-      h3= link_to part.name, part
 
     .col-md-4.image
       .img-tool-container
@@ -16,6 +14,7 @@
           .text-muted.small #{number_with_delimiter part.owners_count} own it
 
     .col-md-7.description
+      h3= link_to part.name, part
       - if part.description.present?
         = raw part.description
       - elsif part.one_liner.present?
@@ -34,7 +33,7 @@
             = link_to linked_part.full_name, linked_part
       ul.links.list-inline
         - if part.store_link.present?
-          li= link_to 'Buy it', part.store_link, target: '_blank', rel: 'nofollow'
+          li= link_to 'Buy it', part.store_link, target: '_blank', rel: 'nofollow', class: 'btn btn-secondary'
         - if part.product_page_link.present?
           li= link_to 'Official page', part.product_page_link, target: '_blank', rel: 'nofollow'
         - if part.get_started_link.present?
