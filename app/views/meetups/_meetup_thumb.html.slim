@@ -1,0 +1,16 @@
+.col-sm-6.col-md-4
+  .thumb.chapter-thumb
+    /- if chapter.hackster_live?
+      .chapter-is-live
+        i.fa.fa-bolt.fa-lg
+    h4
+      = link_to chapter.name, chapter
+    .chapter-location
+      i.fa.fa-map-marker
+      span= chapter.location
+    .chapter-organizer
+      .chapter-organizer-avatars
+        - chapter.members.with_group_roles(:organizer).includes(:user).each do |m|
+          = image_tag m.user.decorate.avatar(:mini), class: 'img-circle'
+      ' Organized by
+      = chapter.members.with_group_roles(:organizer).includes(:user).map{|m| link_to(m.user.name, m.user) }.to_sentence.html_safe

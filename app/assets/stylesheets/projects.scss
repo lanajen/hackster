@@ -584,13 +584,6 @@
 
 .content-type-indicator {
   form {
-    @include flexbox((
-      display: flex,
-      align-items: center
-    ));
-    input[type='submit'] {
-      width: 100%;
-    }
     a {
       margin-left: 3px;
     }
@@ -1002,10 +995,10 @@
   }
 }
 
-.project-info {
+.info-table {
   font-size: 0.9em;
   display: table;
-  .project-info-row {
+  .info-row {
     display: table-row;
     &:last-of-type {
       .info-label, .info {

@@ -1,66 +1,62 @@
 import { User } from '../constants';
-import { determineHost } from '../../utils/Mouser'
+import { fetchProjects, postSubmission } from '../requests';
 
-const API_PATH = determineHost();
+export function setUserData(data) {
+  return {
+    type: User.SET_USER_DATA,
+    id: data.id,
+    roles: data.roles || []
+  };
+}
 
-/* Getting projects from Rails API by user_id  */
 export function getProjects(userId) {
-  userId = userId || 1;
   return dispatch => {
-    return fetch(API_PATH + userId )
-      .then(response => {
-        return response.json();
+    userId = 484 || userId; // 484 <= Alex
+
+    return fetchProjects(userId)
+      .then(res => {
+        dispatch(setProjects(res.projects));
+        dispatch(setSubmissions(res.submissions));
       })
-      .then(data => {
-        const projects = data.projects.map(project => { return { value: project, label: project.name }; });
-        dispatch(setProjects(projects));
-      })
-      .catch(err => console.log('ERROR', err))
-  }
+      .catch(err => console.error('fetchProjects Error: ', err));
+  };
 }
 
 function setProjects(projects) {
   return {
-    type: User.SET_PROJECTS,
+    type: User.SET_USER_PROJECTS,
     projects
-  }
+  };
 }
 
-/* Selecting a project / readying it for submission */
-export function selectProject(project) {
+function setSubmission(submission) {
   return {
-    type: User.SET_SUBMISSION,
-    project
-  }
+    type: User.SET_USER_SUBMISSION,
+    submission
+  };
 }
 
-/* Submitting projects via POST to Rails API */
-export function submitProject() {
+function setSubmissions(submissions) {
+  return {
+    type: User.SET_USER_SUBMISSIONS,
+    submissions
+  };
+}
+
+export function submitProject(project, currentVendor) {
   return (dispatch, getState) => {
-    const { id, authors, name, communities } = getState().user.submission.value;
-    const payload = {
-      userId: authors[0].id,
-      projectId: id,
-      description: name,
-      vendor: communities[0].id
-    }
-    fetch(API_PATH, {
-      method: 'post',
-      mode: 'no-cors',
-      body: JSON.stringify(payload),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      })
-    })
-    .catch((err) => console.err(err))
+    const userId = getState().user.id;
+    const { id, cover_image_url } = project.value;
+    const submission = {
+      project_id: id,
+      user_id: userId,
+      vendor_user_name: currentVendor.name,
+      workflow_state: 'undecided',
+      cover_image_url
+    };
 
-  }
-}
-
-export function setUserAsAdmin(bool) {
-  return {
-    type: User.SET_ADMIN,
-    bool
-  }
+    return postSubmission(submission)
+      .then(res => dispatch(setSubmission(submission)))
+      .catch(err => console.error('postSubmission Error ', err));
+  };
 }

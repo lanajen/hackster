@@ -1,6 +1,6 @@
 - @challenge = @challenge.decorate
 
-= inserts_stats_for @challenge
+- insert_stats @challenge
 
 = content_for :head do
   - cache ["challenge-#{@challenge.id}-meta"], tag: ["challenge-#{@challenge.id}-meta", "challenge-#{@challenge.id}-sponsors", "challenge-#{@challenge.id}-prizes"], skip_digest: true do
@@ -17,23 +17,15 @@
     meta(property="og:image:height" content='300')
     meta(property="og:url" content=url_for([@challenge, only_path: false]))
     meta(property="og:site_name" content=site_name)
-    meta(property="twitter:card" content="product")
+    meta(property="twitter:card" content="summary")
     - if site_twitter.present?
       meta(property="twitter:site" content=site_twitter)
     meta(property="twitter:domain" content=site_domain)
     meta(property="twitter:title" content=@challenge.name)
     meta(property="twitter:description" content=@challenge.teaser)
-    - if sponsor.present?
-      meta(property="twitter:data2" content=sponsor)
-      meta(property="twitter:label2" content="SPONSORED BY")
     - if platform = @sponsors.first and handle = platform.twitter_handle
       meta(property="twitter:creator" content=handle)
-    - if prize = @prizes.first and prize_name = (prize.description.presence || number_to_currency(prize.cash_value, precision: 0)) and prize_name.present?
-      meta(property="twitter:data1" content=prize_name)
-      meta(property="twitter:label1" content="TOP PRIZE")
-    meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
-    meta(property="twitter:image:width" content='400')
-    meta(property="twitter:image:height" content='300')
+    meta(property="twitter:image" content=@challenge.cover_image(:cover_thumb))
     link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false, locale: I18n.default_www_locale]))
 
   - if @challenge.custom_css.present?

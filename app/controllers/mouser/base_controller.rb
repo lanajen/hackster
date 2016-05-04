@@ -4,9 +4,11 @@ class Mouser::BaseController < ActionController::Base
   CONFIG_FILE = File.join(Rails.root, 'config', 'mouser.yml')
 
   layout 'mouser'
+  # protect_from_forgery except: [:not_found]
   helper_method :active_phase
   helper_method :meta_desc
   helper_method :title
+  helper_method :api_host
 
   private
     def active_phase
@@ -14,7 +16,7 @@ class Mouser::BaseController < ActionController::Base
     end
 
     def config
-      @config ||= YAML.load File.open(File.join(CONFIG_FILE))
+      @config ||= YAML.load File.open(CONFIG_FILE)
     end
 
     def initialize_vendor_from_hash hash
@@ -33,7 +35,7 @@ class Mouser::BaseController < ActionController::Base
       vendor_data.each_with_index do |v, i|
         if v['user_name'] == user_name
           new_index = i + index
-          if (new_index + 1) >= vendor_data.length
+          if (new_index + 1) > vendor_data.length
             new_index = 0
           elsif new_index < 0
             new_index = vendor_data.length - 1
@@ -77,5 +79,9 @@ class Mouser::BaseController < ActionController::Base
       else
         @title = 'Mouser Summer Contest'
       end
+    end
+
+    def api_host
+     'mousercontest.' + APP_CONFIG['default_domain']
     end
 end

@@ -1,0 +1,22 @@
+.live-event-thumb.media
+  .media-left
+    .media-object
+      a.cal-page href=group_path(event)
+        .cal-month= event.start_date.strftime('%b')
+        .cal-date= event.start_date.day
+      - if event.in_the_future?
+        .rsvp-container= link_to 'RSVP', event, class: 'btn btn-secondary btn-sm btn-block'
+
+  .media-body
+    h4.media-heading= link_to event.name, event
+    p
+      - if event.about.present?
+        => event.about.truncate(180, separator: /\s/)
+      = link_to 'Learn more', event, class: 'small'
+    .info-table
+      .info-row
+        .info-label Date
+        .info= l event.start_date, format: :full_date_time
+      .info-row
+        .info-label Location
+        .info= event.full_street_address

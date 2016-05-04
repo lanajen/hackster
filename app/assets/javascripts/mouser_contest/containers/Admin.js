@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AdminActions from '../actions/admin';
-import * as AuthActions from '../actions/auth';
 import * as ContestActions from '../actions/contest';
 
 import SubmissionsTable from '../components/SubmissionsTable';
@@ -14,15 +13,27 @@ class Admin extends Component {
     super(props);
 
     this.handleFilterUpdate = this.handleFilterUpdate.bind(this);
+    this.handleActivePhasePromotion = this.handleActivePhasePromotion.bind(this);
+    this.handleSubmissionAction = this.handleSubmissionAction.bind(this);
+    this.handlePaginationClick = this.handlePaginationClick.bind(this);
+
+    this.state = { isFetching: { is: false, id: null } };
   }
 
   componentWillMount() {
-    this.props.actions.getSubmissions();
+    this.props.actions.getSubmissionsByPage(this.props.admin.submissionsPage);
   }
 
   componentDidMount() {
     if(!this.props.user.isAdmin) {
-      this.props.actions.redirectToLogin(this.context.router);
+      this.context.router.push('/');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // Toggles off isFetching when a request is complete.
+    if(this.props.contest.isHandlingRequest && !nextProps.contest.isHandlingRequest) {
+      this.setState({ isFetching: { is: false, id: null }});
     }
   }
 
@@ -41,6 +52,22 @@ class Admin extends Component {
     }
   }
 
+  handleActivePhasePromotion() {
+    window.confirm('Are you sure you want to advance the timeline?')
+     ? this.props.actions.updateActivePhase(parseInt(this.props.contest.activePhase, 10)+1)
+     : false;
+  }
+
+  handleSubmissionAction(submission) {
+    this.props.actions.updateSubmission(submission);
+    this.props.actions.toggleIsHandlingRequest(true);
+    this.setState({ isFetching: { is: true, id: submission.id }});
+  }
+
+  handlePaginationClick(page) {
+    this.props.actions.getSubmissionsByPage(page);
+  }
+
   render() {
     const { admin, contest } = this.props;
 
@@ -53,19 +80,19 @@ class Admin extends Component {
                           onChange={this.handleFilterUpdate} />
     });
 
-    const rangeStyle = {
-      boxSizing: 'border-box',
-      display: 'block',
-      width: '100%',
-      margin: '20px 0',
-      cursor: 'pointer',
-      backgroundColor: 'lightblue',
-      backgroundClip: 'content-box',
-      height: 6,
-      borderRadius: 999,
-      WebkitAppearance: 'none',
-      appearance: 'none'
-    }
+    const paginationTabCount = Math.ceil(parseInt(contest.totalSubmissions, 10) / 20);
+    const paginationButtons = Array.from(new Array(paginationTabCount), (x, i) => {
+      return (
+        <button
+          key={i}
+          style={{
+            marginRight: '0.5%',
+            border: '1px solid #E4E2E2',
+            backgroundColor: admin.submissionsPage === i+1 ? '#EDF9FD' : '#F9F9F9' }}
+          onClick={this.handlePaginationClick.bind(this, i+1)}>{i+1}
+        </button>
+      );
+    });
 
     return (
       <div>
@@ -73,19 +100,42 @@ class Admin extends Component {
           {'Admin links and stuff'}
         </nav>
         <div style={{ padding: '2% 5%', backgroundColor: 'white' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div>Timeline</div>
-            <div>
-              <h3>Current Phase</h3>
-              <p>{contest.phases[contest.activePhase].event}</p>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2%', borderRadius: 4, backgroundColor: '#DBE5E8' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <h3>{ contest.activePhase < contest.phases.length-1 ? 'Current Phase' : 'Final Phase' }</h3>
+                <p>{contest.phases[contest.activePhase].event}</p>
+              </div>
+              {
+                contest.activePhase < contest.phases.length-1
+                  ? (<div style={{ alignSelf: 'center' }}>
+                      <div>
+                        <button style={{ backgroundColor: 'lightgrey', borderRadius: 4, padding: '8%', border: 'none', whiteSpace: 'nowrap' }}
+                                onClick={this.handleActivePhasePromotion}>
+                          Promote to next phase
+                        </button>
+                      </div>
+                    </div>)
+                  : (null)
+              }
+              {
+                contest.activePhase < contest.phases.length-1
+                  ? (<div style={{ flex: 1, textAlign: 'center' }}>
+                      <h3>Next Phase</h3>
+                      <p>{contest.phases[contest.activePhase+1].event}</p>
+                    </div>)
+                  : (null)
+              }
             </div>
-            <div></div>
           </div>
           <div style={{ display: 'flex', padding: '2% 0' }}>
-            <span style={{ flex: '0.1', fontWeight: 'bold' }}>Filters: </span>
-            { filters }
+            <span style={{ flexBasis: '3%', fontWeight: 'bold' }}>Filters: </span>
+            {filters}
           </div>
-          <SubmissionsTable submissions={contest.submissions} filters={admin.filters} onActionClick={this.props.actions.updateSubmission} />
+          <SubmissionsTable submissions={contest.submissions} filters={admin.filters} isFetching={this.state.isFetching} onActionClick={this.handleSubmissionAction} />
+          <div style={{ paddingTop: '1%'}}>
+            {paginationButtons}
+          </div>
         </div>
       </div>
     );
@@ -94,27 +144,25 @@ class Admin extends Component {
 
 Admin.contextTypes = {
   router: () => PropTypes.func
-};
+}
 
 Admin.PropTypes = {
   actions: PropTypes.object.isRequired,
   admin: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
   contest: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
-};
+}
 
 function mapStateToProps(state, ownProps) {
   return {
     admin: state.admin,
-    auth: state.auth,
     contest: state.contest,
     user: state.user
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators({...AdminActions, ...AuthActions, ...ContestActions}, dispatch) };
+  return { actions: bindActionCreators({...AdminActions, ...ContestActions}, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);

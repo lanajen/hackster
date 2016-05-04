@@ -1,0 +1,114 @@
+= content_for :js do
+
+  / share button
+  javascript:
+    var a2a_config = a2a_config || {};
+    a2a_config.onclick = 1;
+    a2a_config.color_main = "D7E5ED";
+    a2a_config.color_border = "AECADB";
+    a2a_config.color_link_text = "333333";
+    a2a_config.color_link_text_hover = "333333";
+    a2a_config.prioritize = ["facebook", "twitter", "reddit", "google_plus", "email"];
+    a2a_config.linkname = "#{@event.name}"
+    a2a_config.linkurl = "#{group_url(@event)}";
+  script type="text/javascript" src="//static.addtoany.com/menu/page.js"
+
+.event-page
+  .row
+    .col-md-7.col-md-offset-0-5
+      .event-header
+        h1
+          - if @event.pryvate?
+            i.fa.fa-lock.istooltip.text-muted.small title="Private draft" data-container='body'
+          span= @event.name
+        div
+          ' By
+          = link_to @event.meetup.name, @event.meetup
+        - if can? :edit, @event
+          div style='margin-top:10px'
+            = link_to 'Edit event', edit_group_path(@event), class: 'btn btn-secondary btn-sm'
+            - if @event.pryvate?
+              = link_to 'Publish event', group_path(@event, group: { pryvate: false }), data: { method: :patch, confirm: 'Are you sure you want to publish this event? All meetup members will be alerted by email.' }, class: 'btn btn-secondary btn-sm'
+
+      .info-table.event-info
+        - if @event.start_date
+          .info-row
+            .info-label Date
+            .info
+              strong= l @event.start_date, format: :full_date
+          .info-row
+            .info-label Starts
+            .info
+              strong= @event.start_date.strftime '%l:%M %p'
+          .info-row
+            .info-label Ends
+            .info
+              strong= @event.end_date.strftime '%l:%M %p'
+        .info-row
+          .info-label Location
+          .info
+            strong= @event.venue_address
+            = link_to 'View map', map_link(@event), class: 'map-link', target: '_blank'
+      .event-actions
+        - if @going
+          .mg-10
+            span.text-success
+              strong
+                i.fa.fa-check
+                span
+                  - if @event.in_the_future?
+                   ' You're going
+                  - else
+                   | You went
+            span.btn-group
+              a.btn.btn-link.btn-link-hidden.btn-sm.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                i.fa.fa-ellipsis-v
+              ul.dropdown-menu role="menu"
+                li= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, @event.in_the_future? ? "I can't go anymore!" : "I didn't go"), member_path(@going), data: { method: :delete }
+
+        - unless @going
+          = link_to (@event.in_the_future? ? 'Join event' : 'I was there'), group_accept_invitation_path(@event), class: 'btn btn-primary btn-sm'
+
+        - if @event.in_the_future?
+          .btn-group
+            button.btn.btn-secondary.btn-sm.dropdown-toggle href='javascript:void(0)' data-toggle="dropdown"
+              i.fa.fa-calendar-o
+              span Add to calendar
+            ul.dropdown-menu.add-to-cal
+              li= link_to content_tag(:i, '', class: 'fa fa-apple') + content_tag(:span, 'Apple Calendar'), export_event_path(@event)
+              li= link_to content_tag(:i, '', class: 'fa fa-google') + content_tag(:span, 'Google'), google_calendar_link(@event), target: '_blank'
+              li= link_to content_tag(:i, '', class: 'fa fa-windows') + content_tag(:span, 'Outlook'), export_event_path(@event)
+              li= link_to content_tag(:i, '', class: 'fa fa-yahoo') + content_tag(:span, 'Yahoo'), yahoo_calendar_link(@event), target: '_blank'
+
+        a.btn.btn-secondary.btn-sm.a2a_dd href='javascript:void(0)'
+          i.fa.fa-share-square-o
+          span Share
+
+      = to_paragraph @event.about
+
+      .event-projects#projects
+        .clearfix.section-header
+          h2.pull-left Projects
+          .pull-right
+            - if can? :add_project, @event
+              = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), "#{meetup_event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
+
+        - if @projects.exists?
+          .row
+            - @projects.each_with_index do |col, i|
+              = render partial: 'projects/project_thumb', locals: { project: col.project.decorate, ref: 'meetup_event', ref_id: @event.id, offset: i, col: 6 }
+
+        - else
+          p Participants haven't uploaded their projects yet.
+
+    .col-md-4.event-participants
+      section.section-thumbs
+        h4 Organizers
+        - @organizers.each do |member|
+          = render partial: 'users/member_thumb_mini', locals: { member: member }
+
+      - if @event.participants_count > 0
+        section.section-thumbs
+          h4 Participants
+          - @participants.each do |member|
+            = render partial: 'users/member_thumb_mini', locals: { member: member }

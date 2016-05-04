@@ -1,10 +1,13 @@
 = content_for :head do
   = render 'meta_tags'
 
-= inserts_stats_for @project
+- insert_stats @project
 
 / update counters via JS so we can cache the views longer
 - content_for :js do
+
+  .async-respect-btn.hide
+    = render partial: 'respects/button', locals: { respectable: @project }
 
   javascript:
     $(function(){
@@ -12,6 +15,9 @@
       $('.impression-stats .stat-figure').replaceWith(s);
       s = "<span class='stat-figure'>#{number_with_delimiter @project.respects_count}</span>";
       $('.respect-stats .stat-figure').replaceWith(s);
+
+      var respectBtn = $('.async-respect-btn').html();
+      $('.async-respect-btn-placeholder').replaceWith(respectBtn);
     });
 
 = content_for :no_container do
@@ -235,9 +241,9 @@
                       - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown)) or @project.difficulty.present? or @project.duration.present? or @project.made_public_at or @project.license
                         section.section-thumbs
                           h4 Project info
-                          .project-info
+                          .info-table
                             - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
-                              .project-info-row
+                              .info-row
                                 .info-label Type
                                 .info
                                   - case @project.content_type
@@ -252,22 +258,22 @@
                                       span Work in progress
 
                             - if @project.difficulty.present?
-                              .project-info-row
+                              .info-row
                                 .info-label Difficulty
                                 .info= @project.difficulty_label(clickable: true)
 
                             - if @project.duration.present?
-                              .project-info-row
+                              .info-row
                                 .info-label Estimated time
                                 .info= @project.duration
 
                             - if @project.made_public_at
-                              .project-info-row
+                              .info-row
                                 .info-label Published
                                 .info= l @project.made_public_at, format: :long_date
 
                             - if @project.license
-                              .project-info-row
+                              .info-row
                                 .info-label License
                                 .info
                                   a target='_blank' href=@project.license.url = @project.license.abbr
@@ -291,7 +297,7 @@
 
                         section.section-thumbs
                           .primary-action-container
-                            = render partial: 'respects/button', locals: { respectable: @project }
+                            .async-respect-btn-placeholder
                           .secondary-actions-container
                             = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary' }
 
@@ -556,7 +562,7 @@
 
                     - if @project.publyc?
                       .show-on-affix style='margin-top:15px;'
-                        = render partial: 'respects/button', locals: { respectable: @project }
+                        .async-respect-btn-placeholder
                         = render partial: 'bookmark_button', locals: { project: @project, btn_class: 'btn-secondary', icon_only: true }
 
                         a.btn.btn-secondary.btn-sm data-content=render('share_button').tr('"', "'") data-html='true' data-placement='bottom' data-toggle='popover' data-trigger='click'

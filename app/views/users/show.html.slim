@@ -2,7 +2,7 @@
   - content_for :head do
     meta name='robots' content='noindex'
 
-= inserts_stats_for @user
+- insert_stats @user
 
 - cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list
@@ -100,12 +100,11 @@
           h2.pull-left
             ' Toolbox
             = content_tag(:span, @parts_count, class: 'badge')
-          - if user_is_current?
-            .pull-right
-              = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
-          - elsif @parts_count > 3
+          - if @parts_count > 3
             .pull-right
               = link_to "See all of #{@user.name}'s tools", user_toolbox_show_path(@user)
+        - if user_is_current?
+          .mg-20= link_to 'Find products to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
         .row
           - @parts.each do |part|
             .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate, col: 4 }

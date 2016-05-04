@@ -1,32 +1,30 @@
 .chapter-thumb {
+  margin-bottom: 40px;
+  text-align: left;
+  padding: 30px 20px 10px;
+  min-height: 170px;
+  position: relative;
   h4 {
     margin: 0 0 5px;
     font-weight: bold;
   }
-  .thumb-image-inner-top {
-    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%));
-    text-align: center;
-    color: #fff;
-    a {
-      color: #fff;
-    }
+}
+
+.chapter-is-live {
+  position: absolute;
+  top: -8px;
+  left: -3px;
+  i {
+    display: block;
   }
 }
 
-.thumb-below {
-  position: relative;
-  background: #fff;
-  padding: 28px 20px 20px;
-}
-
 .chapter-location {
-  text-align: center;
   font-size: 0.9em;
   margin-bottom: 5px;
 }
 
 .chapter-organizer {
-  text-align: center;
   font-size: 0.9em;
   color: #777;
   a {

@@ -1,0 +1,20 @@
+.row
+  .col-xs-12.col-md-offset-2.col-md-8
+    .box
+      .box-title
+        h2 Add your meetup group to Hackster
+
+      .box-content
+        = simple_nested_form_for @meetup, url: meetups_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
+
+          = f.input :full_name, label: 'Meetup name'
+          = f.input :city, label: 'City, State', hint: "No need to include the state if it's not relevant in your country", required: true
+          = f.input :country, input_html: { class: 'form-control' }, required: true
+          = f.input :about, label: 'About this chapter', as: :text, input_html: { rows: 6 }, required: true
+          = f.input :home_link, label: 'Link to existing website', hint: 'Or meetup.com page, if any'
+          = f.input :applied_to_live, as: :boolean, inline_label: "Apply to Hackster Live", label: false, hint: 'Check if you would like to apply to become a Hackster Live Ambassador'
+
+          .form-group
+            .col-md-8.col-md-offset-4
+              = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

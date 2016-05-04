@@ -156,28 +156,25 @@ function loadImage (el) {
   img.src = src;
   el.removeAttr('data-async-src');
 }
-
-var lazyLoadImages = function(){
-  var query = $('img[data-async-src]');
-
-  query.each(function(i, el){
-    loadImage(el);
-  });
-};
 // end - lazy image load functions
 
 $(function () {
-  lazyLoadImages();
+  $('img[data-async-src]').each(function(i, el){
+    loadImage(el);
+  });
 
-  $('#project-side-nav')
-    .on('affix-bottom-on', function(e){
-      var cont = $('.project-page-single-column').length ? $('.project-page-single-column .section-description') : $('#content .container');
-      var top = cont.outerHeight() - $(this).outerHeight() - parseInt(cont.css('padding-top')) - parseInt(cont.css('padding-bottom'));
-      $(this).css('top', top);
-    })
-    .on('affix-bottom-off', function(e){
-      $(this).css('top', $(this).data('top'));
-    });
+  // wrap in a timeout so images can load first
+  window.setTimeout(function(){
+    $('#project-side-nav')
+      .on('affix-bottom-on', function(e){
+        var cont = $('.project-page-single-column').length ? $('.project-page-single-column .section-description') : $('#content .container');
+        var top = cont.outerHeight() - $(this).outerHeight() - parseInt(cont.css('padding-top')) - parseInt(cont.css('padding-bottom'));
+        $(this).css('top', top);
+      })
+      .on('affix-bottom-off', function(e){
+        $(this).css('top', $(this).data('top'));
+      });
+    }, 10);
 
   // bypass bootstrap .close so we can add callback
   $('body').on('click', '#hello-world .close', function(e){
@@ -515,6 +512,12 @@ $(function () {
   });
 
   updateProjectThumbLinks();
+
+  $('.live-chapter-about-more').click(function(e){
+    e.preventDefault();
+    $('.live-chapter-about-excerpt').hide();
+    $('.live-chapter-about-full').show();
+  });
 });
 
 function closeNav(nav) {

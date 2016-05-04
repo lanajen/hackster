@@ -17,13 +17,13 @@ const TableFilter = props => {
       </select>
     </span>
   );
-};
+}
 
 PropTypes.TableFilter = {
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
   value: PropTypes.string.isRequired
-};
+}
 
 export default TableFilter;

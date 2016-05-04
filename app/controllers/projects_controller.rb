@@ -11,13 +11,13 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
 
-    params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
-    @by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
+    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = BaseArticle.indexable.for_thumb_display
+    @projects = Project.indexable.for_thumb_display
 
-    if @by and @by.in? BaseArticle::FILTERS.keys
-      @projects = @projects.send(BaseArticle::FILTERS[@by], user: current_user)
+    if @by and @by.in? Project::FILTERS.keys
+      @projects = @projects.send(Project::FILTERS[@by], user: current_user)
       if @by == 'toolbox'
         @projects = @projects.distinct('projects.id')  # see if this can be moved out
       end
@@ -34,14 +34,14 @@ class ProjectsController < ApplicationController
     end
 
     if params[:sort]
-      @projects = @projects.send(BaseArticle::SORTING[params[:sort]])
+      @projects = @projects.send(Project::SORTING[params[:sort]])
     end
 
-    if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
       @projects = @projects.where(difficulty: params[:difficulty])
     end
 
-    if params[:type].try(:to_sym).in? BaseArticle.content_types(%w(Project Article)).values
+    if params[:type].try(:to_sym).in? Project.content_types(%w(Project Article)).values
       @projects = @projects.with_type(params[:type])
     end
 
@@ -586,7 +586,7 @@ class ProjectsController < ApplicationController
 
         when 'user'
           if user = User.find_by_id(params[:ref_id])
-            projects = user.projects.publyc.own.order(start_date: :desc, created_at: :desc)
+            projects = user.projects.publyc.own.order(created_at: :desc)
             projects = projects.with_group(current_platform) if is_whitelabel?
             projects
           end

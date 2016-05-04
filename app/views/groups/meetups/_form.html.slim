@@ -1,0 +1,32 @@
+= simple_nested_form_for @meetup, url: meetup_path(@meetup), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      .header.clearfix
+        h3.pull-left
+          | Edit Chapter
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@meetup), class: 'btn btn-sm btn-warning'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @meetup, class: 'btn-link btn-sm'
+
+      hr
+
+  .row
+    .col-md-6
+      = f.input :full_name, label: 'Chapter name'
+      = f.input :city, label: 'City, State', hint: "No need to include the state if it's not relevant in your country"
+      = f.input :country, input_html: { class: 'form-control' }
+      = f.input :about, label: 'About this chapter', as: :text, input_html: { rows: 6 }
+
+    .col-md-6
+      = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
+        span.input-group-addon #{site_domain}/live/
+        = f.input_field :user_name
+
+      /= render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @meetup.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+      = f.input :home_link, label: 'Website link'

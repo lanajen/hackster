@@ -9,7 +9,7 @@
 
 #npm
 /node_modules
-npm-debug.log
+npm-debug.log.*
 /app/assets/javascripts/bundle.js
 /app/assets/javascripts/mouser_bundle.js
 /spec/javascripts/bundle.js
@@ -31,3 +31,4 @@ npm-debug.log
 .DS_Store
 log/
 /notes
+mouser_bundle.js
