@@ -40,7 +40,8 @@ class PartJoinObserverWorker < BaseWorker
       when Widget
         record.partable.widgetable
       end
-      keys = ["project-#{project.id}-parts", "project-#{project.id}-left-column", "project-#{project.id}"]
+      # "project-#{project.id}-#{record.part.identifier}-parts" is legacy on the arduino templates
+      keys = ["project-#{project.id}-#{record.part.identifier}-parts", "project-#{project.id}-parts", "project-#{project.id}-left-column", "project-#{project.id}"]
       Cashier.expire *keys
       FastlyWorker.perform_async 'purge', project.record_key
     end
