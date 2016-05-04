@@ -35,7 +35,7 @@ class UserNameValidator
         value = user.send(attribute)
         next if value.blank?
 
-        user.errors.add attribute, 'has to be between 3 and 100 characters' if value.size < 3 or value.size > 100
+        user.errors.add attribute, 'has to be between 2 and 100 characters' if value.size < 2 or value.size > 100
         user.errors.add attribute, "accepts only letters, numbers, underscores '_' and dashes '-'." unless value =~ /\A[a-zA-Z0-9_\-]+\z/
       end
     end

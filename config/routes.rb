@@ -523,9 +523,9 @@ HackerIo::Application.routes.draw do
         post 'payments' => 'payments#create', as: :payments
 
         constraints(PlatformPage) do
-          get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/
-          get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-          scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json|js|atom|rss)/ } do
+          get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{2,}/
+          get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ }
+          scope ':slug', slug: /[A-Za-z0-9_\-]{2,}/, as: :platform, constraints: { format: /(html|json|js|atom|rss)/ } do
             get 'analytics' => 'platforms#analytics'
             get 'chat' => 'chat_messages#index'
             resources :announcements, except: [:create, :update, :destroy], path: :news
@@ -544,7 +544,7 @@ HackerIo::Application.routes.draw do
         end
 
         # constraints(PartPage) do
-        #   get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
+        #   get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json|atom|rss)/ }
         # end
 
         # root to: 'pages#home'
@@ -700,7 +700,7 @@ HackerIo::Application.routes.draw do
           end
 
           constraints(UserPage) do
-            scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ } do
+            scope ':slug', slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ } do
               get '' => 'users#show'
               scope 'projects', as: :user_projects do
                 get '' => 'users#projects_public'
@@ -713,7 +713,7 @@ HackerIo::Application.routes.draw do
               get 'toolbox' => 'users#toolbox_show', as: :user_toolbox_show
               get 'comments' => 'users#comments', as: :user_comments
             end
-            get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+            get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ }
           end
 
           constraints(MainSite) do
@@ -742,7 +742,7 @@ HackerIo::Application.routes.draw do
           end
 
           # old routes, kept for not break existing links
-          scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+          scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{2,}/, project_slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json|js)/ } do
             get '' => 'projects#show', as: ''
             get 'embed' => 'projects#embed', as: :embed
             get 'issues' => 'issues#index'
