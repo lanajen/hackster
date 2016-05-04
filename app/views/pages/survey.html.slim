@@ -9,12 +9,12 @@
         .hero-content
           h1 Our Big 2016 Survey
           p Take part in the world's largest maker survey, win free hardware, and be heard!
-          p Answer 25 questions and help us create a better world.
-          = link_to 'Take the survey', '/nowhere', class: 'btn btn-primary btn-sm'
+          p Answer 26 questions and help us create a better world.
+          = link_to 'Take the survey', 'https://www.surveyguru.io/survey/224442/2016-maker-survey.html', class: 'btn btn-primary btn-sm'
 
     section.survey-about
       h2 About this survey
-      p Welcome to the world's largest maker survey, sponsored by the top hardware and community leaders on earth. We want to hear from you so we can build better products, smarter services and fitting events for people like you. Whether you're a seasoned engineer or just starting out, a life long hobbyist or a parent, the following 25 questions will help us create a better world for the global community we all call home.
+      p Welcome to the world's largest maker survey, sponsored by the top hardware and community leaders on earth. We want to hear from you so we can build better products, smarter services and fitting events for people like you. Whether you're a seasoned engineer or just starting out, a life long hobbyist or a parent, the following 26 questions will help us create a better world for the global community we all call home.
 
     section.survey-sponsors
       h2 Sponsors
@@ -34,22 +34,19 @@
           .col-sm-4
             .survey-board-thumb
               = image_tag 'landing_pages/survey/arduino101.png'
-              h5 Arduino 101
           .col-sm-4
             .survey-board-thumb
               = image_tag 'landing_pages/survey/sparkfun.png'
-              h5 Sparkfun
           .col-sm-4
             .survey-board-thumb
               = image_tag 'landing_pages/survey/edison.png'
-              h5 Intel Edison
 
     section.survey-about
       p Don't hesitate - take the survey now and help us create a better world.
-      p= link_to 'Take the survey', '/nowhere', class: 'btn btn-primary'
+      p= link_to 'Take the survey', 'https://www.surveyguru.io/survey/224442/2016-maker-survey.html', class: 'btn btn-primary'
 
     section.survey-share
       p
         ' Share with your friends and help us get heard
-        = link_to image_tag('landing_pages/survey/facebook.png'), '/nowhere'
-        = link_to image_tag('landing_pages/survey/twitter.png'), '/nowhere'
+        = link_to image_tag('landing_pages/survey/facebook.png'), 'https://www.facebook.com/sharer/sharer.php?u=https%3A//www.surveyguru.io/survey/224442/2016-maker-survey.html', target: '_blank'
+        = link_to image_tag('landing_pages/survey/twitter.png'), 'https://twitter.com/home?status=What%20kind%20of%20Maker%20are%20you?%20Take%20the%202016%20Maker%20Survey%20and%20find%20out!%20https%3A//www.surveyguru.io/survey/224442/2016-maker-survey.html%20via%20%40hacksterio', target: '_blank'
