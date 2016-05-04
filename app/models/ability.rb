@@ -48,7 +48,7 @@ class Ability
 
   def admin
     can :manage, :all
-    cannot [:join, :request_access], Group
+    # cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -128,6 +128,8 @@ class Ability
       #   member = @user.is_member?(group) and member.invitation_pending?
       end
     end
+
+    can :destroy, Member, user_id: @user.id
 
     can :request_access, Group do |group|
       group.access_level == 'request' and !@user.is_member?(group)

@@ -233,30 +233,47 @@ module ApplicationHelper
     end
   end
 
-  def inserts_stats_for model
-    content_for :js do
-      content_tag(
-        :script,
-        "
-        $(function(){
-          $.ajax({
-            url: '#{api_private_stats_url(host: api_host, path_prefix: nil, locale: nil)}',
-            data: {
-              referrer: (document.referrer || document.origin),
-              id: '#{model.id}',
-              type: '#{model.model_name}',
-              a: '#{action_name}',
-              c: '#{controller_name}'
-            },
-            method: 'POST'
-          });
-        });
-        ".html_safe, type: 'text/javascript')
-    end unless user_signed_in?
+  def insert_stats model=nil
+    @stats_model ||= model
+
+    script = "
+      $(function(){
+        $.ajax({
+          url: '#{api_private_stats_url(host: api_host, path_prefix: nil, locale: nil)}',
+          data: {
+            referrer: (document.referrer || document.origin),
+      "
+
+    if @stats_model
+      script << "
+          id: '#{@stats_model.id}',
+          type: '#{@stats_model.model_name}',
+      "
+    end
+
+    script << "
+          a: '#{action_name}',
+          c: '#{controller_name}'
+        },
+        xhrFields: {
+          withCredentials: true
+        },
+        method: 'POST'
+      });
+    });
+    "
+
+    script.html_safe
   end
 
   def replace_tokens_for model, text
     TokenParser.new(model, text).replace
+  end
+
+  def to_paragraph text
+    return unless text
+
+    ('<p>' + text.gsub(/\n/, '</p><p>') + '</p>').html_safe
   end
 
   def token_tags_for model, cache_key

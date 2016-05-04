@@ -1,0 +1,74 @@
+= content_for :head do
+  = stylesheet_link_tag 'datepicker'
+
+= content_for :js do
+  = javascript_include_tag 'datepicker'
+
+  javascript:
+    $(document).ready(function(){
+      $('.datetimepicker').datetimepicker({
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down"
+        },
+        sideBySide: true
+      });
+
+      $('#start_date_dummy').on('change', function(){
+        var date = $(this).data("DateTimePicker").getDate().format("YYYY-MM-DDTHH:mm");
+        $('#start_date').val(date);
+        if ($('#end_date').val() == '') {
+          $('#end_date').val(date);
+          $('#end_date_dummy').data("DateTimePicker").setDate(date);
+        }
+      });
+      $('#end_date_dummy').on('change', function(){
+        $('#end_date').val($(this).data("DateTimePicker").getDate().format("YYYY-MM-DDTHH:mm"));
+      });
+    });
+
+= simple_nested_form_for @meetup_event, url: group_path(@meetup_event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      .header.clearfix
+        h3.pull-left
+          | Edit event
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@meetup_event), class: 'btn btn-sm btn-warning'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @meetup_event, class: 'btn-link btn-sm'
+
+      hr
+
+  .row
+    .col-md-6
+      = f.input :full_name, label: 'Event name'
+
+      = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
+        #datepicker.input-group
+          = f.input_field :start_date_dummy, as: :string, label: false
+          span.input-group-addon
+            i.fa.fa-calendar
+      = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
+
+      = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
+        #datepicker.input-group
+          = f.input_field :end_date_dummy, as: :string, label: false
+          span.input-group-addon
+            i.fa.fa-calendar
+      = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
+
+      = f.input :address
+      = f.input :city
+      = f.input :state, hint: 'Include state only if necessary in your country', input_html: { class: 'form-control' }
+      = f.input :country, input_html: { class: 'form-control' }
+
+    .col-md-6
+      = f.input :about, label: 'About this event', as: :text, input_html: { rows: 10 }
+      = f.input :website_link, label: 'Event website'

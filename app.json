@@ -40,6 +40,9 @@
     "CYPRESS_ENTITY_ID": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/metadata.php",
     "CYPRESS_SLO_TARGET_URL": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/SingleLogoutService.php",
     "CYPRESS_SSO_TARGET_URL": "http://cypresscomdev.prod.acquia-sites.com/simplesaml/saml2/idp/SSOService.php",
+    "DATABASE_URL": {
+      "required": true
+    },
     "DB_POOL": "3",
     "DEFAULT_DOMAIN": "hackster.io",
     "DEFAULT_HOST": "hackster.io",
@@ -131,12 +134,14 @@
   },
   "addons": [
     "openredis",
-    "memcachier",
-    "heroku-postgresql"
+    "memcachier"
   ],
   "buildpacks": [
     {
-      "url": "https://github.com/ddollar/heroku-buildpack-multi.git"
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-ruby"
     }
   ]
 }

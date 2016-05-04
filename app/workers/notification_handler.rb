@@ -223,6 +223,10 @@ class NotificationHandler
         else
           []
         end
+      when :meetup_event
+        context[:event] = event = MeetupEvent.find context_id
+        context[:meetup] = meetup = event.meetup
+        context[:users] = meetup.users - event.users
       when :membership, :membership_invitation
         context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group

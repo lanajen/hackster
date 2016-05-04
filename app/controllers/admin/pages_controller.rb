@@ -5,7 +5,7 @@ class Admin::PagesController < Admin::BaseController
   def analytics
     title "Admin / Analytics"
 
-    @project_count = BaseArticle.indexable.count
+    @project_count = Project.indexable.count
     @external_project_count = ExternalProject.approved.count
     @waiting_for_approval_project_count = BaseArticle.need_review.count
     @comment_count = Comment.where(commentable_type: 'BaseArticle').count
@@ -25,11 +25,11 @@ class Admin::PagesController < Admin::BaseController
     new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 1.day, max_date).count
     new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 7.days, max_date).count
     new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 30.days, max_date).count
-    @active_users1d = UserActivity.where("user_activities.created_at > ? AND user_activities.created_at < ?", max_date - 1.day, max_date).group(:user_id).count.count
+    @active_users1d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 1.day, max_date).count - new_users1d
     @pct_active_users1d = ((@active_users1d.to_f / @user_count) * 100).round(1)
-    @active_users7d = UserActivity.where("user_activities.created_at > ? AND user_activities.created_at < ?", max_date - 7.days, max_date).group(:user_id).count.count - new_users7d
+    @active_users7d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 7.days, max_date).count - new_users7d
     @pct_active_users7d = ((@active_users7d.to_f / @user_count) * 100).round(1)
-    @active_users30d = UserActivity.where("user_activities.created_at > ? AND user_activities.created_at < ?", max_date - 30.days, max_date).group(:user_id).count.count - new_users30d
+    @active_users30d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 30.days, max_date).count - new_users30d
     @pct_active_users30d = ((@active_users30d.to_f / @user_count) * 100).round(1)
     @project_impressions = Rails.cache.fetch('pjimpr', expires_in: 1.day){ ProjectImpression.count }
     @replicated_projects_count = FollowRelation.where(followable_type: 'BaseArticle').count

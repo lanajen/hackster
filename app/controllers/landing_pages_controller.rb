@@ -4,6 +4,9 @@ class LandingPagesController < ActionController::Base
   helper_method :meta_desc
 
   def intel
+    set_surrogate_key_header 'intel_landing'
+    set_cache_control_headers 86400
+
     title "US Maker Competition - Intel"
     meta_desc "US Maker Competition - Intel"
   end

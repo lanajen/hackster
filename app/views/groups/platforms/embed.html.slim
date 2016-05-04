@@ -11,7 +11,7 @@
 - if @projects.any?
   .row
     - @projects.each_with_index do |col, i|
-      = render partial: "projects/project_embed_thumb", locals: { project: col.project.decorate, ref: 'platform', ref_id: @platform.id, col: @column_class, width: @column_width }
+      = render partial: "projects/project_embed_thumb", locals: { project: col.project.decorate, ref: 'platform', ref_id: @platform.id, col: (@column_class.presence || 'col-md-4 col-sm-6'), width: @column_width }
   - unless params[:hide_pagination]
     .text-center= will_paginate(@projects)
 

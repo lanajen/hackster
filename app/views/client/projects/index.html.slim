@@ -3,7 +3,7 @@
   = auto_discovery_link_tag :rss, root_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, root_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
-= inserts_stats_for current_platform
+- insert_stats current_platform
 
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")

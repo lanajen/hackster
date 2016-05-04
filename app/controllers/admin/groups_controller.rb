@@ -10,7 +10,7 @@ class Admin::GroupsController < Admin::BaseController
 
     params[:sort_by] ||= 'created_at'
 
-    @default_types = %w(Community Promotion Event University Course)
+    @default_types = %w(Community Promotion Event University Course MeetupEvent)
     type ||= params[:type] || @default_types
 
     collection = Group.where(type: type)

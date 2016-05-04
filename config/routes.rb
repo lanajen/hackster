@@ -163,7 +163,7 @@ HackerIo::Application.routes.draw do
           resources :groups, except: [:show]
           resources :invitations, only: [:new, :create]
           resources :jobs, except: [:show]
-          resources :live_chapters, except: [:show]
+          resources :meetups, except: [:show]
           resources :parts, except: [:show] do
             get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
             get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -240,7 +240,7 @@ HackerIo::Application.routes.draw do
         end
         post 'claims' => 'claims#create'
 
-        resources :members, only: [] do
+        resources :members, only: [:destroy] do
           patch 'process' => 'members#process_request'
         end
 
@@ -334,6 +334,26 @@ HackerIo::Application.routes.draw do
             get 'admin/participants' => 'events#participants_list', as: :participants_list
           end
         end
+
+        get 'live' => 'meetups#index'
+        get 'live/new' => 'meetups#new', as: :new_meetup
+        post 'live/chapters' => 'meetups#create', as: :meetups
+        scope 'live/:user_name', as: :meetup do
+          get '' => 'meetups#show', as: ''
+          delete '' => 'meetups#destroy'
+          patch '' => 'meetups#update'
+          # resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+          # get 'pages/:slug' => 'wiki_pages#show'
+
+          resources :events, controller: 'meetup_events' do
+            resources :projects, only: [:new, :create], controller: 'groups/projects'
+            patch 'projects/link' => 'groups/projects#link'
+            # resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+            # get 'pages/:slug' => 'wiki_pages#show'
+            get 'embed' => 'meetup_events#embed'
+            get 'admin/participants' => 'meetup_events#participants_list', as: :participants_list
+          end
+        end
         # end groups
 
         resources :assignments, only: [] do
@@ -343,6 +363,8 @@ HackerIo::Application.routes.draw do
           patch 'grades(/:project_id(/:user_id))' => 'grades#update'
         end
         resources :grades, only: [:index]
+
+        get 'events/:id/export' => 'events#export', as: :export_event
 
         resources :wiki_pages, only: [:destroy]
 
@@ -473,19 +495,15 @@ HackerIo::Application.routes.draw do
 
 
         get 'about' => 'pages#about'
-        get 'business' => 'pages#business'
-        # get 'help' => 'pages#help'
         get 'achievements' => 'pages#achievements'
+        get 'business' => 'pages#business'
+        get 'conduct' => 'pages#conduct'
         get 'home', to: redirect('/')
         get 'infringement_policy' => 'pages#infringement_policy'
         get 'privacy' => 'pages#privacy'
-        get 'conduct' => 'pages#conduct'
+        get 'survey' => 'pages#survey'
         get 'terms' => 'pages#terms'
-        get 'press' => 'pages#press'
         get 'resources' => 'pages#resources'
-
-        # live
-        get 'live' => 'live_chapters#index'
 
         # updates counter for cached pages
         get 'users/stats' => 'stats#index'
@@ -505,9 +523,9 @@ HackerIo::Application.routes.draw do
         post 'payments' => 'payments#create', as: :payments
 
         constraints(PlatformPage) do
-          get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/
-          get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-          scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json|js|atom|rss)/ } do
+          get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{2,}/
+          get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ }
+          scope ':slug', slug: /[A-Za-z0-9_\-]{2,}/, as: :platform, constraints: { format: /(html|json|js|atom|rss)/ } do
             get 'analytics' => 'platforms#analytics'
             get 'chat' => 'chat_messages#index'
             resources :announcements, except: [:create, :update, :destroy], path: :news
@@ -526,7 +544,7 @@ HackerIo::Application.routes.draw do
         end
 
         # constraints(PartPage) do
-        #   get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
+        #   get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json|atom|rss)/ }
         # end
 
         # root to: 'pages#home'
@@ -682,7 +700,7 @@ HackerIo::Application.routes.draw do
           end
 
           constraints(UserPage) do
-            scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ } do
+            scope ':slug', slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ } do
               get '' => 'users#show'
               scope 'projects', as: :user_projects do
                 get '' => 'users#projects_public'
@@ -695,7 +713,7 @@ HackerIo::Application.routes.draw do
               get 'toolbox' => 'users#toolbox_show', as: :user_toolbox_show
               get 'comments' => 'users#comments', as: :user_comments
             end
-            get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+            get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json)/ }
           end
 
           constraints(MainSite) do
@@ -724,7 +742,7 @@ HackerIo::Application.routes.draw do
           end
 
           # old routes, kept for not break existing links
-          scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+          scope ':user_name/:project_slug', user_name: /[A-Za-z0-9_\-]{2,}/, project_slug: /[A-Za-z0-9_\-]{2,}/, constraints: { format: /(html|json|js)/ } do
             get '' => 'projects#show', as: ''
             get 'embed' => 'projects#embed', as: :embed
             get 'issues' => 'issues#index'

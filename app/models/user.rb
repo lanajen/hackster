@@ -504,7 +504,7 @@ class User < ActiveRecord::Base
   alias_method :destroy_now, :destroy
 
   def destroy
-    delay.destroy_now
+    UserCriticalWorker.perform_async 'destroy', id
   end
 
   # small hack to allow single emails to be invited multiple times

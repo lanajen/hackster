@@ -183,6 +183,10 @@ class Part < ActiveRecord::Base
     where.not platform_id: nil
   end
 
+  def self.with_platform platform_id
+    where platform_id: platform_id
+  end
+
   def self.include_full_name
     select("parts.*, CASE WHEN position(fng.full_name IN parts.name) = 0 THEN CONCAT(fng.full_name, ' ', parts.name) ELSE parts.name END AS fname").joins("LEFT JOIN groups AS fng ON fng.id = parts.platform_id AND fng.type = 'Platform'")
   end

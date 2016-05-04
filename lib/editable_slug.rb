@@ -2,7 +2,7 @@ module EditableSlug
   module ClassMethods
     def editable_slug attribute_name, callback=:before_save
       attr_accessible :"new_#{attribute_name}"
-      attr_writer :"new_#{attribute_name}", :"new_#{attribute_name}_changed"
+      attr_writer :"new_#{attribute_name}_changed"
       self.send(callback, :"assign_new_#{attribute_name}")
 
       self.send :define_method, "new_#{attribute_name}" do
@@ -15,6 +15,11 @@ module EditableSlug
         instance_variable_set "@old_#{attribute_name}", send(attribute_name)
         self.send "new_#{attribute_name}_changed=", (send(attribute_name) != send("new_#{attribute_name}"))
         self.send "#{attribute_name}=", send("new_#{attribute_name}")
+      end
+
+      self.send :define_method, "new_#{attribute_name}=" do |val|
+        self.send "new_#{attribute_name}_changed=", (send(attribute_name) != val)
+        instance_variable_set "@new_#{attribute_name}", val
       end
 
       self.send :define_method, "new_#{attribute_name}_changed?" do

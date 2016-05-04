@@ -2,7 +2,7 @@
   - content_for :head do
     meta name='robots' content='noindex'
 
-= inserts_stats_for @user
+- insert_stats @user
 
 - cache_unless user_is_current_or_admin?, ["user-#{@user.id}-#{site_user_name}-toolbox", site_user_name], tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list
@@ -15,7 +15,7 @@
           = content_tag(:span, @parts.count, class: 'badge')
         - if user_is_current?
           .pull-right
-            = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
+            = link_to 'Find products to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
 
       - if @parts.any?
         .row

@@ -1,8 +1,8 @@
 class MembersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :load_group, except: [:process_request]
+  before_filter :load_group, except: [:process_request, :destroy]
   respond_to :html
-  layout :set_layout, except: [:create, :process_request]
+  layout :set_layout, except: [:create, :process_request, :destroy]
 
   def create
     authorize! :request_access, @group
@@ -60,6 +60,15 @@ class MembersController < ApplicationController
     else
       render action: "edit", template: "members/#{@model_name.pluralize}/edit"
     end
+  end
+
+  def destroy
+    member = Member.find params[:id]
+    group = member.group
+    authorize! :destroy, member
+
+    member.destroy
+    redirect_to group, notice: 'Hope to see you again soon!'
   end
 
   private

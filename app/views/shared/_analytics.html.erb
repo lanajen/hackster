@@ -22,7 +22,6 @@
         $("body").on('click', 'a', function(e){
           var url = $(this).attr("href");
           if (e.currentTarget.host != window.location.host && url && url.indexOf('javascript:') == -1) {
-            _gaq.push(['_trackEvent', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url]);
             ga('send', 'event', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url);
             if (e.metaKey || e.ctrlKey || this.target == "_blank") {
               var newtab = true;
