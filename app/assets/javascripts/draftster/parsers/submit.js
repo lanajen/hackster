@@ -147,7 +147,7 @@ function getAttributesByTagType(item) {
   return attribs[item.tag] ? attribs[item.tag] : '';
 }
 
-parseTree(html) {
+function parseTree(html) {
   const blockEls = BlockElements;
 
   function handler(html, depth) {
@@ -184,7 +184,7 @@ parseTree(html) {
         } else {
           return {
             tag: 'span',
-            content:sanitizerescape(item.data),
+            content: sanitizer.escape(item.data),
             attribs: {},
             children: []
           };
@@ -195,7 +195,7 @@ parseTree(html) {
         }
         return {
           tag: item.name,
-          content:sanitizerescape(item.children[0].data),
+          content: sanitizer.escape(item.children[0].data),
           attribs: item.attribs,
           children: []
         };
@@ -215,6 +215,7 @@ parseTree(html) {
 
 export default function parseHTML(html, options) {
   options = options || {};
+
   return new Promise((resolve, reject) => {
     let handler = new DomHandler((err, dom) => {
       if(err) reject('DomHandler Error: ', err);

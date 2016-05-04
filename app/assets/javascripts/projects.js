@@ -338,12 +338,12 @@ $select2target = null;
         $(this).closest('.pe-container').removeClass('processing');
 
         // Custom event for React component.
-        var $form = $('#story-json');
+        var $form = $('.story-form');
         if ($form.length) {
           var event = new CustomEvent(
               'pe:complete',
               {
-                detail: { xhr: xhr, status: status },
+                detail: { form: $form[0] },
                 bubbles: false,
                 cancelable: true
               }
