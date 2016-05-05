@@ -2035,7 +2035,7 @@ div.panel-heading h4 {
 
 
 /* COMPONENTS HOVER */
-  #components tr a {
+  .parts-table tr a {
     color: #879191;
     width: 100%;
     height: 100%;
@@ -2046,22 +2046,22 @@ div.panel-heading h4 {
     padding-right: 10px;
     min-height: 140px;
   }
-  #components tr a:hover {
+  .parts-table tr a:hover {
     color: #879191;
   }
-  #components tr td.part-img a {
+  .parts-table tr td.part-img a {
     padding: 0;
   }
   @media screen and (max-width: 500px) {
-    #components tr td.part-img a {
+    .parts-table tr td.part-img a {
       padding-top: 30px;
     }
   }
   @media screen and (max-width: 400px) {
-    #components tr td.part-img a {
+    .parts-table tr td.part-img a {
       padding-top: 9px;
     }
-    #components tr a {
+    .parts-table tr a {
       padding-top: 15px;
       min-height: 70px;
     }

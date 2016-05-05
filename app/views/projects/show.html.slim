@@ -325,7 +325,7 @@
                         - if @hardware_parts.any?
                           .title
                             strong Hardware components:
-                          table.sortable-table.table.table-hover.fields-container
+                          table.sortable-table.table.table-hover.fields-container.parts-table
                             tbody
                               - @hardware_parts.each do |part|
                                 = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
@@ -333,7 +333,7 @@
                         - if @software_parts.any?
                           .title
                             strong Software apps and online services:
-                          table.sortable-table.table.table-hover.fields-container
+                          table.sortable-table.table.table-hover.fields-container.parts-table
                             tbody
                               - @software_parts.each do |part|
                                 = render partial: 'widgets/embeds/show/part', locals: { part: part }
@@ -341,7 +341,7 @@
                         - if @tool_parts.any?
                           .title
                             strong Hand tools and fabrication machines:
-                          table.sortable-table.table.table-hover.fields-container
+                          table.sortable-table.table.table-hover.fields-container.parts-table
                             tbody
                               - @tool_parts.each do |part|
                                 = render partial: 'widgets/embeds/show/part', locals: { part: part }
