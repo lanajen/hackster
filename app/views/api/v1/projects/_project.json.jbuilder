@@ -14,6 +14,7 @@ end
 json.tags project.product_tags_cached
 json.url project_url(project, subdomain: ENV['SUBDOMAIN'])
 json.cover_image_url project.decorate.cover_image(:cover_thumb)
+json.created_at project.created_at
 json.published_at project.made_public_at
 json.stats do
   json.impressions project.impressions_count
