@@ -177,6 +177,11 @@ class PagesController < ApplicationController
     render "robots/#{Rails.env}"
   end
 
+  def survey
+    set_surrogate_key_header 'survey'
+    set_cache_control_headers 86400
+  end
+
   def test
     not_found if Rails.env.production?
   end
