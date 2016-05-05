@@ -4,7 +4,7 @@ ruby '2.2.2'
 gem 'rails', '4.2.3'
 
 # load early so that env variables are available to other gems
-gem 'dotenv-rails', groups: [:development, :test]
+gem 'dotenv-rails'#, groups: [:development, :test]
 
 #  assets
 gem 'bootstrap-sass', '3.3.1'
@@ -129,10 +129,10 @@ gem 'heroku-forward', '0.4.0'
 gem 'mail', '>= 2.6.3'
 gem 'rails_12factor', group: :production
 
-gem 'derailed_benchmarks', group: :development
-
 group :development do
+  gem 'derailed'
   gem 'letter_opener'
+  gem 'stackprof'
 end
 
 group :development, :test do
