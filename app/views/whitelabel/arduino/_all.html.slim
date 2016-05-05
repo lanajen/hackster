@@ -6,9 +6,6 @@
 
   #create-nav
   .arduino-bbq data-offset-top="5" data-spy="affix"
-    #ham.hamNoBack
-      svg#toggleNav.toggleNav xmlns:xlink="http://www.w3.org/2000/xlink"
-        use xlink:href=asset_path('whitelabel/arduino/barbecue/icons.svg#icon-Global-Menu_Home-BBCube').gsub(asset_host_with_protocol, '')
     #back.opacity_bg.hidden
       #home.backUnsolid style=("transform: translate(0),0,0);")
         svg.logo-home-bottom xmlns:xlink="http://www.w3.org/2000/xlink"
@@ -129,7 +126,7 @@
   = javascript_include_tag 'whitelabel/arduino/application'
   script src="//cdn-dev.arduino.cc/header-footer/loader.js" type="text/javascript"
   javascript:
-    ArduinoHeaderAndFooter.init({parts: ['create-nav']});
+    ArduinoHeaderAndFooter.init({parts: ['create-nav'],authentication: false});
   = button_to 'Sign out', destroy_user_session_path, method: :delete, form: { id: 'sign-out-form', class: 'hidden' }
 
 = content_for :footer do
