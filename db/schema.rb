@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160427154542) do
+ActiveRecord::Schema.define(version: 20160504195328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -383,29 +383,14 @@ ActiveRecord::Schema.define(version: 20160427154542) do
   add_index "hashtags_thoughts", ["thought_id"], name: "index_hashtags_thoughts_on_thought_id", using: :btree
 
   create_table "impressions", force: :cascade do |t|
-    t.string   "impressionable_type", limit: 255
-    t.integer  "impressionable_id"
-    t.integer  "user_id"
-    t.string   "controller_name",     limit: 255
-    t.string   "action_name",         limit: 255
-    t.string   "view_name",           limit: 255
-    t.string   "request_hash",        limit: 255
-    t.string   "ip_address",          limit: 255
+    t.string   "impressionable_type",             null: false
+    t.integer  "impressionable_id",               null: false
     t.string   "session_hash",        limit: 255
     t.text     "message"
-    t.text     "referrer"
     t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
   end
 
-  add_index "impressions", ["controller_name", "action_name", "ip_address"], name: "controlleraction_ip_index", using: :btree
-  add_index "impressions", ["controller_name", "action_name", "request_hash"], name: "controlleraction_request_index", using: :btree
-  add_index "impressions", ["controller_name", "action_name", "session_hash"], name: "controlleraction_session_index", using: :btree
-  add_index "impressions", ["impressionable_type", "impressionable_id", "ip_address"], name: "poly_ip_index", using: :btree
-  add_index "impressions", ["impressionable_type", "impressionable_id", "request_hash"], name: "poly_request_index", using: :btree
   add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
-  add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", using: :btree
-  add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
   create_table "jobs", force: :cascade do |t|
     t.string   "url"
@@ -435,21 +420,6 @@ ActiveRecord::Schema.define(version: 20160427154542) do
   end
 
   add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
-
-  create_table "live_chapters", force: :cascade do |t|
-    t.string   "event_type"
-    t.string   "link"
-    t.integer  "organizer_id",                             null: false
-    t.string   "city"
-    t.string   "country"
-    t.boolean  "virtual",                  default: false
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.string   "name"
-    t.string   "one_liner",    limit: 160
-  end
-
-  add_index "live_chapters", ["organizer_id"], name: "index_live_chapters_on_organizer_id", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255
@@ -840,8 +810,8 @@ ActiveRecord::Schema.define(version: 20160427154542) do
     t.string   "sluggable_type", limit: 255, default: "Project", null: false
   end
 
+  add_index "slug_histories", ["id"], name: "index_slug_histories_on_value_lower", using: :btree
   add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
-  add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
 
   create_table "store_products", force: :cascade do |t|
     t.integer  "source_id",                      null: false

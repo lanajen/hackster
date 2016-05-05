@@ -63,6 +63,7 @@ class ProjectScraper
       'blogspot.com' => :blogspot,
       'blogspot.fr' => :blogspot,
       'challengepost.com' => :challengepost,
+      'codebender.cc' => :codebender,
       'community.particle.io' => :particle_forum,
       'cypress.com' => :cypress_blog,
       'developer.mbed.org' => :mbed,

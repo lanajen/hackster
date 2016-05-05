@@ -123,7 +123,7 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bcrypt (3.1.10)
-    benchmark-ips (2.3.0)
+    benchmark-ips (2.6.1)
     bootstrap-sass (3.3.1.0)
       sass (~> 3.2)
     bootstrap-will_paginate (0.0.10)
@@ -186,13 +186,15 @@ GEM
     daemons (1.2.3)
     dalli (2.7.0)
     database_cleaner (1.5.0)
-    derailed_benchmarks (1.1.2)
+    derailed (0.1.0)
+      derailed_benchmarks
+    derailed_benchmarks (1.3.1)
       benchmark-ips (~> 2)
       get_process_mem (~> 0)
       heapy (~> 0)
       memory_profiler (~> 0)
-      rack (~> 1)
-      rake (~> 10)
+      rack (>= 1)
+      rake (> 10, < 12)
       thor (~> 0.19)
     devise (3.4.1)
       bcrypt (~> 3.0)
@@ -372,7 +374,7 @@ GEM
       guard-compat (~> 1.0)
       spork (>= 0.8.4)
     hashie (3.4.3)
-    heapy (0.1.0)
+    heapy (0.1.2)
     heroku-api (0.3.22)
       excon (~> 0.38)
       multi_json (~> 1.8)
@@ -417,7 +419,6 @@ GEM
     keen (0.9.5)
       addressable (~> 2.3.5)
       multi_json (~> 1.3)
-    kgio (2.10.0)
     launchy (2.4.3)
       addressable (~> 2.3)
     letter_opener (1.4.1)
@@ -435,7 +436,7 @@ GEM
       mime-types (>= 1.16, < 3)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
-    memory_profiler (0.9.4)
+    memory_profiler (0.9.6)
     method_source (0.8.2)
     mime-types (2.99.1)
     mini_magick (3.7.0)
@@ -508,6 +509,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    puma (3.4.0)
     pusher (0.14.2)
       httpclient (~> 2.4)
       multi_json (~> 1.0)
@@ -564,7 +566,6 @@ GEM
       activesupport (= 4.2.3)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    raindrops (0.15.0)
     rake (10.4.2)
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
@@ -695,6 +696,7 @@ GEM
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     sqlite3 (1.3.10)
+    stackprof (0.2.9)
     stripe (1.22.0)
       json (~> 1.8.1)
       rest-client (~> 1.4)
@@ -734,10 +736,6 @@ GEM
     uglifier (2.3.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    unicorn (4.7.0)
-      kgio (~> 2.6)
-      rack
-      raindrops (~> 0.7)
     uuid (2.3.8)
       macaddr (~> 1.0)
     uuidtools (2.1.5)
@@ -782,7 +780,7 @@ DEPENDENCIES
   customerio (= 0.5.1)
   dalli (= 2.7.0)
   database_cleaner
-  derailed_benchmarks
+  derailed
   devise (= 3.4.1)
   devise_invitable (= 1.3.0)
   dotenv-rails
@@ -838,6 +836,7 @@ DEPENDENCIES
   premailer-rails (= 1.7.0)
   protected_attributes (= 1.0.9)
   pry
+  puma (= 3.4.0)
   pusher (= 0.14.2)
   pygments.rb!
   quiet_assets
@@ -880,6 +879,7 @@ DEPENDENCIES
   slim-rails (= 3.0.1)
   split (= 1.2.1)
   spring
+  stackprof
   stripe (= 1.22.0)
   sundawg_country_codes (= 0.0.7)
   text_sanitizer (= 0.1.0)
@@ -887,7 +887,6 @@ DEPENDENCIES
   tinymce-rails (= 4.2.5)
   twitter (= 5.11.0)
   uglifier (= 2.3.1)
-  unicorn (= 4.7.0)
   vimeo (= 1.5.3)
   will_paginate!
   workflow (= 1.0.0)
