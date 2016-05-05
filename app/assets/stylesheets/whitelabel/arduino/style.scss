@@ -317,6 +317,19 @@ div.arduino-bbq.bbq-overlap #ham > svg,
 div.arduino-bbq.bbq-overlap div.user-profile svg {
   fill: white;
 }
+
+#ino-create-nav {
+  z-index: 11;
+}
+
+#ino-create-nav .menu-toggle {
+  fill: #879191;
+}
+
+#ino-create-nav.nav-visible .nav-bar {
+  height: 65px;
+}
+
 /*  -- END CREATE TOOLBAR --  */
 
 section#projects-list a.btn.btn-info.btn-sm:active,
@@ -1864,6 +1877,11 @@ div.panel-heading h4 {
   .review-item p:last-child {
     margin-bottom: 10px;
   }
+
+  div#project-review div.alert.alert-warning p {
+    color: #fff;
+    margin-bottom: 10px;
+  }
 /* END MODERATOR REVIEW */
 
 @media screen and (max-width: 760px) {
@@ -2405,6 +2423,20 @@ div#mini-footer a#hackster-logo:hover {
   transition-property: opacity;
   transition-duration: 0.2s;
 }
+
+@media screen and (max-width: 700px) {
+  div#mini-footer a.logoArduinoGenuino {
+    display: block;
+    width: 100%;
+    background-position-x: 50%;
+    margin-bottom: 5px;
+  }
+
+  div#mini-footer p {
+    margin-bottom: 37px;
+  }
+}
+
 #content.project-page {
   padding: 100px 0 60px;
 }
@@ -2505,6 +2537,12 @@ div.info-header {
   }
   .part-box.box .image {
     margin-top: 0;
+  }
+}
+@media screen and (max-width: 480px) {
+  .part-box.box ul.links.list-inline li:first-child {
+    display: block;
+    margin-bottom: 20px;
   }
 }
 /* END SINGLE TOOL PAGE */
@@ -3179,9 +3217,7 @@ span + i.fa-caret-down {
   padding: 20px;
   margin: 0;
 }
-.popover-content .alert:first-child {
-  padding-bottom: 0;
-}
+
 .popover-content .form-group {
   margin: 20px;
 }
@@ -3238,8 +3274,6 @@ span + i.fa-caret-down {
   }
 }
 /* END EDIT PRIVATE PROJECT */
-
-
 
 
 
@@ -3418,11 +3452,18 @@ a#my_dashboard-mobile {
     border: none;
   }
   #navbar-search + .pull-right {
-    width: 350px;
+    width: 203px;
     text-align: right;
     display: inline-block;
   }
 }
+
+@media screen and (max-width: 767px) {
+  #navbar-search + .pull-right {
+    width: 350px;
+  }
+}
+
 @media screen and (max-width: 960px) {
   #navbar-search {
     /*display: inline-block;*/
