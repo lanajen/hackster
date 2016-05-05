@@ -54,6 +54,6 @@
 - if @project.pending_review?
   .hr.small or
   .content-type-indicator.text-center class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
-    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish', class: 'btn btn-cancel'
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
       = hidden_field_tag :event, 'unpublish'
-      = submit_tag 'Cancel publication', class: 'btn btn-danger btn-sm btn-block'
+      = submit_tag 'Cancel publication', class: 'btn btn-cancel'

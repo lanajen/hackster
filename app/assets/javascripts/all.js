@@ -313,23 +313,6 @@ $(function () {
     return false;
   });
 
-  $(document).on('click', '.btn-open', function(e){
-    target = $(this).data('open');
-    $(target).slideDown(100);
-    e.stopPropagation();
-    return false;
-  });
-
-  $(document).on('click', '.btn-cancel', function(e){
-    btn = $(this);
-    $(btn.data('hide')).fadeOut(function(){
-      $(btn.data('hide')).off();
-      $(btn.data('show')).fadeIn();
-    });
-    e.stopPropagation();
-    return false;
-  });
-
   $(document).on('click', '.disable-link', function(e){
     $(this).addClass('disabled-link');
     $(this).html('<i class="fa fa-spinner fa-spin"></i>');
