@@ -120,6 +120,9 @@ class Admin::PagesController < Admin::BaseController
     @groups = filter_for HackerSpace, @fields
   end
 
+  def home
+  end
+
   def issues
     title "Admin / Issues - #{safe_page_params}"
 

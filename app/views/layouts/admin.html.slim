@@ -68,7 +68,6 @@ html(lang="en")
             .alert.alert-danger
               ' #{Sidekiq::Stats.new.dead_size} dead jobs in
               => link_to 'Sidekiq', '/admin/sidekiq/morgue', class: 'alert-link'
-              = link_to 'Clear', '/admin/sidekiq/morgue', class: 'btn btn-danger btn-sm', data: { method: :delete }
 
       .row
         .col-xs-12
