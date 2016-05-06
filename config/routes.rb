@@ -136,7 +136,7 @@ HackerIo::Application.routes.draw do
             mount Sidekiq::Web => '/sidekiq'
             mount Split::Dashboard, :at => 'split'
           end
-          get '' => 'pages#home'
+          get '' => 'pages#home', as: :home
           get 'analytics' => 'pages#analytics'
           get 'build_logs' => 'pages#build_logs'
           get 'comments' => 'pages#comments'
