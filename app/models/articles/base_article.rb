@@ -773,6 +773,10 @@ class BaseArticle < ActiveRecord::Base
     }
   end
 
+  def unlisted?
+    publyc? and unpublished?
+  end
+
   def update_slug
     generate_slug unless slug_was_changed?
   end
