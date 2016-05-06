@@ -7,8 +7,8 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     params[:sort] = (params[:sort].in?(BaseArticle::SORTING.keys) ? params[:sort] : 'trending')
     by = (params[:by].in?(BaseArticle::FILTERS.keys) ? params[:by] : 'all')
 
-    range_start = begin; DateTime.parse(params[:range_start]); rescue ArgumentError; Time.at(0); end
-    range_end = begin; DateTime.parse(params[:range_end]); rescue ArgumentError; Time.now; end
+    range_start = begin; DateTime.parse(params[:range_start]); rescue; Time.at(0); end
+    range_end = begin; DateTime.parse(params[:range_end]); rescue; Time.now; end
 
     projects = if params[:part_mpns]
       BaseArticle.joins(:parts).where(parts: { mpn: params[:part_mpns].split(/,/) })

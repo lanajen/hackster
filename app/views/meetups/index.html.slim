@@ -61,8 +61,9 @@
     section#events style='background:#fafafa'
       .container
         h2 style='margin-bottom:50px' Global Chapters
-        - @chapters.each_with_index do |chapter|
-          = render 'meetups/meetup_thumb', chapter: chapter.decorate
+        - cache ['meetups', 'index'], expires_in: 1.hour do
+          - @chapters.each_with_index do |chapter|
+            = render 'meetups/meetup_thumb', chapter: chapter.decorate
 
     / section#members
       .container
