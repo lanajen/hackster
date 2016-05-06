@@ -95,9 +95,7 @@ HackerIo::Application.routes.draw do
             get '' => 'chrome_sync#show', on: :collection
             patch '' => 'chrome_sync#update', on: :collection
           end
-          scope 'mandrill/webhooks' do
-            post 'unsub' => 'mandrill_webhooks#unsub'
-          end
+          resources :challenges, only: [:index]
           resources :parts, except: [:new, :edit]
           scope :platforms do
             scope :analytics do
