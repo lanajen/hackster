@@ -33,7 +33,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     end
 
     if by and by.in? BaseArticle::FILTERS.keys
-      if params[:platform_user_name]
+      if params[:platform_user_name] and !params[:part_mpn]
         projects = projects.merge(BaseArticle.send(BaseArticle::FILTERS[by]))
       else
         projects = projects.send(BaseArticle::FILTERS[by])
@@ -44,14 +44,14 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       @count = projects.count
     else
       if params[:sort]
-        if params[:platform_user_name]
+        if params[:platform_user_name] and !params[:part_mpn]
           projects = projects.merge(BaseArticle.send(BaseArticle::SORTING[params[:sort]]))
         else
           projects = projects.send(BaseArticle::SORTING[params[:sort]])
         end
       end
 
-      if params[:platform_user_name]
+      if params[:platform_user_name] and !params[:part_mpn]
         @collections = projects.merge(BaseArticle.for_thumb_display_in_collection).paginate(page: safe_page_params)
       else
         @projects = projects.for_thumb_display.paginate(page: safe_page_params)
