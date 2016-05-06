@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Draftster, DraftsterUtils } from '@hacksterio/draftster';
-import { getStory, uploadImageToServer } from '../draftster/helpers';
+import Draftster from '@hacksterio/draftster';
 import convertToJSONModel from '../draftster/convertToJSONModel';
+import { getStory, uploadImageToServer } from '../draftster/helpers';
 
 class StoryEditor extends Component {
   constructor(props) {
@@ -13,21 +13,15 @@ class StoryEditor extends Component {
     this.handleSubmitComplete = this.handleSubmitComplete.bind(this);
 
     this.config = {
-      editorIsBusy(bool) {
-        const container = document.querySelectorAll('.pe-save')[0];
-        const button = container.querySelector('.pe-submit');
 
-        if(bool) {
-          button.innerText = 'Uploading image';
-          button.setAttribute('disabled', true);
-        } else {
-          button.innerText = 'Save changes';
-          button.removeAttribute('disabled');
+      editorWasUpdated() {
+        if(window && window.pe && window.$serializedForm && window.location.hash === '#story') {
+          window.$serializedForm += ' ';
+          window.pe.showSavePanel();
         }
       },
 
       handleImageUpload(image, callback) {
-      console.log("IMAGE", image);
         return uploadImageToServer(image, props.S3BucketURL, props.AWSAccessKeyId, props.projectId)
           .then(mergedImage => callback(null, mergedImage))
           .catch(err => callback(err, image));
@@ -38,6 +32,19 @@ class StoryEditor extends Component {
           return true;
         }
         return false;
+      },
+
+      isEditorBusy(bool) {
+        const container = document.querySelectorAll('.pe-save')[0];
+        const button = container.querySelector('.pe-submit');
+
+        if(bool) {
+          button.innerText = 'Uploading image';
+          button.setAttribute('disabled', true);
+        } else {
+          button.innerText = 'Save changes';
+          button.removeAttribute('disabled');
+        }
       },
 
       setInitialContent() {
@@ -61,9 +68,8 @@ class StoryEditor extends Component {
   }
 
   handleSubmit(e) {
-    convertToJSONModel(DraftsterUtils.getEditorContent())
+    convertToJSONModel(this.refs.storyEditor.getEditorContent())
       .then(json => {
-        // Appends a story_json input to the hidden form.
         let input = document.createElement('input');
         input.type = 'hidden';
         input.name = 'base_article[story_json]';
@@ -72,10 +78,11 @@ class StoryEditor extends Component {
         this.form.insertBefore(input, this.form.firstChild);
 
         // Submit the hidden form (projects.js line:243 via CustomEvent on pe.saveChanges).
-        // NOTE: Use the form on the event.  this.form will trigger a redirect.
+        // Use the form on the custom event.  The form serializes itself when any of child inputs are changed.
+        // this.form will trigger a redirect.
         e.detail.form.submit();
       })
-      .catch(err => console.log("err", err));
+      .catch(err => this.refs.storyEditor.triggerMessenger('Woops, your project didn\'t save correctly!', 'error' ));
   }
 
   handleSubmitComplete(e) {
@@ -87,11 +94,11 @@ class StoryEditor extends Component {
       window.pe.serializeForm();
       window.pe.updateChecklist();
     }
-    DraftsterUtils.triggerMessenger('Saved successfully!', 'success');
+    this.refs.storyEditor.triggerMessenger('Saved successfully!', 'success');
   }
 
   render() {
-    return <Draftster config={this.config} {...this.props} />;
+    return <Draftster ref="storyEditor" config={this.config} {...this.props} />;
   }
 }
 

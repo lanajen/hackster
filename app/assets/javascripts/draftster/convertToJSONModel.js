@@ -6,10 +6,8 @@ import parseHTML from './parsers/submit';
 
 function processCE(block, index, callback) {
   return parseHTML(block.html)
-    .then(json => {
-      return callback({ type: 'CE', json }, index);
-    })
-    .catch(err => console.error(err));
+    .then(json => Promise.resolve({ type: 'CE', json }))
+    .catch(err => Promise.reject(err));
 }
 
 function processCarousel(block) {
@@ -34,30 +32,27 @@ function processVideo(block) {
 }
 
 export default function convertToJSONModel(blocks) {
-  const json =  blocks.reduce((acc, block, index) => {
+  const promises = blocks.reduce((acc, block, index) => {
     switch(block.type) {
       case 'CE':
-        processCE(block, index, (updatedBlock, i) => {
-          if(updatedBlock.json.length) acc.splice(i, 0, updatedBlock);
-        });
+        acc.push(Promise.resolve(processCE(block)));
         break;
 
       case 'Carousel':
         const Carousel = processCarousel(block);
-        if(Carousel.images.length) acc.push(Carousel);
+        if(Carousel.images.length) acc.push(Promise.resolve(Carousel));
         break;
 
       case 'Video':
-        acc.push(processVideo(block));
+        acc.push(Promise.resolve(processVideo(block)));
         break;
 
       default:
-        acc.push(block);
+        acc.push(Promise.resolve(block));
         break;
     }
-
     return acc;
   }, []);
 
-  return Promise.resolve(json);
+  return Promise.all(promises);
 }

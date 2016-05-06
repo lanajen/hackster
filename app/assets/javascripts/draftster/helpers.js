@@ -1,9 +1,8 @@
 import request from 'superagent';
 
-// import Utils from '../editor/utils/DOMUtils';
 import { getS3AuthData, postToS3, postURLToServer } from '../utils/Images';
 import { getApiPath, getCSRFToken } from '../utils/Utils';
-import { parseDescription } from './parsers/description';
+import { parseDescription, expandPreBlocks } from './parsers/description';
 
 export function getStory(projectId) {
   return new Promise((resolve, reject) => {
@@ -26,7 +25,13 @@ export function getStory(projectId) {
                 });
 
         } else if(res.body && res.body.story !== null) {
-          resolve(res.body.story);
+          const story = res.body.story.map(item => {
+            if(item.type === 'CE') {
+              item.json = expandPreBlocks(item.json);
+            }
+            return item;
+          });
+          resolve(story);
         } else {
           reject('Error Fetching Story!');
         }

@@ -41,31 +41,8 @@ function transformTagNames(node) {
   return converter[node.name] || node.name;
 }
 
-function removeAttributes(json) {
-  return (function recurse(json) {
-    return json.map(child => {
-      if(!child.children || !child.children.length) {
-        if(child.tag !== 'a') {
-          child.attribs = {};
-        } else {
-          child.attribs = { href: child.attribs.href };
-        }
-        return child;
-      } else {
-        if(child.tag !== 'a') {
-          child.attribs = {};
-        } else {
-          child.attribs = { href: child.attribs.href };
-        }
-        child.children = recurse(child.children);
-        return child;
-      }
-    });
-  }(json));
-}
-
 function createSpan(content) {
-  return { tag: 'span', attribs: {}, content: content+'\n', children: [] };
+  return { tag: 'span', attribs: {}, content: content, children: [] };
 }
 
 function flattenChildren(children) {
@@ -85,7 +62,7 @@ function flattenChildren(children) {
     }
   }(children));
 
-  return createSpan(content.join(''));
+  return content.length ? createSpan(content.join('')) : null;
 }
 
 function createPreChildren(node) {
@@ -93,47 +70,30 @@ function createPreChildren(node) {
 
   if(node.children.length) {
     node = node.children[0].tag === 'code' ? node.children[0] : node;
-    if(node.content) { children.push(createSpan(node.content)); }
+    if(node.content) children.push(createSpan(node.content));
     children.push(flattenChildren(node.children));
   } else {
     children.push(createSpan(node.content));
   }
 
-  return children;
+  return children.filter(child => child !== null);
 }
 
 function concatPreBlocks(json) {
-  json = json.reduce((prev, curr, index) => {
-    if(prev.length > 0 && prev[prev.length-1].tag === 'pre' && curr.tag === 'pre') {
+  return json.reduce((acc, curr, index) => {
+    if(acc.length > 0 && acc[acc.length-1].tag === 'pre' && curr.tag === 'pre') {
       let children = createPreChildren(curr);
-      prev[prev.length-1].children[0].children.push(...children);
+      acc[acc.length-1].children[0].children.push(...children);
     } else {
       if(curr.tag === 'pre') {
         let code = { tag: 'code', attribs: {}, content: '', children: createPreChildren(curr) };
-        prev.push({ tag: 'pre', attribs: {}, content: '', children: [ code ] });
+        acc.push({ tag: 'pre', attribs: {}, content: '', children: [ code ] });
       } else {
-        prev.push(curr);
+        acc.push(curr);
       }
     }
-    return prev;
+    return acc;
   }, []);
-  return json;
-}
-
-function postCleanUp(json) {
-  return json.map((child, index) => {
-    if(child.content === 'Paste a link to Youtube, Vimeo or Vine and press Enter') {
-      return null;
-    } else {
-      if(child.children.length) {
-        child.children = postCleanUp(child.children);
-        return child;
-      } else {
-        return child;
-      }
-    }
-  })
-  .filter(item => item !== null);
 }
 
 function getAttributesByTagType(item) {
@@ -156,15 +116,9 @@ function parseTree(html) {
     }
 
     return html.map(item => {
-      /** Remove these nodes immediately. */
-      if(item.name === 'script' || item.name === 'comment') {
-        return null;
-      } else if(item.name === 'br' && depth > 1) {
-        return null;
-      }
-
       /** Transform tags to whitelist. */
       item.name = transformTagNames(item);
+
       if(!ElementWhiteList[item.name]) {
         item.name = depth > 0 ? 'span' : 'p';
       }
@@ -220,11 +174,9 @@ export default function parseHTML(html, options) {
     let handler = new DomHandler((err, dom) => {
       if(err) reject('DomHandler Error: ', err);
 
-      let cleaned = parseTree(dom);
-      cleaned = removeAttributes(cleaned);
-      cleaned = concatPreBlocks(cleaned);
-      cleaned = postCleanUp(cleaned);
-      resolve(cleaned);
+      const cleaned = parseTree(dom);
+      const concated = concatPreBlocks(cleaned);
+      resolve(concated);
     }, { ...options, normalizeWhitespace: false });
 
     let parser = new HtmlParser.Parser(handler, { decodeEntities: true });

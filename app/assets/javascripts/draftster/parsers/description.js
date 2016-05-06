@@ -454,6 +454,14 @@ function expandPreBlocks(json) {
           if(child.content && child.content.length) {
             acc = acc.concat(createPreBlocksByText(child.content));
           }
+          // Spans.
+          if(child.children && child.children.length) {
+            child.children.forEach(c => {
+              if(c.content && c.content.length) {
+                acc = acc.concat(createPreBlocksByText(c.content));
+              }
+            });
+          }
         });
       }
     } else {
@@ -798,7 +806,7 @@ function mergeAndParseTree(collection, options) {
   return newCollection;
 }
 
-export default function parseDescription(html, options) {
+function parseDescription(html, options) {
   return new Promise((resolve, reject) => {
     let handler = new DomHandler((err, dom) => {
       if(err) reject(err);
@@ -814,3 +822,5 @@ export default function parseDescription(html, options) {
     parser.done();
   });
 }
+
+export { expandPreBlocks, parseDescription };
