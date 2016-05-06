@@ -286,7 +286,7 @@ HackerIo::Application.routes.draw do
         scope 'courses/:uni_name/:user_name', as: :course do
           get '' => 'courses#show', as: ''
           # delete '' => 'courses#destroy'
-          # patch '' => 'courses#update'
+          patch '' => 'courses#update'
 
           scope ':promotion_name', as: :promotion do
             get '' => 'promotions#show', as: ''
@@ -300,7 +300,7 @@ HackerIo::Application.routes.draw do
             end
           end
         end
-        get 'courses/new' => 'courses#new'
+        get 'courses/new' => 'courses#new', as: :new_course
         resources :assignments, only: [:edit, :update, :destroy]
 
         resources :events, except: [:show, :update, :destroy]

@@ -1,5 +1,6 @@
 class Course < Community
   belongs_to :university, foreign_key: :parent_id
+  has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PromotionMember'
   has_many :promotions, foreign_key: :parent_id, dependent: :destroy
   validate :university_is_selected
 

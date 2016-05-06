@@ -1,0 +1,7 @@
+- if user_signed_in? and member = current_user.is_member?(@group) and member.invitation_pending?
+  .alert.alert-warning.alert-flat
+    .container
+      ' You have been invited to join
+      strong = @group.name
+      ' .
+      = link_to 'Join class', group_accept_invitation_path(@group), class: 'btn btn-warning btn-sm'

@@ -1,0 +1,43 @@
+= simple_nested_form_for @group, url: @group, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      .header.clearfix
+        h3.pull-left
+          | Edit course
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@group), class: 'btn btn-sm btn-warning'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @group, class: 'btn-link btn-sm'
+      hr
+
+  .row
+    .col-md-6
+      = f.input :full_name, label: 'Course name'
+      = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
+        span.input-group-addon #{site_domain}/courses/#{@group.university.user_name.truncate(10)}/
+        = f.input_field :user_name
+      = f.input :mini_resume, as: :text, input_html: { rows: 4 },
+        hint: 'A short sentence, max 140 characters'
+
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+    .col-md-6
+      = f.input :blog_link, label: 'Blog link'
+      = f.input :facebook_link, label: 'Facebook link'
+      = f.input :flickr_link, label: 'Flickr link'
+      = f.input :github_link, label: 'Github link'
+      = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :instagram_link, label: 'Instagram link'
+      = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :pinterest_link, label: 'Pinterest link'
+      = f.input :reddit_link, label: 'Reddit link'
+      = f.input :twitter_link, label: 'Twitter link'
+      = f.input :website_link, label: 'Website link'
+      = f.input :youtube_link, label: 'Youtube link'
+
+      / = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
+      = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
