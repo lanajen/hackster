@@ -1,6 +1,6 @@
 class Api::V1::ChallengesController < Api::V1::BaseController
   def index
-    challenges = Challenge
+    challenges = Challenge.visible.publyc
 
     if params[:state].try(:to_sym).in?(Challenge.workflow_spec.states.keys)
       challenges = challenges.where workflow_state: params[:state]
