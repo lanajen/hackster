@@ -5,6 +5,9 @@ class CoursesController < ApplicationController
   respond_to :html
 
   def show
+    title @course.name
+    meta_desc "Join the course #{@course.name} on Hackster.io!"
+
     @promotions = @course.promotions.order(created_at: :desc)
     @projects = @course.projects.paginate(page: safe_page_params)
 

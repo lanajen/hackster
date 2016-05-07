@@ -568,7 +568,8 @@ class ApplicationController < ActionController::Base
     end
 
     def render_404(exception)
-      # LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
+      @exception = exception
+      @backtrace = Rails.backtrace_cleaner.clean(exception.backtrace) if exception.backtrace
       respond_to do |format|
         format.html { render template: 'errors/error_404', layout: "layouts/#{current_layout}", status: 404 }
         format.all { render nothing: true, status: 404 }
@@ -581,6 +582,9 @@ class ApplicationController < ActionController::Base
     end
 
     def render_500(exception)
+      @exception = exception
+      @backtrace = Rails.backtrace_cleaner.clean(exception.backtrace) if exception.backtrace
+
       # hack because format.all doesn't work anymore
       if exception.class == ActionController::UnknownFormat
         render nothing: true, status: 404 and return
