@@ -238,45 +238,50 @@
                                   i.fa.fa-tag
                                   span= link_to tag, tag_path(tag)
 
-                      - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown)) or @project.difficulty.present? or @project.duration.present? or @project.made_public_at or @project.license
-                        section.section-thumbs
-                          h4 Project info
-                          .info-table
-                            - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
-                              .info-row
-                                .info-label Type
-                                .info
-                                  - case @project.content_type
-                                    - when 'protip', 'getting_started', 'teardown'
-                                      i.fa.fa-bullseye
-                                      span Protip
-                                    - when 'tutorial'
-                                      i.fa.fa-book
-                                      span Full instructions provided
-                                    - when 'wip'
-                                      i.fa.fa-battery-half
-                                      span Work in progress
+                      section.section-thumbs
+                        h4 Project info
+                        .info-table
+                          - if @project.content_type.in?(%w(protip tutorial wip getting_started teardown))
+                            .info-row
+                              .info-label Type
+                              .info
+                                - case @project.content_type
+                                  - when 'protip', 'getting_started', 'teardown'
+                                    i.fa.fa-bullseye
+                                    span Protip
+                                  - when 'tutorial'
+                                    i.fa.fa-book
+                                    span Full instructions provided
+                                  - when 'video'
+                                    i.fa.fa-play-circle-o
+                                    span Video
+                                  - when 'wip'
+                                    i.fa.fa-battery-half
+                                    span Work in progress
 
-                            - if @project.difficulty.present?
-                              .info-row
-                                .info-label Difficulty
-                                .info= @project.difficulty_label(clickable: true)
+                          - if @project.difficulty.present?
+                            .info-row
+                              .info-label Difficulty
+                              .info= @project.difficulty_label(clickable: true)
 
-                            - if @project.duration.present?
-                              .info-row
-                                .info-label Estimated time
-                                .info= @project.duration
+                          - if @project.duration.present?
+                            .info-row
+                              .info-label Estimated time
+                              .info= @project.duration
 
+                          .info-row
                             - if @project.made_public_at
-                              .info-row
-                                .info-label Published
-                                .info= l @project.made_public_at, format: :long_date
+                              .info-label Published
+                              .info= l @project.made_public_at, format: :long_date
+                            - else
+                              .info-label Created
+                              .info= l @project.created_at, format: :long_date
 
-                            - if @project.license
-                              .info-row
-                                .info-label License
-                                .info
-                                  a target='_blank' href=@project.license.url = @project.license.abbr
+                          - if @project.license
+                            .info-row
+                              .info-label License
+                              .info
+                                a target='_blank' href=@project.license.url = @project.license.abbr
 
                       - if @project.publyc?
                         section#respects-section.section-thumbs

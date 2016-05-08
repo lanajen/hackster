@@ -37,8 +37,8 @@ class CronTask < BaseWorker
   end
 
   def cleanup_buggy_unpublished
-    # bug: projects that have been approved in the past (they have a made_public_at date) should always be approved
-    BaseArticle.publyc.where.not(type: 'ExternalProject').where(workflow_state: %w(unpublished pending_review)).where.not(made_public_at: nil).each do |project|
+    # bug: projects that have been approved in the past (they have a featured_date date) should always be approved
+    BaseArticle.publyc.where.not(type: 'ExternalProject').where(workflow_state: %w(unpublished pending_review)).where.not(featured_date: nil).each do |project|
       project.update_column :workflow_state, :approved
     end
     # bug: pending review projects should have a review thread in needs_review state
@@ -197,7 +197,7 @@ class CronTask < BaseWorker
     end
 
     def send_project_notifications time_frame, email_frequency
-      project_ids = BaseArticle.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
+      project_ids = BaseArticle.self_hosted.where('projects.featured_date > ? AND projects.featured_date < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
 

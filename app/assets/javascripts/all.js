@@ -156,12 +156,16 @@ function loadImage (el) {
   img.src = src;
   el.removeAttr('data-async-src');
 }
+
+function lazyLoadImages() {
+  $('img[data-async-src]').each(function(i, el){
+  loadImage(el);
+});
+}
 // end - lazy image load functions
 
 $(function () {
-  $('img[data-async-src]').each(function(i, el){
-    loadImage(el);
-  });
+  lazyLoadImages();
 
   // wrap in a timeout so images can load first
   window.setTimeout(function(){

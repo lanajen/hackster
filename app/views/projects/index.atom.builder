@@ -1,6 +1,6 @@
 atom_feed language: 'en-US' do |feed|
   feed.title title
-  feed.updated @projects.first.try(:made_public_at)
+  feed.updated (params[:show_all] ? @projects.first.try(:made_public_at) : @projects.first.try(:featured_date))
 
   @projects.each do |project|
     feed.entry(project) do |entry|

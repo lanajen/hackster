@@ -40,12 +40,12 @@ class BaseArticleObserverWorker < BaseWorker
     ProjectWorker.perform_async 'update_platforms', record.id
 
     @notify = false
-    if record.made_public_at.nil?
+    if record.featured_date.nil?
       TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id if record.should_tweet?  # delay to give it time to run update_platforms
-      record.update_column :made_public_at, Time.now
+      record.update_column :featured_date, Time.now
       @notify = true
-    elsif record.made_public_at > Time.now
-      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id, record.made_public_at if record.should_tweet?
+    elsif record.featured_date > Time.now
+      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id, record.featured_date if record.should_tweet?
       @notify = true
     end
 
@@ -63,6 +63,8 @@ class BaseArticleObserverWorker < BaseWorker
   end
 
   def after_pending_review record
+    record.update_column :made_public_at, Time.now if record.made_public_at.nil?
+
     if record.review_thread
       record.review_thread.update_attribute :workflow_state, :needs_review
     else

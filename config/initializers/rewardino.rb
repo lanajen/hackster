@@ -276,7 +276,7 @@ Rewardino::Event.create!({
   name: 'Project approved',
   description: "One of your projects got approved to show on Hackster",
   points: 50,
-  date_method: -> (project) { project.review_time || project.made_public_at },
+  date_method: -> (project) { project.review_time || project.featured_date },
   # model_table: 'projects',
   models_method: -> (user) { user.projects.own.where(type: %w(Article Project)).approved },
   users_count_method: -> (project) { project.team_members_count }
