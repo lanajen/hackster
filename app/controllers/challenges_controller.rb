@@ -131,6 +131,8 @@ class ChallengesController < ApplicationController
   end
 
   def update_mailchimp
+    @challenge = Challenge.find params[:id]
+    authorize! :admin, @challenge
     MailchimpWorker.perform_async 'sync_challenge', @challenge.id
     redirect_to @challenge, notice: 'Your Mailchimp will be updated shortly.'
   end
