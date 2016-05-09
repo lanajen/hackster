@@ -381,7 +381,12 @@
   .survey-sponsors {
     border-top: 3px solid #f4f4f6;
     .logos {
-      margin: 0 -25px;
+      margin: 0 -25px 20px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+      padding-right: 20px;
+      padding-left: 20px;
       @include flexbox((
         display: flex,
         align-items: center,
@@ -392,6 +397,7 @@
       }
       img {
         max-height: 40px;
+        max-width: 150px;
       }
     }
   }

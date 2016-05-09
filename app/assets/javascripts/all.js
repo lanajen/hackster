@@ -156,12 +156,16 @@ function loadImage (el) {
   img.src = src;
   el.removeAttr('data-async-src');
 }
+
+function lazyLoadImages() {
+  $('img[data-async-src]').each(function(i, el){
+  loadImage(el);
+});
+}
 // end - lazy image load functions
 
 $(function () {
-  $('img[data-async-src]').each(function(i, el){
-    loadImage(el);
-  });
+  lazyLoadImages();
 
   // wrap in a timeout so images can load first
   window.setTimeout(function(){
@@ -309,23 +313,6 @@ $(function () {
     } else {
       $(target).slideUp(100);  //after closing alerts/fade-in notices, we need to update the scroll handlers
     }
-    e.stopPropagation();
-    return false;
-  });
-
-  $(document).on('click', '.btn-open', function(e){
-    target = $(this).data('open');
-    $(target).slideDown(100);
-    e.stopPropagation();
-    return false;
-  });
-
-  $(document).on('click', '.btn-cancel', function(e){
-    btn = $(this);
-    $(btn.data('hide')).fadeOut(function(){
-      $(btn.data('hide')).off();
-      $(btn.data('show')).fadeIn();
-    });
     e.stopPropagation();
     return false;
   });

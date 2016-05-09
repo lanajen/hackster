@@ -95,9 +95,7 @@ HackerIo::Application.routes.draw do
             get '' => 'chrome_sync#show', on: :collection
             patch '' => 'chrome_sync#update', on: :collection
           end
-          scope 'mandrill/webhooks' do
-            post 'unsub' => 'mandrill_webhooks#unsub'
-          end
+          resources :challenges, only: [:index]
           resources :parts, except: [:new, :edit]
           scope :platforms do
             scope :analytics do
@@ -138,7 +136,7 @@ HackerIo::Application.routes.draw do
             mount Sidekiq::Web => '/sidekiq'
             mount Split::Dashboard, :at => 'split'
           end
-          get '', to: redirect('admin/analytics')
+          get '' => 'pages#home', as: :home
           get 'analytics' => 'pages#analytics'
           get 'build_logs' => 'pages#build_logs'
           get 'comments' => 'pages#comments'
@@ -288,7 +286,7 @@ HackerIo::Application.routes.draw do
         scope 'courses/:uni_name/:user_name', as: :course do
           get '' => 'courses#show', as: ''
           # delete '' => 'courses#destroy'
-          # patch '' => 'courses#update'
+          patch '' => 'courses#update'
 
           scope ':promotion_name', as: :promotion do
             get '' => 'promotions#show', as: ''
@@ -302,7 +300,7 @@ HackerIo::Application.routes.draw do
             end
           end
         end
-        get 'courses/new' => 'courses#new'
+        get 'courses/new' => 'courses#new', as: :new_course
         resources :assignments, only: [:edit, :update, :destroy]
 
         resources :events, except: [:show, :update, :destroy]

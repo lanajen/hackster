@@ -87,13 +87,15 @@ class PagesController < ApplicationController
 
     if user_signed_in?
       if params[:count]
-        count = Project.custom_for(current_user).count
+        count = Project.indexable.custom_for(current_user).count
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.publyc.active.ends_last
+      @challenges = Challenge.visible.active.ends_last
 
-      @projects = Project.custom_for(current_user).last_public.for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 18)
+      @projects = Project.custom_for(current_user)
+      @projects = params[:show_all] ? @projects.published.last_public : @projects.indexable.last_featured
+      @projects = @projects.for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 18)
       if @projects.any?
         @followed = current_user.follow_relations.where(follow_relations: { followable_type: %w(Group) }).includes(followable: [:avatar, :cover_image]) + current_user.follow_relations.where(follow_relations: { followable_type: %w(User) }).includes(followable: :avatar) + current_user.follow_relations.where(follow_relations: { followable_type: %w(Part) }).joins("INNER JOIN parts ON parts.id = follow_relations.followable_id").where.not(parts: { platform_id: nil }).includes(followable: [:image, :platform])
         @current_page = safe_page_params || 1
@@ -101,7 +103,7 @@ class PagesController < ApplicationController
         @next_page = nil if @projects.total_pages < @next_page
 
         unless request.xhr?
-          @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
+          @last_projects = Project.indexable.last_featured.for_thumb_display.limit(12)
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.publyc.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
@@ -113,7 +115,7 @@ class PagesController < ApplicationController
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.publyc.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
-        @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
+        @last_projects = Project.indexable.last_featured.for_thumb_display.limit(12)
       end
 
       render 'home_member'
@@ -121,7 +123,7 @@ class PagesController < ApplicationController
       set_cache_control_headers 3600
       set_surrogate_key_header 'home-visitor'
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
-      @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
+      @last_projects = Project.indexable.last_featured.for_thumb_display.limit 12
       @platforms = Platform.publyc.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
       @challenges = Challenge.where(id: %w(35 33))  #publyc.active.ends_first.limit(2)

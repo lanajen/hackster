@@ -14,7 +14,9 @@ class ProjectsController < ApplicationController
     params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
     @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = Project.indexable.for_thumb_display
+    @projects = Project.for_thumb_display
+
+    @projects = params[:show_all] ? @projects.published : @projects.indexable
 
     if @by and @by.in? Project::FILTERS.keys
       @projects = @projects.send(Project::FILTERS[@by], user: current_user)
@@ -497,7 +499,7 @@ class ProjectsController < ApplicationController
             offset = 0
             params[:ref_id] = current_user.id
           end
-          BaseArticle.custom_for(current_user).last_public
+          BaseArticle.indexable.custom_for(current_user).last_featured
 
         when 'explore'
           sort, by, difficulty, type = params[:ref_id].split(/_/)

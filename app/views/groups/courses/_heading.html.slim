@@ -1,0 +1,19 @@
+h1
+  - if @group.pryvate?
+    small>
+      i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
+  => link_to "#{@group.name}", @group
+h2
+  - if profs = @group.members.with_group_roles('professor') and profs.any?
+    ' By
+    = profs.map{ |prof| link_to html_escape(prof.user.name), prof.user }.to_sentence.html_safe
+    ' ,
+  = @group.university.full_name
+p
+  - if @group.mini_resume.present?
+    = @group.mini_resume
+
+- if @group.university.decorate.location
+  p.secondary-info
+    i.fa.fa-map-marker
+    span= @group.university.decorate.location

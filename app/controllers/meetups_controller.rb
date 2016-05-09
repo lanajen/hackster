@@ -68,7 +68,7 @@ class MeetupsController < ApplicationController
 
   private
     def load_meetup
-      @meetup = @group = Group.where(type: %w(Meetup LiveChapter)).find_by_user_name!(params[:user_name].downcase)
+      @meetup = @group = Group.where(type: %w(Meetup LiveChapter)).where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
       @organizers = @group.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
     end
 end

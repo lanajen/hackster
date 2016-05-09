@@ -11,8 +11,10 @@ class PopularityWorker < BaseWorker
       median_impressions: BaseArticle.median_impressions,
       median_respects: BaseArticle.median_respects,
     }
+    time = Time.now  # throttle updates to give the DB more breathing room
     BaseArticle.indexable_and_external.select(:id).find_each do |project|
-      self.class.perform_async 'compute_popularity_for_project', project.id, defaults
+      self.class.perform_at time, 'compute_popularity_for_project', project.id, defaults
+      time += (1.second.to_f / 4)  # 4 per second =~ 10 minutes to compute 3k records
     end
   end
 
@@ -25,8 +27,10 @@ class PopularityWorker < BaseWorker
   end
 
   def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.select(:id).find_each do |user|
-      self.class.perform_async 'compute_popularity_for_user', user.id
+    time = Time.now  # throttle updates to give the DB more breathing room
+    User.invitation_accepted_or_not_invited.not_hackster.select(:id).find_each do |user|
+      self.class.perform_at time, 'compute_popularity_for_user', user.id
+      time += (1.second.to_f / 10)  # 10 per second =~ 10 minutes to compute 70k records
     end
   end
 
