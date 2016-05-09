@@ -26,7 +26,7 @@ class Client::PartsController < Client::BaseController
       format.rss { redirect_to part_path(@part, format: :atom), status: :moved_permanently }
       format.atom do
         title "Latest #{@part.full_name} projects"
-        @projects = @projects.last_public.limit(10)
+        @projects = @projects.last_featured.limit(10)
         render 'projects/index', layout: false
       end
     end

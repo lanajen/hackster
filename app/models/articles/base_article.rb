@@ -20,11 +20,11 @@ class BaseArticle < ActiveRecord::Base
     'toolbox' => :in_toolbox,
     'wip' => :wip,
   }
-  PUBLIC_STATES = %w(pending_review approved rejected)
+  PUBLISHED_STATES = %w(pending_review approved needs_work)
   SORTING = {
     'magic' => :magic_sort,
     'popular' => :most_popular,
-    'recent' => :last_public,
+    'recent' => :last_featured,
     'respected' => :most_respected,
     'trending' => :magic_sort,
     'updated' => :last_updated,
@@ -307,7 +307,7 @@ class BaseArticle < ActiveRecord::Base
     user_projects = select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")
     part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'BaseArticle'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil, exclude_from_platform: true }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
 
-    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).includes(:parts, :platforms, :project_collections, :users)
+    where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).includes(:parts, :platforms, :project_collections, :users)
   end
 
   def self.external
@@ -342,7 +342,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.indexable
-    live.approved.where("projects.made_public_at < ?", Time.now)
+    live.approved.where("projects.featured_date < ?", Time.now)
   end
 
   def self.indexable_and_external
@@ -372,6 +372,10 @@ class BaseArticle < ActiveRecord::Base
 
   def self.last_created
     order(created_at: :desc)
+  end
+
+  def self.last_featured
+    order featured_date: :desc
   end
 
   def self.last_public
@@ -410,16 +414,12 @@ class BaseArticle < ActiveRecord::Base
     where workflow_state: :pending_review
   end
 
-  def self.products
-    where(type: 'Product')
-  end
-
-  def self.articles
-    where(type: 'Article')
+  def self.published
+    publyc.where workflow_state: PUBLISHED_STATES
   end
 
   def self.scheduled_to_be_approved
-    approved.where("projects.made_public_at > ?", Time.now).order(:made_public_at)
+    approved.where("projects.featured_date > ?", Time.now).order(:featured_date)
   end
 
   def self.self_hosted opts={}
@@ -453,8 +453,8 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def approve_later! *args
-    next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:made_public_at)
-    update_column :made_public_at, next_time_slot
+    next_time_slot = get_next_time_slot BaseArticle.scheduled_to_be_approved.last.try(:featured_date)
+    update_column :featured_date, next_time_slot
     approve! *args
   end
 
@@ -498,7 +498,7 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def scheduled_to_be_approved?
-    approved? and made_public_at > Time.now
+    approved? and featured_date > Time.now
   end
 
   def age

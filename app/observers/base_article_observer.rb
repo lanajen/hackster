@@ -13,6 +13,7 @@ class BaseArticleObserver < ActiveRecord::Observer
 
   def after_update record
     BaseArticleObserverWorker.perform_async 'after_update', record.id, record.private_changed?, record.changed
+    after_pending_review record if record.workflow_state_changed? and record.workflow_state == 'pending_review'
   end
 
   def after_approved record

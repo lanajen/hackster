@@ -1,6 +1,7 @@
 = content_for :js do
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@new_projects, 'chart_new_projects')
+  = render_chart(@new_published_projects, 'chart_published_projects')
   = render_chart(@new_users, 'chart_new_users')
   = render_chart(@new_respects, 'chart_new_respects')
   = render_chart(@new_follows, 'chart_new_follows')
@@ -26,10 +27,11 @@
   .col-xs-12.col-sm-6
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title= link_to 'Live projects', admin_projects_path
+        h3.panel-title= link_to 'Published projects (approved)', admin_projects_path
       .panel-body
-        => number_with_delimiter @project_count
-        small.text-muted +#{@new_projects_count}
+        => number_with_delimiter @published_project_count
+        small.text-muted
+          | (#{number_with_delimiter @project_count})
 
 .row
   .col-xs-12.col-sm-4
@@ -195,6 +197,9 @@
     #chart_new_projects= image_tag 'loader.gif'
   .col-xs-12.col-sm-6
     #chart_new_users= image_tag 'loader.gif'
+
+  .col-xs-12.col-sm-6
+    #chart_published_projects= image_tag 'loader.gif'
 
   .col-xs-12.col-sm-6
     #chart_new_respects= image_tag 'loader.gif'
