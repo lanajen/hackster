@@ -4,7 +4,15 @@
 
 = content_for :header do
 
+  #burger_btn_container
+    svg.menu-toggle xmlns:xlink="http://www.w3.org/2000/xlink"
+      use xlink:href="//cdn-dev.arduino.cc/header-footer/0oin1dobt9/create-nav-images/icons.svg#icon-Global-Menu_Home-BBCube" xmlns:xlink="http://www.w3.org/1999/xlink"
+  - unless user_signed_in?
+    #sign_in_container
+      a.login-link href=arduino_sign_in_url Sign In
+
   #create-nav
+
   .arduino-bbq data-offset-top="5" data-spy="affix"
     #back.opacity_bg.hidden
       #home.backUnsolid style=("transform: translate(0),0,0);")
@@ -88,8 +96,6 @@
                 button Profile
             li
               = link_to content_tag(:button, 'Sign Out'), 'javascript:void(0)', class: 'sign-out-link'
-    - else
-      a class="login-link" href=arduino_sign_in_url Sign In
 
     .load-bold-font
       span.load-text-font Arduino Project Hub
