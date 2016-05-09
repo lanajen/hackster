@@ -98,7 +98,7 @@ class StoryEditor extends Component {
   }
 
   render() {
-    return <Draftster ref="storyEditor" config={this.config} {...this.props} />;
+    return <Draftster ref="storyEditor" config={this.config} />;
   }
 }
 
