@@ -729,7 +729,7 @@ class BaseArticle < ActiveRecord::Base
   def post_new_tweet_at! time
     message = prepare_tweet
     self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :image)
+    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :medium)
   end
 
   def prepare_tweet
