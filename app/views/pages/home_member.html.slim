@@ -11,6 +11,14 @@
         .container
           h1 Welcome to your dashboard!
 
+    section.showcase-section.section-short
+      .container
+        .row
+          .suggestions.col-sm-12
+            ' Our
+            strong=> link_to '2016 Maker Survey', 'https://hackster.surveyguru.io/'
+            ' is out. Take it and win new boards from Arduino, Intel, NXP, Samsung, and Sparkfun.
+
     - if @projects.count.zero?
       section#intro.showcase-section
         .container
