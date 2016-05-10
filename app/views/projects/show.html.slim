@@ -60,10 +60,10 @@
                               span Unlisted - Accessible via link and visible on profile
                             - elsif @project.pending_review?
                               i.fa.fa-eye
-                              span Public - Pending review
+                              span Public
                             - else
                               i.fa.fa-eye
-                              span Public
+                              span Public - Featured!
                           - else
                             - who = %w(you)
                             - who += ['team members'] if @project.team_members_count > 1

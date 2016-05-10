@@ -163,7 +163,7 @@ const DecisionForm = React.createClass({
       <div className={classes}>
         <label className="control-label">Decision</label>
         {this.renderDecisionRadio('Give feedback', 'needs_work')}
-        {this.renderDecisionRadio('Approve', 'approve')}
+        {this.renderDecisionRadio('Feature', 'approve')}
         {this.renderDecisionRadio('Reject', 'reject')}
         {this.renderErrorHelp(this.state.errors['decision'])}
       </div>

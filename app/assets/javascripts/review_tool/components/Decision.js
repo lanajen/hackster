@@ -64,7 +64,7 @@ const Decision = React.createClass({
 
   renderApproved: function() {
     let label = this.canAdmin() ? 'Review' : 'Opinion';
-    let text = this.canAdmin() ? 'Approved' : 'Ready for approval';
+    let text = this.canAdmin() ? 'Featured' : 'Ready for to be featured';
 
     return this.renderWithLabel((
       <span>

@@ -98,7 +98,7 @@ class BaseArticleDecorator < ApplicationDecorator
 
   def status
     out = model.publyc? ? 'Public' : 'Private'
-    out + ' - ' + model.workflow_state.humanize
+    out + ' - ' + (model.workflow_state == 'approved' ? 'Featured' : model.workflow_state.humanize)
   end
 
   def to_personnal_message
