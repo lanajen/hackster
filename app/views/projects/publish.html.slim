@@ -24,6 +24,14 @@
     .col-md-8.col-md-offset-2
       = f.error_notification
 
+      - project_errors = (%i(cover_image name one_liner) & @project.errors.messages.keys)
+      - if project_errors.any?
+        .alert.alert-danger
+          p
+            => (@project.errors.messages.keys & %i(cover_image name one_liner)).map{|s| s == :one_liner ? 'elevator pitch' : s.to_s.humanize }.to_sentence.capitalize
+            => project_errors.count > 1 ? 'are' : 'is'
+            ' required for publication.
+            = link_to 'Edit project', edit_project_path(@project), class: 'alert-link'
       .box
         .box-content
           .form-group

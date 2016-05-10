@@ -465,7 +465,7 @@ module UrlHelper
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'Project', 'ExternalProject', 'Article'
+      when 'Project', 'ExternalProject'
         options = params_for_project options
       end
     end

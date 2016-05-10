@@ -1,1 +1,1 @@
-$('.<%= @respectable.model_name.to_s.underscore %>-<%= @respectable.id %>-respect').replaceWith('<%= escape_javascript render(partial: "#{@respectable.article? ? 'article_' : ''}button", locals: { respectable: @respectable }) %>');
+$('.<%= @respectable.model_name.to_s.underscore %>-<%= @respectable.id %>-respect').replaceWith('<%= escape_javascript render(partial: "button", locals: { respectable: @respectable }) %>');
