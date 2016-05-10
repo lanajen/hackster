@@ -74,7 +74,6 @@ class Platform < Collection
   hstore_column :hproperties, :enable_new_comment_notifications, :boolean
   hstore_column :hproperties, :enable_parts, :boolean
   hstore_column :hproperties, :enable_password, :boolean
-  hstore_column :hproperties, :enable_products, :boolean
   hstore_column :hproperties, :enable_sub_parts, :boolean
   hstore_column :hproperties, :hidden, :boolean, default: true
   hstore_column :hproperties, :http_password, :string
@@ -82,7 +81,6 @@ class Platform < Collection
   hstore_column :hproperties, :plan, :string, default: 'starter'
   hstore_column :hproperties, :parts_text, :string, default: '%{parts_text_options.first}'
   hstore_column :hproperties, :platform_tags_string, :string
-  hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :synonym_tags_string, :string
   hstore_column :hproperties, :twitter_hashtag, :string
