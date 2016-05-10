@@ -433,13 +433,7 @@ class ProjectsController < ApplicationController
 
   def redirect_to_last
     project = is_whitelabel? ? current_platform.projects.last : BaseArticle.last
-    url = case project
-    when Product
-      product_path(project)
-    else
-      url_for(project)
-    end
-    redirect_to url, status: 302
+    redirect_to url_for(project), status: 302
   end
 
   def submit

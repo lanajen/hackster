@@ -30,10 +30,8 @@ class BaseArticle < ActiveRecord::Base
     'updated' => :last_updated,
   }
   TYPES = {
-    'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
     'Project' => 'Project',
-    'Product' => 'Product',
   }
   MACHINE_TYPES = {
     'external' => 'ExternalProject',

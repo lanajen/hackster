@@ -15,6 +15,7 @@ class Embed
     /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/ => :oshpark,
     /sketchfab\.com\/models\/([a-z0-9]+)/ => :sketchfab,
     /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/ => :snip2code,
+    /thingiverse\.com\/thing\:([0-9]+)/ => :thingiverse,
     /twitter.com\/([a-zA-Z0-9_@]+\/status\/[0-9]+)/ => :twitter,
     /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/ => :upverter,
     /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/ => :ustream,
@@ -49,7 +50,7 @@ class Embed
   end
 
   def cad_repo?
-    provider and provider_name.to_s.in? %w(autodesk360 sketchfab youmagine github)
+    provider and provider_name.to_s.in? %w(autodesk360 github sketchfab thingiverse youmagine)
   end
 
   def code_repo?

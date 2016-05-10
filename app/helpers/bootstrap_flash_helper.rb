@@ -16,7 +16,7 @@ module BootstrapFlashHelper
       close_btn = (show_close ? content_tag(:button, raw("&times;"),
           class: "btn-close close", "data-close" => ".alert-top") : '')
       Array(message).each do |msg|
-        text = content_tag(:div, close_btn + msg.html_safe,
+        text = content_tag(:div, close_btn + msg,
                             class: "alert alert-#{type} #{classes}")
         flash_messages << text if msg
       end
