@@ -11,6 +11,11 @@ class LandingPagesController < ActionController::Base
     meta_desc "US Maker Competition - Intel"
   end
 
+  def survey
+    title "Maker Survey 2016"
+    meta_desc "Maker Survey 2016"
+  end
+
   private
     def meta_desc meta_desc=nil
       if meta_desc
