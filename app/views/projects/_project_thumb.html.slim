@@ -32,6 +32,8 @@
                     i.fa.fa-bullseye
                   - when 'tutorial'
                     i.fa.fa-book
+                  - when 'video'
+                    i.fa.fa-play-circle-o
                   - when 'wip'
                     i.fa.fa-battery-half
 
@@ -64,6 +66,9 @@
                   - when 'tutorial'
                     i.fa.fa-book
                     span Full instructions
+                  - when 'video'
+                    i.fa.fa-play-circle-o
+                    span Video
                   - when 'wip'
                     i.fa.fa-battery-half
                     span Work in progress
@@ -73,7 +78,9 @@
         .card-text
           h4
             - if project.pryvate?
-              i.fa.fa-lock>
+              i.fa.fa-lock.istooltip.small> title='Private'
+            - elsif project.unlisted?
+              i.fa.fa-eye-slash.istooltip.small> title='Unlisted'
             ==> link_to project.name, project_link, class: 'project-link-with-ref'
             / - if project.external?
               i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'

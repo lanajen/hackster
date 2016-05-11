@@ -16,9 +16,9 @@ class ChallengesController < ApplicationController
     title 'Hardware contests'
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
-    @active_challenges = Challenge.publyc.active.ends_last.includes(:alternate_cover_image, :cover_image, sponsors: :avatar)
-    @coming_challenges = Challenge.publyc.coming.starts_first.includes(sponsors: :avatar)
-    @past_challenges = Challenge.publyc.past.ends_last.includes(sponsors: :avatar)
+    @active_challenges = Challenge.visible.active.ends_last.includes(:alternate_cover_image, :cover_image, sponsors: :avatar)
+    @coming_challenges = Challenge.visible.coming.starts_first.includes(sponsors: :avatar)
+    @past_challenges = Challenge.visible.past.ends_last.includes(sponsors: :avatar)
 
     respond_to do |format|
       format.html
@@ -131,6 +131,8 @@ class ChallengesController < ApplicationController
   end
 
   def update_mailchimp
+    @challenge = Challenge.find params[:id]
+    authorize! :admin, @challenge
     MailchimpWorker.perform_async 'sync_challenge', @challenge.id
     redirect_to @challenge, notice: 'Your Mailchimp will be updated shortly.'
   end

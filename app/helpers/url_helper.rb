@@ -129,7 +129,7 @@ module UrlHelper
       when 'Community'
         community_path group, opts
       when 'Course'
-        # super params_for_course(group).merge(opts)
+        course_path group, opts
       when 'HackerSpace'
         hacker_space_path(group, opts)
       when 'Hackathon'
@@ -161,7 +161,7 @@ module UrlHelper
     when 'Community'
       community_url group, opts
     when 'Course'
-      super params_for_course(group).merge(opts)
+        course_url group, opts
     when 'HackerSpace'
       hacker_space_url(group, opts)
     when 'Hackathon'
@@ -327,14 +327,6 @@ module UrlHelper
   end
 
   def platform_community_url platform, opts={}
-    super platform.user_name, opts
-  end
-
-  def platform_products_path platform, opts={}
-    super platform.user_name, opts
-  end
-
-  def platform_products_url platform, opts={}
     super platform.user_name, opts
   end
 

@@ -32,7 +32,7 @@
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
 - if @project.publyc?
-  .text-center= link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-primary'
+  .text-center= link_to 'Make private', project_path(@project, base_article: {  private: 1 } ), method: :patch, class: 'btn btn-secondary'
 - else
   = simple_form_for @project do |f|
     = f.input :private, as: :hidden, input_html: { value: 0 }
@@ -54,6 +54,6 @@
 - if @project.pending_review?
   .hr.small or
   .content-type-indicator.text-center class=(@project.content_type.present? ? 'content-type-present' : 'content-type-missing')
-    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish', class: 'btn btn-cancel'
+    = form_tag update_workflow_project_path(@project), method: :patch, id: 'project-form-publish'
       = hidden_field_tag :event, 'unpublish'
-      = submit_tag 'Cancel publication', class: 'btn btn-danger btn-sm btn-block'
+      = submit_tag 'Cancel publication', class: 'btn btn-cancel'

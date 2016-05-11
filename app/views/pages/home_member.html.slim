@@ -11,6 +11,14 @@
         .container
           h1 Welcome to your dashboard!
 
+    section.showcase-section.section-short
+      .container
+        .row
+          .suggestions.col-sm-12
+            ' Our
+            strong=> link_to '2016 Maker Survey', 'https://hackster.surveyguru.io/'
+            ' is out. Take it and win new boards from Arduino, Intel, NXP, Samsung, and Sparkfun.
+
     - if @projects.count.zero?
       section#intro.showcase-section
         .container
@@ -85,9 +93,14 @@
 
       section#projects.showcase-section.last
         .container
-          .view-all-header.clearfix
-            h4.pull-left Recent projects from members, platforms, products and lists you follow
-            = link_to 'Edit your feed settings', user_toolbox_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+          .view-all-header
+            .clearfix
+              h4.pull-left Recent projects from members, platforms, products and lists you follow
+              = link_to 'Edit your feed settings', user_toolbox_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            form.show-all-projects-form action=root_path
+              label
+                input type='checkbox' checked=(!params[:show_all])
+                | View only projects featured by Hackster
 
           #infinite-scrolling
             #page_1.row.page.visible
@@ -104,7 +117,7 @@
                         thumb.append(item);
 
           - if @next_page
-            #loader.text-center= link_to 'Load more projects', root_path(page: @next_page), class: 'btn btn-block btn-default'
+            #loader.text-center= link_to 'Load more projects', root_path(page: @next_page, show_all: params[:show_all]), class: 'btn btn-block btn-default'
 
       #hide.hide
         - @followed.each do |rel|

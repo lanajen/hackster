@@ -1,15 +1,15 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|project_link|">|project_name|</a> has been approved!</p>
+<p>This is to let you know that <a href="|project_link|">|project_name|</a> has been featured!</p>
 
 <p>With that, you've earned 50 reputation points, which you can spend on <strong>free hardware</strong> in the <a href="<%= u.store_url %>?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Hackster Free Store</a>.</p>
 
 <p>
   Your write-up will show on <a href="https://www.hackster.io?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Hackster's home page</a> and all related platform pages
-  <% if @context[:project].made_public_at < Time.now %>
+  <% if @context[:project].featured_date < Time.now %>
     immediately.
   <% else %>
-    on <%= l @context[:project].made_public_at %>.
+    on <%= l @context[:project].featured_date %>.
   <% end %>
 </p>
 

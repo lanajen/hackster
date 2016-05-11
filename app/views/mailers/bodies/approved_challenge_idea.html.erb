@@ -2,9 +2,9 @@
 
 <p>This is to let you know that you have been selected to receive one free <%= @context[:challenge].free_hardware_label %> based on "|idea_name|", the application you submitted to <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a>!</p>
 
-<p>It will be shipped to you shortly at the mailing address you provided when you applied.</p>
+<p>It will be shipped to you at the mailing address you provided when you applied. You will receive an email with tracking information once your item ships.</p>
 
-w<p>And don't forget, you can win the following when you enter the <%= @context[:challenge].self_label.downcase %>:</p>
+<p>And don't forget, you can win the following when you enter the <%= @context[:challenge].self_label.downcase %>:</p>
 <ul>
   <% @context[:challenge].prizes.each do |prize| %>
     <li><%= prize.name %> will receive: <% if prize.description.present? %><%= prize.description %><% elsif prize.cash_value.present? %><%= number_to_currency prize.cash_value, precision: 0 %><% end %><% if prize.quantity > 1 %> (<%= prize.quantity %> are available)<% end %>.</li>

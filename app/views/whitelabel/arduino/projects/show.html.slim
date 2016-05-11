@@ -87,7 +87,7 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      table.sortable-table.table.table-hover.fields-container
+                      table.sortable-table.table.table-hover.fields-container.parts-table
                         / thead
                           th.text-right colspan=4
                             = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, 'Buy all'), 'javascript:void(0)', class: 'modal-open btn btn-primary btn-sm', 'data-target' => '#buy-all-quote'
@@ -104,7 +104,7 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      table.sortable-table.table.table-hover.fields-container
+                      table.sortable-table.table.table-hover.fields-container.parts-table
                         tbody
                           - @tool_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
@@ -142,7 +142,7 @@
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
-                      table.sortable-table.table.table-hover.fields-container
+                      table.sortable-table.table.table-hover.fields-container.parts-table
                         tbody
                           - @software_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }

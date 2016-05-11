@@ -8,7 +8,7 @@
 = f.input :country, input_html: { class: 'form-control' }
 = f.input :private, hint: 'Private groups are only visible to and accessible by admins.'
 = f.input :hidden, as: :boolean, hint: 'Hidden groups are not listed on pages like hackster.io/platforms.'
-= f.input :type, collection: %w(Community Course Event Hackathon HackerSpace List MeetupEvent Meetup Promotion Platform University)
+= f.input :type, collection: %w(Community Course Event Hackathon HackerSpace List LiveChapter MeetupEvent Meetup Promotion Platform University)
 = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:imgix_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url, :cover_mini_thumb), help_block: 'High quality.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
 
@@ -108,9 +108,6 @@
   = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
   = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
   = f.input :shoplocket_link, label: 'ShopLocket link'
-
-  = f.input :enable_products, as: :boolean, inline_label: 'Enable startups tab', label: false, hint: "Startups are the ones who use your products commercially."
-  = f.input :products_text, label: 'Label for startups section', hint: "Default is \"#{@group.default_products_text}\"."
 
 - when 'University'
 .col-md-offset-4.col-md-8

@@ -32,6 +32,7 @@ $select2target = null;
     $('.project-page-single-column').resize(function(){
       updatedScrollEventHandlers();
     });
+
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
       var redirLink = $(this).data('redirect-to');
@@ -49,6 +50,7 @@ $select2target = null;
 
       openModal('#simplified-signup-popup');
     });
+
     $('#simplified-signup-popup').on('modal:open', function(e){
       if ($(this).find('input[name="user[full_name]"]:visible').length) {
         $(this).find('input[name="user[full_name]"]').focus();
@@ -57,23 +59,12 @@ $select2target = null;
       }
     });
 
-    // if($('#top-project-section').length){
-    //   //make top image height of the screen
-    //   var $window     = $(window),
-    //       $topSection = $('#top-project-section'),
-    //       topHeight   = $window.height() - $topSection.offset().top;
-    //   $topSection.css('height',topHeight);
-    //   $window.resize(function(){
-    //     topHeight = $window.height() - $topSection.offset().top;
-    //     $topSection.css('height',topHeight);
-    //   });
-    //   //trigger to scroll page down
-    //   $('.project-details').on('click','.js-scroll-main-project',function(){
-    //     $('html,body').animate({scrollTop: $window.height()}, 800);
-    //   });
-    //   //parallax the header
-    //   $('#project-header-in').parallaxScroll({ rate: .3, opacity: true, opacitySpread: 700});
-    // }
+    $('.show-all-projects-form input[type=checkbox]').on('change', function(e){
+      var form = $('.show-all-projects-form');
+      if (!$(this).prop('checked'))
+        form.append('<input type="hidden" name="show_all" value="1"/>');
+      form.submit();
+    });
 
     $('.title-toggle').on('click', function(e){
       e.preventDefault();

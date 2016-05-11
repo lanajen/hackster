@@ -38,7 +38,7 @@ class ReviewDecisionObserver < ActiveRecord::Observer
       case record.decision
       when 'approve'
         if project.can_approve?
-          if project.made_public_at.nil?
+          if project.featured_date.nil?
             project.approve_later! reviewer_id: record.user_id
           else
             project.approve! reviewer_id: record.user_id

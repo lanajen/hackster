@@ -151,5 +151,4 @@
               li= link_to 'Manage products', url_for([@group, :products]), class: 'btn btn-link btn-sm'
 
           .col-md-6
-            / # = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Showcase your products in your hub. Makers will still be able to add your products to their projects even if you disable this tab."
             = f.input :parts_text, label: 'Section label', collection: @platform.parts_text_options

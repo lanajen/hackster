@@ -1,5 +1,6 @@
 class Challenge < ActiveRecord::Base
   PAST_STATES = %w(judging judged)
+  PRIVATE_STATES = %w(new canceled paused)
   OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
   REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
@@ -193,7 +194,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.publyc
-    where "CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
+    where.not workflow_state: PRIVATE_STATES
   end
 
   def self.ready
@@ -202,6 +203,10 @@ class Challenge < ActiveRecord::Base
 
   def self.starts_first
     order(start_date: :asc)
+  end
+
+  def self.visible
+    where "CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(challenges.hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
   end
 
   def allow_multiple_entries?

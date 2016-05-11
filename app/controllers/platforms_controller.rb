@@ -5,10 +5,10 @@ class PlatformsController < ApplicationController
 
   before_filter :authenticate_user!, only: [:analytics, :update, :feature_project, :unfeature_project]
   before_filter :load_platform, only: [:update, :feature_project, :unfeature_project]
-  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms, :members]
+  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :followers, :analytics, :sub_platforms, :members]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics, :sub_platforms, :members]
+  layout 'platform', only: [:edit, :update, :projects, :followers, :analytics, :sub_platforms, :members]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -69,7 +69,6 @@ class PlatformsController < ApplicationController
         end
         @projects = @platform.project_collections.references(:project).includes(:project).visible.featured_order(I18n.short_locale).merge(BaseArticle.for_thumb_display_in_collection).merge(BaseArticle.magic_sort).limit(3)
         @parts = @platform.parts.visible.default_sort.limit(2) if @platform.parts_count > 0
-        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(BaseArticle.for_thumb_display_in_collection).merge(BaseArticle.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
         @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
@@ -116,30 +115,6 @@ class PlatformsController < ApplicationController
         render template: "projects/index", layout: false
       end
       format.rss { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
-    end
-  end
-
-  def products
-    authorize! :read, @platform
-    impressionist_async @platform, "", unique: [:session_hash]
-
-    title "Products made with #{@platform.name}"
-    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} hardware developers who follow #{@platform.name} on Hackster."
-
-    @announcement = @platform.announcements.current
-    @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
-
-    # track_event 'Visited platform', @platform.to_tracker.merge({ page: safe_page_params })
-    respond_to do |format|
-      format.html do
-        load_projects type: 'Product'
-        render "groups/platforms/products"
-      end
-      # format.atom do
-      #   load_projects_for_rss
-      #   render template: "projects/index", layout: false
-      # end
-      # format.rss { redirect_to platform_home_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
     end
   end
 

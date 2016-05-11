@@ -10,3 +10,13 @@
           ' or
           = link_to 'go to the home page', root_path
         = render 'shared/search_form'
+
+    - if user_signed_in? and current_user.is? :admin
+      .hide
+        p
+          strong Exception:
+        = debug @exception
+        - if @backtrace
+          p
+            strong Trace:
+          = debug @backtrace
