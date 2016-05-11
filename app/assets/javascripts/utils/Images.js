@@ -3,7 +3,7 @@ import request from 'superagent';
 import _ from 'lodash';
 import xmlParser from 'xml2js';
 import Helpers from './Helpers';
-import { getApiPath } from './Utils';
+import { getApiPath, getCSRFToken } from './Utils';
 
 const ImageUtils = {
 
@@ -167,27 +167,36 @@ const ImageUtils = {
     });
   },
 
-  postURLToServer(url, projectID, csrfToken, fileType, context, additionalParams) {
+  postURLToServer(url, projectID, modelType, csrfToken, fileType) {
     let params = {
-        'file_url': url,
-        'file_type': fileType,
-        'context': context
-      };
+      'file_url': url,
+      'file_type': fileType || 'image',
+      'attachable_id': projectID,
+      'attachable_type': modelType
+    };
 
-      if(additionalParams !== undefined && additionalParams instanceof Object) {
-        params = _.extend({}, params, additionalParams);
-      }
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/files`)
+        .set('X-CSRF-Token', csrfToken)
+        .send(params)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
 
-      return new Promise((resolve, reject) => {
-        request
-          .post(`${getApiPath()}/private/files`)
-          .set('X-CSRF-Token', csrfToken)
-          .send(params)
-          .withCredentials()
-          .end(function(err, res) {
-            err ? reject(err) : resolve(res);
-          });
-      });
+  deleteImageFromServer(id) {
+    return new Promise((resolve, reject) => {
+      request
+        .del(`${getApiPath()}/private/files`)
+        .set('X-CSRF-Token', getCSRFToken())
+        .send({ id })
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body);
+        });
+    });
   },
 
   postRemoteURL(url, fileType, csrfToken) {

@@ -19,6 +19,6 @@
   = f.error_notification
 
 div data-anchor='description'
-  = react_component('StoryEditor', {projectId: @project.id, projectType: 'Project', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
+  = react_component('StoryEditor', {projectId: @project.id, modelType: 'BaseArticle', S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
 
 = render 'projects/forms/pe_save'

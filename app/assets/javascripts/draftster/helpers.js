@@ -40,14 +40,14 @@ export function getStory(projectId) {
   });
 }
 
-export function uploadImageToServer(image, S3URL, AWSKey, projectId) {
+export function uploadImageToServer(image, S3URL, AWSKey, projectId, modelType) {
   return new Promise((resolve, reject) => {
     return getS3AuthData(image.name)
       .then(S3Data => {
         return postToS3(S3Data, image, S3URL, AWSKey);
       })
       .then(url => {
-        return postURLToServer(url, projectId, getCSRFToken(), 'image', 'tmp-file-0');
+        return postURLToServer(url, projectId, modelType, getCSRFToken(), 'image');
       })
       .then(res => {
         resolve({ ...image, id: res.body.id });

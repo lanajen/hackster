@@ -392,7 +392,8 @@ const Toolbar = React.createClass({
         this.props.editor.S3BucketURL,
         this.props.editor.AWSAccessKeyId,
         this.props.editor.csrfToken,
-        this.props.editor.projectId
+        this.props.editor.projectId,
+        this.props.editor.modelType
       );
     });
 

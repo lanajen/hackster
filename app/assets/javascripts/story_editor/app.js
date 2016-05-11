@@ -24,7 +24,7 @@ class StoryEditor extends Component {
       },
 
       handleImageUpload(image, callback) {
-        return uploadImageToServer(image, props.S3BucketURL, props.AWSAccessKeyId, props.projectId)
+        return uploadImageToServer(image, props.S3BucketURL, props.AWSAccessKeyId, props.projectId, props.modelType)
           .then(mergedImage => callback(null, mergedImage))
           .catch(err => callback(err, image));
       },
