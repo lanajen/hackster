@@ -14,6 +14,8 @@ class StoryEditor extends Component {
 
     this.config = {
 
+      className: 'story-editor',
+
       editorWasUpdated() {
         if(window && window.pe && window.$serializedForm && window.location.hash === '#story') {
           window.$serializedForm += ' ';

@@ -31,6 +31,7 @@ export function getStory(projectId) {
             }
             return item;
           });
+
           resolve(story);
         } else {
           reject('Error Fetching Story!');
