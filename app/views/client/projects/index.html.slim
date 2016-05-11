@@ -114,7 +114,7 @@
             ' Super hard
           span.caret
         ul.dropdown-menu.pull-right
-          li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], type: params[:type])
+          li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'Any difficulty', root_path(by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', root_path(difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', root_path(difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type])
           li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', root_path(difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type])
@@ -139,7 +139,7 @@
             ' Work in progress
           span.caret
         ul.dropdown-menu.pull-right
-          li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+          li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'Any type', root_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', root_path(type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', root_path(type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', root_path(type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
