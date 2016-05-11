@@ -25,6 +25,7 @@ table.table.table-striped
     tr
       th Idea name
       th Entrant
+      th Country
       th Submission date
       th Status
       th
@@ -37,6 +38,9 @@ table.table.table-striped
             - user = idea.user
             => link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
             = link_to user.name, user
+          td
+            - if idea.address
+              = idea.address.country
           td= l idea.created_at
           td
             => idea.workflow_state
