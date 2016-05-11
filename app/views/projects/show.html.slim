@@ -58,12 +58,12 @@
                             - if @project.unpublished?
                               i.fa.fa-eye-slash
                               span Unlisted - Accessible via link and visible on profile
-                            - elsif @project.pending_review?
-                              i.fa.fa-eye
-                              span Public
-                            - else
+                            - elsif @project.approved?
                               i.fa.fa-eye
                               span Public - Featured!
+                            - else
+                              i.fa.fa-eye
+                              span Public
                           - else
                             - who = %w(you)
                             - who += ['team members'] if @project.team_members_count > 1
