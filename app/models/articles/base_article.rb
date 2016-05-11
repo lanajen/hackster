@@ -30,10 +30,8 @@ class BaseArticle < ActiveRecord::Base
     'updated' => :last_updated,
   }
   TYPES = {
-    'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
     'Project' => 'Project',
-    'Product' => 'Product',
   }
   MACHINE_TYPES = {
     'external' => 'ExternalProject',
@@ -142,7 +140,7 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
-  validates :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
+  validates :cover_image, :name, :one_liner, :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   before_validation :delete_empty_part_ids
@@ -559,26 +557,6 @@ class BaseArticle < ActiveRecord::Base
 
   def identifier
     'base_article'
-  end
-
-  def product
-    product?
-  end
-
-  def product=(val)
-    self.type = 'Product' if val
-  end
-
-  def product?
-    type == 'Product'
-  end
-
-  def article=(val)
-    self.type = 'Article' if val
-  end
-
-  def article?
-    type == 'Article'
   end
 
   def force_basic_validation!

@@ -7,7 +7,7 @@
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'A short sentence, max 140 characters'
       = f.input :type, label: 'Template', collection: BaseArticle::TYPES
-      = f.input :content_type, collection: Project::CONTENT_TYPES.merge(Article::PUBLIC_CONTENT_TYPES).merge(ExternalProject::PUBLIC_CONTENT_TYPES), label: 'Project type'
+      = f.input :content_type, collection: Project::CONTENT_TYPES.merge(ExternalProject::PUBLIC_CONTENT_TYPES), label: 'Project type'
       = f.input :website, label: 'Project website'
       = f.input :guest_name, label: 'Author name'
       = f.input :guest_twitter_handle, label: 'Author Twitter handle'
@@ -38,7 +38,7 @@
       - if @base_article.assignment_submitted_at.present?
         = f.input :assignment_submitted_at
 
-      - unless @base_article.external? or @base_article.product?
+      - unless @base_article.external?
         = f.input :slug, label: 'URL', wrapper: :addon do
           span.input-group-addon #{site_domain}/#{@base_article.user_name_for_url}/
           = f.input_field :slug

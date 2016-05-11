@@ -59,7 +59,38 @@
     .btn-group.btn-group-default.pull-right
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-          ' Sort by
+          - case params[:by]
+          - when nil
+            ' All projects
+          - when 'featured'
+            ' Featured
+          - when '7days'
+            ' Last 7 days
+          - when '30days'
+            ' Last 30 days
+          - when '1year'
+            ' Last 12 months
+          span.caret
+        ul.dropdown-menu.pull-right
+          li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', root_path(sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', projects_path(by: '1year', sort: params[:sort])
+
+      .btn-group
+        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+          - case params[:sort]
+          - when 'updated'
+            ' Last updated
+          - when 'popular'
+            ' Most popular
+          - when 'recent'
+            ' Most recent
+          - when 'respected'
+            ' Most respected
+          - when 'trending'
+            ' Trending
           span.caret
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', root_path(sort: 'updated', by: params[:by])
@@ -70,19 +101,17 @@
 
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-          ' Filter by
-          span.caret
-        ul.dropdown-menu.pull-right
-          li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', projects_path(by: '1year', sort: params[:sort])
-          / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
-
-      .btn-group
-        button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-          ' Difficulty
+          - case params[:difficulty]
+          - when nil
+            ' Any difficulty
+          - when 'beginner'
+            ' Easy
+          - when 'intermediate'
+            ' Intermediate
+          - when 'advanced'
+            ' Advanced
+          - when 'hardcore'
+            ' Super hard
           span.caret
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], type: params[:type])
@@ -93,7 +122,21 @@
 
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-          ' Type
+          - case params[:type]
+          - when nil
+            ' Any type
+          - when 'getting_started'
+            ' Getting started guide
+          - when 'showcase'
+            ' Showcase
+          - when 'protip'
+            ' Protip
+          - when 'teardown'
+            ' Teardown
+          - when 'tutorial'
+            ' Tutorial
+          - when 'wip'
+            ' Work in progress
           span.caret
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'All', root_path(by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
@@ -103,16 +146,6 @@
           li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', root_path(type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', root_path(type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
           li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', root_path(type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
-
-  / - if params[:show_tags]
-    .row
-      css:
-        @media (min-width: 768px) { .suggestions { max-height:30px;overflow:hidden; } }
-      .col-sm-12.suggestions
-        h3 Popular tags:
-        ul.list-unstyled.list-inline
-          - @tags.each do |tag|
-            li= link_to tag, tag_path(tag)
 
   - if @projects.any?
     .row.thumb-list

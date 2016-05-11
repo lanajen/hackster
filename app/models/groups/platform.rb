@@ -27,13 +27,7 @@ class Platform < Collection
   has_many :sub_parts_projects, through: :parts, class_name: 'BaseArticle', source: :parent_projects
   has_many :sub_platforms, -> { uniq }, through: :sub_parts, class_name: 'Platform', source: :platform
 
-  has_many :projects, -> { where(type: %w(Project ExternalProject Article)) }, through: :project_collections do
-    # TOOD: see if this can be delegated to ProjectCollection
-    def visible
-      where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
-    end
-  end
-  has_many :products, -> { products }, source: :project, through: :project_collections do
+  has_many :projects, -> { where(type: %w(Project ExternalProject)) }, through: :project_collections do
     # TOOD: see if this can be delegated to ProjectCollection
     def visible
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })

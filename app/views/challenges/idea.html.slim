@@ -21,3 +21,7 @@
           p.small
             ' If this is real trash and we don't want this idea showing anywhere at all, you can delete it - Hackster admin only:
             = link_to content_tag(:i, '', class: 'fa fa-trash-o') + content_tag(:span, 'Delete'), challenge_single_idea_path(@idea), class: 'btn btn-danger btn-sm', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }
+      - if @idea.address
+        p
+          strong> Country:
+          = @idea.address.country

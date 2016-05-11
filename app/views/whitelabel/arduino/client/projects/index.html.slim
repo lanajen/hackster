@@ -40,8 +40,43 @@
     .btn-group.btn-group-default
       .filters-container
         .btn-group
+          button#filter-by.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            - case params[:by]
+            - when nil
+              ' All projects
+            - when 'featured'
+              ' Featured
+            - when 'toolbox'
+              ' In my toolbox
+            - when '7days'
+              ' Last 7 days
+            - when '30days'
+              ' Last 30 days
+            - when '1year'
+              ' Last 12 months
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', root_path(sort: params[:sort])
+            - if user_signed_in?
+              li*{ class: "#{'active' if params[:by] == 'toolbox'}" } = link_to 'In my toolbox', root_path(by: 'toolbox', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', root_path(by: '1year', sort: params[:sort])
+
+        .btn-group
           button#sort-by.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-            ' Sort by
+            - case params[:sort]
+            - when 'updated'
+              ' Last updated
+            - when 'popular'
+              ' Most popular
+            - when 'recent'
+              ' Most recent
+            - when 'respected'
+              ' Most respected
+            - when 'trending'
+              ' Trending
             span.caret
           ul.dropdown-menu.pull-right
             div class="dropdown-caret"
@@ -52,22 +87,18 @@
             li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', root_path(sort: 'trending', by: params[:by])
 
         .btn-group
-          button#filter-by.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-            ' Filter by
-            span.caret
-          ul.dropdown-menu.pull-right
-            li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
-            / li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
-            - if user_signed_in?
-              li*{ class: "#{'active' if params[:by] == 'toolbox'}" } = link_to 'In my toolbox', root_path(by: 'toolbox', sort: params[:sort])
-            li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
-            li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
-            li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', root_path(by: '1year', sort: params[:sort])
-            / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
-
-        .btn-group
           button#difficulty.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-            ' Difficulty
+            - case params[:difficulty]
+            - when nil
+              ' Any difficulty
+            - when 'beginner'
+              ' Easy
+            - when 'intermediate'
+              ' Intermediate
+            - when 'advanced'
+              ' Advanced
+            - when 'hardcore'
+              ' Super hard
             span.caret
           ul.dropdown-menu.pull-right
             div class="dropdown-caret"
@@ -79,7 +110,21 @@
 
         .btn-group
           button#type.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-            ' Type
+            - case params[:type]
+            - when nil
+              ' Any type
+            - when 'getting_started'
+              ' Getting started guide
+            - when 'showcase'
+              ' Showcase
+            - when 'protip'
+              ' Protip
+            - when 'teardown'
+              ' Teardown
+            - when 'tutorial'
+              ' Tutorial
+            - when 'wip'
+              ' Work in progress
             span.caret
           ul.dropdown-menu.pull-right
             div class="dropdown-caret"
