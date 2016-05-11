@@ -5,6 +5,7 @@ module SocialProfile
   class Builder
     KNOWN_PROVIDERS = {
       'arduino' => :arduino,
+      'doorkeeper' => :doorkeeper,
       'facebook' => :facebook,
       'github' => :github,
       'gplus' => :google_plus,
@@ -17,7 +18,7 @@ module SocialProfile
     def initialize provider, data
       @provider = provider
       @data = data
-      raise UnknownProvider, "`#{provider}` isn't recognized" unless provider
+      raise UnknownProvider, "`#{provider}` isn't recognized" unless provider.in? KNOWN_PROVIDERS.keys
       @resolver = "SocialProfile::Resolver::#{provider.camelize}".constantize.new(data)
     end
 

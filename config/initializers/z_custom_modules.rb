@@ -53,3 +53,5 @@ require File.join Rails.root, 'lib/active_record_extension'
 require File.join Rails.root, 'lib/has_ability'
 # AR destroy async
 require File.join Rails.root, 'lib/active_record_destroy_async'
+
+require File.join Rails.root, 'lib/omniauth_doorkeeper'

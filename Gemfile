@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '2.2.2'
+ruby '2.2.5'
 
 gem 'rails', '4.2.3'
 
@@ -11,7 +11,7 @@ gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '2.0.4'
 gem 'fog'
-gem 'fog-aws', '0.1.2'
+gem 'fog-aws', '0.9.2'
 # gem 'font_assets'
 gem 'font-awesome-rails', '4.5.0.0'
 gem 'jquery-rails', '4.0.4'
@@ -54,6 +54,8 @@ gem 'customerio', '0.5.1'
 gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.4.1'
 gem 'devise_invitable', '1.3.0'
+gem 'doorkeeper', '3.1.0'
+gem 'doorkeeper-jwt', '0.1.4'
 gem 'draper', '1.4.0'
 gem 'easypost', '2.1.6'
 gem 'fastly-rails', git: 'https://github.com/hacksterio/fastly-rails.git'
@@ -75,13 +77,14 @@ gem 'momentjs-rails', '2.8.1'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.12.0.288'
 gem 'nokogiri', '1.6.0'
+gem 'oj', '2.14.0'
 # I know it's bad practice to have passwords committed but this is just a dummy account with only read access to that specific repo
 gem 'omniauth-arduino', git: "https://hackster-heroku:hackstergithub123@github.com/hacksterio/omniauth-arduino.git"
-gem 'omniauth-facebook', '1.5.1'
+gem 'omniauth-facebook', '3.0.0'
 gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
-gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
+gem 'omniauth-oauth2', '1.3.1'  # for omniauth-facebook, google, github, windowslive, use 1.3.1 because 1.4.0 (latest as of now) breaks redirect_uri
 gem 'omniauth-saml', git: 'https://github.com/hacksterio/omniauth-saml.git', branch: 'patch-1'
 gem 'omniauth-twitter', '1.0.1'
 gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
@@ -121,7 +124,6 @@ gem 'vimeo', '1.5.3'
 gem 'will_paginate', github: 'mislav/will_paginate'
 gem 'workflow', '1.0.0'
 gem 'yajl-ruby', '1.2.0'
-gem 'oj', '2.14.0'
 
 # heroku
 gem 'heroku-api', '0.3.22'

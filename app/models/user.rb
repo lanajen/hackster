@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :omniauthable, omniauth_providers: [:arduino, :facebook, :github, :gplus,
-           :twitter, :windowslive, :saml]
+           :twitter, :windowslive, :saml, :doorkeeper]
 
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions

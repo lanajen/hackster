@@ -109,6 +109,10 @@ HackerIo::Application.routes.draw do
           get 'search' => 'search#index'
           match "*all" => "base#cors_preflight_check", via: :options
         end
+
+        namespace :doorkeeper do
+          get 'me' => 'users#me'
+        end
       end
     end
 
@@ -117,7 +121,11 @@ HackerIo::Application.routes.draw do
       devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
       constraints(MainSite) do
-        get 'test' => 'pages#test'
+        use_doorkeeper scope: 'oauth2' do
+          # skip_controllers :applications, :authorized_applications
+        end
+
+        # get 'test' => 'pages#test'
         get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
         get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 

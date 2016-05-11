@@ -14,6 +14,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     oauthorize 'arduino'
   end
 
+  def doorkeeper
+    oauthorize 'doorkeeper'
+  end
+
   def facebook
     oauthorize 'facebook'
   end
@@ -81,7 +85,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if params[:link_accounts]
         redirect_to update__authorizations_path(link_accounts: true)
       else
-        @user = UserOauthFinder.new.find_for_oauth(provider, omniauth_data)
+        @user = UserOauthFinder::Finder.new.find_for_oauth(provider, omniauth_data)
 
         if @user
           case @user.match_by

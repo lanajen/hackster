@@ -235,12 +235,15 @@ Devise.setup do |config|
   # up on your models and hooks.
 
   config.omniauth :arduino, ENV['ARDUINO_API_KEY'], ENV['ARDUINO_API_SECRET'], scope: 'email+uid', setup: true, client_options: { token_url: "#{ENV['ARDUINO_API_HOST']}/auth/accesstoken" }, profile_url: "#{ENV['ARDUINO_API_HOST']}/auth/profile?app=create"
-  config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+  config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website', image_size: { width: 200, height: 200 }, info_fields: 'name,email,link,location,website,about', secure_image_url: true
   config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email', setup: true
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
   # config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
   config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
   config.omniauth :windowslive, ENV['WINDOWS_LIVE_API_KEY'], ENV['WINDOWS_LIVE_API_SECRET'], scope: 'wl.basic,wl.emails', setup: true
+
+
+  config.omniauth :doorkeeper, '19573200fec7a9ea00bd77d0e3c08d4bf52257697e0631fe3991dd9e00b75f17', '354fe2a23bc7cf4e5af00cfdf401e2946d32b9b9d901c05fcb815d01f99eb970', scope: 'profile read_public read_private'
 
   base_url = APP_CONFIG['use_ssl'] ? 'https' : 'http'
   base_url += '://'

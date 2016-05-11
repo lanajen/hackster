@@ -27,3 +27,14 @@ en:
   date:
     formats:
       month: ! '%b %Y'
+
+  doorkeeper:
+    scopes:
+      profile: 'Access your profile data'
+      read_public: 'Access your public projects as well as respected projects and products in your toolbox'
+      read_private: 'Access your private projects'
+      write_project: 'Create new projects and edit existing ones'
+      respect: 'Respect projects'
+      bookmark: 'Bookmark projects'
+      follow: 'Follow members and platforms'
+      toolbox: 'Add products to your toolbox'
