@@ -226,5 +226,5 @@ html(lang="en")
           $(function(){ fetchHelloWorld(); });
 
     = content_for :js
-    - unless is_mobile? or params[:blank_frame]
+    - unless is_mobile? or params[:blank_frame] or current_user.try(:is?, :admin)
       = render 'shared/feedback'
