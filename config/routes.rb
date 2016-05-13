@@ -91,6 +91,7 @@ HackerIo::Application.routes.draw do
         end
 
         namespace :v1 do
+          get 'me' => 'users#me'
           resources :chrome_sync, only: [] do
             get '' => 'chrome_sync#show', on: :collection
             patch '' => 'chrome_sync#update', on: :collection
@@ -109,10 +110,6 @@ HackerIo::Application.routes.draw do
           get 'search' => 'search#index'
           match "*all" => "base#cors_preflight_check", via: :options
         end
-
-        namespace :doorkeeper do
-          get 'me' => 'users#me'
-        end
       end
     end
 
@@ -121,8 +118,8 @@ HackerIo::Application.routes.draw do
       devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
       constraints(MainSite) do
-        use_doorkeeper scope: 'oauth2' do
-          # skip_controllers :applications, :authorized_applications
+        use_doorkeeper do
+          controllers applications: 'users/oauth/applications'
         end
 
         # get 'test' => 'pages#test'

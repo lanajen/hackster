@@ -1,10 +1,12 @@
+JWT_EXPIRES_IN = 2.hours
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    current_user || warden.authenticate!(:scope => :user)
+    current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -15,7 +17,7 @@ Doorkeeper.configure do
   # end
 
   resource_owner_from_credentials do
-    warden.authenticate!(:scope => :user)
+    current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 
   # Authorization Code expiration time (default 10 minutes).
@@ -23,7 +25,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  # access_token_expires_in 2.hours
+  access_token_expires_in JWT_EXPIRES_IN
 
   # Assign a custom TTL for implicit grants.
   # custom_access_token_expires_in do |oauth_client|
@@ -45,7 +47,7 @@ Doorkeeper.configure do
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  # enable_application_owner :confirmation => false
+  enable_application_owner confirmation: true
 
   # Define access token scopes for your provider
   # For more information go to
@@ -94,14 +96,14 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  # grant_flows %w(authorization_code client_credentials)
+  grant_flows %w(authorization_code client_credentials implicit)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
   # For example if dealing with a trusted application.
-  # skip_authorization do |resource_owner, client|
-  #   client.superapp? or resource_owner.admin?
-  # end
+  skip_authorization do |resource_owner, client|
+    client.application.trusted_app?
+  end
 
   # WWW-Authenticate Realm (default "Doorkeeper").
   # realm "Doorkeeper"
@@ -114,9 +116,11 @@ Doorkeeper::JWT.configure do
   # { token: "RANDOM-TOKEN" }
   token_payload do |opts|
     user = User.find(opts[:resource_owner_id])
+    time = DateTime.current.utc
     {
       iss: "hackster",
-      iat: DateTime.current.utc.to_i,
+      iat: time.to_i,
+      exp: (time + JWT_EXPIRES_IN).to_i,
       rnd: SecureRandom.hex,
 
       user: {
@@ -146,3 +150,18 @@ Doorkeeper::JWT.configure do
   # defaults to nil
   encryption_method :hs512
 end
+
+module Doorkeeper::ApplicationExtension
+  extend ActiveSupport::Concern
+
+  included do
+    attr_accessible :trusted_app
+  end
+
+  def trusted_app?
+    trusted_app
+  end
+end
+
+# Extend Doorkeeper models
+Doorkeeper::Application.send(:include, Doorkeeper::ApplicationExtension)

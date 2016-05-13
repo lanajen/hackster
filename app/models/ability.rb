@@ -214,6 +214,8 @@ class Ability
     can :read, ReviewThread do |thread|
       @user.can? :manage, thread.project
     end
+
+    can :manage, Doorkeeper::Application, owner_id: @user.id, owner_type: 'User'
   end
 
   def spammer

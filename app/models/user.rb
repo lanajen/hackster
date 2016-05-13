@@ -166,6 +166,7 @@ class User < ActiveRecord::Base
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification', dependent: :destroy
   has_many :notification_inverses, as: :notifiable, dependent: :delete_all, class_name: 'Notification'
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner
   has_many :orders, -> { order :placed_at }
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee

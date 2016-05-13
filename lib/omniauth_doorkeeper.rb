@@ -6,7 +6,7 @@ module OmniAuth
       option :name, 'doorkeeper'
       option :client_options, {
         site:          'http://www.localhost.local:5000',
-        authorize_url: 'http://www.localhost.local:5000/oauth2/authorize'
+        authorize_url: 'oauth/authorize'
       }
       option :authorize_options, [:scope]
 
@@ -28,7 +28,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('http://api.localhost.local:5000/doorkeeper/me').parsed
+        @raw_info ||= access_token.get('http://api.localhost.local:5000/v1/me').parsed
       end
 
       def authorize_params

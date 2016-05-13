@@ -276,15 +276,20 @@ $select2target = null;
       updateChecklist: function() {
         var form = $('.pe-panel form.remote:first');
         var url = form.attr('action');
-        $.ajax({
-          url: url + '.js',
-          data: { save: false, panel: 'checklist' },
-          method: 'PATCH',
-          dataType: 'script',
-          xhrFields: {
-            withCredentials: true
-          }
-        });
+        Utils.getApiToken(function(token){
+          $.ajax({
+            url: url + '.js',
+            data: { save: false, panel: 'checklist' },
+            method: 'PATCH',
+            dataType: 'script',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+            // xhrFields: {
+            //   withCredentials: true
+            // }
+          });
+        })
       }
     }
 
@@ -828,24 +833,29 @@ $select2target = null;
         var _data = data;
         data.context.data('data', data);
 
-        $.ajax({
-          url: Utils.getApiPath() + '/private/files/signed_url',
-          type: 'GET',
-          dataType: 'json',
-          data: { file: {name: file.name}, context: 'no-context' },
-          xhrFields: {
-            withCredentials: true
-          },
-          success: function(data) {
-            form.find('input[name=key]').val(data.key);
-            form.find('input[name=policy]').val(data.policy);
-            form.find('input[name=signature]').val(data.signature);
-            _data.submit();
-          },
-          error: function(data) {
-            context = decodeURIComponent($.urlParam(this.url, 'context'));
-            handleUploadErrors($('#' + context));
-          }
+        Utils.getApiToken(function(token){
+          $.ajax({
+            url: Utils.getApiPath() + '/private/files/signed_url',
+            type: 'GET',
+            dataType: 'json',
+            data: { file: {name: file.name}, context: 'no-context' },
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            // xhrFields: {
+            //   withCredentials: true
+            // },
+            success: function(data) {
+              form.find('input[name=key]').val(data.key);
+              form.find('input[name=policy]').val(data.policy);
+              form.find('input[name=signature]').val(data.signature);
+              _data.submit();
+            },
+            error: function(data) {
+              context = decodeURIComponent($.urlParam(this.url, 'context'));
+              handleUploadErrors($('#' + context));
+            }
+          });
         });
       },
 
