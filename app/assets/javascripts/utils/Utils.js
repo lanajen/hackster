@@ -6,12 +6,7 @@ import request from 'superagent';
 function requestToken() {
   return new Promise((resolve, reject) => {
       request
-        .get(`/oauth/authorize`)
-        .query({client_id: '9b244782686b5900edfd87611f049bc90b080ab114e3436462b1874ab3e37a95'})
-        .query({redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'})
-        .query({scope: 'profile read_public read_private'})
-        .query({response_type: 'token'})
-        .query({state: 'b4f3077619eb7f0656690aace62af5859d74b8cec86e8bfe'})
+        .get(`/users/api_token`)
         .withCredentials()
         .end(function(err, res) {
           if (err) {
@@ -89,7 +84,7 @@ const Utils = {
       // token invalid or doesn't exist
       return requestToken()
         .then(function(response){
-          token = response.xhr.responseURL.split('?')[1].split('=')[1];
+          token = response.body.token;
           // window.localStorage.setItem('hackster.apiToken', token);
           return resolveApiTokenCallbacks(token);
         })

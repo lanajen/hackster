@@ -571,6 +571,7 @@ HackerIo::Application.routes.draw do
 
           devise_scope :user do
             namespace :users, as: '' do
+              get 'api_token' => 'api_tokens#show'
               resources :authorizations do
                 get 'update' => 'authorizations#update', on: :collection, as: :update
               end

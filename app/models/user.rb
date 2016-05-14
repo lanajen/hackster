@@ -227,6 +227,7 @@ class User < ActiveRecord::Base
   after_validation :geocode, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.present? }
   after_validation :reset_geocoding, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.blank? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
+  before_save :before_password_reset, if: proc{|u| u.encrypted_password_changed? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
@@ -873,6 +874,12 @@ class User < ActiveRecord::Base
   end
 
   private
+    def before_password_reset
+      UserWorker.perform_async 'revoke_api_tokens_for', id  # revoke all api tokens
+      self.authentication_token = generate_authentication_token  # reset auth_token used in emails
+      SessionManager.new(self).expire_all  # invalidate all existing sessions
+    end
+
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end
