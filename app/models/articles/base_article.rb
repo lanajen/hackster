@@ -131,7 +131,6 @@ class BaseArticle < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true, unless: proc { |p| p.content_type.nil? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -140,7 +139,6 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
-  validates :cover_image, :name, :one_liner, :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   before_validation :delete_empty_part_ids

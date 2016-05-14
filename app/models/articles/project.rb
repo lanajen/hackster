@@ -29,6 +29,8 @@ class Project < BaseProject
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :replicated_users, through: :follow_relations, source: :user
 
+  validates :cover_image, :name, :one_liner, :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
+
   has_counter :build_logs, 'build_logs.published.count'
   has_counter :issues, 'issues.where(type: "Issue").count'
   has_counter :replications, 'replicated_users.count'
