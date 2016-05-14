@@ -14,7 +14,7 @@ class Meetup < GeographicCommunity
   add_websites :home
 
   has_counter :events, 'events.publyc.count'
-  has_counter :members, 'members.with_group_roles("member").count', accessor: false
+  has_counter :members, 'members.with_group_roles("member").invitation_accepted_or_not_invited.count', accessor: false
 
   def self.default_permission roles=nil
     roles ||= []

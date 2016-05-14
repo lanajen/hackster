@@ -44,8 +44,6 @@
             - case params[:by]
             - when nil
               ' All projects
-            - when 'featured'
-              ' Featured
             - when 'toolbox'
               ' In my toolbox
             - when '7days'
@@ -59,7 +57,6 @@
             li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', root_path(sort: params[:sort])
             - if user_signed_in?
               li*{ class: "#{'active' if params[:by] == 'toolbox'}" } = link_to 'In my toolbox', root_path(by: 'toolbox', sort: params[:sort])
-            li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
             li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
             li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
             li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', root_path(by: '1year', sort: params[:sort])

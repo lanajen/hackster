@@ -93,6 +93,6 @@
                 ' by
                 span.user-name==> link_to u.name, u
               ' on
-              strong= project.website_host
+              = project.website_host
             - else
               = render partial: 'projects/by_team', locals: { project: project }

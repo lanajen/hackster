@@ -27,7 +27,7 @@ class MeetupsController < ApplicationController
     @past_events = @meetup.events.publyc.past#.paginate(page: safe_page_params)
     @now_events = @meetup.events.publyc.now#.paginate(page: safe_page_params)
     @organizers = @meetup.members.with_group_roles('organizer').order(created_at: :asc).includes(:user)
-    @participants = @meetup.members.with_group_roles('member').order(created_at: :desc).includes(:user)
+    @participants = @meetup.members.with_group_roles('member').order(created_at: :desc).invitation_accepted_or_not_invited.includes(:user)
 
     @meetup = @meetup.decorate
 

@@ -48,6 +48,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       redirect_to edit_registration_path(resource)
     else
       unless params[:user].try(:[], :authentication_token) and self.resource = find_user_and_validate_auth_token(params[:user][:email], params[:user][:authentication_token])
+        redirect_to new_user_registration_path, alert: "We weren't able to link your accounts, please try again. If the error persists please contact us at help@hackster.io." and return
       end
       resource.link_to_provider session['devise.provider'], session['devise.provider_data']
       resource.save

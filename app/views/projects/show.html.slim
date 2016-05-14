@@ -141,6 +141,21 @@
                                 | It looks like you have due assignments
                               p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
+                      / Challenge info
+                      - if @challenge_entries.exists?
+                        section.section-thumbs
+                          h4 Contest info
+                          - @challenge_entries.each do |entry|
+                            .project-contest-entry
+                              .project-contest-entry-name= link_to entry.challenge.name, entry.challenge
+                              .project-contest-entry-status
+                                strong> Status:
+                                = entry.decorate.status
+                              - if entry.new? and entry.user_id == current_user.id
+                                .project-contest-entry-submit
+                                  ' Is your project complete?
+                                  = link_to 'Submit to contest', '', class: 'btn btn-primary btn-sm'
+
                     - elsif @project.pryvate?
                       .alert.alert-warning.text-center
                         p
