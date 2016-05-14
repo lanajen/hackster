@@ -1,6 +1,6 @@
 import request from 'superagent';
 
-import { getS3AuthData, postToS3, postURLToServer } from '../utils/Images';
+import { getS3AuthData, postToS3, postURLToServer, postRemoteURL, pollJob } from '../utils/Images';
 import { getApiPath, getCSRFToken } from '../utils/Utils';
 import { parseDescription, expandPreBlocks } from './parsers/description';
 
@@ -41,6 +41,7 @@ export function getStory(projectId) {
 }
 
 export function uploadImageToServer(image, S3URL, AWSKey, projectId, modelType) {
+  console.log("RAW", image);
   return new Promise((resolve, reject) => {
     return getS3AuthData(image.name)
       .then(S3Data => {
@@ -52,9 +53,23 @@ export function uploadImageToServer(image, S3URL, AWSKey, projectId, modelType) 
       .then(res => {
         resolve({ ...image, id: res.body.id });
       })
-      .catch(err => {
-        reject(err);
-      });
+      .catch(err => reject(err));
+  });
+}
+
+export function processRemoteImage(image) {
+  return new Promise((resolve, reject) => {
+    return postRemoteURL(image.url, 'image')
+      .then(body => {
+        console.log("REMOTE", body);
+        image = { ...image, id: body.id };
+        return pollJob(body['job_id']);
+      })
+      .then(status => {
+        console.log("POLL DONE", status);
+        resolve(image);
+      })
+      .catch(err => reject(err));
   });
 }
 

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import Draftster from '@hacksterio/draftster';
 import convertToJSONModel from '../draftster/convertToJSONModel';
-import { getStory, uploadImageToServer } from '../draftster/helpers';
+import { getStory, processRemoteImage, uploadImageToServer } from '../draftster/helpers';
 
 class StoryEditor extends Component {
   constructor(props) {
@@ -47,6 +47,11 @@ class StoryEditor extends Component {
           button.innerText = 'Save changes';
           button.removeAttribute('disabled');
         }
+      },
+
+      processImage(image) {
+        console.log("GOT IT", image);
+        return processRemoteImage(image);
       },
 
       setInitialContent() {

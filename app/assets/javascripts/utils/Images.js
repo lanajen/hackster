@@ -132,6 +132,7 @@ const ImageUtils = {
   },
 
   getS3AuthData(fileName) {
+    fileName = fileName || 'no-name';
     return new Promise((resolve, reject) => {
       request
         .get(`${getApiPath()}/private/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
@@ -199,7 +200,7 @@ const ImageUtils = {
     });
   },
 
-  postRemoteURL(url, fileType, csrfToken) {
+  postRemoteURL(url, fileType) {
     const form = new FormData();
     form.append('file_type', fileType);
     form.append('file_url', url);
@@ -207,7 +208,7 @@ const ImageUtils = {
     return new Promise((resolve, reject) => {
       request
         .post(`${getApiPath()}/private/files/remote_upload`)
-        .set('X-CSRF-Token', csrfToken)
+        .set('X-CSRF-Token', getCSRFToken())
         .send(form)
         .withCredentials()
         .end((err, res) => {
