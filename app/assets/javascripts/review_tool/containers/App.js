@@ -52,7 +52,7 @@ const App = React.createClass({
 
 function mapStateToProps(state) {
   const { currentThread, formStates } = state;
-  let isEditable = !_.some(_.map(['new', 'closed'], function(v) { if (v == currentThread.status) return true; })) && !currentThread.locked;
+  let isEditable = !_.some(_.map(['closed'], function(v) { if (v == currentThread.status) return true; })) && !currentThread.locked;
   let showDecisionForm = isEditable && !currentThread.hasDecisions;
 
   return {

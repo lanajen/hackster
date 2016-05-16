@@ -77,14 +77,7 @@ const ItemsContainer = React.createClass({
     if (permissions.canCreateDecision) {
       return (<DecisionForm onSubmit={this.handleDecisionFormSubmit} formState={this.props.formStates.decision} />);
     } else {
-      return (
-        <div className='review-item review-item-event'>
-          <div className='review-item-header'>
-            <i className="fa fa-clock-o" />
-            <span>Awaiting moderator review</span>
-          </div>
-        </div>
-      );
+      return;
     }
   },
 

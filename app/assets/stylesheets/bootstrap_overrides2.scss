@@ -65,6 +65,10 @@ h6, .h6 {
 .open > .btn-default.dropdown-toggle {
   color: #555;
 }
+.open > .dropdown-toggle > .caret {
+   border-top: 0;
+   border-bottom: 4px solid;
+}
 .btn-group {
   .btn-default + .btn-default {
     margin-left: -2px !important;

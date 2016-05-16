@@ -330,14 +330,6 @@ module UrlHelper
     super platform.user_name, opts
   end
 
-  def platform_products_path platform, opts={}
-    super platform.user_name, opts
-  end
-
-  def platform_products_url platform, opts={}
-    super platform.user_name, opts
-  end
-
   def platform_projects_path platform, opts={}
     super platform.user_name, opts
   end
@@ -473,7 +465,7 @@ module UrlHelper
       case options.type
       when 'Product'
         options = params_for_product options
-      when 'Project', 'ExternalProject', 'Article'
+      when 'Project', 'ExternalProject'
         options = params_for_project options
       end
     end

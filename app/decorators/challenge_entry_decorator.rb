@@ -2,7 +2,9 @@ class ChallengeEntryDecorator < ApplicationDecorator
   def status
     case model.workflow_state.to_sym
     when :new
-      'Awaiting moderation'
+      'Not submitted'
+    when :submitted
+      'Submitted - Awaiting moderation'
     when :qualified
       'Approved'
     when :unqualified

@@ -18,7 +18,7 @@ class TrackerQueue < BaseWorker
       request_url: opts['request_url'],
     }
 
-    Keen.publish "page_request", attributes
+    Keen.publish "page_request", attributes if ENV['KEEN_PROJECT_ID'].present? and ENV['KEEN_MASTER_KEY'].present? and ENV['KEEN_WRITE_KEY'].present?
     UserWorker.perform_async 'update_last_seen', user_id, opts['time'] if user_id
   end
 end

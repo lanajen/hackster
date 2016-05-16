@@ -226,6 +226,7 @@ class User < ActiveRecord::Base
   after_validation :geocode, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.present? }
   after_validation :reset_geocoding, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.blank? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
+  before_save :before_password_reset, if: proc{|u| u.encrypted_password_changed? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
@@ -484,7 +485,7 @@ class User < ActiveRecord::Base
   end
 
   def default_user_name?
-    !!(user_name =~ /.+\-.+\-[a-z0-9]{6}/)
+    (user_name =~ /user[0-9]{5,10}/).present?
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
@@ -872,6 +873,12 @@ class User < ActiveRecord::Base
   end
 
   private
+    def before_password_reset
+      clear_reset_password_token  # reset the password token sent in emails
+      self.authentication_token = generate_authentication_token  # reset auth_token used in emails
+      SessionManager.new(self).expire_all  # invalidate all existing sessions
+    end
+
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end

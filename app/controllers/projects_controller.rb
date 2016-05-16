@@ -43,7 +43,7 @@ class ProjectsController < ApplicationController
       @projects = @projects.where(difficulty: params[:difficulty])
     end
 
-    if params[:type].try(:to_sym).in? Project.content_types(%w(Project Article)).values
+    if params[:type].try(:to_sym).in? Project.content_types(%w(Project)).values
       @projects = @projects.with_type(params[:type])
     end
 
@@ -86,7 +86,8 @@ class ProjectsController < ApplicationController
         @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
       end
     else
-      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge).includes(:prizes).first
+      @challenge_entries = @project.challenge_entries.includes(:challenge, :prizes)
+      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge, :prizes).first
       @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
       unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?])
@@ -250,7 +251,7 @@ class ProjectsController < ApplicationController
     @project = model_class.new params[:base_article]
     authorize! :create, @project
 
-    if @project.external? or @project.product?
+    if @project.external?
       event = 'Submitted link'
     else
       # @project.approve!
@@ -273,7 +274,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       flash[:notice] = "#{@project.name} was successfully created."
-      if @project.external? or @project.product?
+      if @project.external?
         redirect_to user_return_to, notice: "Thanks for your submission!"
       else
         respond_with @project, location: edit_project_path(@project)
@@ -433,13 +434,7 @@ class ProjectsController < ApplicationController
 
   def redirect_to_last
     project = is_whitelabel? ? current_platform.projects.last : BaseArticle.last
-    url = case project
-    when Product
-      product_path(project)
-    else
-      url_for(project)
-    end
-    redirect_to url, status: 302
+    redirect_to url_for(project), status: 302
   end
 
   def submit
@@ -517,7 +512,7 @@ class ProjectsController < ApplicationController
             projects = projects.where(difficulty: difficulty)
           end
 
-          if type and type.to_sym.in? BaseArticle.content_types(%w(Project Article)).values
+          if type and type.to_sym.in? BaseArticle.content_types(%w(Project)).values
             projects = projects.with_type(type)
           end
 
@@ -556,7 +551,7 @@ class ProjectsController < ApplicationController
               projects = projects.joins(:project).merge(BaseArticle.where(difficulty: difficulty))
             end
 
-            if type.try(:to_sym).in? BaseArticle.content_types(%w(Project Article)).values
+            if type.try(:to_sym).in? BaseArticle.content_types(%w(Project)).values
               projects = projects.joins(:project).merge(BaseArticle.with_type(type))
             end
 

@@ -1,0 +1,37 @@
+- popup_id = "entry-submit-popup-#{entry.id}"
+.popup-overlay.normal-size.modal-popup class="#{ 'modal-show' if params[:submit] == entry.id.to_s }" id=popup_id
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close data-target=popup_id &times;
+      h2 Almost there!
+      = form_tag challenge_entry_path(entry.challenge.id, entry.id), method: :patch do
+
+        = hidden_field_tag :current_action, 'submitting'
+        = hidden_field_tag :'challenge_entry[workflow_state]', 'submitted'
+
+        p
+          strong
+            abbr.istooltip title="Projects will be moderated upon entry. Incomplete projects will not qualify."
+              | Please make sure your project is complete before you submit it.
+
+        - entry.challenge.challenge_entry_fields.each_with_index do |field, i|
+          .form-group
+            label
+              - if field.required
+                abbr> title="Required" *
+              = field.label
+            = text_field_tag :"challenge_entry[cfield#{i}]", entry.send("cfield#{i}"), class: 'form-control'
+
+        - if entry.challenge.activate_categories?
+          .form-group
+            label
+              abbr> title="Required" *
+              | Category you want to enter:
+            = select_tag 'challenge_entry[category_id]', options_from_collection_for_select(entry.challenge.categories, :id, :name), class: 'form-control mg-10', include_blank: '', selected: entry.category_id
+        p
+          small
+            ' By entering you agree to the
+            = link_to "#{entry.challenge.self_label.downcase} rules", challenge_path(entry.challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();', tabindex: -1
+            | .
+        = submit_tag "Submit my project into the #{entry.challenge.self_label.downcase}", class: 'btn btn-primary'

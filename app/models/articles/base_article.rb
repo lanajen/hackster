@@ -30,10 +30,8 @@ class BaseArticle < ActiveRecord::Base
     'updated' => :last_updated,
   }
   TYPES = {
-    'Article' => 'Article',
     'External (hosted on another site)' => 'ExternalProject',
     'Project' => 'Project',
-    'Product' => 'Product',
   }
   MACHINE_TYPES = {
     'external' => 'ExternalProject',
@@ -133,7 +131,6 @@ class BaseArticle < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true, unless: proc { |p| p.content_type.nil? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -142,7 +139,6 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
-  validates :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   before_validation :delete_empty_part_ids
@@ -561,26 +557,6 @@ class BaseArticle < ActiveRecord::Base
     'base_article'
   end
 
-  def product
-    product?
-  end
-
-  def product=(val)
-    self.type = 'Product' if val
-  end
-
-  def product?
-    type == 'Product'
-  end
-
-  def article=(val)
-    self.type = 'Article' if val
-  end
-
-  def article?
-    type == 'Article'
-  end
-
   def force_basic_validation!
     @force_basic_validation = true
   end
@@ -729,7 +705,7 @@ class BaseArticle < ActiveRecord::Base
   def post_new_tweet_at! time
     message = prepare_tweet
     self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :image)
+    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :medium)
   end
 
   def prepare_tweet

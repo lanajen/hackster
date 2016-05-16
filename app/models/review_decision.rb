@@ -2,7 +2,7 @@ class ReviewDecision < ActiveRecord::Base
   include HstoreColumn
 
   DECISIONS = {
-    approve: 'Approved',
+    approve: 'Featured',
     needs_work: 'Needs work',
     reject: 'Rejected',
   }.freeze

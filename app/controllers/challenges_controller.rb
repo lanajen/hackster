@@ -48,6 +48,8 @@ class ChallengesController < ApplicationController
   end
 
   def participants
+    not_found and return if @challenge.disable_participants_tab?
+
     title "#{@challenge.name} participants"
     respond_to do |format|
       format.html do
@@ -57,6 +59,8 @@ class ChallengesController < ApplicationController
   end
 
   def ideas
+    not_found and return if @challenge.disable_ideas_tab?
+
     title "#{@challenge.name} ideas"
     @ideas = @challenge.ideas
     @ideas = @ideas.old_approved unless @challenge.activate_free_hardware?
@@ -199,9 +203,6 @@ class ChallengesController < ApplicationController
 
     def load_side_models
       @sponsors = GroupDecorator.decorate_collection(@challenge.sponsors.includes(:avatar))
-      @link_params = Rails.cache.fetch "challenge-#{@challenge.id}-link_params", tag: ["challenge-#{@challenge.id}-sponsors"] do
-        { base_article: { platform_tags_string: @sponsors.map(&:name).join(','), challenge_id: @challenge.id } }
-      end
       @prizes = @challenge.prizes.includes(:image)
     end
 

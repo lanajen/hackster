@@ -130,13 +130,6 @@ class SitemapController < ApplicationController
             lastmod: platform.updated_at.strftime("%F"),
           }
         ]
-        if platform.enable_products
-          urls << {
-            loc: platform_products_url(platform),
-            changefreq: 'daily',
-            lastmod: platform.updated_at.strftime("%F"),
-          }
-        end
         if platform.parts_count > 0
           urls << {
             loc: platform_parts_url(platform),

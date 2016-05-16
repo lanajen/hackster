@@ -409,7 +409,7 @@ class ApplicationController < ActionController::Base
         initial_referrer: cookies[:initial_referrer],
         request_url: request_url,
       }
-      TrackerQueue.perform_async 'mark_last_seen', current_user.try(:id), opts# if tracking_activated?
+      TrackerQueue.perform_async 'mark_last_seen', current_user.try(:id), opts if tracking_activated?
     end
 
     def path_prefix_valid? path_prefix

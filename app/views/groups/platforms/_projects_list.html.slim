@@ -8,7 +8,38 @@ h1.section-title Community-built projects, powered by #{@platform.name}
   .btn-group.btn-group-default.pull-left
     .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-        ' Sort by
+        - case params[:by]
+        - when nil
+          ' All projects
+        - when 'featured'
+          ' Featured by #{@platform.name}
+        - when '7days'
+          ' Last 7 days
+        - when '30days'
+          ' Last 30 days
+        - when '1year'
+          ' Last 12 months
+        span.caret
+      ul.dropdown-menu
+        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', platform_projects_path(@platform, sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to "Featured by #{@platform.name}", platform_projects_path(@platform, by: 'featured', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_projects_path(@platform, by: 'on_hackster', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_projects_path(@platform, by: '7days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_projects_path(@platform, by: '30days', sort: params[:sort])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:sort]
+        - when 'updated'
+          ' Last updated
+        - when 'popular'
+          ' Most popular
+        - when 'recent'
+          ' Most recent
+        - when 'respected'
+          ' Most respected
+        - when 'trending'
+          ' Trending
         span.caret
       ul.dropdown-menu
         li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_projects_path(@platform, sort: 'updated', by: params[:by])
@@ -16,27 +47,6 @@ h1.section-title Community-built projects, powered by #{@platform.name}
         li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_projects_path(@platform, sort: 'recent', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_projects_path(@platform, sort: 'respected', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', platform_projects_path(@platform, sort: 'trending', by: params[:by])
-
-    .btn-group
-      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-        ' Filter by
-        span.caret
-      ul.dropdown-menu
-        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_projects_path(@platform, sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_projects_path(@platform, by: 'featured', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_projects_path(@platform, by: 'on_hackster', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_projects_path(@platform, by: '7days', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_projects_path(@platform, by: '30days', sort: params[:sort])
-        / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_projects_path(@platform, by: 'wip', sort: params[:sort])
-
-    / .btn-group
-      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-        ' Filter by part
-        span.caret
-      ul.dropdown-menu
-        - @platform.parts.each do |part|
-          li= link_to part.name, part
-
 
 - if @projects.any?
   .row.project-list

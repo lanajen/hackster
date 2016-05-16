@@ -12,6 +12,20 @@ ul.list-inline
 .row
   .col-xs-12= will_paginate @entries
 
+.clearfix
+  .btn-group
+    button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+      ' Filter by status
+      span.caret
+    ul.dropdown-menu.pull-right
+      li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', challenge_admin_entries_path(@challenge)
+      li*{ class: "#{'active' if params[:status] == 'new'}" } = link_to 'New', challenge_admin_entries_path(@challenge, status: 'new')
+      li*{ class: "#{'active' if params[:status] == 'submitted'}" } = link_to 'Submitted', challenge_admin_entries_path(@challenge, status: 'submitted')
+      li*{ class: "#{'active' if params[:status] == 'qualified'}" } = link_to 'Qualified', challenge_admin_entries_path(@challenge, status: 'qualified')
+      li*{ class: "#{'active' if params[:status] == 'unqualified'}" } = link_to 'Unqualified', challenge_admin_entries_path(@challenge, status: 'unqualified')
+      li*{ class: "#{'active' if params[:status] == 'awarded'}" } = link_to 'Awarded', challenge_admin_entries_path(@challenge, status: 'awarded')
+      li*{ class: "#{'active' if params[:status] == 'unawarded'}" } = link_to 'Unwarded', challenge_admin_entries_path(@challenge, status: 'unawarded')
+
 table.table.table-striped
   thead
     tr

@@ -185,7 +185,12 @@ class Ability
       @user.is_active_member? assignment.promotion
     end
 
-    can :manage, [ChallengeEntry, ChallengeIdea], user_id: @user.id
+    can :manage, ChallengeIdea, user_id: @user.id
+    can :update, ChallengeEntry do |entry|
+      # only allow the entrant to submit entries
+      @user.id == entry.user_id and entry.workflow_state_was == 'new' and entry.workflow_state == 'submitted'
+    end
+    can :destroy, ChallengeEntry, user_id: @user.id
     can :admin, [ChallengeEntry, ChallengeIdea] do |entry|
       ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end

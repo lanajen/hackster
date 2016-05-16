@@ -26,9 +26,13 @@ class SessionManager
     AppLogger.new(message, 'error', 'session_manager', e).log_and_notify
   end
 
+  def expire_all active_session_id=nil
+    @user.active_sessions = active_session_id ? [active_session_id] : []
+  end
+
   def expire_all! active_session_id=nil
     # @user.sessions.where.not(session_id: active_session_id).delete_all
-    @user.active_sessions = active_session_id ? [active_session_id] : []
+    expire_all active_session_id
     @user.save
   end
 

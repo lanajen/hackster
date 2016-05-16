@@ -65,8 +65,8 @@
   = render_pe_popup 'code-repository', widget_class: CodeRepoWidget, url_placeholder: 'Eg: https://github.com/fritzing/fritzing-app', url_hint: 'Supported: Bitbucket, Codebender, Gist, Github', popup_style: 'repository'
   = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
   = render_pe_popup 'upload', widget_class: FileWidget, popup_style: 'upload'
-  = render_pe_popup 'schematic-repo', widget_class: SchematicWidget, url_placeholder: (@project.challenge_id == 24 ? 'Eg: http://www.digikey.com/schemeit/#1uk1' : 'Eg: https://upverter.com/honnet/69441ea47f5d22da/twi'), url_hint: (@project.challenge_id == 24 ? '' : 'Supported: 123D Circuits, Fritzing, OSH Park, Scheme-It, Upverter'), popup_style: 'repository'
-  = render_pe_popup 'cad-repo', widget_class: CadRepoWidget, url_placeholder: 'Eg: https://sketchfab.com/models/c0541f8dbd3d42829205516bf6a71f29', url_hint: 'Supported: Autodesk Fusion 360, Sketchfab, Youmagine', popup_style: 'repository'
+  = render_pe_popup 'schematic-repo', widget_class: SchematicWidget, url_placeholder: 'Eg: https://upverter.com/honnet/69441ea47f5d22da/twi', url_hint: 'Supported: 123D Circuits, Fritzing, OSH Park, Scheme-It, Upverter', popup_style: 'repository'
+  = render_pe_popup 'cad-repo', widget_class: CadRepoWidget, url_placeholder: 'Eg: https://sketchfab.com/models/c0541f8dbd3d42829205516bf6a71f29', url_hint: 'Supported: Autodesk Fusion 360, Sketchfab, Thingiverse, Youmagine', popup_style: 'repository'
 
   form id='code-upload-form' action=code_files_path method='post' enctype='multipart/form-data' style='display:none;'
     input type="file" name="file"

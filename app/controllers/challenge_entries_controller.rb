@@ -1,12 +1,16 @@
 class ChallengeEntriesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :destroy]
   before_filter :load_challenge, only: [:index, :create, :new]
-  before_filter :load_and_authorize_entry, only: [:edit, :update, :update_workflow, :destroy]
+  before_filter :load_entry, only: [:update]
+  before_filter :load_and_authorize_entry, only: [:edit, :update_workflow, :destroy]
   layout :set_layout
 
   def index
     authorize! :admin, @challenge
     @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
+    if params[:status]
+      @entries = @entries.where workflow_state: params[:status]
+    end
 
     respond_to do |format|
       format.html do
@@ -40,8 +44,6 @@ class ChallengeEntriesController < ApplicationController
       @project = BaseArticle.find params[:project_id]
       authorize! :enter_in_challenge, @project
 
-      @project.update_attribute :private, false
-
       entry.assign_attributes params[:challenge_entry]
       entry.user_id = current_user.id
       entry.project_id = @project.id
@@ -49,20 +51,7 @@ class ChallengeEntriesController < ApplicationController
       next_url = @challenge
 
       if entry.save
-        entry.approve! if @challenge.auto_approve?
-
-        session[:share_modal] = 'new_entry_challenge_share_prompt'
-        session[:share_modal_model] = 'challenge'
-        session[:share_modal_model_id] = @challenge.id
-        session[:share_modal_time] = 'after_redirect'
-
-        # flash[:notice] = "Thanks for entering #{@challenge.name}!"
-      elsif :category_id.in? entry.errors.keys
-        flash[:alert] = "Please select a category"
-        next_url = challenge_path(@challenge, enter: true)
-      elsif entry.errors.keys.select{|v| v =~ /cfield/ }.any?
-        flash[:alert] = "Please answer all fields"
-        next_url = challenge_path(@challenge, enter: true)
+        flash[:notice] = "Your project was added to #{@challenge.name}. Please submit it when ready."
       else
         flash[:alert] = "Your project couldn't be entered."
       end
@@ -76,8 +65,21 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def update
-    if @entry.update_attributes(params[:challenge_entry])
+    @entry.assign_attributes(params[:challenge_entry])
+    authorize! :update, @entry
+
+    if @entry.save
       next_url = case params[:current_action]
+      when 'submitting'
+        @entry.project.update_attribute :private, false
+        @entry.approve! if @challenge.auto_approve?
+
+        session[:share_modal] = 'new_entry_challenge_share_prompt'
+        session[:share_modal_model] = 'challenge'
+        session[:share_modal_model_id] = @challenge.id
+        session[:share_modal_time] = 'after_redirect'
+
+        @challenge
       when 'moderating'
         if params[:commit] == 'Save'
           flash[:notice] = "Changes saved."
@@ -106,6 +108,16 @@ class ChallengeEntriesController < ApplicationController
         user_return_to
       end
       redirect_to next_url
+    elsif params[:current_action] == 'submitting'
+      if :category_id.in? @entry.errors.keys
+        flash[:alert] = "Please select a category"
+        redirect_to challenge_path(@challenge, submit: @entry.id)
+      elsif @entry.errors.keys.select{|v| v =~ /cfield/ }.any?
+        flash[:alert] = "Please answer all questions"
+        redirect_to challenge_path(@challenge, submit: @entry.id)
+      else
+        redirect_to user_return_to, alert: "Couldn't submit project, please try again or contact us at help@hackster.io for assistance."
+      end
     else
       redirect_to user_return_to, alert: "Couldn't save changes."
     end
@@ -146,11 +158,15 @@ class ChallengeEntriesController < ApplicationController
       @challenge = Challenge.find params[:challenge_id]
     end
 
-    def load_and_authorize_entry
+    def load_entry
       @entry = ChallengeEntry.find params[:id]
       raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @entry.challenge_id.to_s
-      authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
+    end
+
+    def load_and_authorize_entry
+      load_entry
+      authorize! self.action_name.to_sym, @entry
     end
 
     def set_layout

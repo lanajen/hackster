@@ -55,7 +55,6 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       return unless record.collectable.respond_to? :counters or record.collectable.respond_to? :counter_columns
       counters = [:projects]
       counters += [:external_projects, :private_projects] if record.collectable.class.in? [List, Platform]
-      counters += [:products] if record.collectable.class.in? [Platform]
       record.collectable.update_counters only: counters
     end
 end

@@ -435,11 +435,6 @@ HackerIo::Application.routes.draw do
         resources :quotes, only: [:create]
         resources :jobs, only: [:index, :show]
 
-        # dragon
-        # get 'partners' => 'partners#index'
-        # get 'dragon/leads/new' => 'dragon_queries#new'
-        # post 'dragon/leads' => 'dragon_queries#create'
-
         get 'ping' => 'pages#ping'  # for availability monitoring
         get 'obscure/path/to/cron' => 'cron#run'
 
@@ -535,7 +530,6 @@ HackerIo::Application.routes.draw do
             # get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
             get 'products/:part_slug' => 'parts#show', as: :part
             get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
-            get 'startups' => 'platforms#products', as: :products
             get 'projects' => 'platforms#projects', as: :projects
             get 'platforms' => 'platforms#sub_platforms', as: :sub_platforms
           end
