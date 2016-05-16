@@ -1340,9 +1340,11 @@ div.pe-panel#hardware div.btn-group,
 div.pe-panel#software div.btn-group {
   width: 100%;
 }
-div.pe-panel#hardware div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset,
-div.pe-panel#software div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
+div.pe-panel#hardware div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
   width: 50%;
+}
+div.pe-panel#software div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
+  width: 33%;
 }
 .parts-widget td {
   background: #F4F7F7;
