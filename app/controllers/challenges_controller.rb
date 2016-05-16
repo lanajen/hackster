@@ -192,7 +192,10 @@ class ChallengesController < ApplicationController
     end
 
     def load_challenge
-      @challenge = Challenge.find_by_slug! params[:slug]
+      @challenge = Challenge.where("LOWER(challenges.slug) = ?", params[:slug].downcase).first!
+      if params[:slug] != @challenge.slug
+        redirect_to request.fullpath.gsub(params[:slug], @challenge.slug) and return
+      end
       @challenge = @challenge.decorate
     end
 
