@@ -182,46 +182,14 @@ ActiveRecord::Schema.define(version: 20160504195328) do
   add_index "challenges_groups", ["challenge_id"], name: "index_challenges_groups_on_challenge_id", using: :btree
   add_index "challenges_groups", ["group_id"], name: "index_challenges_groups_on_group_id", using: :btree
 
-  create_table "channel_event_attendees", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "event_id",   null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_event_attendees", ["event_id"], name: "index_channel_event_attendees_on_event_id", using: :btree
-  add_index "channel_event_attendees", ["user_id"], name: "index_channel_event_attendees_on_user_id", using: :btree
-
-  create_table "channel_members", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "channel_id", null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_members", ["channel_id"], name: "index_channel_members_on_channel_id", using: :btree
-  add_index "channel_members", ["user_id"], name: "index_channel_members_on_user_id", using: :btree
-
-  create_table "channel_moderators", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "channel_id", null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_moderators", ["channel_id"], name: "index_channel_moderators_on_channel_id", using: :btree
-  add_index "channel_moderators", ["user_id"], name: "index_channel_moderators_on_user_id", using: :btree
-
   create_table "channels", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.string   "slug",           limit: 60,              null: false
-    t.string   "topic",          limit: 160
-    t.string   "website"
-    t.integer  "members_count",              default: 0
-    t.integer  "projects_count",             default: 0
-    t.string   "channel_type",   limit: 20,              null: false
-    t.datetime "created_at",                             null: false
+    t.string   "name"
+    t.integer  "group_id"
+    t.text     "cache_counters"
+    t.boolean  "restricted"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
-
-  add_index "channels", ["channel_type"], name: "index_channels_on_channel_type", using: :btree
-  add_index "channels", ["slug"], name: "index_channels_on_slug", using: :btree
 
   create_table "channels_hashtags", force: :cascade do |t|
     t.integer "hashtag_id"
@@ -271,24 +239,6 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.integer "university_id"
     t.integer "course_id"
   end
-
-  create_table "events", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.integer  "channel_id",                              null: false
-    t.string   "event_type",     limit: 20
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.string   "website"
-    t.text     "description"
-    t.integer  "maker_space_id",            default: 0,   null: false
-    t.string   "venue_address"
-    t.float    "venue_lat",                 default: 0.0, null: false
-    t.float    "venue_long",                default: 0.0, null: false
-  end
-
-  add_index "events", ["channel_id"], name: "index_events_on_channel_id", using: :btree
-  add_index "events", ["maker_space_id"], name: "index_events_on_maker_space_id", using: :btree
-  add_index "events", ["venue_lat", "venue_long"], name: "index_events_on_venue_lat_and_venue_long", using: :btree
 
   create_table "follow_relations", force: :cascade do |t|
     t.integer  "user_id"
@@ -431,18 +381,6 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.datetime "updated_at",                null: false
   end
 
-  create_table "maker_spaces", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.float    "lat",                       default: 0.0, null: false
-    t.float    "long",                      default: 0.0, null: false
-    t.string   "country",        limit: 40
-    t.string   "city_state",     limit: 60
-    t.string   "street_address"
-    t.datetime "created_at",                              null: false
-  end
-
-  add_index "maker_spaces", ["lat", "long"], name: "index_maker_spaces_on_lat_and_long", using: :btree
-
   create_table "members", force: :cascade do |t|
     t.integer  "group_id",                                              null: false
     t.integer  "user_id",                                               null: false
@@ -473,14 +411,15 @@ ActiveRecord::Schema.define(version: 20160504195328) do
 
   create_table "mouser_submissions", force: :cascade do |t|
     t.string   "workflow_state"
-    t.string   "project_name"
-    t.integer  "user_id"
+    t.integer  "user_id",          null: false
     t.integer  "project_id"
-    t.integer  "vendor_id"
+    t.string   "vendor_user_name", null: false
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.string   "vendor_user_name"
   end
+
+  add_index "mouser_submissions", ["user_id"], name: "index_mouser_submissions_on_user_id", using: :btree
+  add_index "mouser_submissions", ["vendor_user_name"], name: "index_mouser_submissions_on_vendor_user_name", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
@@ -673,6 +612,7 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.datetime "featured_date"
     t.datetime "made_public_at"
     t.boolean  "hide",                                default: false
+    t.boolean  "graded",                              default: false
     t.float    "popularity_counter",                  default: 0.0
     t.integer  "respects_count",                      default: 0
     t.string   "guest_name",              limit: 128
@@ -687,12 +627,14 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
+    t.integer  "parent_id"
     t.integer  "origin_platform_id",                  default: 0,         null: false
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["origin_platform_id"], name: "index_projects_on_origin_platform_id", using: :btree
+  add_index "projects", ["parent_id"], name: "index_projects_on_parent_id", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree
