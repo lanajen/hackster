@@ -420,6 +420,9 @@ ActiveRecord::Schema.define(version: 20160518223953) do
     t.datetime "updated_at",   null: false
   end
 
+  add_index "mouser_submissions", ["user_id"], name: "index_mouser_submissions_on_user_id", using: :btree
+  add_index "mouser_submissions", ["vendor_user_name"], name: "index_mouser_submissions_on_vendor_user_name", using: :btree
+
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
     t.integer  "notifiable_id"
@@ -670,12 +673,14 @@ ActiveRecord::Schema.define(version: 20160518223953) do
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
+    t.integer  "parent_id"
     t.integer  "origin_platform_id",                  default: 0,         null: false
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["origin_platform_id"], name: "index_projects_on_origin_platform_id", using: :btree
+  add_index "projects", ["parent_id"], name: "index_projects_on_parent_id", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree
