@@ -75,7 +75,7 @@
                       ' About this project
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
-                  .section-content.hljs-active
+                  .section-content.hljs-active.hljs-arduino
                     .medium-editor= @description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do

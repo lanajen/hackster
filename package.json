@@ -21,7 +21,7 @@
     "expose-loader": "^0.7.1",
     "flummox": "^3.5.2",
     "hashids": "^1.0.2",
-    "highlight.js": "^8.6.0",
+    "highlight.js": "^9.3.0",
     "htmlparser2": "^3.9.0",
     "json-loader": "^0.5.4",
     "keymirror": "^0.1.1",
