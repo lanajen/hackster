@@ -1,13 +1,14 @@
 class ArduinoApiClient
-  BASE_API_URL = "https://api.arduino.cc/"
+  BASE_API_URL = "https://api-dev.arduino.cc/create/user/"
   SKETCH_REGEX = /editor\/([0-9a-zA-Z\-_]+)\/([0-9a-z\-]+)/
 
   def add_tutorial_url_to_sketch sketch_url, project_url
     url = get_api_url sketch_url
 
-    tutorials = get_tutorials_info url
-    tutorials << project_url
-    set_tutorials_info url, tutorials
+    if tutorials = get_tutorials_info(url)
+      tutorials << project_url
+      set_tutorials_info url, tutorials
+    end
   end
 
   def initialize user
@@ -36,42 +37,60 @@ class ArduinoApiClient
         'Authorization' => token_header,
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
       ).read
-      puts 'get response: ' + resp.inspect
 
       sketch_info = JSON.parse resp
 
       sketch_info['tutorials'] || []
+
+    # rescue OpenURI::HTTPError => e
+    #   # 500 error or something alike
+    #   AppLogger.new("Failed to get_tutorials_info for `#{url}`, token `#{token}`: \"#{e.message}\"",
+    #     'http_error',
+    #     'arduino',
+    #     e).stdout.log
+
+    #   if e.message =~ /403/
+    #     # unauthorized
+    #   elsif e.message =~ /404/
+    #     # not found
+    #   else
+    #     nil
+    #   end
     end
 
     def set_tutorials_info url, tutorials
-      request = Net::HTTP::Put.new(url, {
+      Rails.logger.debug "set_tutorials_info for url: `#{url}` with tutorials=`#{tutorials}` (token: `#{@token}`)"
+
+      u = URI.parse url
+      http = Net::HTTP.new(u.host, u.port)
+      if u.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      request = Net::HTTP::Put.new(u.request_uri, {
         'Content-Type' => 'application/json',
         'Authorization' => token_header
       })
-      request.set_form_data(tutorials)
-      response = http.request(request)
-      puts 'set response: ' + response.inspect
+      body = { tutorials: tutorials }.to_json
+      request.body = body
+
+    # rescue OpenURI::HTTPError => e
+    #   # 500 error or something alike
+    #   AppLogger.new("Failed to get_tutorials_info for `#{url}`, token `#{token}`: \"#{e.message}\"",
+    #     'http_error',
+    #     'arduino',
+    #     e).stdout.log
+
+    #   if e.message =~ /403/
+    #     # unauthorized
+    #   elsif e.message =~ /404/
+    #     # not found
+    #   else
+    #     nil
+    #   end
     end
 
     def token_header
       "Token #{@token}"
     end
-
-    # rescue OpenURI::HTTPError => e
-    #   # 500 error or something alike
-    #   AppLogger.new("Failed to get Arduino user_info for `#{user_name}`, token `#{token}`, failed #{failed_count} times",
-    #     'http_error',
-    #     'arduino',
-    #     e).stdout.log
-
-    #   # retry on 500
-    #   if e.message =~ /500/ and failed_count < MAX_TRIES
-    #     sleep 1
-    #     get_user_info user_name, token, failed_count + 1
-    #   else
-    #     nil
-    #   end
-    # end
-
-
 end
