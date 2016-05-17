@@ -35,7 +35,7 @@ class Api::BaseController < ApplicationController
     end
 
     def authenticate_platform_or_user
-      if request.headers['Authorization'].present? and request.headers['Authorization'] =~ /^Basic/
+      if request.headers['Authorization'].present? or request.headers['Authorization'] =~ /^Basic/
         authenticate_api_user
       else
         # authenticate_user!

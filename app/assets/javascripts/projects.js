@@ -570,7 +570,13 @@ $select2target = null;
               params.beforeSend = function(request) {
                 request.setRequestHeader('Authorization', 'Bearer ' + token);
               }
-              return $.ajax(params);
+
+              var $request = $.ajax(params);
+
+              $request.then(success);
+              $request.fail(failure);
+
+              return $request;
             });
           },
           data: function (params) {
