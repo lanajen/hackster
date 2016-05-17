@@ -41,7 +41,6 @@ export function getStory(projectId) {
 }
 
 export function uploadImageToServer(image, S3URL, AWSKey, projectId, modelType) {
-  console.log("RAW", image);
   return new Promise((resolve, reject) => {
     return getS3AuthData(image.name)
       .then(S3Data => {
@@ -61,12 +60,10 @@ export function processRemoteImage(image) {
   return new Promise((resolve, reject) => {
     return postRemoteURL(image.url, 'image')
       .then(body => {
-        console.log("REMOTE", body);
         image = { ...image, id: body.id };
         return pollJob(body['job_id']);
       })
       .then(status => {
-        console.log("POLL DONE", status);
         resolve(image);
       })
       .catch(err => reject(err));

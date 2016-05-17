@@ -50,7 +50,6 @@ class StoryEditor extends Component {
       },
 
       processImage(image) {
-        console.log("GOT IT", image);
         return processRemoteImage(image);
       },
 
