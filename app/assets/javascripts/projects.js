@@ -285,9 +285,6 @@ $select2target = null;
             headers: {
               'Authorization': 'Bearer ' + token
             }
-            // xhrFields: {
-            //   withCredentials: true
-            // }
           });
         })
       }
@@ -561,15 +558,20 @@ $select2target = null;
       }
     });
 
-    var select2Options = function(partType){
+    var select2Options = function(partType) {
       return {
         minimumInputLength: 3,
         ajax: {
           url: Utils.getApiPath() + "/v1/parts",
           dataType: 'json',
           delay: 150,
-          xhrFields: {
-            withCredentials: true
+          transport: function(params, success, failure) {
+            Utils.getApiToken(function(token) {
+              params.beforeSend = function(request) {
+                request.setRequestHeader('Authorization', 'Bearer ' + token);
+              }
+              return $.ajax(params);
+            });
           },
           data: function (params) {
             return {
@@ -833,7 +835,7 @@ $select2target = null;
         var _data = data;
         data.context.data('data', data);
 
-        Utils.getApiToken(function(token){
+        Utils.getApiToken(function(token) {
           $.ajax({
             url: Utils.getApiPath() + '/private/files/signed_url',
             type: 'GET',
