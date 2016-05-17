@@ -95,20 +95,20 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_ideas_tab, :boolean
   hstore_column :hproperties, :disable_participants_tab, :boolean
   hstore_column :hproperties, :disable_pre_contest_winners, :boolean  # legacy
   hstore_column :hproperties, :disable_projects_phase, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
-  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit my final entry'
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Add my project'
   hstore_column :hproperties, :free_hardware_label, :string
   hstore_column :hproperties, :free_hardware_unit_label, :string, default: 'device'
   hstore_column :hproperties, :free_hardware_link, :string
   hstore_column :hproperties, :free_hardware_quantity, :integer
   hstore_column :hproperties, :free_hardware_end_date, :datetime
   hstore_column :hproperties, :how_to_enter, :string
-  # hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
   hstore_column :hproperties, :mailchimp_api_key, :string
   hstore_column :hproperties, :mailchimp_list_id, :string

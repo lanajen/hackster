@@ -11,7 +11,7 @@ const ImageUtils = {
     async.map(files, function(file, callback) {
       this.handleFileReader(file, function(dataUrl, fileName, hash) {
         this.handleImageResize(dataUrl, fileName, hash, function(data) {
-          return callback(null, { ...data, rawFile: file });
+          return callback(null, { ...data, url: dataUrl, rawFile: file });
         });
       }.bind(this));
     }.bind(this), function(err, results) {

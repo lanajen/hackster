@@ -218,7 +218,8 @@ html(lang="en")
     .loading-bar
 
     = javascript_include_tag "application"
-    = content_tag(:script, insert_stats, type: 'text/javascript')
+    - if Rails.env.production?
+      = content_tag(:script, insert_stats, type: 'text/javascript')
 
     - unless params[:blank_frame]
       - if show_hello_world?
@@ -226,5 +227,5 @@ html(lang="en")
           $(function(){ fetchHelloWorld(); });
 
     = content_for :js
-    - unless is_mobile? or params[:blank_frame]
+    - unless is_mobile? or params[:blank_frame] or current_user.try(:is?, :admin)
       = render 'shared/feedback'

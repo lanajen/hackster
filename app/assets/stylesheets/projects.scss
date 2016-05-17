@@ -1029,3 +1029,18 @@
     margin-right: 5px;
   }
 }
+
+.project-contest-entry {
+  margin-bottom: 20px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.project-contest-entry-name {
+  font-weight: bold;
+}
+
+.project-contest-entry-status {
+  font-size: 0.9em;
+}

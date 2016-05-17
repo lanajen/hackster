@@ -15,6 +15,12 @@ class BaseArticleObserverWorker < BaseWorker
         part.update_counters only: [:projects]
       end
     end
+
+    if record.challenge_id.present?
+      if challenge = Challenge.find_by_id(record.challenge_id) and user_id = record.users.first.try(:id)
+        challenge.entries.create project_id: record.id, user_id: user_id
+      end
+    end
   end
 
   def after_destroy record

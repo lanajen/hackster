@@ -86,7 +86,8 @@ class ProjectsController < ApplicationController
         @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
       end
     else
-      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge).includes(:prizes).first
+      @challenge_entries = @project.challenge_entries.includes(:challenge, :prizes)
+      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge, :prizes).first
       @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
       unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?])

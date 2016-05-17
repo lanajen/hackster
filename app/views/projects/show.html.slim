@@ -58,12 +58,12 @@
                             - if @project.unpublished?
                               i.fa.fa-eye-slash
                               span Unlisted - Accessible via link and visible on profile
-                            - elsif @project.pending_review?
-                              i.fa.fa-eye
-                              span Public
-                            - else
+                            - elsif @project.approved?
                               i.fa.fa-eye
                               span Public - Featured!
+                            - else
+                              i.fa.fa-eye
+                              span Public
                           - else
                             - who = %w(you)
                             - who += ['team members'] if @project.team_members_count > 1
@@ -102,7 +102,7 @@
                                       input.form-control value=project_private_sharing_url(@project) onclick='this.select();'
 
                               li.divider
-                            - else
+                            - elsif !@project.unpublished?
                               li= link_to 'Moderator review', review_project_path(@project)
                               li.divider
                             li= link_to "Delete this #{@project.identifier}", @project, method: :delete, data: { confirm: "Are you sure you want to delete this #{@project.identifier}? There's no way to undo it!" }
@@ -140,6 +140,21 @@
                               p
                                 | It looks like you have due assignments
                               p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
+
+                      / Challenge info
+                      - if @challenge_entries.exists?
+                        section.section-thumbs
+                          h4 Contest info
+                          - @challenge_entries.each do |entry|
+                            .project-contest-entry
+                              .project-contest-entry-name= link_to entry.challenge.name, entry.challenge
+                              .project-contest-entry-status
+                                strong> Status:
+                                = entry.decorate.status
+                              - if entry.new? and entry.user_id == current_user.id
+                                .project-contest-entry-submit
+                                  ' Is your project complete?
+                                  = link_to 'Submit to contest', '', class: 'btn btn-primary btn-sm'
 
                     - elsif @project.pryvate?
                       .alert.alert-warning.text-center

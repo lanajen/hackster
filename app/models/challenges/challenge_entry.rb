@@ -21,8 +21,10 @@ class ChallengeEntry < ActiveRecord::Base
     :project_id, :user_id
 
   validates :project_id, uniqueness: { scope: :challenge_id, message: 'has already been submitted to the contest' }
-  validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
-  validate :validate_custom_fields_presence
+  with_options unless: proc{|e| e.workflow_state == 'new' } do |entry|
+    entry.validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
+    entry.validate :validate_custom_fields_presence
+  end
   after_initialize :set_extra_fields
 
   counters_column :counters_cache
@@ -30,6 +32,13 @@ class ChallengeEntry < ActiveRecord::Base
 
   workflow do
     state :new do
+      event :approve, transitions_to: :qualified
+      event :disqualify, transitions_to: :unqualified
+      event :give_award, transitions_to: :awarded
+      event :give_no_award, transitions_to: :unawarded
+      event :submit, transitions_to: :submitted
+    end
+    state :submitted do
       event :approve, transitions_to: :qualified
       event :disqualify, transitions_to: :unqualified
       event :give_award, transitions_to: :awarded
@@ -55,6 +64,10 @@ class ChallengeEntry < ActiveRecord::Base
 
   def self.approved
     where(workflow_state: APPROVED_STATES)
+  end
+
+  def self.submitted
+    where.not workflow_state: :new
   end
 
   def self.winning

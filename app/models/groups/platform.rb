@@ -81,7 +81,6 @@ class Platform < Collection
   hstore_column :hproperties, :verified, :boolean, default: false
 
   has_counter :parts, 'parts.visible.count'
-  has_counter :products, 'products.count'
   has_counter :sub_parts, 'sub_parts.count'
   has_counter :sub_platforms, 'sub_platforms.count'
 
