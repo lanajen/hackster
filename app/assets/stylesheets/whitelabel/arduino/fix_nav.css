@@ -38,3 +38,7 @@ div#sign_in_container a.login-link {
   position: relative;
   top: 20px;
 }
+
+.mobile-button {
+    position: static;
+}
