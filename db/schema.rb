@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160504195328) do
+ActiveRecord::Schema.define(version: 20160518223953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.integer  "challenge_id", null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.hstore   "hproperties"
   end
 
   add_index "challenge_registrations", ["challenge_id"], name: "index_challenge_registrations_on_challenge_id", using: :btree
@@ -182,46 +183,14 @@ ActiveRecord::Schema.define(version: 20160504195328) do
   add_index "challenges_groups", ["challenge_id"], name: "index_challenges_groups_on_challenge_id", using: :btree
   add_index "challenges_groups", ["group_id"], name: "index_challenges_groups_on_group_id", using: :btree
 
-  create_table "channel_event_attendees", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "event_id",   null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_event_attendees", ["event_id"], name: "index_channel_event_attendees_on_event_id", using: :btree
-  add_index "channel_event_attendees", ["user_id"], name: "index_channel_event_attendees_on_user_id", using: :btree
-
-  create_table "channel_members", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "channel_id", null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_members", ["channel_id"], name: "index_channel_members_on_channel_id", using: :btree
-  add_index "channel_members", ["user_id"], name: "index_channel_members_on_user_id", using: :btree
-
-  create_table "channel_moderators", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "channel_id", null: false
-    t.datetime "created_at", null: false
-  end
-
-  add_index "channel_moderators", ["channel_id"], name: "index_channel_moderators_on_channel_id", using: :btree
-  add_index "channel_moderators", ["user_id"], name: "index_channel_moderators_on_user_id", using: :btree
-
   create_table "channels", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.string   "slug",           limit: 60,              null: false
-    t.string   "topic",          limit: 160
-    t.string   "website"
-    t.integer  "members_count",              default: 0
-    t.integer  "projects_count",             default: 0
-    t.string   "channel_type",   limit: 20,              null: false
-    t.datetime "created_at",                             null: false
+    t.string   "name"
+    t.integer  "group_id"
+    t.text     "cache_counters"
+    t.boolean  "restricted"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
-
-  add_index "channels", ["channel_type"], name: "index_channels_on_channel_type", using: :btree
-  add_index "channels", ["slug"], name: "index_channels_on_slug", using: :btree
 
   create_table "channels_hashtags", force: :cascade do |t|
     t.integer "hashtag_id"
@@ -271,24 +240,6 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.integer "university_id"
     t.integer "course_id"
   end
-
-  create_table "events", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.integer  "channel_id",                              null: false
-    t.string   "event_type",     limit: 20
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.string   "website"
-    t.text     "description"
-    t.integer  "maker_space_id",            default: 0,   null: false
-    t.string   "venue_address"
-    t.float    "venue_lat",                 default: 0.0, null: false
-    t.float    "venue_long",                default: 0.0, null: false
-  end
-
-  add_index "events", ["channel_id"], name: "index_events_on_channel_id", using: :btree
-  add_index "events", ["maker_space_id"], name: "index_events_on_maker_space_id", using: :btree
-  add_index "events", ["venue_lat", "venue_long"], name: "index_events_on_venue_lat_and_venue_long", using: :btree
 
   create_table "follow_relations", force: :cascade do |t|
     t.integer  "user_id"
@@ -431,18 +382,6 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.datetime "updated_at",                null: false
   end
 
-  create_table "maker_spaces", force: :cascade do |t|
-    t.string   "name",           limit: 60
-    t.float    "lat",                       default: 0.0, null: false
-    t.float    "long",                      default: 0.0, null: false
-    t.string   "country",        limit: 40
-    t.string   "city_state",     limit: 60
-    t.string   "street_address"
-    t.datetime "created_at",                              null: false
-  end
-
-  add_index "maker_spaces", ["lat", "long"], name: "index_maker_spaces_on_lat_and_long", using: :btree
-
   create_table "members", force: :cascade do |t|
     t.integer  "group_id",                                              null: false
     t.integer  "user_id",                                               null: false
@@ -472,14 +411,13 @@ ActiveRecord::Schema.define(version: 20160504195328) do
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
   create_table "mouser_submissions", force: :cascade do |t|
-    t.string   "workflow_state"
+    t.string   "status"
     t.string   "project_name"
     t.integer  "user_id"
     t.integer  "project_id"
     t.integer  "vendor_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.string   "vendor_user_name"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -489,6 +427,50 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
+
+  create_table "oauth_access_grants", force: :cascade do |t|
+    t.integer  "resource_owner_id", null: false
+    t.integer  "application_id",    null: false
+    t.string   "token",             null: false
+    t.integer  "expires_in",        null: false
+    t.text     "redirect_uri",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "revoked_at"
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
+
+  create_table "oauth_access_tokens", force: :cascade do |t|
+    t.integer  "resource_owner_id"
+    t.integer  "application_id"
+    t.string   "token",             null: false
+    t.string   "refresh_token"
+    t.integer  "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at",        null: false
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
+  add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
+  add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
+
+  create_table "oauth_applications", force: :cascade do |t|
+    t.string   "name",                         null: false
+    t.string   "uid",                          null: false
+    t.string   "secret",                       null: false
+    t.text     "redirect_uri",                 null: false
+    t.string   "scopes",       default: "",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.boolean  "trusted_app",  default: false
+  end
+
+  add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
+  add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "order_lines", force: :cascade do |t|
     t.integer "store_product_id", null: false
@@ -673,6 +655,7 @@ ActiveRecord::Schema.define(version: 20160504195328) do
     t.datetime "featured_date"
     t.datetime "made_public_at"
     t.boolean  "hide",                                default: false
+    t.boolean  "graded",                              default: false
     t.float    "popularity_counter",                  default: 0.0
     t.integer  "respects_count",                      default: 0
     t.string   "guest_name",              limit: 128
@@ -976,6 +959,8 @@ ActiveRecord::Schema.define(version: 20160504195328) do
   add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
 
   add_foreign_key "group_impressions", "groups"
+  add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
+  add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "part_impressions", "parts"
   add_foreign_key "project_impressions", "projects"
 end

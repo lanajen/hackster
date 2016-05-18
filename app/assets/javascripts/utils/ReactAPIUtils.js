@@ -192,5 +192,18 @@ module.exports = {
           err ? reject(err) : resolve(res);
         });
     });
+  },
+
+  updateChallengeRegistration(challengeId, data) {
+    return new Promise((resolve, reject) => {
+      request
+        .patch(`${getApiPath()}/private/challenge_registrations`)
+        .send({ challenge_id: challengeId })
+        .send(data)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
   }
 };

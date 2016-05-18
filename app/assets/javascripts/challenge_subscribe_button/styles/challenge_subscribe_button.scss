@@ -1,0 +1,5 @@
+.challenge-subscribe-button {
+  .saved {
+    @include transition(opacity 150ms ease);
+  }
+}

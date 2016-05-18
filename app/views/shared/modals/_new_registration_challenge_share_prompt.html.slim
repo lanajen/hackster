@@ -4,6 +4,10 @@
     .popup-overlay-inner
       button.close.unselectable data-target='#new_registration_challenge_share_prompt' &times;
       h2 You're registered!
+
+      - if challenge.activate_email_sharing?
+        = react_component 'ChallengeSubscribeButton', { challengeId: challenge.id, label: challenge.email_sharing_label }
+
       p Now don't forget to submit your entry!
 
       p In the meantime, tell your friends:
@@ -18,9 +22,3 @@
         li
           a.zocial.reddit.social-share-link data-url=reddit_share(challenge_url(challenge), challenge.after_registration_tweet)
             | Reddit
-        / li
-          a.zocial.googleplus.social-share-link data-url=googleplus_share(project_url(project))
-            | Google+
-        / li
-          a.zocial.linkedin.social-share-link data-url=linkedin_share(project_url(project), project.name, project.to_personnal_message)
-            | LinkedIn

@@ -239,6 +239,14 @@
             = f.input :mailchimp_api_key, label: 'Mailchimp API key', hint: 'API key of the Mailchimp account you want to sync with'
             = f.input :mailchimp_list_id, label: 'Mailchimp List ID', hint: 'List ID of the Mailchimp list you want to sync with'
 
+      .panel.panel-default
+        .panel-heading
+          h4 Email sharing
+        .panel-body
+          = f.input :activate_email_sharing, as: :boolean, inline_label: 'Prompt participants to opt-in to share their email with sponsors', label: false, hint: ''
+          #email_sharing_settings style=(@challenge.activate_email_sharing ? '' : 'display:none')
+            = f.input :email_sharing_label, label: 'Label for email sharing'
+
       - if current_user.is? :admin
         .panel.panel-default
           .panel-heading
@@ -354,6 +362,7 @@
         });
       }
       toggleOptions('#challenge_activate_mailchimp_sync', '#mailchimp_settings');
+      toggleOptions('#challenge_activate_email_sharing', '#email_sharing_settings');
       toggleOptions('#challenge_activate_free_hardware', '#free_hardware_settings');
       toggleOptions('#challenge_activate_voting', '#voting_dates');
       toggleOptions('#challenge_activate_categories', '#categories_settings');
