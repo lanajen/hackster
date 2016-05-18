@@ -1,6 +1,6 @@
 class ArduinoEmbed < BaseEmbed
 
   def format
-    'codebender'
+    'arduino'
   end
 end

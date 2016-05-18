@@ -315,6 +315,14 @@
   &.codebender {
     height: 510px;
   }
+  &.arduino {
+    height: auto;
+    padding-bottom: 0;
+    iframe {
+      position: static;
+      height: 510px;
+    }
+  }
   &.four-by-three {
     padding-bottom: 75%;
   }
