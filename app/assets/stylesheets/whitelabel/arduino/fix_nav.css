@@ -6,6 +6,10 @@
   z-index: 1005;
 }
 
+#ino-create-nav .nav-bar svg.menu-toggle {
+    fill: #879191;
+}
+
 div#burger_btn_container .menu-toggle {
   width: 18px;
   height: 18px;
