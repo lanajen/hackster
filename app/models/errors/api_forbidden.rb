@@ -1,0 +1,1 @@
+class ApiForbidden < StandardError; end

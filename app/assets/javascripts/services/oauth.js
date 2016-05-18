@@ -1,16 +1,18 @@
 import jwtDecode from 'jwt-decode';
 import request from 'superagent';
 
-const tokenKey = 'hck_api_token';
+const tokenKeyPrefix = 'hck.tkn';
+const clientToken = tokenKeyPrefix + '.client';
+const userToken = tokenKeyPrefix + '.user';
 let callbackQueue = [];
 
 function fetchToken() {
   return new Promise((resolve, reject) => {
     request
-      .get(`/users/api_token`)
+      .get(`/projecthub/users/api_token`)
       .withCredentials()
       .end(function(err, res) {
-        err ? reject(err) : resolve(res.body.token);
+        err ? reject(err) : resolve(res.body);
       });
   });
 }
@@ -25,34 +27,42 @@ function resolveCallbacks(token) {
   callbackQueue = [];
 }
 
-function getToken() {
+function getToken(withUser) {
   return window && window.localStorage
-    ? window.localStorage.getItem(tokenKey)
+    ? (withUser ? getFromLocalStorage(userToken) : getFromLocalStorage(userToken, clientToken))
     : document && document.cookie
-    ? parseCookie()
+    ? parseCookie(withUser)
     : null;
 }
 
-function parseCookie() {
+function getFromLocalStorage(key1, key2) {
+  return window.localStorage.getItem(key1) || window.localStorage.getItem(key2);
+}
+
+function parseCookie(withUser) {
   const cookieMap = document.cookie.split(';').reduce((acc, curr) => {
     const cookie = curr.split('=');
     acc[cookie[0]] = cookie[1];
     return acc;
   }, {});
 
-  return cookieMap[tokenKey] || null;
+  return (withUser ? cookieMap[userToken] : cookieMap[userToken] || cookieMap[clientToken]) || null;
 }
 
-function setToken(token) {
-  window && window.localStorage
-    ? window.localStorage.setItem(tokenKey, token)
-    : document && document.cookie
-    ? document.cookie = `${tokenKey}=${token};path=/`
-    : null;
+function setTokens(tokens) {
+  if (window && window.localStorage) {
+    window.localStorage.setItem(clientToken, tokens.client_token);
+    window.localStorage.setItem(userToken, tokens.user_token);
+  } else if (document && document.cookie) {
+    let cookieString = `${clientToken}=${tokens.client_token}`;
+    if (tokens.user_token) cookieString += `${userToken}=${tokens.user_token}`;
+    cookieString += ";path=/";
+    document.cookie = cookieString;
+  }
 }
 
-export default function getApiToken(callback) {
-  const token = getToken();
+export default function getApiToken(callback, withUser) {
+  const token = getToken(withUser);
 
   if (token && isTokenValid(token)) {
     return callbackQueue.length ? resolveCallbacks(token) : callback(token);
@@ -62,8 +72,9 @@ export default function getApiToken(callback) {
 
   if(callbackQueue.length === 1) {
     return fetchToken()
-      .then(newToken => {
-        setToken(newToken);
+      .then(tokens => {
+        setTokens(tokens);
+        const newToken = tokens.user_token || tokens.client_token;
         resolveCallbacks(newToken);
       })
       .catch(err => console.error('Request Error: ' + err));

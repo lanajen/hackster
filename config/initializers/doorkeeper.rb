@@ -1,3 +1,4 @@
+DOORKEEPER_APP_ID = 1  # our app should be #1
 JWT_EXPIRES_IN = 2.hours
 
 Doorkeeper.configure do
@@ -6,6 +7,10 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
+    puts 'resource_owner_authenticator'
+    puts 'current_user: ' + current_user.try(:inspect)
+    puts 'params: ' + params.inspect
+    puts 'request: ' + request.inspect
     current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 
@@ -17,6 +22,10 @@ Doorkeeper.configure do
   # end
 
   resource_owner_from_credentials do
+    puts 'resource_owner_from_credentials'
+    puts 'current_user: ' + current_user.try(:inspect)
+    puts 'params: ' + params.inspect
+    puts 'request: ' + request.inspect
     current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 
@@ -52,8 +61,14 @@ Doorkeeper.configure do
   # Define access token scopes for your provider
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
-  default_scopes :profile, :read_public
-  optional_scopes :read_private, :write_project, :respect, :bookmark, :follow, :read_toolbox, :write_toolbox
+  default_scopes :profile
+  optional_scopes :add_to_toolbox,
+                  :bookmark,
+                  :comment,
+                  :follow,
+                  :read_private_project,
+                  :respect,
+                  :write_project
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -96,7 +111,6 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  grant_flows %w(authorization_code client_credentials implicit)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
@@ -106,7 +120,7 @@ Doorkeeper.configure do
   end
 
   # WWW-Authenticate Realm (default "Doorkeeper").
-  # realm "Doorkeeper"
+  realm "api/v2"
 end
 
 Doorkeeper::JWT.configure do
@@ -115,19 +129,22 @@ Doorkeeper::JWT.configure do
   # Defaults to a randomly generated token in a hash
   # { token: "RANDOM-TOKEN" }
   token_payload do |opts|
-    user = User.find(opts[:resource_owner_id])
     time = DateTime.current.utc
-    {
+    payload = {
       iss: "hackster",
       iat: time.to_i,
       exp: (time + JWT_EXPIRES_IN).to_i,
       rnd: SecureRandom.hex,
+    }
 
-      user: {
+    if opts[:resource_owner_id] and user = User.find(opts[:resource_owner_id])
+      payload[:user] = {
         id: user.id,
         email: user.email
       }
-    }
+    end
+
+    payload
   end
 
   # Use the application secret specified in the Access Grant token

@@ -1,49 +1,55 @@
 import request from 'superagent';
 import { getApiPath } from '../../utils/Utils';
+import getApiToken from '../../services/oauth';
 
 export default {
 
   getComments(commentable, cacheVersion) {
     return new Promise((resolve, reject) => {
-      request(`${getApiPath()}/private/comments`)
-        .query({ id: commentable.id })
-        .query({ type: commentable.type })
-        .query(cacheVersion && cacheVersion.length ? { v: cacheVersion } : {})
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.comments);
-        });
+      getApiToken(token => {
+        request(`${getApiPath()}/v2/comments`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({ id: commentable.id })
+          .query({ type: commentable.type })
+          .query(cacheVersion && cacheVersion.length ? { v: cacheVersion } : {})
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.comments);
+          });
+      });
     });
   },
 
-  deleteComment(id, csrfToken) {
+  deleteComment(id) {
     return new Promise((resolve, reject) => {
-      request
-        .del(`${getApiPath()}/private/comments/${id}`)
-        .set('X-CSRF-Token', csrfToken)
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.comment);
-        });
+      getApiToken(token => {
+        request
+          .del(`${getApiPath()}/v2/comments/${id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.comment);
+          });
+      }, true);
     });
   },
 
-  updateComment(comment, csrfToken) {
+  updateComment(comment) {
     return new Promise((resolve, reject) => {
-      request
-        .put(`${getApiPath()}/private/comments/${comment.comment.id}`)
-        .set('X-CSRF-Token', csrfToken)
-        .send(comment)
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.comment);
-        });
+      getApiToken(token => {
+        request
+          .put(`${getApiPath()}/v2/comments/${comment.comment.id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(comment)
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.comment);
+          });
+      }, true);
     });
   },
 
   postLike(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post(`${getApiPath()}/private/likes`)
+        .post(`${getApiPath()}/v1/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
         .withCredentials()
@@ -56,7 +62,7 @@ export default {
   deleteLike(id, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del(`${getApiPath()}/private/likes`)
+        .del(`${getApiPath()}/v1/likes`)
         .set('X-CSRF-Token', csrfToken)
         .send({ comment_id: id })
         .withCredentials()

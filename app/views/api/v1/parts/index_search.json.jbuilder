@@ -1,5 +1,5 @@
 json.parts @parts[:models] do |part|
-  json.partial! 'part', part: part
+  json.partial! 'api/v1/parts/part', part: part
 end
 json.page @parts[:page]
 json.next_page @parts[:max] > @parts[:total_size] ? @parts[:page] : nil

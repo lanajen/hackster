@@ -1,5 +1,5 @@
 json.parts @parts do |part|
-  json.partial! 'part', part: part
+  json.partial! 'api/v1/parts/part', part: part
 end
 json.page @parts.current_page
 json.next_page @parts.next_page

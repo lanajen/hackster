@@ -44,12 +44,11 @@ HackerIo::Application.routes.draw do
           get 'me' => 'users#show'
           resources :announcements
           resources :build_logs
-          resources :challenges, only: [], defaults: { format: :json } do
+          resources :challenges, only: [] do
             get 'entries_csv' => 'challenges#entries_csv'
             get 'ideas_csv' => 'challenges#ideas_csv'
             get 'participants_csv' => 'challenges#participants_csv'
           end
-          resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
           resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload
@@ -75,10 +74,10 @@ HackerIo::Application.routes.draw do
           resources :projects, except: [:show, :index] do
             get 'description' => 'projects#description', on: :member
           end
-          scope :review_decisions, defaults: { format: :json } do
+          scope :review_decisions do
             post '' => 'review_decisions#create'
           end
-          scope :review_threads, defaults: { format: :json } do
+          scope :review_threads do
             get '' => 'review_threads#show'
           end
           resources :stats, only: [:create]
@@ -91,7 +90,6 @@ HackerIo::Application.routes.draw do
         end
 
         namespace :v1 do
-          get 'me' => 'users#me'
           resources :chrome_sync, only: [] do
             get '' => 'chrome_sync#show', on: :collection
             patch '' => 'chrome_sync#update', on: :collection
@@ -108,6 +106,13 @@ HackerIo::Application.routes.draw do
           resources :projects, only: [:show, :index]
           resources :users, only: [:show]
           get 'search' => 'search#index'
+          match "*all" => "base#cors_preflight_check", via: :options
+        end
+
+        namespace :v2 do
+          get 'me' => 'users#me'
+          resources :comments, only: [:index, :create, :update, :destroy]
+          resources :parts, except: [:new, :edit]
           match "*all" => "base#cors_preflight_check", via: :options
         end
       end

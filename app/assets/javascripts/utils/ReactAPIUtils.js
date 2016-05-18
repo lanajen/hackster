@@ -1,5 +1,6 @@
 import request from 'superagent';
 import { getApiPath } from './Utils';
+import getApiToken from '../services/oauth';
 
 module.exports = {
 
@@ -146,13 +147,15 @@ module.exports = {
 
   postComment(comment) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/comments`)
-        .send(comment)
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.comment);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/v2/comments`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(comment)
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.comment);
+          });
+      }, true);
     });
   },
 

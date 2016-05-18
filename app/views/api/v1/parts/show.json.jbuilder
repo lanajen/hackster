@@ -1,3 +1,3 @@
 json.part do
-  json.partial! 'part', part: @part
+  json.partial! 'api/v1/parts/part', part: @part
 end

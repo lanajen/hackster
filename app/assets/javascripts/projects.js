@@ -562,7 +562,7 @@ $select2target = null;
       return {
         minimumInputLength: 3,
         ajax: {
-          url: Utils.getApiPath() + "/v1/parts",
+          url: Utils.getApiPath() + "/v2/parts",
           dataType: 'json',
           delay: 150,
           transport: function(params, success, failure) {
@@ -630,7 +630,7 @@ $select2target = null;
       $(this).find('.part_' + select.data('link-type')).show();
 
       var id = $(this).find('[name="id"]').val();
-      basePartsApiUrl = Utils.getApiPath() + '/v1/parts';
+      basePartsApiUrl = Utils.getApiPath() + '/v2/parts';
       if (id.length) {
         $(this).find('form').attr('action', basePartsApiUrl + '/' + id);
         $(this).find('input[name="_method"]').val('patch');
@@ -661,7 +661,7 @@ $select2target = null;
       $(this).find('.part_name').focus();
     });
 
-    $('#parts-popup form').on('ajax:success', function(xhr, data, status){
+    $('#parts-popup form').on('ajax:success', function(event, xhr, data, status){
       var select = $('#' + $select2target);
       var tpl = prepareOptionTagForPart(data.part);
       select.html(tpl);

@@ -201,6 +201,35 @@ $(function () {
   });
 
   $('body')
+    // the function below hijacks UJS requests that need an API token
+    .on('ajax:before', '[data-with-api-token=true]', function(e){
+      var form = $(event.target);
+      var formData = form.serialize();
+      var url = form.attr('action');
+      var method = form.attr('method');
+      Utils.getApiToken(function(token){
+        $.ajax({
+          url: url,
+          method: method,
+          data: formData,
+          beforeSend: function(xhr){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            form.trigger('ajax:beforeSend');
+          }
+        }, true)
+          // trigger events so that legacy code works
+          .success(function(data, status, xhr){
+            form.trigger('ajax:success', [xhr, data, status]);
+          })
+          .error(function(data, status, xhr){
+            form.trigger('ajax:error', [xhr, data, status]);
+          })
+          .complete(function(data, status, xhr){
+            form.trigger('ajax:complete', [xhr, data, status]);
+          });
+      });
+      return false;
+    })
     .on('ajax:beforeSend', '.form-save-on-input', function(){
       $('body').addClass('app-loading');
     })

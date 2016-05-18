@@ -5,7 +5,6 @@
 $(function() {
   $(".ellipsis").dotdotdot();
 
-
   // sign out hijack to clear up local storage
   $('.sign-out-link').on('click', function(e){
     e.preventDefault();

@@ -1,0 +1,1 @@
+class ApiUnauthorized < StandardError; end

@@ -17,32 +17,6 @@ class Api::BaseController < ApplicationController
       headers['Access-Control-Allow-Headers'] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token Authorization Token}.join(',')
     end
 
-    def authenticate_api_user
-      if Rails.env == 'development'
-        @current_platform = Platform.find_by_user_name('cypress')
-        @current_ability = @current_platform.ability
-        return
-      end
-
-      authenticate_or_request_with_http_basic do |username, password|
-        load_platform(username)
-        @current_platform && username == @current_platform.api_username && password == @current_platform.api_password
-      end
-    end
-
-    def authenticated_as_platform?
-      current_platform and @authenticated_as_platform
-    end
-
-    def authenticate_platform_or_user
-      if request.headers['Authorization'].present? or request.headers['Authorization'] =~ /^Basic/
-        authenticate_api_user
-      else
-        # authenticate_user!
-        doorkeeper_authorize!
-      end
-    end
-
     def current_ability
       if @current_ability
         @current_ability
@@ -73,12 +47,6 @@ class Api::BaseController < ApplicationController
       referrer = request.referrer.presence || request.headers['HTTP_ORIGIN']  # browsers don't always send the referrer for privacy reasons
       @origin_uri = URI.parse(referrer)
     rescue URI::InvalidURIError
-    end
-
-    def load_platform username
-      @current_platform = Platform.find_by_api_username! username
-      @current_ability = @current_platform.ability
-      @authenticated_as_platform = true
     end
 
     def host_is_whitelisted? host

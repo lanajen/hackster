@@ -1,6 +1,7 @@
-class Api::Private::CommentsController < Api::Private::BaseController
-  before_filter :authenticate_user!, :except => [:index]
+class Api::V2::CommentsController < Api::V2::BaseController
   include WidgetsHelper
+  before_filter :doorkeeper_authorize_without_scope!, only: [:index]
+  before_filter -> { doorkeeper_authorize! :comment }, only: [:create, :update, :destroy]
 
   def index
     cache_key = Comment.cache_key(params[:type], params[:id])
