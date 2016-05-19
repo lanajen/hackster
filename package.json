@@ -1,7 +1,7 @@
 {
   "name": "HacksterIO",
   "dependencies": {
-    "@hacksterio/draftster": "^0.2.15",
+    "@hacksterio/draftster": "^0.2.16",
     "async": "^1.4.2",
     "babel-core": "^6.3.15",
     "babel-eslint": "^4.1.6",
