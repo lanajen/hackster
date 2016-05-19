@@ -5,7 +5,7 @@ class WidgetObserver < ActiveRecord::Observer
 
   def after_save record
     expire record
-    if record.type == 'CodeRepoWidget' and embed = Embed.new(widget_id: record.id) and embed.provider_name == 'arduino' and record.url_changed?
+    if record.type == 'CodeRepoWidget' and embed = Embed.new(url: record.url) and embed.provider_name == 'arduino' and record.url_changed?
       ArduinoWorker.perform_async 'add_project_url_to_sketch', record.url, record.project_id
     end
   end

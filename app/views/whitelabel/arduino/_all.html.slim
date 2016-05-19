@@ -126,9 +126,11 @@
       }
     });
   = javascript_include_tag 'whitelabel/arduino/application'
-  script src="//cdn-dev.arduino.cc/header-footer/loader.js" type="text/javascript"
+  script src="//#{ENV['ARDUINO_CDN'] || 'cdn.arduino.cc'}/header-footer/loader.js" type="text/javascript"
   javascript:
-    ArduinoHeaderAndFooter.init({parts: ['create-nav'],authentication: false});
+    ArduinoHeaderAndFooter.init({parts: ['create-nav'], authentication: false}, function(){
+      $('.grid-nav #projecthub').on('click', function(event){ event.preventDefault();$('#ino-create-nav .menu-toggle').click();});
+    });
   = button_to 'Sign out', destroy_user_session_path, method: :delete, form: { id: 'sign-out-form', class: 'hidden' }
 
 = content_for :footer do

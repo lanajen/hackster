@@ -6,8 +6,10 @@ class ArduinoApiClient
     url = get_api_url sketch_url
 
     if tutorials = get_tutorials_info(url)
-      tutorials << project_url
-      set_tutorials_info url, tutorials
+      unless project_url.in? tutorials
+        tutorials << project_url
+        set_tutorials_info url, tutorials
+      end
     end
   end
 
