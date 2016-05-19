@@ -62,6 +62,14 @@
             span.input-group-addon hours
           = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 
+          - unless current_user.is? :confirmed_user
+            .alert.alert-warning
+              p
+                ' Please confirm your email address in order to be able to publish projects.
+                ' Haven't received the confirmation email?
+                = link_to 'Resend', new_user_confirmation_path, class: 'alert-link'
+                | . Contact us at help@hackster.io if you need help.
+
           .form-group
             .col-md-4
               label.control-label Privacy settings
@@ -76,11 +84,11 @@
                   i.fa.fa-lock
                   span Accessible only to #{who.to_sentence}
                 label
-                  = radio_button 'base_article', :discovery_settings, 'unpublished', checked: @project.discovery_settings == 'unpublished'
+                  = radio_button 'base_article', :discovery_settings, 'unpublished', checked: @project.discovery_settings == 'unpublished', disabled: !can?(:publish, @project)
                   i.fa.fa-eye-slash
                   span Accessible to people with the link and visible on my profile
                 label
-                  = radio_button 'base_article', :discovery_settings, 'published', checked: @project.discovery_settings == 'published'
+                  = radio_button 'base_article', :discovery_settings, 'published', checked: @project.discovery_settings == 'published', disabled: !can?(:publish, @project)
                   i.fa.fa-eye
                   span Discoverable in the search and on platform hubs
               p.help-block When you make your project public for the first time, it will automatically be submitted to our staff as a  candidate to be featured.

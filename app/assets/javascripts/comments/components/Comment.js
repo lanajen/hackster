@@ -91,19 +91,19 @@ export default class Comment extends Component {
                                 <FlagButton currentUserId={this.props.currentUser.id} flaggable={{ type: "Comment", id: id }}/>
                               </li>);
 
-    let replyButton = this.props.parentIsDeleted === false
-                ? (<li>
-                    <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
-                    </li>)
-                : (<li className="text-muted">(Discussion closed)</li>);
+    let replyButton = this.props.currentUser.isConfirmed
+                ? (this.props.parentIsDeleted === false
+                  ? (<li>
+                      <a href="javascript:void(0);" onClick={this.handleReplyClick.bind(this, parent_id || id)}>{depth === 0 ? 'Reply' : 'Reply to conversation'}</a>
+                      </li>)
+                  : (<li className="text-muted">(Discussion closed)</li>))
+                : (null);
 
     let counterText = likingUsers.length == 1 ? 'thank' : 'thanks';
 
     let counter = likingUsers.length > 0
                 ? (<li className="r-comments-counter"><span>{likingUsers.length} {counterText}</span></li>)
                 : (null);
-
-    let trailingMiddot = counter ? (<li className="middot">•</li>) : (null);
 
     let editButton = (user_id === this.props.currentUser.id || this.props.currentUser.isAdmin)
              ? (<li>
@@ -114,9 +114,7 @@ export default class Comment extends Component {
     let actions = this.props.currentUser.id
                 ? (<ul className="comment-actions">
                     <LikeButton commentId={id} currentUserId={this.props.currentUser.id} parentId={parent_id} likingUsers={likingUsers} deleteLike={this.props.deleteLike} postLike={this.props.postLike} />
-                    <li className="middot">•</li>
                     {replyButton}
-                    {trailingMiddot}
                     {counter}
                   </ul>)
                 : likingUsers.length > 0
@@ -151,15 +149,17 @@ export default class Comment extends Component {
               ? (<a href={userLink}>{userName}</a>)
               : userName;
 
-    let manageDropdown = (<div className="dropdown comment-manage pull-right">
-                          <a className="dropdown-toggle btn btn-link btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="javascript:void(0)">
-                            <i className="fa fa-ellipsis-v" />
-                          </a>
-                          <ul className="dropdown-menu">
-                            {editButton}
-                            {deleteOrFlagButton}
-                          </ul>
-                        </div>);
+    let manageDropdown = this.props.currentUser.id
+                        ? (<div className="dropdown comment-manage pull-right">
+                            <a className="dropdown-toggle btn btn-link btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="javascript:void(0)">
+                              <i className="fa fa-ellipsis-v" />
+                            </a>
+                            <ul className="dropdown-menu">
+                              {editButton}
+                              {deleteOrFlagButton}
+                            </ul>
+                          </div>)
+                        : (null);
 
     let comment = depth === 0 && deleted === true
                 ? (<div>
