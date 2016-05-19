@@ -24,7 +24,7 @@ class BaseArticle < ActiveRecord::Base
   SORTING = {
     'magic' => :magic_sort,
     'popular' => :most_popular,
-    'recent' => :last_featured,
+    'recent' => :most_recent,
     'respected' => :most_respected,
     'trending' => :magic_sort,
     'updated' => :last_updated,
@@ -366,23 +366,27 @@ class BaseArticle < ActiveRecord::Base
     where('projects.made_public_at > ?', 1.year.ago)
   end
 
-  def self.last_created
+  def self.last_created opts={}
     order(created_at: :desc)
   end
 
-  def self.last_featured
+  def self.last_featured opts={}
     order featured_date: :desc
   end
 
-  def self.last_public
+  def self.last_published opts={}
+    order made_public_at: :desc
+  end
+
+  def self.last_public opts={}
     order(made_public_at: :desc)
   end
 
-  def self.last_updated
+  def self.last_updated opts={}
     order(updated_at: :desc)
   end
 
-  def self.magic_sort
+  def self.magic_sort opts={}
     order(popularity_counter: :desc, created_at: :desc)
   end
 
@@ -394,11 +398,15 @@ class BaseArticle < ActiveRecord::Base
     indexable.median(:respects_count)
   end
 
-  def self.most_popular
+  def self.most_popular opts={}
     order(impressions_count: :desc)
   end
 
-  def self.most_respected
+  def self.most_recent opts={}
+    opts[:show_all] ? last_published : last_featured
+  end
+
+  def self.most_respected opts={}
     order(respects_count: :desc)
   end
 
