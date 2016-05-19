@@ -8,7 +8,7 @@ module ProjectHelper
   end
 
   def id_for_toc title
-    '#toc-' + title.downcase.gsub(/[^a-z]/, '-')
+    '#toc-' + title.downcase.gsub(/[^a-z0-9]/, '-')
   end
 
   def title_for_toc title
