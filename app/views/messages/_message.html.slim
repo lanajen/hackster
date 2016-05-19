@@ -1,11 +1,12 @@
 - message = receipt.receivable
+- user = message.user
 .single-comment class=(receipt.is_unread? ? 'unread' : '')
   .single-comment-inner
     .comment-title.clearfix
-      .avatar= message.user.decorate.avatar_link(:mini)
+      .avatar= user ? user.decorate.avatar_link(:mini) : image_tag('guest_default_100.png')
       .profile-name
         h4
-          strong=> message.user.decorate.name_link
+          strong=> user ? user.decorate.name_link : 'Former Hackster user'
 
         span.text-muted
           => time_ago_in_words(message.created_at)

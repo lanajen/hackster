@@ -1340,9 +1340,11 @@ div.pe-panel#hardware div.btn-group,
 div.pe-panel#software div.btn-group {
   width: 100%;
 }
-div.pe-panel#hardware div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset,
-div.pe-panel#software div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
+div.pe-panel#hardware div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
   width: 50%;
+}
+div.pe-panel#software div.btn-group a.btn.btn-sm.btn-default.modal-open.modal-reset {
+  width: 33%;
 }
 .parts-widget td {
   background: #F4F7F7;
@@ -2506,10 +2508,11 @@ div.info-header {
   text-align: left;
   margin-top: 20px;
 }
-.part-box.box .image .action-buttons button {
+.part-box.box .image .action-buttons button, .part-box.box .image .action-buttons .follow-button {
   display: inline-block;
   width: auto;
   margin-bottom: 20px;
+  color: white;
 }
 .part-box.box .image .action-buttons a.btn.btn-link {
   text-align: left;

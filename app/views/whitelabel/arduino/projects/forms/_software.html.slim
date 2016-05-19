@@ -32,6 +32,9 @@
             a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-repository-popup'
               i.fa.fa-link>
               | Link existing repository
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#arduino-repository-popup'
+              i.fa.fa-link>
+              | Link to Arduino Editor
 
           = render partial: 'projects/forms/table', locals: { f: f, widget_types: %w(CodeRepoWidget CodeWidget), embed_id: 'code-repository' }
 
@@ -46,7 +49,8 @@
 
 = content_for :js do
 
-  = render_pe_popup 'code-repository', widget_class: CodeRepoWidget, url_placeholder: 'Eg: https://github.com/fritzing/fritzing-app', url_hint: 'Supported: Bitbucket, Codebender, Gist, Github', popup_style: 'repository'
+  = render_pe_popup 'code-repository', widget_class: CodeRepoWidget, url_placeholder: "Eg: #{request.scheme}://#{request.host}/editor/#{current_user.user_name}/0244fe19-8697-414f-a98a-62abc33d2bba/preview", url_hint: 'Supported: Arduino Web Editor, Bitbucket, Codebender, Gist, Github', popup_style: 'repository'
+  = render_pe_popup 'arduino-repository', widget_class: CodeRepoWidget, url_placeholder: "Eg: #{request.scheme}://#{request.host}/editor/#{current_user.user_name}/0244fe19-8697-414f-a98a-62abc33d2bba/preview", url_hint: '', popup_style: 'repository', title: 'Link to Arduino Web Editor'
 
   = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
 

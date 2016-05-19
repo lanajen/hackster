@@ -4,6 +4,7 @@ require('expose?ReactDOM!react-dom');
 require('expose?hljs!highlight.js');
 
 /** Components */
+require('expose?ChallengeSubscribeButton!./challenge_subscribe_button/app');
 require('expose?Comments!./comments/app');
 require('expose?ContestCsvExporter!./contest_csv_exporter/app');
 require('expose?ContentTypeSelector!./content_type_selector/app');

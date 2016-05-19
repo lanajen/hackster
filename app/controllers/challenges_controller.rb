@@ -192,7 +192,10 @@ class ChallengesController < ApplicationController
     end
 
     def load_challenge
-      @challenge = Challenge.find_by_slug! params[:slug]
+      @challenge = Challenge.where("LOWER(challenges.slug) = ?", params[:slug].downcase).first!
+      if params[:slug] != @challenge.slug
+        redirect_to request.fullpath.gsub(params[:slug], @challenge.slug) and return
+      end
       @challenge = @challenge.decorate
     end
 
@@ -209,12 +212,24 @@ class ChallengesController < ApplicationController
     def load_projects
       per_page = Challenge.per_page
       if @challenge.judged?
-        @winning_entries = @challenge.entries.winning.includes(:project).inject([]){|mem, e| mem << e unless mem.select{|m| m.project_id == e.project_id }.any?; mem }
-        @winning_entries_count = @winning_entries.count
-        @other_projects = @challenge.projects.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC").most_respected.where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        if params[:category_id]
+          @category = ChallengeCategory.where(id: params[:category_id], challenge_id: @challenge.id).first!
+          @projects = @challenge.projects.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC").with_category(params[:category_id]).most_respected.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        else
+          @winning_entries = @challenge.entries.winning.includes(:project).inject([]){|mem, e| mem << e unless mem.select{|m| m.project_id == e.project_id }.any?; mem }
+          @winning_entries_count = @winning_entries.count
+          @other_projects = @challenge.projects.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC").most_respected.where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        end
       else
         per_page = per_page - 1 if @challenge.open_for_submissions? and !@is_challenge_entrant
-        @projects = @challenge.projects.valid.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC, challenge_projects.created_at DESC").for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @projects = @challenge.projects.valid.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC, challenge_projects.created_at DESC")
+
+        if params[:category_id]
+          @category = ChallengeCategory.where(id: params[:category_id], challenge_id: @challenge.id).first!
+          @projects = @projects.with_category(params[:category_id])
+        end
+
+        @projects = @projects.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end
     end
 

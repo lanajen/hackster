@@ -49,6 +49,9 @@ HackerIo::Application.routes.draw do
             get 'ideas_csv' => 'challenges#ideas_csv'
             get 'participants_csv' => 'challenges#participants_csv'
           end
+          resources :challenge_registrations do
+            patch '' => 'challenge_registrations#update', on: :collection
+          end
           resources :comments, only: [:index, :create, :update, :destroy], defaults: { format: :json }
           resources :error_logs
           resources :files, only: [:create, :show, :destroy] do

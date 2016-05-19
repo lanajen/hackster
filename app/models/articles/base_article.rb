@@ -696,16 +696,20 @@ class BaseArticle < ActiveRecord::Base
     }
   end
 
-  def post_new_tweet!
+  def post_tweet!
     message = prepare_tweet
-    self.tweeted_at = Time.now
-    TwitterQueue.perform_async 'throttle_update', message
+    media_url = cover_image.try(:imgix_url, :medium)
+    Tweeter.new(message).update_with_media(media_url)
+
+    update_attribute :tweeted_at, Time.now
   end
 
-  def post_new_tweet_at! time
-    message = prepare_tweet
-    self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :medium)
+  def schedule_tweet! time=nil
+    if time
+      TwitterQueue.perform_at time, 'post_project_tweet', id
+    else
+      TwitterQueue.perform_async 'throttle_project_tweet', id
+    end
   end
 
   def prepare_tweet

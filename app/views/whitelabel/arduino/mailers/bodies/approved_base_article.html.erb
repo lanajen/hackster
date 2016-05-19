@@ -1,0 +1,21 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|project_link|">|project_name|</a> has been featured!</p>
+
+<p>
+  Your write-up will show on <a href="https://www.hackster.io?utm_source=hackster&utm_medium=email&utm_campaign=<%= @context[:email_template] %>">Hackster's home page</a> and all related platform pages
+  <% if @context[:project].featured_date < Time.now %>
+    immediately.
+  <% else %>
+    on <%= l @context[:project].featured_date %>.
+  <% end %>
+</p>
+
+<p>Cheers,<br> The Arduino Project Hub team</p>
+<p>
+  Arduino Project Hub is powered by <a href="https://www.hackster.io">Hackster.io</a>
+</p>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? <a href="|unsubscribe_link:project_approved|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+</p>

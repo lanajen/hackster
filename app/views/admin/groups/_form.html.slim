@@ -50,6 +50,7 @@
       = f_sub.input :default_project_cover_image_file_path, hint: "with no slash at the beginning"
       = f_sub.input :logout_redirect_url
       = f_sub.input :name
+      = f_sub.input :from_email, as: :string
       = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
       = f.input :enable_certification, as: :boolean, inline_label: 'Enable project certification', label: false, hint: "Allow admins to mark projects as certified by their platform."
       = f.input :enable_moderators, as: :boolean, inline_label: 'Enable moderation permissions', label: false, hint: "This will allow platform admins and moderators to fully edit projects in the platform. Use only if requested!"

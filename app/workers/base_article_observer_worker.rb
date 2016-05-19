@@ -47,11 +47,11 @@ class BaseArticleObserverWorker < BaseWorker
 
     @notify = false
     if record.featured_date.nil?
-      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id if record.should_tweet?  # delay to give it time to run update_platforms
+      record.schedule_tweet! if record.should_tweet?
       record.update_column :featured_date, Time.now
       @notify = true
     elsif record.featured_date > Time.now
-      TwitterQueue.perform_in 1.minute, 'schedule_project_tweet', record.id, record.featured_date if record.should_tweet?
+      record.schedule_tweet! record.featured_date if record.should_tweet?
       @notify = true
     end
 
