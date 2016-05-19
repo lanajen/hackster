@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
     end
 
     if params[:sort]
-      @projects = @projects.send(Project::SORTING[params[:sort]])
+      @projects = @projects.send(Project::SORTING[params[:sort]], show_all: params[:show_all])
     end
 
     if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
