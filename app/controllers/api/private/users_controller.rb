@@ -47,8 +47,9 @@ class Api::Private::UsersController < Api::Private::BaseController
 
   def show
     user = {
-      id: current_user ? current_user.id : nil,
-      isAdmin: current_user ? current_user.is?(:admin) : false,
+      id: current_user.try(:id),
+      isAdmin: current_user.try(:is?, :admin),
+      isConfirmed: current_user.try(:is?, :confirmed_user),
       csrfToken: form_authenticity_token
     }
     render json: { user: user }

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import CommentForm from './CommentForm';
 import Comment from './Comment';
 
 export default class Comments extends Component {

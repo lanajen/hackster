@@ -23,8 +23,13 @@ class CommentsContainer extends Component {
   }
 
   render() {
-    let initialForm = this.props.commentStore.user.id !== null
-                    ? (<CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} placeholder={this.props.placeholder} />)
+    let initialForm = this.props.commentStore.user.id
+                    ? (this.props.commentStore.user.isConfirmed
+                        ? <CommentForm parentId={null} commentable={this.props.commentable} onPost={this.handleCommentPost} formData={this.props.commentStore.formData} placeholder={this.props.placeholder} />
+                        : (<div className="alert alert-warning">
+                            <p>Please confirm your email before commenting. Haven't received a confirmation email? <a href="/users/confirmation/new" className="alert-link">Resend</a>. Contact us at help@hackster.io for help.
+                            </p>
+                          </div>))
                     : (null);
     let comments = this.props.commentStore.fetchedInitialComments
                  ? (<Comments actions={this.props.actions} commentStore={this.props.commentStore} placeholder={this.props.placeholder} commentable={this.props.commentable} />)
