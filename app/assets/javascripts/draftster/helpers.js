@@ -15,7 +15,7 @@ export function getStory(projectId) {
           const description = res.body.description;
 
           !description.length
-            ? resolve([])
+            ? resolve('')
             : parseDescription(description, { initialParse: true })
                 .then(parsed => {
                   resolve(parsed);
@@ -32,7 +32,7 @@ export function getStory(projectId) {
             return item;
           });
 
-          resolve(story);
+          resolve(story.length ? story : '');
         } else {
           reject('Error Fetching Story!');
         }
