@@ -355,16 +355,22 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.last_7days opts={}
-    where('projects.made_public_at > ?', 7.days.ago)
+    last_n 7.days, opts
   end
 
   def self.last_30days opts={}
-    where('projects.made_public_at > ?', 30.days.ago)
+    last_n 30.days, opts
   end
 
   def self.last_1year opts={}
-    where('projects.made_public_at > ?', 1.year.ago)
+    last_n 1.year, opts
   end
+
+  def self.last_n n, opts={}
+    column = opts[:show_all] ? 'made_public_at' : 'featured_date'
+    where("projects.#{column} > ?", n.ago)
+  end
+
 
   def self.last_created opts={}
     order(created_at: :desc)
@@ -376,10 +382,6 @@ class BaseArticle < ActiveRecord::Base
 
   def self.last_published opts={}
     order made_public_at: :desc
-  end
-
-  def self.last_public opts={}
-    order(made_public_at: :desc)
   end
 
   def self.last_updated opts={}
