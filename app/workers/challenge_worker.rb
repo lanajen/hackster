@@ -1,5 +1,4 @@
 class ChallengeWorker < BaseWorker
-
   def do_after_end id
     challenge = Challenge.find id
 
@@ -20,6 +19,10 @@ class ChallengeWorker < BaseWorker
     expire_cache challenge
 
     NotificationCenter.notify_all :judged, :challenge, id
+  end
+
+  def populate_default_faq id
+    DefaultFaqEntry.populate_challenge_defaults id
   end
 
   private
