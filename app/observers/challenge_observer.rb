@@ -1,4 +1,8 @@
 class ChallengeObserver < ActiveRecord::Observer
+  def after_create record
+    ChallengeWorker.perform_async 'populate_default_faq', record.id
+  end
+
   def after_update record
     if record.activate_banners_changed? and record.open_for_submissions?
       record.sponsors.each do |platform|

@@ -1,26 +1,34 @@
-- q: Do I need to participate in the <%= @challenge.pre_contest_label.downcase %> to submit a project?
+precontest_participate:
+  q: Do I need to participate in the <%= @challenge.pre_contest_label.downcase %> to submit a project?
   a: "<p>No, you're welcome to submit an entry for the <%= @challenge.self_label.downcase %> even if you haven't participated or won in the <%= @challenge.pre_contest_label.downcase %>.</p>"
   condition: "@challenge.activate_pre_contest?"
-- q: "Did I win the <%= @challenge.self_label.downcase %>? When will I receive my prize?"
+did_i_win:
+  q: "Did I win the <%= @challenge.self_label.downcase %>? When will I receive my prize?"
   a: "<p>If you are a winner, we will contact you directly via email to arrange the shipment of your prize.</p>"
-- q: Somebody copied my entry! What can I do?
+entry_copied:
+  q: Somebody copied my entry! What can I do?
   a: "When judging entries, we take into account the submission date. When an entry is clearly plagiarized from another, we favor the original entry; however, we might favor a newer entry if it is considerably better than the original. If you believe the result of the judging is unfair, please email us at help@hackster.io to appeal."
-- q: What are the entry requirements?
+entry_requirements:
+  q: What are the entry requirements?
   a: "<%= raw @challenge.requirements %>"
   condition: "@challenge.requirements.present?"
-- q: What are the judging criteria?
+judging_criteria:
+  q: What are the judging criteria?
   a: "<%= raw @challenge.judging_criteria %>"
   condition: "@challenge.judging_criteria.present?"
-- q: What are the prizes?
+prizes:
+  q: What are the prizes?
   a: >
     <ul>
       <% @challenge.prizes.each do |prize| %>
         <li><%= prize.name %> will receive: <% if prize.description.present? %><%= prize.description %><% elsif prize.cash_value.present? %><%= number_to_currency prize.cash_value, precision: 0 %><% end %><% if prize.quantity > 1 %> (<%= prize.quantity %> are available)<% end %>.</li>
       <% end %>
     </ul>
-- q: "What is the <%= @challenge.self_label.downcase %> timeline?"
+timeline:
+  q: "What is the <%= @challenge.self_label.downcase %> timeline?"
   a: "<%= render 'challenges/timeline', challenge: @challenge %>"
-- q: When will winners be announced? Where can I see the list?
+winners_announced:
+  q: When will winners be announced? Where can I see the list?
   a: >
     <% if @challenge.activate_pre_contest? and @challenge.pre_winners_announced_date.present? %>
       <p><%= @challenge.pre_contest_label %> winners will be announced by <%= l @challenge.pre_winners_announced_date, format: :long_date %>. The list of winners will be visible on the main page (<%= @challenge.self_label %> brief).</p>
@@ -32,12 +40,15 @@
       <p><%= @challenge.self_label %> <%= @challenge.winners_label.downcase %> will be announced on <%= l @challenge.winners_announced_date, format: :long_date %>. The list of <%= @challenge.winners_label.downcase %> will be visible on the main page (<%= @challenge.self_label %> brief).</p>
     <% end %>
   condition: "@challenge.pre_winners_announced_date.present? or @challenge.winners_announced_date.present?"
-- q: Who is eligible to participate?
+eligibility:
+  q: Who is eligible to participate?
   a: "<%= raw @challenge.eligibility %>"
   condition: "@challenge.eligibility.present?"
-- q: "What are the steps to enter the <%= @challenge.self_label.downcase %>?"
+entry_steps:
+  q: "What are the steps to enter the <%= @challenge.self_label.downcase %>?"
   a: "<%= raw @challenge.how_to_enter %>"
   condition: "@challenge.how_to_enter.present?"
-- q: My project is locked and I can't edit it anymore. Why is that?
+project_locked:
+  q: My project is locked and I can't edit it anymore. Why is that?
   a: >
     All projects entered in the <%= @challenge.self_label.downcase %> are locked after the submission deadline to ensure that they remain the same during the judging process. They are then unlocked after <%= @challenge.winners_label.downcase %> are announced.

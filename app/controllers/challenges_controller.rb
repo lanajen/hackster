@@ -80,8 +80,7 @@ class ChallengesController < ApplicationController
   def faq
     title "#{@challenge.name} FAQ"
     @faq_entries = @challenge.faq_entries.publyc.order("LOWER(threads.title) ASC")
-    conf = YAML.load(File.new("#{Rails.root}/config/contest_faq.yml").read)
-    @general_faqs = conf
+    @default_faqs = @challenge.default_faq_entries.publyc.order("LOWER(threads.title) ASC")
     @cache_keys = Rails.cache.fetch("challenge-#{@challenge.id}-faq-cache-tags") do
       @faq_entries.map{|f| f.token_tags.try(:values) || [] }.flatten.uniq.map{|v| "challenge-#{@challenge.id}-#{v}"}
     end

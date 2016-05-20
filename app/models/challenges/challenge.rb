@@ -23,9 +23,10 @@ class Challenge < ActiveRecord::Base
   has_many :admins, through: :challenge_admins, source: :user
   has_many :categories, -> { order("LOWER(challenge_categories.name)") }, class_name: 'ChallengeCategory'
   has_many :challenge_admins
+  has_many :default_faq_entries, as: :threadable, dependent: :destroy
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
-  has_many :faq_entries, as: :threadable
+  has_many :faq_entries, as: :threadable, dependent: :destroy
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :idea_entrants, -> { uniq }, through: :ideas, source: :user
   has_many :notifications, as: :notifiable, dependent: :delete_all
