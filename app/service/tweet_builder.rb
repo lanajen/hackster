@@ -6,16 +6,16 @@ class TweetBuilder
     @project = project
   end
 
-  def tweet prepend='', append=''
+  def tweet opts={}
     # we have 124-129 characters to play with
 
-    message = prepend
+    message = opts[:prepend] || ''
 
     message << @project.name.gsub(/\.$/, '')
 
     message << generate_authors
 
-    size = get_size(message)
+    size = get_size(message, opts[:has_image])
 
     message << " #{url}"
 
@@ -60,10 +60,10 @@ class TweetBuilder
       output
     end
 
-    def get_size message, url_included=false
-      size = 1 + message.size + (URL_SIZE * 2)  # one URL for project link, one for image link
-      size -= url.size - 1 if url_included
-      size
+    def get_size message, has_image=false
+      urls_count = 1
+      urls_count += 1 if has_image
+      1 + message.size + (URL_SIZE * urls_count)
     end
 
     def url

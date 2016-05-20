@@ -709,7 +709,7 @@ class BaseArticle < ActiveRecord::Base
   def post_tweet!
     message = prepare_tweet
     media_url = cover_image.try(:imgix_url, :medium)
-    Tweeter.new(message).update_with_media(media_url)
+    Tweeter.new(message).update
 
     update_attribute :tweeted_at, Time.now
   end
@@ -722,9 +722,9 @@ class BaseArticle < ActiveRecord::Base
     end
   end
 
-  def prepare_tweet
-    prepend = "🆕 "  # 2 characters
-    TweetBuilder.new(self).tweet(prepend)
+  def prepare_tweet opts={}
+    opts[:prepend] = "🆕 "  # 2 characters
+    TweetBuilder.new(self).tweet(opts)
   end
 
   def product_tags_string_changed?
