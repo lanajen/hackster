@@ -1,5 +1,5 @@
 class ArduinoApiClient
-  BASE_API_URL = "https://api-dev.arduino.cc/create/user/"
+  BASE_API_URL = "#{ENV['ARDUINO_API_HOST']}/create/user/"
   SKETCH_REGEX = /editor\/([0-9a-zA-Z\-_]+)\/([0-9a-z\-]+)/
 
   def add_tutorial_url_to_sketch sketch_url, project_url
