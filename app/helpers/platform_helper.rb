@@ -67,7 +67,7 @@ module PlatformHelper
       @projects = if @by == 'featured'
         @projects.featured
       else
-        opts = { user: user_signed_in? ? current_user : nil }
+        opts = { user: user_signed_in? ? current_user : nil, show_all: params[:show_all] }
         @projects = @projects.joins(:project) if @by == 'toolbox'
         @projects.merge(BaseArticle.send(BaseArticle::FILTERS[@by], opts))
       end
@@ -76,7 +76,7 @@ module PlatformHelper
     @projects = if sort == 'recent'
       @projects.most_recent
     else
-      @projects.merge(BaseArticle.send(BaseArticle::SORTING[sort]))
+      @projects.merge(BaseArticle.send(BaseArticle::SORTING[sort], show_all: params[:show_all]))
     end
 
     if params[:difficulty].try(:to_sym).in? BaseArticle::DIFFICULTIES.values

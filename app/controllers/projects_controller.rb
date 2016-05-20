@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
     @projects = params[:show_all] ? @projects.published : @projects.indexable
 
     if @by and @by.in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[@by], user: current_user)
+      @projects = @projects.send(Project::FILTERS[@by], user: current_user, show_all: params[:show_all])
       if @by == 'toolbox'
         @projects = @projects.distinct('projects.id')  # see if this can be moved out
       end
