@@ -30,7 +30,7 @@ class ChallengesController < ApplicationController
   def show
     title @challenge.name
 
-    if @challenge.judged? and !@challenge.disable_projects_tab and !@challenge.disable_projects_phase?
+    if @challenge.judged? and !@challenge.disable_projects_phase?
       load_projects
       render 'challenges/projects'
     else
@@ -43,6 +43,8 @@ class ChallengesController < ApplicationController
   end
 
   def projects
+    not_found and return if @challenge.disable_projects_tab? and !@challenge.judged?
+
     title "#{@challenge.name} projects"
     load_projects
   end
