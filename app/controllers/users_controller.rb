@@ -53,7 +53,7 @@ class UsersController < ApplicationController
 
         # projects that were created on this platform but are not linked (= don't have a product)
         ids = @public_query.pluck(:id) + @private_query.pluck(:id)
-        @other_projects = @user.projects.where(origin_platform_id: current_platform.id).where.not(id: ids).for_thumb_display
+        @other_projects = @user.projects.publyc.where(origin_platform_id: current_platform.id).where.not(id: ids).for_thumb_display
         @other_count = @other_projects.count
       end
       @respected_projects = @respected_projects.with_group(current_platform)
