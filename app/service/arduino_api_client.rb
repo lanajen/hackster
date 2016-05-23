@@ -75,6 +75,7 @@ class ArduinoApiClient
       })
       body = { tutorials: tutorials }.to_json
       request.body = body
+      response = http.request(request)
 
     # rescue OpenURI::HTTPError => e
     #   # 500 error or something alike
