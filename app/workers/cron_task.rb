@@ -78,6 +78,7 @@ class CronTask < BaseWorker
   end
 
   def launch_cron
+    AnalyticsWorker.perform_async 'cache_stats'
     CronTask.perform_in 3.minutes, 'cleanup_buggy_unpublished'
     CronTask.perform_in 3.minutes, 'lock_assignment'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
