@@ -5,40 +5,36 @@ class Admin::PagesController < Admin::BaseController
   def analytics
     title "Admin / Analytics"
 
-    @project_count = Project.indexable.count
-    @published_project_count = Project.published.count
-    @external_project_count = ExternalProject.approved.count
-    @waiting_for_approval_project_count = BaseArticle.need_review.count
-    @comment_count = Comment.where(commentable_type: 'BaseArticle').count
-    @like_count = Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
-    @follow_user_count = FollowRelation.where(followable_type: 'User').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
-    @follow_platform_count = FollowRelation.where(followable_type: 'Group').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
-    @user_count = User.invitation_accepted_or_not_invited.not_hackster.count
-    @messages_count = Comment.where(commentable_type: 'Conversation').count
-    @new_messages_count = Comment.where(commentable_type: 'Conversation').where('comments.created_at > ?', Date.today).count
-    @new_projects_count = BaseArticle.indexable.where('projects.made_public_at > ?', Date.today).count
-    @new_comments_count = Comment.where(commentable_type: 'BaseArticle').where('comments.created_at > ?', Date.today).count
-    @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
-    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
-    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
-    @new_users_count = User.invitation_accepted_or_not_invited.not_hackster.where('users.created_at > ?', Date.today).count
-    max_date = Date.yesterday.end_of_day
-    new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 1.day, max_date).count
-    new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 7.days, max_date).count
-    new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 30.days, max_date).count
-    @active_users1d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 1.day, max_date).count - new_users1d
-    @pct_active_users1d = ((@active_users1d.to_f / @user_count) * 100).round(1)
-    @active_users7d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 7.days, max_date).count - new_users7d
-    @pct_active_users7d = ((@active_users7d.to_f / @user_count) * 100).round(1)
-    @active_users30d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 30.days, max_date).count - new_users30d
-    @pct_active_users30d = ((@active_users30d.to_f / @user_count) * 100).round(1)
-    @project_impressions = Rails.cache.fetch('pjimpr', expires_in: 1.day){ ProjectImpression.count }
-    @replicated_projects_count = FollowRelation.where(followable_type: 'BaseArticle').count
-    @owned_parts_count = FollowRelation.where(followable_type: 'Part').count
-    @new_owned_parts_count = FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
-    @new_replicated_projects_count = FollowRelation.where(followable_type: 'BaseArticle').where('follow_relations.created_at > ?', Date.today).count
-    @engagements_count = Comment.where(commentable_type: %w(BaseArticle Thought)).count + BaseArticle.own.count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + Thought.count
-    @new_engagements_count = Comment.where(commentable_type: %w(BaseArticle Thought)).where('comments.created_at > ?', Date.today).count + BaseArticle.own.where('projects.created_at > ?', Date.today).count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('respects.created_at > ?', Date.today).count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('follow_relations.created_at > ?', Date.today).count + Thought.where('thoughts.created_at > ?', Date.today).count
+    @project_count = get_stat 'project_count'
+    @published_project_count = get_stat 'published_project_count'
+    @external_project_count = get_stat 'external_project_count'
+    @waiting_for_approval_project_count = get_stat 'waiting_for_approval_project_count'
+    @comment_count = get_stat 'comment_count'
+    @like_count = get_stat 'like_count'
+    @follow_user_count = get_stat 'follow_user_count'
+    @follow_platform_count = get_stat 'follow_platform_count'
+    @user_count = get_stat 'user_count'
+    @messages_count = get_stat 'messages_count'
+    @new_messages_count = get_stat 'new_messages_count'
+    @new_projects_count = get_stat 'new_projects_count'
+    @new_comments_count = get_stat 'new_comments_count'
+    @new_likes_count = get_stat 'new_likes_count'
+    @new_user_follows_count = get_stat 'new_user_follows_count'
+    @new_platform_follows_count = get_stat 'new_platform_follows_count'
+    @new_users_count = get_stat 'new_users_count'
+    @active_users1d = get_stat 'active_users1d'
+    @pct_active_users1d = get_stat 'pct_active_users1d'
+    @active_users7d = get_stat 'active_users7d'
+    @pct_active_users7d = get_stat 'pct_active_users7d'
+    @active_users30d = get_stat 'active_users30d'
+    @pct_active_users30d = get_stat 'pct_active_users30d'
+    @project_impressions = get_stat 'project_impressions'
+    @replicated_projects_count = get_stat 'replicated_projects_count'
+    @owned_parts_count = get_stat 'owned_parts_count'
+    @new_owned_parts_count = get_stat 'new_owned_parts_count'
+    @new_replicated_projects_count = get_stat 'new_replicated_projects_count'
+    @engagements_count = get_stat 'engagements_count'
+    @new_engagements_count = get_stat 'new_engagements_count'
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
@@ -224,4 +220,13 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(placed_at, 'yyyy-mm') as date, SUM(orders.total_cost) as sum FROM orders WHERE date_part('months', now() - orders.placed_at) < 12 AND orders.workflow_state NOT IN (%s) GROUP BY date ORDER BY date;"
     @chart_total_redeemed = graph_with_dates_for sql % Order::INVALID_STATES.map{|m| "'#{m}'" }.join(', '), 'Redeemed points', 'AreaChart', Order.valid.where("orders.placed_at > ?", 12.months.ago).sum(:total_cost), 'month'
   end
+
+  private
+    def analytics_redis
+      @redis ||= Redis::Namespace.new('analytics', redis: RedisConn.conn)
+    end
+
+    def get_stat key
+      analytics_redis.get(key).to_i
+    end
 end

@@ -249,6 +249,7 @@ class User < ActiveRecord::Base
   has_counter :lists, 'lists.publyc.count'
   has_counter :live_projects, 'projects.publyc.own.count'
   has_counter :live_hidden_projects, 'projects.publyc.where(hide: true).count'
+  has_counter :new_project_views, 'ProjectImpression.where(project_id: projects.own.pluck(:id)).where("project_impressions.created_at > ?", Date.today.beginning_of_month).count'
   has_counter :owned_parts, 'owned_parts.count'
   has_counter :platforms, 'followed_platforms.count'
   has_counter :project_platforms, 'project_platforms.count'
