@@ -1,5 +1,5 @@
-class Api::Private::LikesController < Api::Private::BaseController
-  before_filter :authenticate_user!
+class Api::V2::LikesController < Api::V2::BaseController
+  before_filter -> { doorkeeper_authorize! :respect }
   before_filter :load_respectable
 
   def create

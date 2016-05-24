@@ -66,13 +66,6 @@ HackerIo::Application.routes.draw do
           end
           resources :groups, only: [:index, :create]
           resources :jobs, only: [:create, :show]
-          resources :likes, only: [:create] do
-            delete '' => 'likes#destroy', on: :collection
-          end
-          resources :lists, only: [:index, :create] do
-            post 'projects' => 'lists#link_project', on: :member
-            delete 'projects' => 'lists#unlink_project', on: :member
-          end
           resources :notifications, only: [:index]
           resources :projects, except: [:show, :index] do
             get 'description' => 'projects#description', on: :member
@@ -115,6 +108,13 @@ HackerIo::Application.routes.draw do
         namespace :v2 do
           get 'me' => 'users#me'
           resources :comments, only: [:index, :create, :update, :destroy]
+          resources :likes, only: [:create] do
+            delete '' => 'likes#destroy', on: :collection
+          end
+          resources :lists, only: [:index, :create] do
+            post 'projects' => 'lists#link_project', on: :member
+            delete 'projects' => 'lists#unlink_project', on: :member
+          end
           resources :parts, except: [:new, :edit]
           match "*all" => "base#cors_preflight_check", via: :options
         end

@@ -7,10 +7,6 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    puts 'resource_owner_authenticator'
-    puts 'current_user: ' + current_user.try(:inspect)
-    puts 'params: ' + params.inspect
-    puts 'request: ' + request.inspect
     current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 
@@ -22,10 +18,6 @@ Doorkeeper.configure do
   # end
 
   resource_owner_from_credentials do
-    puts 'resource_owner_from_credentials'
-    puts 'current_user: ' + current_user.try(:inspect)
-    puts 'params: ' + params.inspect
-    puts 'request: ' + request.inspect
     current_user || redirect_to(new_user_session_url(redirect_to: request.fullpath))
   end
 

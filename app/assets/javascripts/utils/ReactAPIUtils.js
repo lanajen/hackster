@@ -6,13 +6,15 @@ module.exports = {
 
   addList(name) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/lists`)
-        .send({ group: { full_name: name } })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/v2/lists`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ group: { full_name: name } })
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 
@@ -88,13 +90,15 @@ module.exports = {
 
   fetchLists(projectId) {
     return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/lists`)
-        .query({ project_id: projectId })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .get(`${getApiPath()}/v2/lists`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({ project_id: projectId })
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 
@@ -188,12 +192,14 @@ module.exports = {
 
   toggleProjectInList(requestType, listId, projectId) {
     return new Promise((resolve, reject) => {
-      request(requestType, `${getApiPath()}/private/lists/${listId}/projects`)
-        .send({ project_id: projectId })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request(requestType, `${getApiPath()}/v2/lists/${listId}/projects`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ project_id: projectId })
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 

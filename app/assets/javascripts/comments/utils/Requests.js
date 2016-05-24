@@ -46,29 +46,31 @@ export default {
     });
   },
 
-  postLike(id, csrfToken) {
+  postLike(id) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/v1/likes`)
-        .set('X-CSRF-Token', csrfToken)
-        .send({ comment_id: id })
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.liked);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/v2/likes`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ comment_id: id })
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.liked);
+          });
+      }, true);
     });
   },
 
-  deleteLike(id, csrfToken) {
+  deleteLike(id) {
     return new Promise((resolve, reject) => {
-      request
-        .del(`${getApiPath()}/v1/likes`)
-        .set('X-CSRF-Token', csrfToken)
-        .send({ comment_id: id })
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.liked);
-        });
+      getApiToken(token => {
+        request
+          .del(`${getApiPath()}/v2/likes`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ comment_id: id })
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.liked);
+          });
+      }, true);
     });
   }
 }
