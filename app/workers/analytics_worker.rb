@@ -24,15 +24,9 @@ class AnalyticsWorker < BaseWorker
     new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 1.day, max_date).count
     new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 7.days, max_date).count
     new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ? AND users.created_at < ?", max_date - 30.days, max_date).count
-    active_users1d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 1.day, max_date).count - new_users1d
-    set_stat 'active_users1d', active_users1d
-    set_stat 'pct_active_users1d', ((active_users1d.to_f / user_count) * 100).round(1)
-    active_users7d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 7.days, max_date).count - new_users7d
-    set_stat 'active_users7d', active_users7d
-    set_stat 'pct_active_users7d', ((active_users7d.to_f / user_count) * 100).round(1)
-    active_users30d = User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 30.days, max_date).count - new_users30d
-    set_stat 'active_users30d', active_users30d
-    set_stat 'pct_active_users30d', ((active_users30d.to_f / user_count) * 100).round(1)
+    set_stat 'active_users1d', User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 1.day, max_date).count - new_users1d
+    set_stat 'active_users7d', User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 7.days, max_date).count - new_users7d
+    set_stat 'active_users30d', User.where("users.last_seen_at > ? AND users.last_seen_at < ?", max_date - 30.days, max_date).count - new_users30d
     set_stat 'project_impressions', ProjectImpression.count
     set_stat 'replicated_projects_count', FollowRelation.where(followable_type: 'BaseArticle').count
     set_stat 'owned_parts_count', FollowRelation.where(followable_type: 'Part').count
