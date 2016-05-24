@@ -23,11 +23,11 @@ class Admin::PagesController < Admin::BaseController
     @new_platform_follows_count = get_stat 'new_platform_follows_count'
     @new_users_count = get_stat 'new_users_count'
     @active_users1d = get_stat 'active_users1d'
-    @pct_active_users1d = get_stat 'pct_active_users1d'
+    @pct_active_users1d = ((@active_users1d.to_f / @user_count) * 100).round(1)
     @active_users7d = get_stat 'active_users7d'
-    @pct_active_users7d = get_stat 'pct_active_users7d'
+    @pct_active_users7d = ((@active_users7d.to_f / @user_count) * 100).round(1)
     @active_users30d = get_stat 'active_users30d'
-    @pct_active_users30d = get_stat 'pct_active_users30d'
+    @pct_active_users30d = ((@active_users30d.to_f / @user_count) * 100).round(1)
     @project_impressions = get_stat 'project_impressions'
     @replicated_projects_count = get_stat 'replicated_projects_count'
     @owned_parts_count = get_stat 'owned_parts_count'
