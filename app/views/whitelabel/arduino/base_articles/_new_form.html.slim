@@ -8,6 +8,10 @@
         ' Before you get started, check our
         = link_to 'content guidelines', guidelines_path
         | .
+        br
+        ' Learn
+        = link_to 'how to submit your project', 'https://create.arduino.cc/projecthub/Arduino_Genuino/how-to-submit-content-on-arduino-project-hub-cf2177'
+        ' , it may get featured on the Arduino social channels!
       br
       = simple_nested_form_for @project, url: projects_path, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
