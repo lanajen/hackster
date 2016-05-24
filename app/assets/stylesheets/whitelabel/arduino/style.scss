@@ -291,12 +291,117 @@ textarea:focus {
   transition-property: opacity;
   transition-duration: .2s;
 }
-
-
-
 /*  -- END NOTIFICATIONS --  */
 
 
+
+/* -- SLIDESHOW -- */
+.image-gallery-container button.fa {
+  font-family: 'Typonine Sans Pro';
+  color: #00979C;
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+    font-size: 15px;
+    padding: 20px 0;
+    position: relative;
+}
+
+.image-gallery-container button.fa:hover {
+  color: #006569;
+}
+
+.slick-dots li {
+    width: 15px;
+}
+
+.slick-dots li.slick-active button:before, .slick-dots li:hover button:before {
+  color: #00979C;
+}
+
+.image-gallery-container button.fa.fa-chevron-left {
+  float: left;
+}
+
+.image-gallery-container button.fa.fa-chevron-right {
+  float: right;
+  padding-right: 17px;
+}
+
+.image-gallery-container button.fa:before {
+  font-family: 'FontAwesome';
+  padding-right: 6px;
+}
+
+.image-gallery-container button.fa.fa-chevron-right:before {
+  padding-right: 0;
+  position: absolute;
+  right: 0;
+}
+
+.slick-slider {
+    margin-bottom: 75px;
+}
+
+.slick-slider .slick-dots {
+    bottom: -58px;
+    width: calc(100% - 180px);
+    margin-left: 90px;
+}
+/* -- END SLIDESHOW -- */
+
+
+/* -- TOOLTIP CONTRIBUTOR -- */
+.popover.fade {
+    border-radius: 0;
+    border-bottom: 3px solid #00979C;
+    background-color: #F7F7F7;
+    box-shadow: 0 0 0 3px rgba(0,0,0,.1);
+}
+
+.popover.fade .popover-title {
+  border: none;
+    background: transparent;
+    font-family: 'Typonine Sans Pro';
+    letter-spacing: 0.8px;
+    font-size: 13px;
+    text-align: center;
+    padding: 8px 14px;
+}
+
+.popover.fade .popover-content {
+  box-shadow: none;
+  border-top: none;
+  padding: 0px 14px 12px;
+    text-align: center;
+}
+
+.popover.top>.arrow, .popover.top>.arrow:after {
+  border-top-color: #00979C;
+}
+
+.popover.top>.arrow {
+  margin-left: -6px;
+  border-bottom-width: 0;
+  bottom: -6px;
+}
+
+.popover.top>.arrow:after {
+  bottom: -3px;
+  margin-left: -9px;
+  border-bottom-width: 0;
+}
+
+.popover>.arrow {
+  border-width: 6px;
+}
+
+.popover>.arrow:after {
+  border-width: 9px;
+}
+
+/* -- END TOOLTIP CONTRIBUTOR -- */
 
 
 /*  -- CREATE TOOLBAR --  */

@@ -1,6 +1,6 @@
 - unless user_signed_in? or params[:logged_out].present?
   javascript:
-    var arduinoToken = window.localStorage.getItem("ideapp.token");
+    var arduinoToken = window.localStorage.getItem("create.token");
     if (arduinoToken && arduinoToken !== "") {
       //window.location.href = "#{raw arduino_sign_in_url}";
     }
@@ -10,7 +10,7 @@
 
     javascript:
       $(function(){
-        var arduinoUid = window.localStorage.getItem("ideapp.uid");
+        var arduinoUid = window.localStorage.getItem("create.uid");
         if (arduinoUid && arduinoUid !== "" && arduinoUid !== "#{current_user.authorizations.where(provider: 'arduino').first.try(:uid)}") {
           //.append('<input type="hidden" name="redirect_to" value="#{raw arduino_sign_in_url}" />')
           $('#sign-out-form')
