@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
     @projects = params[:show_all] ? @projects.published : @projects.indexable
 
     if @by and @by.in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[@by], user: current_user)
+      @projects = @projects.send(Project::FILTERS[@by], user: current_user, show_all: params[:show_all])
       if @by == 'toolbox'
         @projects = @projects.distinct('projects.id')  # see if this can be moved out
       end
@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
     end
 
     if params[:sort]
-      @projects = @projects.send(Project::SORTING[params[:sort]])
+      @projects = @projects.send(Project::SORTING[params[:sort]], show_all: params[:show_all])
     end
 
     if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
@@ -86,7 +86,8 @@ class ProjectsController < ApplicationController
         @credit_lines = @credits_widget ? @credits_widget.credit_lines : []
       end
     else
-      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge).includes(:prizes).first
+      @challenge_entries = @project.challenge_entries.includes(:challenge, :prizes)
+      @winning_entry = @project.challenge_entries.where(workflow_state: :awarded).includes(:challenge, :prizes).first
       @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
       unless Rails.cache.exist?(['views', I18n.locale, "project-#{@project.id}-teaser", site_user_name, user_signed_in?])
@@ -296,11 +297,13 @@ class ProjectsController < ApplicationController
 
   def update
     authorize! :update, @project
+    if params[:base_article] and params[:base_article][:discovery_settings] != @project.discovery_settings and params[:base_article][:discovery_settings] != 'private'
+      authorize! :publish, @project
+    end
 
     respond_with @project do |format|
       format.html do
         private_was = @project.pryvate
-        type_was = @project.type
         if @project.update_attributes(params[:base_article])
           notice = "#{@project.name} was successfully updated."
           if private_was != @project.pryvate
@@ -313,8 +316,6 @@ class ProjectsController < ApplicationController
             elsif @project.pryvate == false
               notice = "#{@project.name} is now private again."
             end
-          elsif type_was != @project.type
-            notice = "The project template was updated."
           end
           redirect_to @project, notice: notice
         else

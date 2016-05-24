@@ -11,3 +11,10 @@ li.award
       = entry.decorate.status
     - if challenge.in_progress?
       span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+  - if entry.new?
+    p
+      ' Is your project complete?
+      = link_to 'Submit to contest', 'javascript:void(0)', class: 'btn btn-primary btn-sm modal-open', data: { target: "#entry-submit-popup-#{entry.id}" }
+
+= content_for :js do
+  = render 'challenge_entries/submit_popup', entry: entry

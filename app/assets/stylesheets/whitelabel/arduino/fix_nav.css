@@ -1,0 +1,48 @@
+#ino-create-nav {
+  z-index: 10;
+}
+
+#ino-create-nav.nav-visible {
+  z-index: 1005;
+}
+
+#ino-create-nav .nav-bar svg.menu-toggle {
+    fill: #879191;
+}
+
+div#burger_btn_container .menu-toggle {
+  width: 18px;
+  height: 18px;
+  margin: 22px;
+}
+
+div#burger_btn_container {
+  position: fixed;
+  display: inline-block;
+  z-index: 1006;
+  max-height: 65px;
+}
+
+div#sign_in_container {
+  display: inline-block;
+  position: fixed;
+  right: 0;
+  z-index: 1006;
+  height: 65px;
+}
+
+div#sign_in_container a.login-link {
+  color: #879191;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  letter-spacing: 0.9px;
+  margin: 0 22px;
+  position: relative;
+  top: 20px;
+}
+
+.mobile-button {
+    position: static;
+}

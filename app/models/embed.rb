@@ -5,6 +5,7 @@ class Embed
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/ => :channel9,
     /codebender\.cc\/((?:sketch:|example\/)[0-9a-zA-Z\/:]+)/ => :codebender,
+    /create(?:\-dev)?\.arduino\.cc\/editor\/([0-9a-zA-Z\-\_]+\/[0-9a-z\-]+)/ => :arduino,
     /digikey.com\/schemeit\/(?:embed\/)?(#[0-9a-zA-Z]+)/ => :schemeit,
     /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/ => :github,
@@ -54,7 +55,7 @@ class Embed
   end
 
   def code_repo?
-    provider and provider_name.to_s.in? %w(bitbucket codebender gist github snip2code)
+    provider and provider_name.to_s.in? %w(arduino bitbucket codebender gist github snip2code)
   end
 
   def for_text_editor?

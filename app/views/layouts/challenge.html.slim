@@ -175,6 +175,7 @@
 
 = render template: "layouts/#{current_layout}"
 
+- new_project_link = new_project_path({ base_article: { challenge_id: @challenge.id } })
 #enter-popup.popup-overlay.normal-size.modal-popup class="#{ 'modal-show' if params[:enter] }"
   .popup-overlay-bg
   .popup-overlay-outer
@@ -182,43 +183,23 @@
       button.close data-target='#enter-popup' &times;
       - if user_signed_in?
         - if @user_projects.any?
-          h2 Ready to submit your entry?
-          p
-            ' Please select the project you would like to enter
-            strong
-              abbr.istooltip title="Projects will be moderated upon entry. Incomplete projects will not qualify."
-                | (complete projects only)
-            | :
+          h2 Get started
+          p Do you want to enter with an existing project?
           = form_tag challenge_entries_path(@challenge), method: :post do
             = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control mg-10'
-            - @challenge.challenge_entry_fields.each_with_index do |field, i|
-              label
-                - if field.required
-                  abbr> title="Required" *
-                = field.label
-              = text_field_tag :"challenge_entry[cfield#{i}]", '', class: 'form-control'
+            = submit_tag "Add my project", class: 'btn btn-primary'
 
-            - if @challenge.activate_categories?
-              label
-                abbr> title="Required" *
-                | Category you want to enter:
-              = select_tag 'challenge_entry[category_id]', options_from_collection_for_select(@challenge.categories, :id, :name), class: 'form-control mg-10', include_blank: ''
-            p
-              small
-                ' By entering you agree to the
-                = link_to "#{@challenge.self_label.downcase} rules", challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();', tabindex: -1
-            = submit_tag "Enter my project into the #{@challenge.self_label.downcase}", class: 'btn btn-primary'
-          p
-            small
-              ' or
-              = link_to "create a new project", new_project_path(@link_params)
+          .hr or
+          p Starting from scratch? No problem.
+          = link_to "Create a new project", new_project_link, class: 'btn btn-secondary'
 
         - else
-          p You need a project to enter!
-          p= link_to "Create a new project", new_project_path(@link_params)
+          h2 Get started by creating a project
+          p= link_to "Create a new project", new_project_link, class: 'btn btn-primary'
       - else
-        p You need a project to enter!
+        h2 Get started by creating a project
         p
-          => link_to "Create a new project", new_user_registration_path(reason: 'project', redirect_to: new_project_path(@link_params), source: 'challenge')
-          ' or
-          = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
+          => link_to "Create a new project", new_user_registration_path(reason: 'project', redirect_to: new_project_link, source: 'challenge'), class: 'btn btn-primary'
+          .hr or
+          p Do you want to enter with an existing project?
+          = link_to 'Log in to access your projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't')), class: 'btn btn-secondary'

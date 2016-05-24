@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.integer  "challenge_id", null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.hstore   "hproperties"
   end
 
   add_index "challenge_registrations", ["challenge_id"], name: "index_challenge_registrations_on_challenge_id", using: :btree

@@ -250,6 +250,7 @@ class User < ActiveRecord::Base
   has_counter :lists, 'lists.publyc.count'
   has_counter :live_projects, 'projects.publyc.own.count'
   has_counter :live_hidden_projects, 'projects.publyc.where(hide: true).count'
+  has_counter :new_project_views, 'ProjectImpression.where(project_id: projects.own.pluck(:id)).where("project_impressions.created_at > ?", Date.today.beginning_of_month).count'
   has_counter :owned_parts, 'owned_parts.count'
   has_counter :platforms, 'followed_platforms.count'
   has_counter :project_platforms, 'project_platforms.count'
@@ -486,7 +487,7 @@ class User < ActiveRecord::Base
   end
 
   def default_user_name?
-    !!(user_name =~ /.+\-.+\-[a-z0-9]{6}/)
+    (user_name =~ /user[0-9]{5,10}/).present?
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
@@ -876,6 +877,7 @@ class User < ActiveRecord::Base
   private
     def before_password_reset
       UserWorker.perform_async 'revoke_api_tokens_for', id  # revoke all api tokens
+      clear_reset_password_token  # reset the password token sent in emails
       self.authentication_token = generate_authentication_token  # reset auth_token used in emails
       SessionManager.new(self).expire_all  # invalidate all existing sessions
     end

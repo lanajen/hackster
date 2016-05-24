@@ -239,6 +239,14 @@
             = f.input :mailchimp_api_key, label: 'Mailchimp API key', hint: 'API key of the Mailchimp account you want to sync with'
             = f.input :mailchimp_list_id, label: 'Mailchimp List ID', hint: 'List ID of the Mailchimp list you want to sync with'
 
+      .panel.panel-default
+        .panel-heading
+          h4 Email sharing
+        .panel-body
+          = f.input :activate_email_sharing, as: :boolean, inline_label: 'Prompt participants to opt-in to share their email with sponsors', label: false, hint: ''
+          #email_sharing_settings style=(@challenge.activate_email_sharing ? '' : 'display:none')
+            = f.input :email_sharing_label, label: 'Label for email sharing'
+
       - if current_user.is? :admin
         .panel.panel-default
           .panel-heading
@@ -275,6 +283,8 @@
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_participants_tab, inline_label: 'Disable participants tab', as: :boolean, label: false
+            = f.input :disable_ideas_tab, inline_label: 'Disable ideas tab', hint: "Hides the tab, but participants can still submit ideas if feature is enabled", as: :boolean, label: false
+            = f.input :disable_projects_tab, inline_label: 'Disable projects tab', hint: "Hides the tab while the contest is running, but participants can still submit projects. The tab will reappear once the contest is judged.", as: :boolean, label: false
             = f.input :self_label, hint: "Contest, Competition, Challenge... The default is Contest", label: 'How should we refer to this contest?'
             = f.input :winners_label, hint: "By default it will be \"Winners\", but you can override it to something else like \"Finalists\"."
             = f.input :free_hardware_unit_label, label: 'How should we call a unit of the free hardware? Default is "device".'
@@ -353,6 +363,7 @@
         });
       }
       toggleOptions('#challenge_activate_mailchimp_sync', '#mailchimp_settings');
+      toggleOptions('#challenge_activate_email_sharing', '#email_sharing_settings');
       toggleOptions('#challenge_activate_free_hardware', '#free_hardware_settings');
       toggleOptions('#challenge_activate_voting', '#voting_dates');
       toggleOptions('#challenge_activate_categories', '#categories_settings');

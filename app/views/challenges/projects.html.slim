@@ -1,4 +1,4 @@
-- if @challenge.judged?
+- if @winning_entries
   - @winning_entries.each do |entry|
     = content_for :js do
 
@@ -16,7 +16,7 @@
 
 - cache ["challenge-#{@challenge.id}-projects", safe_page_params, @has_registered, @is_challenge_entrant, @challenge.disable_registration], tag: ["challenge-#{@challenge.id}-projects"] do
   .project-list
-    - if @challenge.judged?
+    - if @winning_entries
       - if safe_page_params.nil? or safe_page_params == 1
         h2.text-center Winning entries
         .thumb-list
@@ -28,6 +28,17 @@
 
       - if @other_projects.any?
         h2.text-center Other entries
+        - if @challenge.activate_categories?
+          .clearfix.mg-20
+            - if @category
+              p.pull-left Projects in #{content_tag(:strong, @category.name)}
+            .btn-group.pull-right
+              button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+                ' Filter by category
+                span.caret
+              ul.dropdown-menu.pull-right
+                - @challenge.categories.each do |category|
+                  li*{ class: "#{'active' if params[:category_id] == category.id.to_s }" } = link_to category.name, challenge_projects_path(@challenge.slug, category_id: category.id)
         .thumb-list
           .row.project-list
             - @other_projects.each_with_index do |project, i|
@@ -36,6 +47,18 @@
           .row.text-center= will_paginate @other_projects
 
     - else
+      - if @challenge.activate_categories?
+        .clearfix.mg-20
+          - if @category
+            p.pull-left Projects in #{content_tag(:strong, @category.name)}
+          .btn-group.pull-right
+            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+              ' Filter by category
+              span.caret
+            ul.dropdown-menu.pull-right
+              - @challenge.categories.each do |category|
+                li*{ class: "#{'active' if params[:category_id] == category.id.to_s }" } = link_to category.name, challenge_projects_path(@challenge.slug, category_id: category.id)
+
       - if @projects.any?
         .thumb-list
           .row.project-list
@@ -52,4 +75,5 @@
           - if @challenge.open_for_submissions?
             = render partial: 'enter_thumb', locals: { challenge: @challenge }
           - else
-            p No submissions.
+            .col-xs-12
+              p No submissions.

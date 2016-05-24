@@ -13,6 +13,10 @@ $(function() {
     window.localStorage.removeItem('ideapp.token');
     window.localStorage.removeItem('ideapp.uid');
     window.localStorage.removeItem('ideapp.email');
+    // renaming of keys in progress
+    window.localStorage.removeItem('create.token');
+    window.localStorage.removeItem('create.uid');
+    window.localStorage.removeItem('create.email');
 
     Cookies.remove('web.ide.sid');
 

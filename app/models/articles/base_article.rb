@@ -24,7 +24,7 @@ class BaseArticle < ActiveRecord::Base
   SORTING = {
     'magic' => :magic_sort,
     'popular' => :most_popular,
-    'recent' => :last_featured,
+    'recent' => :most_recent,
     'respected' => :most_respected,
     'trending' => :magic_sort,
     'updated' => :last_updated,
@@ -131,7 +131,6 @@ class BaseArticle < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, presence: true, if: proc { |p| p.force_basic_validation? }
-  # validates :content_type, presence: true, unless: proc { |p| p.content_type.nil? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -140,7 +139,6 @@ class BaseArticle < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validates :duration, numericality: true, allow_blank: true
-  validates :cover_image, :name, :one_liner, :difficulty, :content_type, :product_tags_array, presence: { message: 'is required for publication' },  if: proc{|p| p.workflow_state_changed? and p.workflow_state_was == 'unpublished' and p.workflow_state.in? %w(pending_review approved) }
   validate :tags_length_is_valid, if: proc{|p| p.product_tags_string_changed? }
   validate :slug_is_unique
   before_validation :delete_empty_part_ids
@@ -357,34 +355,40 @@ class BaseArticle < ActiveRecord::Base
   end
 
   def self.last_7days opts={}
-    where('projects.made_public_at > ?', 7.days.ago)
+    last_n 7.days, opts
   end
 
   def self.last_30days opts={}
-    where('projects.made_public_at > ?', 30.days.ago)
+    last_n 30.days, opts
   end
 
   def self.last_1year opts={}
-    where('projects.made_public_at > ?', 1.year.ago)
+    last_n 1.year, opts
   end
 
-  def self.last_created
+  def self.last_n n, opts={}
+    column = opts[:show_all] ? 'made_public_at' : 'featured_date'
+    where("projects.#{column} > ?", n.ago)
+  end
+
+
+  def self.last_created opts={}
     order(created_at: :desc)
   end
 
-  def self.last_featured
+  def self.last_featured opts={}
     order featured_date: :desc
   end
 
-  def self.last_public
-    order(made_public_at: :desc)
+  def self.last_published opts={}
+    order made_public_at: :desc
   end
 
-  def self.last_updated
+  def self.last_updated opts={}
     order(updated_at: :desc)
   end
 
-  def self.magic_sort
+  def self.magic_sort opts={}
     order(popularity_counter: :desc, created_at: :desc)
   end
 
@@ -396,11 +400,15 @@ class BaseArticle < ActiveRecord::Base
     indexable.median(:respects_count)
   end
 
-  def self.most_popular
+  def self.most_popular opts={}
     order(impressions_count: :desc)
   end
 
-  def self.most_respected
+  def self.most_recent opts={}
+    opts[:show_all] ? last_published : last_featured
+  end
+
+  def self.most_respected opts={}
     order(respects_count: :desc)
   end
 
@@ -698,21 +706,25 @@ class BaseArticle < ActiveRecord::Base
     }
   end
 
-  def post_new_tweet!
+  def post_tweet!
     message = prepare_tweet
-    self.tweeted_at = Time.now
-    TwitterQueue.perform_async 'throttle_update', message
+    media_url = cover_image.try(:imgix_url, :medium)
+    Tweeter.new(message).update
+
+    update_attribute :tweeted_at, Time.now
   end
 
-  def post_new_tweet_at! time
-    message = prepare_tweet
-    self.tweeted_at = time
-    TwitterQueue.perform_at time, 'update_with_media', message, cover_image.try(:imgix_url, :medium)
+  def schedule_tweet! time=nil
+    if time
+      TwitterQueue.perform_at time, 'post_project_tweet', id
+    else
+      TwitterQueue.perform_async 'throttle_project_tweet', id
+    end
   end
 
-  def prepare_tweet
-    prepend = "🆕 "  # 2 characters
-    TweetBuilder.new(self).tweet(prepend)
+  def prepare_tweet opts={}
+    opts[:prepend] = "🆕 "  # 2 characters
+    TweetBuilder.new(self).tweet(opts)
   end
 
   def product_tags_string_changed?

@@ -38,7 +38,7 @@ class ProjectCollectionObserver < ActiveRecord::Observer
       return unless record.project
 
       # memcache
-      keys = extra_keys + ["project-#{project.id}-teaser", "project-#{project.id}"]
+      keys = extra_keys + ["project-#{project.id}-communities", "project-#{project.id}-teaser", "project-#{project.id}"]
       Cashier.expire *keys
 
       # fastly

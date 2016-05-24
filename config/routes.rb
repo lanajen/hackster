@@ -49,6 +49,9 @@ HackerIo::Application.routes.draw do
             get 'ideas_csv' => 'challenges#ideas_csv'
             get 'participants_csv' => 'challenges#participants_csv'
           end
+          resources :challenge_registrations do
+            patch '' => 'challenge_registrations#update', on: :collection
+          end
           resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload

@@ -222,6 +222,8 @@ module ApplicationHelper
 
   def proper_name_for_provider provider
     case provider.to_sym
+    when :arduino
+      'Arduino Account'
     when :facebook, :github, :twitter
       provider.to_s.capitalize
     when :gplus
@@ -295,6 +297,8 @@ module ApplicationHelper
 
   def zocial_class_for_provider provider
     case provider
+    when :arduino
+      'guest'
     when :facebook, :github, :twitter
       provider.to_s
     when :gplus

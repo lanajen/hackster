@@ -38,7 +38,8 @@ class Ability
 
       member if @user.persisted?
       @user.roles.each{ |role| send role }
-      # beta_tester if @user.is? :beta_tester
+
+      # cannot :publish, BaseArticle
 
       @user.permissions.each do |permission|
         can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
@@ -56,7 +57,16 @@ class Ability
   end
 
   def confirmed_user
+    can :publish, BaseArticle do |project|
+      @user.can? :manage, project
+    end
+
     can :create, Conversation
+
+    can :create, Comment do |comment|
+      commentable = comment.commentable
+      @user.can? :read, commentable and (commentable.respond_to?(:locked) ? !commentable.locked : true)
+    end
   end
 
   def member
@@ -93,11 +103,6 @@ class Ability
 
     can :manage, [Announcement, BuildLog, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
-    end
-
-    can :create, Comment do |comment|
-      commentable = comment.commentable
-      @user.can? :read, commentable and (commentable.respond_to?(:locked) ? !commentable.locked : true)
     end
 
     can :manage, Thought do |thought|
@@ -185,19 +190,18 @@ class Ability
       @user.is_active_member? assignment.promotion
     end
 
-    can :manage, [ChallengeEntry, ChallengeIdea], user_id: @user.id
+    can :manage, ChallengeIdea, user_id: @user.id
+    can :update, ChallengeEntry do |entry|
+      # only allow the entrant to submit entries
+      @user.id == entry.user_id and entry.workflow_state_was == 'new' and entry.workflow_state == 'submitted'
+    end
+    can :destroy, ChallengeEntry, user_id: @user.id
     can :admin, [ChallengeEntry, ChallengeIdea] do |entry|
       ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end
 
     can :admin, Challenge do |challenge|
       ChallengeAdmin.where(challenge_id: challenge.id, user_id: @user.id).with_roles('admin').any?
-    end
-
-    can :create, SkillRequest
-
-    can [:update, :destroy], SkillRequest do |req|
-      req.user_id == @user.id
     end
 
     can :manage, Order, user_id: @user.id
@@ -219,6 +223,8 @@ class Ability
   end
 
   def spammer
+    cannot :publish, BaseArticle
+    cannot :create, Comment
     cannot :create, Conversation
   end
 

@@ -152,18 +152,18 @@
     .comment-actions {
       list-style: none;
       padding: 0;
-      margin: 0 -10px;
+      margin: 0;
       font-size: 0.8em;
 
       li {
         display: inline-block;
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .middot {
-        padding: 0;
-        color: #999;
+        &:not(:last-child):after {
+          content: '•';
+          padding-left: 10px;
+          padding-right: 10px;
+          color: #999;
+          display: inline-block;
+        }
       }
 
       .r-comment-like-button {
@@ -171,6 +171,9 @@
 
         &:hover {
           text-decoration: underline;
+          &:after {
+            text-decoration: none;
+          }
         }
       }
 

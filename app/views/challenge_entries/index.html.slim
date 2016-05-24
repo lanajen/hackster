@@ -12,6 +12,20 @@ ul.list-inline
 .row
   .col-xs-12= will_paginate @entries
 
+.clearfix
+  .btn-group
+    button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+      ' Filter by status
+      span.caret
+    ul.dropdown-menu.pull-right
+      li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', challenge_admin_entries_path(@challenge)
+      li*{ class: "#{'active' if params[:status] == 'new'}" } = link_to 'New', challenge_admin_entries_path(@challenge, status: 'new')
+      li*{ class: "#{'active' if params[:status] == 'submitted'}" } = link_to 'Submitted', challenge_admin_entries_path(@challenge, status: 'submitted')
+      li*{ class: "#{'active' if params[:status] == 'qualified'}" } = link_to 'Qualified', challenge_admin_entries_path(@challenge, status: 'qualified')
+      li*{ class: "#{'active' if params[:status] == 'unqualified'}" } = link_to 'Unqualified', challenge_admin_entries_path(@challenge, status: 'unqualified')
+      li*{ class: "#{'active' if params[:status] == 'awarded'}" } = link_to 'Awarded', challenge_admin_entries_path(@challenge, status: 'awarded')
+      li*{ class: "#{'active' if params[:status] == 'unawarded'}" } = link_to 'Unwarded', challenge_admin_entries_path(@challenge, status: 'unawarded')
+
 table.table.table-striped
   thead
     tr
@@ -49,10 +63,11 @@ table.table.table-striped
             td= entry.votes_count
           td= entry.has_prize? ? entry.prizes.pluck(:name).to_sentence : 'None'
           td
-            - if entry.can_approve?
-              = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(@challenge, entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?', container: 'body' }
-            - if entry.can_disqualify?
-              = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(@challenge, entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?', container: 'body' }
+            - unless entry.new?
+              - if entry.can_approve?
+                = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(@challenge, entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?', container: 'body' }
+              - if entry.can_disqualify?
+                = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(@challenge, entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?', container: 'body' }
             - if @challenge.judging?
               = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
             /- if current_user.is? :admin

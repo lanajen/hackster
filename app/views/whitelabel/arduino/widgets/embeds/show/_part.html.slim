@@ -4,9 +4,9 @@ tr.fields.part-row  id="part-#{part.id}"
   td.part-img
     - if part.part.image
       - if part.part.vendor_link.present? or part.part.store_link.present? or part.part.product_page_link.present?
-        = link_to image_tag(part.part.decorate.image(:part_thumb_big)), (part.part.vendor_link.presence || part.part.store_link.presence || part.part.product_page_link)
+        = link_to image_tag(part.part.decorate.image(:part_thumb_big_arduino)), (part.part.vendor_link.presence || part.part.store_link.presence || part.part.product_page_link)
       - else
-        = image_tag part.part.decorate.image(:part_thumb_big)
+        = image_tag part.part.decorate.image(:part_thumb_big_arduino)
   td
     table  style='width:100%'
       tbody

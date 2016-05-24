@@ -1,4 +1,8 @@
 class ChallengeObserver < ActiveRecord::Observer
+  def after_create record
+    ChallengeWorker.perform_async 'populate_default_faq', record.id
+  end
+
   def after_update record
     if record.activate_banners_changed? and record.open_for_submissions?
       record.sponsors.each do |platform|
@@ -38,7 +42,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-#{record.id}-banner"
       purge = true
     end
-    if record.password_protect_changed? or record.disable_projects_tab_changed? or record.disable_participants_tab?
+    if record.password_protect_changed? or record.disable_projects_tab_changed? or record.disable_participants_tab? or record.disable_ideas_tab_changed?
       purge = true
     end
     (record.changed & Challenge::TOKENABLE_ATTRIBUTES).each do |attr|

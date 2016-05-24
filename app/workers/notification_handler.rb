@@ -83,6 +83,7 @@ class NotificationHandler
       when :base_article
         context[:model] = base_article = context[:base_article] = context[:project] = BaseArticle.find(context_id)
         context[:users] = base_article.users
+        context[:current_platform] = Platform.find(base_article.origin_platform_id) if base_article.has_platform?
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         if event.to_sym == :ending_soon
@@ -150,7 +151,8 @@ class NotificationHandler
           context[:users] -= [author]
         when ReviewThread
           context[:thread] = commentable
-          context[:project] = commentable.project
+          context[:project] = project = commentable.project
+          context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
           # if comment was posted by a project author, mail everyone else, otherwise mail project authors
           context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
             commentable.participants.with_subscription(notification_type, 'updated_review') - commentable.project.users.with_subscription(notification_type, 'updated_review')
@@ -184,6 +186,7 @@ class NotificationHandler
         when User
           if followable.subscribed_to?(notification_type, 'new_follow_me')
             context[:user] = followable
+            context[:current_platform] = Platform.find_by_user_name(followable.platform) if followable.platform.present?
           else
             context[:users] = []  # hack to send no email
           end
@@ -268,6 +271,7 @@ class NotificationHandler
       when :project
         context[:model] = project = context[:project] = BaseArticle.find(context_id)
         context[:users] = project.users
+        context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
       when :project_user_informal
         project = context[:project] = BaseArticle.find(context_id)
         user = context[:user] = project.users.first
@@ -310,6 +314,7 @@ class NotificationHandler
         when BaseArticle
           project = context[:project] = respect.respectable
           context[:users] = project.users.with_subscription(notification_type, 'new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
+          context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
         when Thought
           thought = context[:thought] = respect.respectable
           if thought.user.subscribed_to? notification_type, 'new_like'
@@ -321,16 +326,17 @@ class NotificationHandler
       when :review_decision
         context[:decision] = decision = ReviewDecision.find context_id
         context[:thread] = thread = decision.review_thread
-        context[:project] = thread.project
+        context[:project] = project = thread.project
         context[:author] = author = decision.user
         context[:users] = (thread.participants.with_subscription(notification_type, 'updated_review') + thread.project.users.with_subscription(notification_type, 'updated_review')).uniq - [author]
+        context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
       when :thought_mention
         context[:model] = thought = context[:thought] = Thought.find context_id
         context[:author] = thought.user
         context[:users] = thought.mentioned_users
       when :user
         context[:model] = context[:user] = user = User.find(context_id)
-        context[:current_platform] = Platform.find_by_user_name(user.platform)
+        context[:current_platform] = Platform.find_by_user_name(user.platform) if user.platform.present?
       when :user_informal
         context[:user] = User.find(context_id)
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'

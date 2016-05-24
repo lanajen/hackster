@@ -7,7 +7,7 @@ class ChallengeIdeasController < ApplicationController
   def index
     @challenge = Challenge.find params[:challenge_id]
     authorize! :admin, @challenge
-    @ideas = @challenge.ideas.order(:created_at).joins(:user).includes(:image, user: :avatar)
+    @ideas = @challenge.ideas.order(:created_at).joins(:user).includes(:address, :image, user: :avatar)
 
     respond_to do |format|
       format.html do

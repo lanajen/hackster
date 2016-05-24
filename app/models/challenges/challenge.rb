@@ -23,9 +23,10 @@ class Challenge < ActiveRecord::Base
   has_many :admins, through: :challenge_admins, source: :user
   has_many :categories, -> { order("LOWER(challenge_categories.name)") }, class_name: 'ChallengeCategory'
   has_many :challenge_admins
+  has_many :default_faq_entries, as: :threadable, dependent: :destroy
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
-  has_many :faq_entries, as: :threadable
+  has_many :faq_entries, as: :threadable, dependent: :destroy
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :idea_entrants, -> { uniq }, through: :ideas, source: :user
   has_many :notifications, as: :notifiable, dependent: :delete_all
@@ -35,6 +36,9 @@ class Challenge < ActiveRecord::Base
   # "counter_cache: :this_is_not_a_column_that_exists"
   has_many :projects, -> { order('challenge_projects.created_at ASC') },
     through: :entries, counter_cache: :this_is_not_a_column_that_exists do
+    def with_category category_id
+      where("challenge_projects.category_id = ?", category_id)
+    end
     def valid
       where("challenge_projects.workflow_state IN (?)", ChallengeEntry::APPROVED_STATES)
     end
@@ -78,6 +82,7 @@ class Challenge < ActiveRecord::Base
   store :properties, accessors: []
   hstore_column :hproperties, :activate_banners, :boolean, default: true
   hstore_column :hproperties, :activate_categories, :boolean
+  hstore_column :hproperties, :activate_email_sharing, :boolean
   hstore_column :hproperties, :activate_mailchimp_sync, :boolean
   hstore_column :hproperties, :activate_pre_contest, :boolean  # legacy
   hstore_column :hproperties, :activate_free_hardware, :boolean
@@ -95,20 +100,21 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_ideas_tab, :boolean
   hstore_column :hproperties, :disable_participants_tab, :boolean
   hstore_column :hproperties, :disable_pre_contest_winners, :boolean  # legacy
   hstore_column :hproperties, :disable_projects_phase, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
-  hstore_column :hproperties, :enter_button_text, :string, default: 'Submit my final entry'
+  hstore_column :hproperties, :email_sharing_label, :string, default: proc{|c| "Subscribe me to relevant news from #{c.sponsors.map{|s| s.name }.to_sentence}" }
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Add my project'
   hstore_column :hproperties, :free_hardware_label, :string
   hstore_column :hproperties, :free_hardware_unit_label, :string, default: 'device'
   hstore_column :hproperties, :free_hardware_link, :string
   hstore_column :hproperties, :free_hardware_quantity, :integer
   hstore_column :hproperties, :free_hardware_end_date, :datetime
   hstore_column :hproperties, :how_to_enter, :string
-  # hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
   hstore_column :hproperties, :mailchimp_api_key, :string
   hstore_column :hproperties, :mailchimp_list_id, :string
@@ -127,10 +133,10 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
   hstore_column :hproperties, :self_label, :string, default: 'Contest'
-  hstore_column :hproperties, :teaser, :string
-  hstore_column :hproperties, :token_tags, :hash
   hstore_column :hproperties, :sponsor_link, :string
   hstore_column :hproperties, :sponsor_name, :string
+  hstore_column :hproperties, :teaser, :string
+  hstore_column :hproperties, :token_tags, :hash
   hstore_column :hproperties, :voting_start, :string, default: :end
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
   hstore_column :hproperties, :winners_announced_date, :datetime
