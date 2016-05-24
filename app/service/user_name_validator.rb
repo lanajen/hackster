@@ -49,11 +49,12 @@ class UserNameValidator
     end
 
     def validate_uniqueness
-      return if user.user_name.blank? or user.being_invited?
+      return if user.being_invited?
 
-      slug = SlugHistory.where("LOWER(slug_histories.value) = ?", user.new_user_name.downcase).first
-      if slug and slug.sluggable != user
-        ATTRIBUTES.each do |attribute|
+      ATTRIBUTES.each do |attribute|
+        next if user.send(attribute).blank?
+        slug = SlugHistory.where("LOWER(slug_histories.value) = ?", user.send(attribute).downcase).where("NOT (slug_histories.sluggable_id = ? AND sluggable_type = ?)", user.id, user.class.name).first
+        if slug
           user.errors.add attribute, 'is already taken'
         end
       end
