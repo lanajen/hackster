@@ -30,12 +30,13 @@ class ProjectCollectionObserver < ActiveRecord::Observer
     if record.workflow_state == 'approved' and from.to_s == 'pending_review' and record.collectable_type == 'Group'
       record.collectable.update_attribute :last_project_time, Time.now
     end
+    expire_cache record
   end
 
   private
     def expire_cache record, extra_keys=[]
       project = record.project
-      return unless record.project
+      return unless project
 
       # memcache
       keys = extra_keys + ["project-#{project.id}-communities", "project-#{project.id}-teaser", "project-#{project.id}"]
