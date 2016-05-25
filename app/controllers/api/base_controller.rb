@@ -53,13 +53,12 @@ class Api::BaseController < ApplicationController
       host =~ Regexp.new("#{APP_CONFIG['default_domain']}$") or host.in? WHITELISTED_HOSTS
     end
 
-    def private_api_methods
+    def private_api_methods with_credentials=true
       if origin_uri and host_is_whitelisted?(origin_uri.host)
         allowed_origin = origin_uri.scheme + '://' + origin_uri.host
         allowed_origin << ":#{origin_uri.port}" unless origin_uri.port.to_s.in? %w(80 443)
         headers['Access-Control-Allow-Origin'] = allowed_origin
-        headers['Access-Control-Allow-Credentials'] = 'true'
-        headers['Access-Control-Expose-Headers'] = 'X-Alert,X-Alert-ID'
+        custom_private_api_methods if self.respond_to?(:custom_private_api_methods)
       else
         render status: :not_found, nothing: true
       end

@@ -38,10 +38,10 @@ HackerIo::Application.routes.draw do
 
     constraints(ApiSite) do
       scope module: :api, as: :api, defaults: { format: :json } do
+        # this stuff is authenticated with cookies
         namespace :private do
           get 'csrf' => 'pages#csrf'
           get 'embeds' => 'embeds#show'
-          get 'me' => 'users#show'
           resources :announcements
           resources :build_logs
           resources :challenges, only: [] do
@@ -65,20 +65,30 @@ HackerIo::Application.routes.draw do
             end
           end
           resources :groups, only: [:index, :create]
-          resources :jobs, only: [:create, :show]
           resources :notifications, only: [:index]
+          resources :stats, only: [:create]
+          resources :thoughts
+          resources :users, only: [:index]
+          resources :widgets, only: [:destroy, :update, :create]
+          match "*all" => "base#cors_preflight_check", via: :options
+        end
+
+        # this stuff is authenticated with tokens from doorkeeper
+        namespace :private, module: 'private_doorkeeper' do
+          get 'me' => 'users#show'
+          resources :jobs, only: [:create, :show]
+          resources :projects, only: [] do
+            get 'description' => 'projects#description', on: :member
+          end
           scope :review_decisions do
             post '' => 'review_decisions#create'
           end
           scope :review_threads do
             get '' => 'review_threads#show'
           end
-          resources :stats, only: [:create]
-          resources :thoughts
-          resources :users, only: [:index] do
+          resources :users, only: [] do
             get :autocomplete, on: :collection
           end
-          resources :widgets, only: [:destroy, :update, :create]
           match "*all" => "base#cors_preflight_check", via: :options
         end
 
@@ -113,9 +123,7 @@ HackerIo::Application.routes.draw do
             delete 'projects' => 'lists#unlink_project', on: :member
           end
           resources :parts, except: [:new, :edit]
-          resources :projects, except: [:show, :index] do
-            get 'description' => 'projects#description', on: :member
-          end
+          resources :projects, except: [:show, :index]
           match "*all" => "base#cors_preflight_check", via: :options
         end
       end

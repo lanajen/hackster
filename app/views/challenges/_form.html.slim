@@ -390,8 +390,19 @@
           url: Utils.getApiPath() + "/private/users/autocomplete",
           dataType: 'json',
           delay: 250,
-          xhrFields: {
-            withCredentials: true
+          transport: function(params, success, failure) {
+            Utils.getApiToken(function(token) {
+              params.beforeSend = function(request) {
+                request.setRequestHeader('Authorization', 'Bearer ' + token);
+              }
+
+              var $request = $.ajax(params);
+
+              $request.then(success);
+              $request.fail(failure);
+
+              return $request;
+            });
           },
           data: function (params) {
             return {

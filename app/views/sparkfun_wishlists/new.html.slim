@@ -73,27 +73,29 @@
                 width = Math.min(width, 100);
                 bar.css('width', width.toString() + '%');
 
-                $.ajax({
-                  url: Utils.getApiPath() + '/private/jobs/' + id,
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  data: { id: id },
-                }).done(function(response){
-                  if (response.status == 'complete') {
-                    bar.css('width', '100%');
-                    bar.text('Done! Redirecting...');
-                    window.location.href = nextUrl;
-                  } else if (response.status == 'failed') {
-                    $('#sparkfun_import').show();
-                    $('#sparkfun_import').find('input[type=submit]').prop('disabled', false);
-                    $('#progress-bar').hide();
-                    $('#alert').show();
-                  } else {
-                    window.setTimeout(function(){
-                      checkJobIsComplete(id, nextUrl);
-                    }, 1000);
-                  }
+                Utils.getApiToken(function(token){
+                  $.ajax({
+                    url: Utils.getApiPath() + '/private/jobs/' + id,
+                    beforeSend: function(xhr){
+                      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
+                    data: { id: id },
+                  }).done(function(response){
+                    if (response.status == 'complete') {
+                      bar.css('width', '100%');
+                      bar.text('Done! Redirecting...');
+                      window.location.href = nextUrl;
+                    } else if (response.status == 'failed') {
+                      $('#sparkfun_import').show();
+                      $('#sparkfun_import').find('input[type=submit]').prop('disabled', false);
+                      $('#progress-bar').hide();
+                      $('#alert').show();
+                    } else {
+                      window.setTimeout(function(){
+                        checkJobIsComplete(id, nextUrl);
+                      }, 1000);
+                    }
+                  });
                 });
               }
             });

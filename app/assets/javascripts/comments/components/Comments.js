@@ -22,25 +22,25 @@ export default class Comments extends Component {
   }
 
   deleteComment(id) {
-    this.props.actions.deleteComment(id, this.props.commentStore.user.csrfToken);
+    this.props.actions.deleteComment(id);
   }
 
   postComment(comment, id) {
-    this.props.actions.postComment(comment, true, this.props.commentStore.user.csrfToken);
+    this.props.actions.postComment(comment, true);
     this.props.actions.toggleFormData(true, null, id);
   }
 
   updateComment(comment, id) {
-    this.props.actions.patchComment(comment, this.props.commentStore.user.csrfToken);
+    this.props.actions.patchComment(comment);
     this.props.actions.toggleFormData(true, null, id);
   }
 
   deleteLike(commentId, parentId) {
-    this.props.actions.deleteLike(commentId, parentId, this.props.commentStore.user.csrfToken);
+    this.props.actions.deleteLike(commentId, parentId);
   }
 
   postLike(commentId, parentId) {
-    this.props.actions.postLike(commentId, parentId, this.props.commentStore.user.csrfToken);
+    this.props.actions.postLike(commentId, parentId);
   }
 
   triggerReplyBox(show, id) {

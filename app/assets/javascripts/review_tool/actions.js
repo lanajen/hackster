@@ -1,4 +1,5 @@
-import { fetchReviewThread, postDecision, postComment } from '../utils/ReactAPIUtils';
+import { fetchReviewThread, postDecision } from './utils/Requests';
+import { postComment } from '../utils/ReactAPIUtils';
 
 export const REQUEST_THREAD = 'REQUEST_THREAD';
 export const RECEIVE_THREAD = 'RECEIVE_THREAD';

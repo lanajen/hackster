@@ -1,5 +1,5 @@
-class Api::Private::ReviewDecisionsController < Api::Private::BaseController
-  before_filter :authenticate_user!
+class Api::PrivateDoorkeeper::ReviewDecisionsController < Api::PrivateDoorkeeper::BaseController
+  before_action :doorkeeper_authorize_without_scope!
 
   def create
     thread = ReviewThread.find_by_project_id! params[:project_id]

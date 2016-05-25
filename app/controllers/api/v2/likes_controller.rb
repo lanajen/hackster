@@ -24,11 +24,10 @@ class Api::V2::LikesController < Api::V2::BaseController
     end
 
     def find_respectable
-      params.each do |name, value|
-        if name =~ /(.+)_id$/
-          return $1.classify.constantize.find(value)
-        end
+      if type = params[:type] and type.in?(%w(Comment))
+        return type.classify.constantize.find(params[:id])
       end
+
       raise ActiveRecord::NotFound, 'No `respectable` found'
     end
 end

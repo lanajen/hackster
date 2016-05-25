@@ -1,5 +1,4 @@
 class Api::Private::StatsController < Api::Private::BaseController
-
   def create
     # because this is called via AJAX on the current page, request.referrer is the page the user requested, and params[:referrer] is the page they were coming from
     if params[:id] and params[:type]

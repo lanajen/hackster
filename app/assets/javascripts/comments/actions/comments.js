@@ -49,9 +49,9 @@ export function addComment(comment, isReply) {
   };
 }
 
-export function postComment(comment, isReply, csrfToken) {
+export function postComment(comment, isReply) {
   return function(dispatch) {
-    return SharedRequests.postComment(comment, csrfToken)
+    return SharedRequests.postComment(comment)
       .then(response => {
         dispatch(addComment(response, isReply));
       })
@@ -70,9 +70,9 @@ export function toggleLikes(commentId, parentId, bool) {
   };
 }
 
-export function deleteLike(commentId, parentId, csrfToken) {
+export function deleteLike(commentId, parentId) {
   return function(dispatch) {
-    return Requests.deleteLike(commentId, csrfToken)
+    return Requests.deleteLike(commentId)
       .then(response => {
         dispatch(toggleLikes(commentId, parentId, response));
       })
@@ -82,9 +82,9 @@ export function deleteLike(commentId, parentId, csrfToken) {
   }
 }
 
-export function postLike(commentId, parentId, csrfToken) {
+export function postLike(commentId, parentId) {
   return function(dispatch) {
-    return Requests.postLike(commentId, csrfToken)
+    return Requests.postLike(commentId)
       .then(response => {
         dispatch(toggleLikes(commentId, parentId, response));
       })
@@ -101,9 +101,9 @@ export function removeComment(comment) {
   };
 }
 
-export function deleteComment(id, csrfToken) {
+export function deleteComment(id) {
   return function(dispatch) {
-    return Requests.deleteComment(id, csrfToken)
+    return Requests.deleteComment(id)
       .then(response => {
         dispatch(removeComment(response));
       })
@@ -158,9 +158,9 @@ export function updateComment(comment) {
   };
 }
 
-export function patchComment(comment, csrfToken) {
+export function patchComment(comment) {
   return function(dispatch) {
-    return Requests.updateComment(comment, csrfToken)
+    return Requests.updateComment(comment)
       .then(response => {
         dispatch(updateComment(response));
       })

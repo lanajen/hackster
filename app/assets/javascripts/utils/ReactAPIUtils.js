@@ -34,12 +34,14 @@ module.exports = {
 
   checkJob(jobId) {
     return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/jobs/${jobId}`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .get(`${getApiPath()}/private/jobs/${jobId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      });
     });
   },
 
@@ -67,12 +69,14 @@ module.exports = {
 
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/me`)
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body.user);
-        });
+      getApiToken(token => {
+        request
+          .get(`${getApiPath()}/private/me`)
+          .set('Authorization', `Bearer ${token}`)
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body.user);
+          });
+      });
     });
   },
 
@@ -112,18 +116,6 @@ module.exports = {
     });
   },
 
-  fetchReviewThread(projectId) {
-    return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/review_threads`)
-        .query({ project_id: projectId })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
   flagContent(flaggableType, flaggableId, userId) {
     return new Promise((resolve, reject) => {
       request
@@ -138,13 +130,15 @@ module.exports = {
 
   launchJob(jobType, userId) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/jobs`)
-        .send({ type: jobType, user_id: userId })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/private/jobs`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ type: jobType, user_id: userId })
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      });
     });
   },
 
@@ -159,18 +153,6 @@ module.exports = {
             err ? reject(err) : resolve(res.body.comment);
           });
       }, true);
-    });
-  },
-
-  postDecision(decision, projectId) {
-    return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/review_decisions`)
-        .send({ review_decision: decision, project_id: projectId })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
     });
   },
 

@@ -51,7 +51,8 @@ export default {
         request
           .post(`${getApiPath()}/v2/likes`)
           .set('Authorization', `Bearer ${token}`)
-          .send({ comment_id: id })
+          .send({ id: id })
+          .send({ type: 'Comment' })
           .end((err, res) => {
             err ? reject(err) : resolve(res.body.liked);
           });
@@ -65,7 +66,8 @@ export default {
         request
           .del(`${getApiPath()}/v2/likes`)
           .set('Authorization', `Bearer ${token}`)
-          .send({ comment_id: id })
+          .send({ id: id })
+          .send({ type: 'Comment' })
           .end((err, res) => {
             err ? reject(err) : resolve(res.body.liked);
           });

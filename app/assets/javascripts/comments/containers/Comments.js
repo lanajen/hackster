@@ -18,7 +18,7 @@ class CommentsContainer extends Component {
   }
 
   handleCommentPost(comment) {
-    this.props.actions.postComment(comment, false, this.props.commentStore.user.csrfToken);
+    this.props.actions.postComment(comment, false);
     this.props.actions.toggleFormData(true, null);
   }
 

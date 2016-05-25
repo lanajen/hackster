@@ -6,7 +6,7 @@ export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       getApiToken(token => {
-        request(`${getApiPath()}/v2/projects/${projectId}/description`)
+        request(`${getApiPath()}/private/projects/${projectId}/description`)
           .set('Authorization', `Bearer ${token}`)
           .end((err, res) => {
             if(err) reject(err);

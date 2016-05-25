@@ -52,7 +52,8 @@ function parseCookie(withUser) {
 function setTokens(tokens) {
   if (window && window.localStorage) {
     window.localStorage.setItem(clientToken, tokens.client_token);
-    window.localStorage.setItem(userToken, tokens.user_token);
+    if (tokens.user_token)
+      window.localStorage.setItem(userToken, tokens.user_token);
   } else if (document && document.cookie) {
     let cookieString = `${clientToken}=${tokens.client_token}`;
     if (tokens.user_token) cookieString += `${userToken}=${tokens.user_token}`;

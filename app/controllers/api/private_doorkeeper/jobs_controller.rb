@@ -1,5 +1,5 @@
-class Api::Private::JobsController < Api::Private::BaseController
-  before_filter :authenticate_user!
+class Api::PrivateDoorkeeper::JobsController < Api::PrivateDoorkeeper::BaseController
+  before_action :doorkeeper_authorize_without_scope!
 
   def show
     job_id = params[:id]
