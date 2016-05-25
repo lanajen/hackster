@@ -69,7 +69,7 @@ class ProjectScraper
       'cypress.com' => :cypress_blog,
       'developer.mbed.org' => :mbed,
       'devpost.com' => :challengepost,
-      'forum.arduino.cc' => :arduinocc,
+      'forum.arduino.cc' => :arduino_forum,
       'fusion360.autodesk.com' => :fusion360,
       'github.com' => :github,
       'hackaday.io' => :hackadayio,
