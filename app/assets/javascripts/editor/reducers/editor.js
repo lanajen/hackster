@@ -17,6 +17,7 @@ const initialState = {
   currentStoreIndex: 0,
   csrfToken: null,
   projectId: null,
+  modelType: null,
   S3BucketURL: null,
   AWSAccessKeyId: null,
   isEditable: true,
@@ -92,6 +93,7 @@ export default function(state = initialState, action) {
         ...state,
         csrfToken: action.csrfToken,
         projectId: action.projectId,
+        modelType: action.modelType,
         S3BucketURL: action.S3BucketURL,
         AWSAccessKeyId: action.AWSAccessKeyId
       };

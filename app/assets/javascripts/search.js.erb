@@ -109,7 +109,6 @@ $(function(){
       }
     }
   ]).on('autocomplete:selected', function(event, suggestion, dataset) {
-    console.log(suggestion, dataset);
     window.location.href = suggestion.url;
   }).on('keypress', function(e){
     var input = $(this);

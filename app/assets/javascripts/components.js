@@ -18,10 +18,11 @@ require('expose?NotificationDropdown!./notification_dropdown/app');
 require('expose?ReactEditor!./editor/app');
 require('expose?ReputationUpdateButton!./reputation_update_button/app');
 require('expose?ReviewTool!./review_tool/containers/Root');
+require('expose?StoryEditor!./story_editor/app');
 require('expose?TimeLeft!./time_left/app');
 require('expose?ToolboxSelector!./toolbox_selector/containers/Root');
 
-/* testing the badge */
+/* Is this being used? */
 require('expose?EmbedWidget!./embed_widgets/app');
 
 /** Global Utils */

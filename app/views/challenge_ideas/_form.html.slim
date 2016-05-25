@@ -4,10 +4,10 @@
     = debug @idea.errors
 
   = f.input :name, label: 'Name of your idea or concept'
-  - locals = { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea', help_block: 'Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.', errors: @idea.errors, image_data: @idea.image ? { id: @idea.image_id, image_link: @idea.image.try(:imgix_url, :thumb) } : nil }
+  - locals = { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea', model_type: 'ChallengeIdea', help_block: 'Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.', errors: @idea.errors, image_data: @idea.image ? { id: @idea.image_id, image_link: @idea.image.try(:imgix_url, :thumb) } : nil }
   = react_component('ImageUploader', { locals: locals, S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}" })
 
-  = f.input :description, as: :text, input_html: { class: "text-editor" }
+  / = f.input :description, as: :text, input_html: { class: "text-editor" }
   - @challenge.challenge_idea_fields.each_with_index do |field, i|
     = f.input :"cfield#{i}", label: field.label, as: :text, input_html: { rows: 2 }, required: field.required
 
@@ -41,7 +41,6 @@
   .form-actions
     = f.submit (@idea.persisted? ? 'Save changes' : 'Submit my application'), class: 'btn btn-primary'
     = link_to 'Cancel', @challenge, class: 'btn btn-link btn-sm'
-
 
 = content_for :js do
   = tinymce_assets
