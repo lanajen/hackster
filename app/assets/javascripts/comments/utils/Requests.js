@@ -1,6 +1,5 @@
 import request from 'superagent';
-import { getApiPath } from '../../utils/Utils';
-import getApiToken from '../../services/oauth';
+import { getApiPath, getApiToken } from '../../utils/Utils';
 
 export default {
 

@@ -7,7 +7,7 @@
       button.close data-target=popup_id &times;
       h4.text-center= popup_title
 
-      = simple_nested_form_for @project, url: api_private_project_url(@project, host: api_host), html: {  id: "#{id}-form", data: { remote: true, modal: popup_id, 'with-credentials' => true }, class: 'remote form-within-modal' } do |f|
+      = simple_nested_form_for @project, url: api_v2_project_url(@project, host: api_host), html: {  id: "#{id}-form", data: { remote: true, modal: popup_id, 'with-api-token' => true }, class: 'remote form-within-modal' } do |f|
         .mg-20= f.simple_fields_for :widgets, widget_class.new do |f_widget|
           = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
           = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }

@@ -1,8 +1,7 @@
 import request from 'superagent';
 import postal from 'postal';
 import _ from 'lodash';
-import { getApiPath } from '../../utils/Utils';
-import getApiToken from '../../services/oauth';
+import { getApiPath, getApiToken } from '../../utils/Utils';
 
 const channel = postal.channel('lists');
 

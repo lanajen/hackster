@@ -1,7 +1,6 @@
 import request from 'superagent';
 import { addToFollowing, removeFromFollowing, fetchFollowing } from '../utils/ReactAPIUtils';
-import { getApiPath } from '../utils/Utils'
-import getApiToken from '../services/oauth'
+import { getApiPath, getApiToken } from '../utils/Utils';
 
 export const SELECT_PARTS = 'SELECT_PARTS';
 export const REQUEST_PARTS = 'REQUEST_PARTS';

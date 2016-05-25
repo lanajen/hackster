@@ -27,7 +27,7 @@
   .progress style="margin-bottom: 0"
     .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
 
-= simple_form_for @project, url: api_private_project_url(@project, host: api_host), html: { class: 'form-save-on-input remote', id: 'project-form-prepublish', data: { remote: true, 'with-credentials' => true } } do |f|
+= simple_form_for @project, url: api_v2_project_url(@project, host: api_host), html: { class: 'form-save-on-input remote', id: 'project-form-prepublish', data: { remote: true, 'with-api-token' => true } } do |f|
   = f.input :content_type, collection: content_types_for_article(@project), label: "#{@project.identifier.capitalize} type", required: true
   = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your #{@project.identifier}? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
 

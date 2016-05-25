@@ -1,6 +1,5 @@
 import request from 'superagent';
-import { getApiPath } from './Utils';
-import getApiToken from '../services/oauth';
+import { getApiPath, getApiToken } from './Utils';
 
 module.exports = {
 

@@ -1,5 +1,5 @@
-class Api::Private::ProjectsController < Api::Private::BaseController
-  before_filter :authenticate_user!
+class Api::V2::ProjectsController < Api::V2::BaseController
+  before_filter -> { doorkeeper_authorize! :write_project }
   before_filter :load_and_authorize_resource
 
   def create

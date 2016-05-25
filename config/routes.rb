@@ -67,9 +67,6 @@ HackerIo::Application.routes.draw do
           resources :groups, only: [:index, :create]
           resources :jobs, only: [:create, :show]
           resources :notifications, only: [:index]
-          resources :projects, except: [:show, :index] do
-            get 'description' => 'projects#description', on: :member
-          end
           scope :review_decisions do
             post '' => 'review_decisions#create'
           end
@@ -116,6 +113,9 @@ HackerIo::Application.routes.draw do
             delete 'projects' => 'lists#unlink_project', on: :member
           end
           resources :parts, except: [:new, :edit]
+          resources :projects, except: [:show, :index] do
+            get 'description' => 'projects#description', on: :member
+          end
           match "*all" => "base#cors_preflight_check", via: :options
         end
       end
