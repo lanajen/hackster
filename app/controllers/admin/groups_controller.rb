@@ -5,13 +5,13 @@ class Admin::GroupsController < Admin::BaseController
       'created_at' => 'groups.created_at',
       'name' => 'groups.full_name',
       'user_name' => 'groups.user_name',
-      'type' => 'groups.type',
+      # 'type' => 'groups.type',
     }
 
     params[:sort_by] ||= 'created_at'
 
-    @default_types = %w(Community Promotion Event University Course MeetupEvent)
-    type ||= params[:type] || @default_types
+    @default_types = %w(Community Course Event LiveChapter Meetup MeetupEvent Promotion University)
+    type ||= params[:filters].try(:[], :type) || @default_types
 
     collection = Group.where(type: type)
     @groups = filter_for collection, @fields
