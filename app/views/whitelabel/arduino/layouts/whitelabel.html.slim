@@ -24,9 +24,6 @@ html lang="en" class=content_for(:html_class)
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
-    javascript:
-      try{Typekit.load({async: true});}catch(e){}
 
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
