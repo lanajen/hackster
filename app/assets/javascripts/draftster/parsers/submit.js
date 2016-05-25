@@ -42,7 +42,7 @@ function transformTagNames(node) {
 }
 
 function createSpan(content) {
-  return { tag: 'span', attribs: {}, content: content, children: [] };
+  return { tag: 'span', attribs: {}, content: content + '\n', children: [] };
 }
 
 function flattenChildren(children) {
