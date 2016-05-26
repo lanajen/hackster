@@ -21,6 +21,7 @@ const Steps = [
         model: 'base_article',
         image_link: null
       },
+      model_key: 'group',
       keys: { Name: 'full_name', 'City': 'city', 'Country': 'country', 'Logo': 'avatar_id' },
       endpoint: `${getApiPath()}/private/groups`
     },
@@ -32,8 +33,10 @@ const Steps = [
     form: {
       inputs: ['Name', 'Course #'],
       textareas: [{ label: 'Pitch', rows: 3 }],
+      model_key: 'group',
       keys: { Name: 'full_name', ['Course #']: 'course_number', Pitch: 'mini_resume' },
-      endpoint: `${getApiPath()}/private/groups`
+      endpoint: `${getApiPath()}/private/groups`,
+      member_role: 'professor'
     },
     search: true
   },
@@ -43,8 +46,10 @@ const Steps = [
     form: {
       inputs: ['Year or semester'],
       image: null,
+      model_key: 'group',
       keys: { 'Year or semester': 'full_name' },
-      endpoint: `${getApiPath()}/private/groups`
+      endpoint: `${getApiPath()}/private/groups`,
+      member_role: 'professor'
     },
     search: false
   }

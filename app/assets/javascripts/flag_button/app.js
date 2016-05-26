@@ -1,5 +1,5 @@
 import React from 'react';
-import { flagContent } from '../utils/ReactAPIUtils';
+import { flagContent } from './utils/Requests';
 
 const App = React.createClass({
 

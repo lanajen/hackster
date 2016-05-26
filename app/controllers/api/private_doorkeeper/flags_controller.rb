@@ -1,4 +1,6 @@
-class Api::Private::FlagsController < Api::Private::BaseController
+class Api::PrivateDoorkeeper::FlagsController < Api::PrivateDoorkeeper::BaseController
+  before_action :doorkeeper_authorize_without_scope!
+
   def create
     @flag = Flag.new params[:flag]
 

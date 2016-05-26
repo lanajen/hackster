@@ -32,8 +32,8 @@ class AnalyticsWorker < BaseWorker
     set_stat 'owned_parts_count', FollowRelation.where(followable_type: 'Part').count
     set_stat 'new_owned_parts_count', FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
     set_stat 'new_replicated_projects_count', FollowRelation.where(followable_type: 'BaseArticle').where('follow_relations.created_at > ?', Date.today).count
-    set_stat 'engagements_count', Comment.where(commentable_type: %w(BaseArticle Thought)).count + BaseArticle.own.count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + Thought.count
-    set_stat 'new_engagements_count', Comment.where(commentable_type: %w(BaseArticle Thought)).where('comments.created_at > ?', Date.today).count + BaseArticle.own.where('projects.created_at > ?', Date.today).count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('respects.created_at > ?', Date.today).count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('follow_relations.created_at > ?', Date.today).count + Thought.where('thoughts.created_at > ?', Date.today).count
+    set_stat 'engagements_count', Comment.where(commentable_type: %w(BaseArticle)).count + BaseArticle.own.count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    set_stat 'new_engagements_count', Comment.where(commentable_type: %w(BaseArticle)).where('comments.created_at > ?', Date.today).count + BaseArticle.own.where('projects.created_at > ?', Date.today).count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('respects.created_at > ?', Date.today).count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('follow_relations.created_at > ?', Date.today).count
   end
 
   private

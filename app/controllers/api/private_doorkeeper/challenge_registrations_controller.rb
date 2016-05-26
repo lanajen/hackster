@@ -1,5 +1,5 @@
-class Api::Private::ChallengeRegistrationsController < Api::Private::BaseController
-  before_filter :authenticate_user!
+class Api::PrivateDoorkeeper::ChallengeRegistrationsController < Api::PrivateDoorkeeper::BaseController
+  before_filter :doorkeeper_authorize_user_without_scope!
 
   def update
     registration = ChallengeRegistration.where(challenge_id: params[:challenge_id], user_id: current_user.id).first!

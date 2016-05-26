@@ -141,14 +141,6 @@ class NotificationHandler
             context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
           end
           context[:users] -= [author]
-        when Thought
-          thought = context[:thought] = commentable
-          context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented').to_a  # to_a is so that uniq! doesn't fail later on
-          if thought.user.subscribed_to?(notification_type, 'new_comment_update')
-            context[:users] += [thought.user]
-          end
-          context[:users].uniq!
-          context[:users] -= [author]
         when ReviewThread
           context[:thread] = commentable
           context[:project] = project = commentable.project
@@ -160,11 +152,6 @@ class NotificationHandler
             commentable.project.users.with_subscription(notification_type, 'updated_review').reorder(nil)  # user reorder(nil) so that uniq! doesn't fail (uniq! is used down the line)
           end
         end
-      when :comment_mention
-        context[:model] = comment = context[:comment] = Comment.find context_id
-        context[:commentable] = comment.commentable
-        context[:author] = comment.user
-        context[:users] = comment.mentioned_users
       when :daily_notification
         context = prepare_project_notification notification_type, 24.hours
       when :weekly_notification
@@ -315,13 +302,6 @@ class NotificationHandler
           project = context[:project] = respect.respectable
           context[:users] = project.users.with_subscription(notification_type, 'new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
           context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
-        when Thought
-          thought = context[:thought] = respect.respectable
-          if thought.user.subscribed_to? notification_type, 'new_like'
-            context[:user] = thought.user
-          else
-            context[:users] = []
-          end
         end
       when :review_decision
         context[:decision] = decision = ReviewDecision.find context_id
@@ -330,10 +310,6 @@ class NotificationHandler
         context[:author] = author = decision.user
         context[:users] = (thread.participants.with_subscription(notification_type, 'updated_review') + thread.project.users.with_subscription(notification_type, 'updated_review')).uniq - [author]
         context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
-      when :thought_mention
-        context[:model] = thought = context[:thought] = Thought.find context_id
-        context[:author] = thought.user
-        context[:users] = thought.mentioned_users
       when :user
         context[:model] = context[:user] = user = User.find(context_id)
         context[:current_platform] = Platform.find_by_user_name(user.platform) if user.platform.present?

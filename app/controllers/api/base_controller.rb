@@ -58,7 +58,7 @@ class Api::BaseController < ApplicationController
         allowed_origin = origin_uri.scheme + '://' + origin_uri.host
         allowed_origin << ":#{origin_uri.port}" unless origin_uri.port.to_s.in? %w(80 443)
         headers['Access-Control-Allow-Origin'] = allowed_origin
-        custom_private_api_methods if self.respond_to?(:custom_private_api_methods)
+        custom_private_api_methods if self.respond_to?(:custom_private_api_methods, true)
       else
         render status: :not_found, nothing: true
       end

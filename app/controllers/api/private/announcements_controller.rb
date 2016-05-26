@@ -1,5 +1,5 @@
+# migrate this once new editor is ready
 class Api::Private::AnnouncementsController < Api::Private::BaseController
-
   def index
     render json: Announcement.order(created_at: :desc).limit(10)
   end

@@ -1,5 +1,6 @@
-class Api::Private::ChallengesController < Api::Private::BaseController
-  before_filter :load_challenge
+class Api::PrivateDoorkeeper::ChallengesController < Api::PrivateDoorkeeper::BaseController
+  before_action :doorkeeper_authorize_user_without_scope!
+  before_action :load_challenge
 
   def entries_csv
     generate_response 'entries', 'generate_entries_csv'

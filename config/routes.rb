@@ -44,6 +44,16 @@ HackerIo::Application.routes.draw do
           get 'embeds' => 'embeds#show'
           resources :announcements
           resources :build_logs
+          resources :error_logs
+          resources :stats, only: [:create]
+          resources :users, only: [:index]
+          resources :widgets, only: [:destroy, :update, :create]
+          match "*all" => "base#cors_preflight_check", via: :options
+        end
+
+        # this stuff is authenticated with tokens from doorkeeper
+        namespace :private, module: 'private_doorkeeper' do
+          get 'me' => 'users#show'
           resources :challenges, only: [] do
             get 'entries_csv' => 'challenges#entries_csv'
             get 'ideas_csv' => 'challenges#ideas_csv'
@@ -52,7 +62,6 @@ HackerIo::Application.routes.draw do
           resources :challenge_registrations do
             patch '' => 'challenge_registrations#update', on: :collection
           end
-          resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload
             post 'remote_upload', on: :collection
@@ -65,18 +74,8 @@ HackerIo::Application.routes.draw do
             end
           end
           resources :groups, only: [:index, :create]
-          resources :notifications, only: [:index]
-          resources :stats, only: [:create]
-          resources :thoughts
-          resources :users, only: [:index]
-          resources :widgets, only: [:destroy, :update, :create]
-          match "*all" => "base#cors_preflight_check", via: :options
-        end
-
-        # this stuff is authenticated with tokens from doorkeeper
-        namespace :private, module: 'private_doorkeeper' do
-          get 'me' => 'users#show'
           resources :jobs, only: [:create, :show]
+          resources :notifications, only: [:index]
           resources :projects, only: [] do
             get 'description' => 'projects#description', on: :member
           end

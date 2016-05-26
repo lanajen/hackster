@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Select from 'react-select';
 import Form from './Form';
-import { getCSRFToken } from '../../utils/Utils';
 
 export default class Search extends Component {
   constructor(props) {
@@ -59,7 +58,7 @@ export default class Search extends Component {
   }
 
   handlePostForm(form, endpoint, imageData) {
-    this.props.actions.postFormHandler(form, endpoint, getCSRFToken(), imageData);
+    this.props.actions.postFormHandler(form, endpoint, imageData);
   }
 
   handleContinueButton(e) {

@@ -2,7 +2,6 @@ import request from 'superagent';
 import { getApiPath, getApiToken } from './Utils';
 
 module.exports = {
-
   addList(name) {
     return new Promise((resolve, reject) => {
       getApiToken(token => {
@@ -19,16 +18,18 @@ module.exports = {
 
   addToFollowing(id, type, source) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/followers`)
-        .query({button: 'button_shorter'})
-        .query({followable_id: id})
-        .query({followable_type: type})
-        .query({source: source})
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/private/followers`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({button: 'button_shorter'})
+          .query({followable_id: id})
+          .query({followable_type: type})
+          .query({source: source})
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 
@@ -42,28 +43,6 @@ module.exports = {
             err ? reject(err) : resolve(res);
           });
       });
-    });
-  },
-
-  generateCSV(url) {
-    return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}${url}`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  getFileDetails(id) {
-    return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/files/${id}`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
     });
   },
 
@@ -82,12 +61,14 @@ module.exports = {
 
   fetchFollowing() {
     return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/followers`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .get(`${getApiPath()}/private/followers`)
+          .set('Authorization', `Bearer ${token}`)
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 
@@ -102,29 +83,6 @@ module.exports = {
             err ? reject(err) : resolve(res);
           });
       }, true);
-    });
-  },
-
-  fetchNotifications() {
-    return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/notifications`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  flagContent(flaggableType, flaggableId, userId) {
-    return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/flags`)
-        .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
     });
   },
 
@@ -158,16 +116,18 @@ module.exports = {
 
   removeFromFollowing(id, type, source) {
     return new Promise((resolve, reject) => {
-      request
-        .del(`${getApiPath()}/private/followers`)
-        .query({button: 'button_shorter'})
-        .query({followable_id: id})
-        .query({followable_type: type})
-        .query({source: source})
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .del(`${getApiPath()}/private/followers`)
+          .set('Authorization', `Bearer ${token}`)
+          .query({button: 'button_shorter'})
+          .query({followable_id: id})
+          .query({followable_type: type})
+          .query({source: source})
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      }, true);
     });
   },
 
@@ -181,19 +141,6 @@ module.exports = {
             err ? reject(err) : resolve(res);
           });
       }, true);
-    });
-  },
-
-  updateChallengeRegistration(challengeId, data) {
-    return new Promise((resolve, reject) => {
-      request
-        .patch(`${getApiPath()}/private/challenge_registrations`)
-        .send({ challenge_id: challengeId })
-        .send(data)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
     });
   }
 };

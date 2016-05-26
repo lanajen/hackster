@@ -1,5 +1,4 @@
 class Redcarpet::Render::CustomRenderer < Redcarpet::Render::HTML
-  include Redcarpet::Render::SociableHTML
   include Redcarpet::Render::HucksterHackster
 
   def initialize(extensions = {})

@@ -26,7 +26,17 @@ class Api::BaseDoorkeeperController < Api::BaseController
       end
     end
 
+    def doorkeeper_authorize_user_without_scope!
+      if !(valid_doorkeeper_token_without_scope? and user_signed_in?)
+        doorkeeper_render_error
+      end
+    end
+
     def valid_doorkeeper_token_without_scope?
       doorkeeper_token && doorkeeper_token.accessible?
+    end
+
+    def user_signed_in?
+      current_user.present?
     end
 end

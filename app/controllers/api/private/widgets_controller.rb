@@ -1,3 +1,4 @@
+# delete this controller after medium.js has been fully removed
 class Api::Private::WidgetsController < Api::Private::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource except: [:create]

@@ -1,5 +1,5 @@
+# migrate this once new editor is ready
 class Api::Private::BuildLogsController < Api::Private::BaseController
-
   def index
     render json: BuildLog.order(created_at: :desc).limit(10)
   end

@@ -1,4 +1,7 @@
 module JsonDecoratorHelpers
+  extend ActiveSupport::Concern
+  include AbstractController::Helpers
+
   private
     def decorator_context
       {
@@ -9,7 +12,11 @@ module JsonDecoratorHelpers
     end
 
     def h
-      ActionController::Base.helpers
+      @hh ||= begin
+        proxy = ActionView::Base.new
+        proxy.extend _helpers
+        proxy.extend ApplicationHelper
+      end
     end
 
     def url

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NotificationDropdown from './components/NotificationDropdown';
-import { fetchNotifications } from '../utils/ReactAPIUtils';
+import { fetchNotifications } from './utils/Requests';
 
 const App = React.createClass({
 

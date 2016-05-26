@@ -1,3 +1,4 @@
+# delete this controller after medium.js has been fully removed
 class Api::Private::EmbedsController < Api::Private::BaseController
   def show
     embed = Embed.new url: params[:url], widget_id: params[:widget_id]

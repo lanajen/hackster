@@ -1,11 +1,12 @@
-class Api::Private::FollowersController < Api::Private::BaseController
-  before_filter :authenticate_user!, only: [:create, :destroy]
+# TODO: move it to V2 after figuring out how not to have the share_modal here
+class Api::PrivateDoorkeeper::FollowersController < Api::PrivateDoorkeeper::BaseController
+  before_filter -> { doorkeeper_authorize! :profile }, only: [:index]
+  before_filter -> { doorkeeper_authorize! :follow }, only: [:create, :destroy]
   before_filter :load_followable, only: [:create, :destroy]
-  respond_to :js, :html
 
   def index
     init_following = { user: [], group: [], basearticle: [], part: [] }
-    @following = if user_signed_in?
+    following = if user_signed_in?
       current_user.follow_relations.select(:followable_id, :followable_type).inject(init_following) do |h, f|
         case f.followable_type
         when 'User'
@@ -22,6 +23,11 @@ class Api::Private::FollowersController < Api::Private::BaseController
     else
       init_following
     end
+
+    render json: {
+      following: following,
+      currentUserId: current_user.try(:id),
+    }
   end
 
   def create
@@ -31,11 +37,6 @@ class Api::Private::FollowersController < Api::Private::BaseController
     when Platform, List
       session[:share_modal] = 'followed_share_prompt'
       session[:share_modal_model] = 'followable'
-    # when HardwarePart, SoftwarePart, ToolPart, Part
-    #   unless current_user.following? @followable.try(:platform)
-    #     session[:share_modal] = 'added_to_toolbox_prompt'
-    #     session[:share_modal_model] = 'followable'
-    #   end
     end
     session[:share_modal_xhr] = true if session[:share_modal]
 

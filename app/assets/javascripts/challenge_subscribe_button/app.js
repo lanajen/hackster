@@ -1,5 +1,5 @@
 import React from 'react';
-import { updateChallengeRegistration } from '../utils/ReactAPIUtils';
+import { updateChallengeRegistration } from './utils/Requests';
 
 const App = React.createClass({
 

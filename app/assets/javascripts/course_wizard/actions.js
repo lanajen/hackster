@@ -21,12 +21,12 @@ function setStore(storeName, store) {
   };
 }
 
-export function postFormHandler(form, endpoint, csrfToken, imageData) {
+export function postFormHandler(form, endpoint, imageData) {
   return function(dispatch) {
-    return postForm(form, endpoint, csrfToken)
+    return postForm(form, endpoint)
       .then(response => {
         let store = imageData !== null ? { ...response, imageData } : response;
-        dispatch(setStore(form.type.toLowerCase(), store));
+        dispatch(setStore(form.model_data.type.toLowerCase(), store));
       })
       .catch(err => {
         console.log('POST Form ERROR: ', err);

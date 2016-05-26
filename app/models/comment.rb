@@ -100,26 +100,8 @@ class Comment < ActiveRecord::Base
     parent_id.present?
   end
 
-  def has_mentions?
-    return unless body
-
-    mentioned_users.any?
-  end
-
   def is_root?
     parent_id.nil?
-  end
-
-  def mentioned_users
-    return @mentions if @mentions
-    return [] unless body
-
-    user_ids = []
-    doc = Nokogiri::HTML::DocumentFragment.parse body
-    doc.css('a.mention').each do |mention|
-      user_ids << mention['data-user-id']
-    end
-    @mentions = user_ids.any? ? User.where(id: user_ids) : []
   end
 
   def to_tracker

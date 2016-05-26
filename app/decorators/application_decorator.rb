@@ -6,6 +6,10 @@ class ApplicationDecorator < Draper::Decorator
       context.has_key?(:current_site) ? context[:current_site] : h.current_site
     end
 
+    def current_user
+      context[:current_user] || h.current_user
+    end
+
     def is_whitelabel?
       current_site.present?
     end

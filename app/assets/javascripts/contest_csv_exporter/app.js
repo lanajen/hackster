@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { generateCSV, getFileDetails } from '../utils/ReactAPIUtils';
+import { generateCSV, getFileDetails } from './utils/Requests';
 import ImageHelpers from '../utils/Images';
 
 export default class App extends Component {

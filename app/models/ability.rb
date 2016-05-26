@@ -12,7 +12,7 @@ class Ability
     when User
       @user = resource
 
-      can :read, [Comment, User, Thought, Challenge]
+      can :read, [Comment, User, Challenge]
       cannot :read, [BaseArticle, Group, SkillRequest]
       can :read, [BaseArticle, Group], private: false
       can :read, Assignment do |assignment|
@@ -70,7 +70,7 @@ class Ability
   end
 
   def member
-    can :create, [HackerSpace, Community, Event, Thought, ]
+    can :create, [HackerSpace, Community, Event]
 
     can :admin, Address do |address|
       address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
@@ -103,10 +103,6 @@ class Ability
 
     can :manage, [Announcement, BuildLog, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
-    end
-
-    can :manage, Thought do |thought|
-      @user.id == thought.user_id
     end
 
     can [:update, :destroy], [Comment], user_id: @user.id

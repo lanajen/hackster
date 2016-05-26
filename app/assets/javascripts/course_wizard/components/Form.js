@@ -62,12 +62,19 @@ export default class Form extends Component {
       form[keys[ref]] = value;
     });
 
-    if(this.props.image) {
+    if (this.props.image) {
       form[keys[this.props.image['human_file_type']]] = this.state.imageData.id;
     }
 
-    if(this.props.parentId) {
+    if (this.props.parentId) {
       form['parent_id'] = this.props.parentId;
+    }
+
+    form = { model_data: Object.assign({}, form) };
+    form['model_key'] = this.props.model_key;
+
+    if (this.props.member_role) {
+      form['member_role'] = this.props.member_role;
     }
 
     return form;

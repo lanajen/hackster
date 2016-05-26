@@ -32,7 +32,7 @@ module HackerIo
       :platform_observer, :project_collection_observer, :attachment_observer,
       :challenge_entry_observer, :challenge_observer, :awarded_badge_observer,
       :list_observer, :receipt_observer, :part_join_observer, :event_observer,
-      :notification_observer, :part_observer, :thought_observer,
+      :notification_observer, :part_observer,
       :blog_post_observer, :impression_observer, :conversation_observer,
       :order_observer, :order_line_observer, :address_observer,
       :payment_observer, :prize_observer, :challenge_registration_observer,

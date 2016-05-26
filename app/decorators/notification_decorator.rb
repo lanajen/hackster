@@ -81,9 +81,6 @@ class NotificationDecorator < ApplicationDecorator
         when BaseArticle, Project, ExternalProject
           project_link = h.link_to commentable.name, commentable
           "#{author_link} commented on #{project_link}."
-        when Thought
-          thought_link = h.link_to 'an update you follow', commentable
-          "#{author_link} commented on #{thought_link}."
         when Issue, BuildLog
           thread_link = h.link_to commentable.title, commentable
           "#{author_link} commented on #{thread_link}."
@@ -100,7 +97,7 @@ class NotificationDecorator < ApplicationDecorator
       follower_link = h.link_to notifiable.user.name, notifiable.user
       case event
       when :new
-        name_link = (followable == h.current_user ? 'you' : h.link_to(followable.name, followable))
+        name_link = (followable == current_user ? 'you' : h.link_to(followable.name, followable))
         "#{follower_link} followed #{name_link}."
       end
     when CommunityMember, EventMember, HackerSpaceMember, PlatformMember, Member
@@ -173,17 +170,6 @@ class NotificationDecorator < ApplicationDecorator
       when Project, ExternalProject, BaseArticle
         project_link = h.link_to respectable.name, respectable
         "#{user_link} respected #{project_link}." if event == :new
-      when Thought
-        thought_link = h.link_to 'one of your updates', respectable
-        "#{user_link} liked #{thought_link}." if event == :new
-      end
-    when Thought
-      thought = notifiable
-      author_link = h.link_to thought.user.name, thought.user
-      thought_link = h.link_to 'an update', thought
-      case event
-      when :mention
-        "#{author_link} mentioned you in #{thought_link}."
       end
     when User
       user = notifiable

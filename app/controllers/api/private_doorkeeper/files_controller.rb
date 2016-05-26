@@ -1,5 +1,6 @@
-class Api::Private::FilesController < Api::Private::BaseController
-  before_filter :authenticate_user!, only: [:show, :destroy]
+# TODO: make it simpler/cleaner to use and move to V2
+class Api::PrivateDoorkeeper::FilesController < Api::PrivateDoorkeeper::BaseController
+  before_filter :doorkeeper_autorize_user_wihtout_scope!, only: [:show, :destroy]
 
   def create
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon alternate_cover_image)

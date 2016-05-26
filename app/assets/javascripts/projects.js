@@ -850,9 +850,6 @@ $select2target = null;
             headers: {
               'Authorization': 'Bearer ' + token
             },
-            // xhrFields: {
-            //   withCredentials: true
-            // },
             success: function(data) {
               form.find('input[name=key]').val(data.key);
               form.find('input[name=policy]').val(data.policy);
@@ -898,27 +895,29 @@ $select2target = null;
         form.data('data', data);
         url = form.attr('data-url');
 
-        $.ajax({
-          url: Utils.getApiPath() + '/private/files',
-          type: 'POST',
-          dataType: 'json',
-          xhrFields: {
-            withCredentials: true
-          },
-          data: {
-            file_url: url,
-            file_type: 'document',
-            context: 'no-context'
-          },
-          success: function(data) {
-            $('[data-field-type=document_file_name]').val(data.file_name);
-            $('[data-field-type=document_id]').val(data.id);
-            _data.context.remove();
-          },
-          error: function(data) {
-            context = decodeURIComponent($.urlParam(this.data, 'context'));
-            handleUploadErrors($('#' + context));
-          }
+        Utils.getApiToken(function(token) {
+          $.ajax({
+            url: Utils.getApiPath() + '/private/files',
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            data: {
+              file_url: url,
+              file_type: 'document',
+              context: 'no-context'
+            },
+            success: function(data) {
+              $('[data-field-type=document_file_name]').val(data.file_name);
+              $('[data-field-type=document_id]').val(data.id);
+              _data.context.remove();
+            },
+            error: function(data) {
+              context = decodeURIComponent($.urlParam(this.data, 'context'));
+              handleUploadErrors($('#' + context));
+            }
+          });
         });
       }
     });
