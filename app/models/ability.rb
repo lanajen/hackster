@@ -220,12 +220,6 @@ class Ability
     end
   end
 
-  def spammer
-    cannot :publish, BaseArticle
-    cannot :create, Comment
-    cannot :create, Conversation
-  end
-
   def hackster_moderator
     can :manage, BaseArticle
     can :moderate, Group
@@ -250,6 +244,12 @@ class Ability
 
   def platform
     can :manage, Part, platform_id: @platform.id
+  end
+
+  def spammer
+    cannot :publish, BaseArticle
+    cannot :create, Comment
+    cannot :create, Conversation
   end
 
   def trusted
