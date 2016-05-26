@@ -34,11 +34,11 @@ module ScraperStrategies
       normalize_links
       parse_comments
       format_text
-      # parse_cover_image
+      parse_cover_image
       if model_class == Project
-        # parse_images
-        # parse_embeds
-        # parse_files
+        parse_images
+        parse_embeds
+        parse_files
         parse_code
         clean_up_formatting
       end
