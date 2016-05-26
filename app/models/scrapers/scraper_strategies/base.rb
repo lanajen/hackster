@@ -185,7 +185,8 @@ module ScraperStrategies
               end
             end
           end
-          node.content.gsub(/<br ?\/?>/, "\r\n")
+          node.css('br').each{|br| br.replace("\r\n") }
+          node.content
         else
           if lang_node = node.at_css('.crayon-language')
             if lang_node.text.downcase.in?(CodeWidget::ALL_PYGMENTS_LEXERS_BY_ALIASES.keys)

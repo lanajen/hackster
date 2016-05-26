@@ -5,7 +5,7 @@ class ChallengeCriticalWorker < BaseWorker
     challenge = Challenge.find challenge_id
     entries = challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
 
-    headers = ['ID', 'Project name', 'Project URL', 'Project created on', 'Authors', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
+    headers = ['ID', 'Project name', 'Project URL', 'Project created on', 'Authors', 'Entrant name', 'Entrant email', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
     rows = [headers]
 
     entries.each do |entry|
@@ -16,6 +16,8 @@ class ChallengeCriticalWorker < BaseWorker
       row << "https://www.hackster.io/#{project.uri}"
       row << project.created_at
       row << project.users.map(&:name).to_sentence
+      row << entry.user.name
+      row << entry.user.email
       row << project.product_tags_string
       row << "#{project.checklist_completion}%"
       row << project.impressions_count

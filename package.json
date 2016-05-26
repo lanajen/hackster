@@ -1,6 +1,7 @@
 {
   "name": "HacksterIO",
   "dependencies": {
+    "@hacksterio/draftster": "^0.2.20",
     "async": "^1.4.2",
     "babel-core": "^6.3.15",
     "babel-eslint": "^4.1.6",
@@ -39,6 +40,7 @@
     "react": "^0.14.8",
     "react-addons-css-transition-group": "^0.14.7",
     "react-dom": "^0.14.3",
+    "react-immutable-proptypes": "^1.7.1",
     "react-input-autosize": "^0.6.8",
     "react-redux": "^4.0.0",
     "react-router": "^2.0.1",

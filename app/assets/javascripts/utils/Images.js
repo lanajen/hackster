@@ -3,7 +3,7 @@ import request from 'superagent';
 import _ from 'lodash';
 import xmlParser from 'xml2js';
 import Helpers from './Helpers';
-import { getApiPath } from './Utils';
+import { getApiPath, getCSRFToken } from './Utils';
 
 const ImageUtils = {
 
@@ -11,7 +11,7 @@ const ImageUtils = {
     async.map(files, function(file, callback) {
       this.handleFileReader(file, function(dataUrl, fileName, hash) {
         this.handleImageResize(dataUrl, fileName, hash, function(data) {
-          return callback(null, { ...data, rawFile: file });
+          return callback(null, { ...data, url: dataUrl, rawFile: file });
         });
       }.bind(this));
     }.bind(this), function(err, results) {
@@ -132,6 +132,7 @@ const ImageUtils = {
   },
 
   getS3AuthData(fileName) {
+    fileName = fileName || 'no-name';
     return new Promise((resolve, reject) => {
       request
         .get(`${getApiPath()}/private/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
@@ -167,30 +168,39 @@ const ImageUtils = {
     });
   },
 
-  postURLToServer(url, projectID, csrfToken, fileType, context, additionalParams) {
+  postURLToServer(url, projectID, modelType, csrfToken, fileType) {
     let params = {
-        'file_url': url,
-        'file_type': fileType,
-        'context': context
-      };
+      'file_url': url,
+      'file_type': fileType || 'image',
+      'attachable_id': projectID,
+      'attachable_type': modelType
+    };
 
-      if(additionalParams !== undefined && additionalParams instanceof Object) {
-        params = _.extend({}, params, additionalParams);
-      }
-
-      return new Promise((resolve, reject) => {
-        request
-          .post(`${getApiPath()}/private/files`)
-          .set('X-CSRF-Token', csrfToken)
-          .send(params)
-          .withCredentials()
-          .end(function(err, res) {
-            err ? reject(err) : resolve(res);
-          });
-      });
+    return new Promise((resolve, reject) => {
+      request
+        .post(`${getApiPath()}/private/files`)
+        .set('X-CSRF-Token', csrfToken)
+        .send(params)
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
   },
 
-  postRemoteURL(url, fileType, csrfToken) {
+  deleteImageFromServer(id) {
+    return new Promise((resolve, reject) => {
+      request
+        .del(`${getApiPath()}/private/files`)
+        .set('X-CSRF-Token', getCSRFToken())
+        .send({ id })
+        .end((err, res) => {
+          err ? reject(err) : resolve(res.body);
+        });
+    });
+  },
+
+  postRemoteURL(url, fileType) {
     const form = new FormData();
     form.append('file_type', fileType);
     form.append('file_url', url);
@@ -198,7 +208,7 @@ const ImageUtils = {
     return new Promise((resolve, reject) => {
       request
         .post(`${getApiPath()}/private/files/remote_upload`)
-        .set('X-CSRF-Token', csrfToken)
+        .set('X-CSRF-Token', getCSRFToken())
         .send(form)
         .withCredentials()
         .end((err, res) => {

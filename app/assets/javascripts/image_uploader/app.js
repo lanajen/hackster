@@ -52,7 +52,7 @@ export default class App extends Component {
       })
       .then(url => {
         let fileType = this.props.locals.attribute_type;
-        return ImageHelpers.postURLToServer(url, null, this.state.csrfToken, fileType, fileType + '-upload');
+        return ImageHelpers.postURLToServer(url, null, this.props.locals.model_type, this.state.csrfToken, fileType);
       })
       .then(response => {
         let imageData = { ...fileData, ...response.body };
