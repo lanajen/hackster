@@ -540,7 +540,7 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    self.user_name = UserNameGenerator.new.user_name
+    self.user_name = UserNameGenerator.new(full_name).user_name
   end
 
   def has_notifications?
@@ -717,7 +717,6 @@ class User < ActiveRecord::Base
   end
 
   def simplify_signup!
-    skip_email_confirmation!
     skip_password!
     generate_user_name
     @override_devise_notification = 'confirmation_instructions_simplified_signup'

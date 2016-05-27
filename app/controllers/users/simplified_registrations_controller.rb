@@ -1,4 +1,5 @@
 class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
+  before_action :configure_permitted_parameters
 
   def create
     build_resource(sign_up_params)
@@ -19,6 +20,10 @@ class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
   end
 
   private
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :full_name) }
+    end
+
     def build_resource(hash=nil)
       super
       self.resource.platform = site_platform
