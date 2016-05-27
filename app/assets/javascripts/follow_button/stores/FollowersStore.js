@@ -10,10 +10,10 @@ const followersStore = {
 
   isFetching: false,
 
-  populateStore(csrfToken) {
+  populateStore() {
     if(!this.followersStore.length && this.isFetching === false) {
       this.isFetching = true;
-      let promise = this.fetchInitialData(csrfToken);
+      let promise = this.fetchInitialData();
 
       promise.then(function(res) {
         let store = res.body.following;
@@ -27,8 +27,8 @@ const followersStore = {
     }
   },
 
-  fetchInitialData(csrfToken) {
-    return fetchFollowing(csrfToken);
+  fetchInitialData() {
+    return fetchFollowing();
   },
 
   isStorePopulated() {

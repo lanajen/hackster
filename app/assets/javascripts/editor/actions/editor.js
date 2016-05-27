@@ -49,9 +49,9 @@ export function setInitialDOM(json) {
   };
 }
 
-export function fetchInitialDOM(projectId, csrfToken) {
+export function fetchInitialDOM(projectId) {
   return function (dispatch) {
-    return Request.getStory(projectId, csrfToken)
+    return Request.getStory(projectId)
       .then(result => {
         dispatch(setInitialDOM(result));
       }).catch(err => {
@@ -75,12 +75,11 @@ export function setCurrentStoreIndex(storeIndex) {
   };
 }
 
-export function setProjectData(projectId, modelType, csrfToken, S3BucketURL, AWSAccessKeyId) {
+export function setProjectData(projectId, modelType, S3BucketURL, AWSAccessKeyId) {
   return {
     type: Editor.setProjectData,
     projectId: projectId,
     modelType: modelType,
-    csrfToken: csrfToken,
     S3BucketURL: S3BucketURL,
     AWSAccessKeyId: AWSAccessKeyId
   };
@@ -334,7 +333,7 @@ export function removeImageFromList(imageData, storeIndex, mediaHash) {
   }
 }
 
-export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, AWSAccessKeyId, csrfToken, projectId, modelType) {
+export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, AWSAccessKeyId, projectId, modelType) {
   return function(dispatch) {
     files.forEach(file => {
       return ImageHelpers.getS3AuthData(file.name)
@@ -342,7 +341,7 @@ export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, 
           return ImageHelpers.postToS3(data, file, S3BucketURL, AWSAccessKeyId);
         })
         .then(url => {
-          return ImageHelpers.postURLToServer(url, projectId, modelType, csrfToken, 'image');
+          return ImageHelpers.postURLToServer(url, projectId, modelType, 'image');
         })
         .then(response => {
           let body = Object.assign({}, response.body, file);

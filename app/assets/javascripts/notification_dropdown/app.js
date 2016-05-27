@@ -7,28 +7,12 @@ const App = React.createClass({
 
   getInitialState() {
     return {
-      csrfToken: null,
       notifications: [],
       showDropdown: false,
       isLoading: false,
       hasLoaded: false,
       hasNotifications: this.props.initialHasNotifications
     };
-  },
-
-  componentWillMount() {
-    if(this.state.csrfToken === null) {
-      let metaList, csrfToken, following;
-
-      if(document) {
-        metaList = document.getElementsByTagName('meta');
-        csrfToken = _.find(metaList, { name: 'csrf-token' }).content;
-
-        this.setState({
-          csrfToken: csrfToken
-        });
-      }
-    }
   },
 
   componentDidMount() {
@@ -46,28 +30,26 @@ const App = React.createClass({
   },
 
   onNotificationButtonClick() {
-    if (this.state.csrfToken) {
-      // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
-      // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
-      let isDropdownOpen = ReactDOM.findDOMNode(this.refs.notifications).offsetParent !== null;
+    // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
+    // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
+    let isDropdownOpen = ReactDOM.findDOMNode(this.refs.notifications).offsetParent !== null;
 
-      if (isDropdownOpen && !this.state.hasLoaded) {
-        let promise = fetchNotifications(this.state.csrfToken);
+    if (isDropdownOpen && !this.state.hasLoaded) {
+      let promise = fetchNotifications();
+      this.setState({
+        isLoading: true,
+        hasLoaded: true
+      });
+
+      promise.then(function(response) {
+        let notifications = response.body.notifications;
+
         this.setState({
-          isLoading: true,
-          hasLoaded: true
+          isLoading: false,
+          notifications: notifications,
+          hasNotifications: false
         });
-
-        promise.then(function(response) {
-          let notifications = response.body.notifications;
-
-          this.setState({
-            isLoading: false,
-            notifications: notifications,
-            hasNotifications: false
-          });
-        }.bind(this)).catch(function(err) { console.log('Request Error: ' + err); });
-      }
+      }.bind(this)).catch(function(err) { console.log('Request Error: ' + err); });
     }
   },
 

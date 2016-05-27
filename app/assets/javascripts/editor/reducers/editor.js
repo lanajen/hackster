@@ -15,7 +15,6 @@ const initialState = {
   hasUnsavedChanges: false,
   isFetching: false,
   currentStoreIndex: 0,
-  csrfToken: null,
   projectId: null,
   modelType: null,
   S3BucketURL: null,
@@ -91,7 +90,6 @@ export default function(state = initialState, action) {
     case Editor.setProjectData:
       return {
         ...state,
-        csrfToken: action.csrfToken,
         projectId: action.projectId,
         modelType: action.modelType,
         S3BucketURL: action.S3BucketURL,

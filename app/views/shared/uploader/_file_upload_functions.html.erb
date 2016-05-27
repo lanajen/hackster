@@ -43,27 +43,29 @@ var <%= file_type %>Functions = {
     formData = $('#' + context).data('data');
 
     window.setTimeout(function() {
-      $.ajax({
-        url: Utils.getApiPath() + '/private/files/' + fileId,
-        type: 'GET',
-        dataType: 'json',
-        data: { context: context },
-        xhrFields: {
-          withCredentials: true
-        },
-        success: function(data) {
-          processed = data.processed;
-          if (!processed) {
-            <%= file_type %>Functions.checkFileProcessed(data.id, data.context);
-          } else {
-            formData = $('#' + data.context).data('data');
-            <%= file_type %>Functions.fileuploadDone(formData, data);
+      Utils.getApiToken(function(token){
+        $.ajax({
+          url: Utils.getApiPath() + '/private/files/' + fileId,
+          type: 'GET',
+          dataType: 'json',
+          data: { context: context },
+          beforeSend: function(xhr){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+          },
+          success: function(data) {
+            processed = data.processed;
+            if (!processed) {
+              <%= file_type %>Functions.checkFileProcessed(data.id, data.context);
+            } else {
+              formData = $('#' + data.context).data('data');
+              <%= file_type %>Functions.fileuploadDone(formData, data);
+            }
+          },
+          error: function(data) {
+            context = decodeURIComponent($.urlParam(this.url, 'context'));
+            <%= file_type %>Functions.fail($('#' + context).data('data'));
           }
-        },
-        error: function(data) {
-          context = decodeURIComponent($.urlParam(this.url, 'context'));
-          <%= file_type %>Functions.fail($('#' + context).data('data'));
-        }
+        });
       });
     }, 1000);
   },

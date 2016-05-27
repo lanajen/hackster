@@ -49,7 +49,7 @@ function receiveThread(thread) {
   };
 }
 
-export function doSubmitComment(body, threadId, csrfToken) {
+export function doSubmitComment(body, threadId) {
   return function(dispatch) {
 
     let comment = {
@@ -63,7 +63,7 @@ export function doSubmitComment(body, threadId, csrfToken) {
     };
     dispatch(submitComment(comment));
 
-    let promise = postComment(comment, csrfToken);
+    let promise = postComment(comment);
     return promise
       .then(response =>
         dispatch(setCommentSubmitted(response))

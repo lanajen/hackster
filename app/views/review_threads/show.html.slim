@@ -31,7 +31,7 @@
           - unless @project.has_part_related_to_origin_platform?
             .alert.alert-warning
               p This write-up is currently not visible on the #{@project.origin_site.name} site because no #{@project.origin_platform.name} products were found in the components, tools or apps lists. Only write-ups made with #{@project.origin_platform.name} products will appear publicly on the #{@project.origin_site.name} site.
-      = react_component 'ReviewTool', { projectId: @project.id, csrfToken: form_authenticity_token, userRole: (%w(admin hackster_moderator super_moderator moderator) & current_user.roles).first, isAuthor: current_user.id.in?(@project.users.pluck(:id)) }, {}
+      = react_component 'ReviewTool', { projectId: @project.id, userRole: (%w(admin hackster_moderator super_moderator moderator) & current_user.roles).first, isAuthor: current_user.id.in?(@project.users.pluck(:id)) }, {}
 
 = content_for :js do
 

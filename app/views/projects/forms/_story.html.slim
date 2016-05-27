@@ -8,7 +8,7 @@
   => link_to 'admin@hackster.io', 'mailto:admin@hackster.io?subject=Need help with story editor', class: 'alert-link'
   | with a link to your project.
 
-= simple_nested_form_for @project, url: api_private_project_url(@project, host: api_host), html: { data: { remote: true, 'with-credentials' => true }, class: 'form-horizontal remote story-form' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: api_v2_project_url(@project, host: api_host), html: { data: { remote: true, 'with-api-token' => true }, class: 'form-horizontal remote story-form' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='story'
   input type='hidden' name='save' value='1'

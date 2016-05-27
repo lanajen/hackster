@@ -9,12 +9,12 @@ function addLog(log) {
   };
 }
 
-export function postErrorLog(error, csrfToken) {
+export function postErrorLog(error) {
   return function(dispatch, getState) {
     const logger = getState().logger;
 
     if(logger.msg !== error.msg) {
-      return Request.postErrorLog(error, csrfToken)
+      return Request.postErrorLog(error)
         .then(res => {
           dispatch(addLog(error));
         })

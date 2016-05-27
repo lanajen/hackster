@@ -44,7 +44,6 @@ HackerIo::Application.routes.draw do
           get 'embeds' => 'embeds#show'
           resources :announcements
           resources :build_logs
-          resources :error_logs
           resources :stats, only: [:create]
           resources :users, only: [:index]
           resources :widgets, only: [:destroy, :update, :create]
@@ -62,6 +61,7 @@ HackerIo::Application.routes.draw do
           resources :challenge_registrations do
             patch '' => 'challenge_registrations#update', on: :collection
           end
+          resources :error_logs
           resources :files, only: [:create, :show, :destroy] do
             get 'remote_upload' => 'files#check_remote_upload', on: :collection, as: :remote_upload
             post 'remote_upload', on: :collection
@@ -613,12 +613,6 @@ HackerIo::Application.routes.draw do
             get 'download', on: :member
           end
           resources :comments, only: [:edit, :update, :destroy]
-
-          resources :files, only: [:create, :show, :destroy] do
-            get 'remote_upload' => 'files#check_remote_upload', on: :collection
-            post 'remote_upload', on: :collection
-            get 'signed_url', on: :collection
-          end
 
           resources :projects, only: [:new, :create] do
             patch '' => 'projects#update', on: :member

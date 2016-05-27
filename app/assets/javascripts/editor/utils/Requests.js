@@ -3,7 +3,7 @@ import Utils from './DOMUtils';
 import { getApiPath, getApiToken } from '../../utils/Utils';
 
 export default {
-  getStory(projectId, csrfToken) {
+  getStory(projectId) {
     return new Promise((resolve, reject) => {
       getApiToken(token => {
         request(`${getApiPath()}/private/projects/${projectId}/description`)
@@ -36,16 +36,17 @@ export default {
     });
   },
 
-  postErrorLog(error, csrfToken) {
+  postErrorLog(error) {
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/error_logs`)
-        .set('X-CSRF-Token', csrfToken)
-        .withCredentials()
-        .send({ error: error })
-        .end((err, res) => {
-          err ? reject('Post Error Log Error: ', err) : resolve(res.body);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/private/error_logs`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ error: error })
+          .end((err, res) => {
+            err ? reject('Post Error Log Error: ', err) : resolve(res.body);
+          });
+      });
     })
   }
 };

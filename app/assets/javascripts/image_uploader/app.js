@@ -10,19 +10,10 @@ export default class App extends Component {
     this.handleImageUpload = this.handleImageUpload.bind(this);
     this.handleRemoteUpload = this.handleRemoteUpload.bind(this);
 
-    this.state = { imageData: {}, csrfToken: null, isWorking: null };
+    this.state = { imageData: {}, isWorking: null };
   }
 
   componentWillMount() {
-    if(document) {
-      let metaList = document.querySelectorAll('meta');
-      let csrfToken;
-      [].slice.apply(metaList).forEach(el => {
-        if(el.name === 'csrf-token') { csrfToken = el.content; }
-      });
-      this.setState({ csrfToken: csrfToken });
-    }
-
     if(this.props.locals.image_data) {
       this.setState({ imageData: this.props.locals.image_data });
     } else if(this.props.locals.image_link) {
@@ -52,7 +43,7 @@ export default class App extends Component {
       })
       .then(url => {
         let fileType = this.props.locals.attribute_type;
-        return ImageHelpers.postURLToServer(url, null, this.props.locals.model_type, this.state.csrfToken, fileType);
+        return ImageHelpers.postURLToServer(url, null, this.props.locals.model_type, fileType);
       })
       .then(response => {
         let imageData = { ...fileData, ...response.body };
@@ -73,7 +64,7 @@ export default class App extends Component {
 
     this.setState({ isWorking: true });
 
-    return ImageHelpers.postRemoteURL(url, fileType, this.state.csrfToken)
+    return ImageHelpers.postRemoteURL(url, fileType)
       .then(body => {
         fileData = { id: body.id, image_link: url };
         return ImageHelpers.pollJob(body['job_id']);

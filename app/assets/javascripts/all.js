@@ -204,9 +204,7 @@ $(function () {
     // the function below hijacks UJS requests that need an API token
     .on('ajax:before', '[data-with-api-token=true]', function(e){
       var form = $(e.target);
-      console.log('form', form);
       var formData = form.serialize();
-      console.log('formData', formData);
       var url = form.attr('action');
       var method = form.attr('method');
       Utils.getApiToken(function(token){

@@ -100,9 +100,9 @@ const FollowButton = React.createClass({
         followable = this.props.followable;
 
     if(!this.state.isFollowing) {
-      promise = addToFollowing(followable.id, followable.type, followable.source, this.props.csrfToken);
+      promise = addToFollowing(followable.id, followable.type, followable.source);
     } else {
-      promise = removeFromFollowing(followable.id, followable.type, followable.source, this.props.csrfToken);
+      promise = removeFromFollowing(followable.id, followable.type, followable.source);
     }
 
     return promise;

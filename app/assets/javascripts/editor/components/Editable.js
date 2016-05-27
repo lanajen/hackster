@@ -18,14 +18,13 @@ const Editable = React.createClass({
 
   componentWillMount() {
     let metaList = document.getElementsByTagName('meta');
-    let csrfToken = _.find(metaList, { name: 'csrf-token' }).content;
 
-    this.props.actions.setProjectData(this.props.projectId, this.props.modelType, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
+    this.props.actions.setProjectData(this.props.projectId, this.props.modelType, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
 
     if(!this.props.editor.dom.length) {
       this.props.actions.setIsFetching(true);
-      this.props.actions.fetchInitialDOM(this.props.projectId, csrfToken);
+      this.props.actions.fetchInitialDOM(this.props.projectId);
     }
   },
 
@@ -144,8 +143,7 @@ const Editable = React.createClass({
         stack: obj ? obj.stack : {},
         timeStamp: date.toTimeString(),
         userAgent: window.navigator && window.navigator.userAgent ? window.navigator.userAgent : null
-      },
-      this.props.editor.csrfToken);
+      });
     }
   },
 
@@ -191,7 +189,6 @@ const Editable = React.createClass({
         this.props.editor.lastMediaHash,
         this.props.editor.S3BucketURL,
         this.props.editor.AWSAccessKeyId,
-        this.props.editor.csrfToken,
         this.props.editor.projectId,
         this.props.editor.modelType
       );

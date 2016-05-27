@@ -11,13 +11,13 @@ const App = React.createClass({
   },
 
   handleCommentFormSubmit: function(body) {
-    const { dispatch, currentThread, csrfToken } = this.props;
-    dispatch(doSubmitComment(body, currentThread.id, csrfToken));
+    const { dispatch, currentThread } = this.props;
+    dispatch(doSubmitComment(body, currentThread.id));
   },
 
   handleDecisionFormSubmit: function(data) {
-    const { dispatch, projectId, csrfToken } = this.props;
-    dispatch(doSubmitDecision(data, projectId, csrfToken));
+    const { dispatch, projectId } = this.props;
+    dispatch(doSubmitDecision(data, projectId));
   },
 
   render: function() {

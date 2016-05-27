@@ -3,7 +3,7 @@ import request from 'superagent';
 import _ from 'lodash';
 import xmlParser from 'xml2js';
 import Helpers from './Helpers';
-import { getApiPath, getCSRFToken } from './Utils';
+import { getApiPath, getApiToken } from './Utils';
 
 const ImageUtils = {
 
@@ -134,12 +134,14 @@ const ImageUtils = {
   getS3AuthData(fileName) {
     fileName = fileName || 'no-name';
     return new Promise((resolve, reject) => {
-      request
-        .get(`${getApiPath()}/private/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res.body);
-        });
+      getApiToken(token => {
+        request
+          .get(`${getApiPath()}/private/files/signed_url?file%5Bname%5D=${fileName}&context=no-context`)
+          .set('Authorization', `Bearer ${token}`)
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res.body);
+          });
+      });
     });
   },
 
@@ -168,7 +170,7 @@ const ImageUtils = {
     });
   },
 
-  postURLToServer(url, projectID, modelType, csrfToken, fileType) {
+  postURLToServer(url, projectID, modelType, fileType) {
     let params = {
       'file_url': url,
       'file_type': fileType || 'image',
@@ -177,26 +179,29 @@ const ImageUtils = {
     };
 
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/files`)
-        .set('X-CSRF-Token', csrfToken)
-        .send(params)
-        .withCredentials()
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/private/files`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(params)
+          .end(function(err, res) {
+            err ? reject(err) : resolve(res);
+          });
+      });
     });
   },
 
   deleteImageFromServer(id) {
     return new Promise((resolve, reject) => {
-      request
-        .del(`${getApiPath()}/private/files`)
-        .set('X-CSRF-Token', getCSRFToken())
-        .send({ id })
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body);
-        });
+      getApiToken(token => {
+        request
+          .del(`${getApiPath()}/private/files`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ id })
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body);
+          });
+      });
     });
   },
 
@@ -206,33 +211,36 @@ const ImageUtils = {
     form.append('file_url', url);
 
     return new Promise((resolve, reject) => {
-      request
-        .post(`${getApiPath()}/private/files/remote_upload`)
-        .set('X-CSRF-Token', getCSRFToken())
-        .send(form)
-        .withCredentials()
-        .end((err, res) => {
-          err ? reject(err) : resolve(res.body);
-        });
+      getApiToken(token => {
+        request
+          .post(`${getApiPath()}/private/files/remote_upload`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(form)
+          .end((err, res) => {
+            err ? reject(err) : resolve(res.body);
+          });
+      });
     });
   },
 
   pollJob(jobId) {
     return new Promise((resolve, reject) => {
-      let poll = setInterval(() => {
-        request
-          .get(`${getApiPath()}/private/files/remote_upload?job_id=${jobId}`)
-          .withCredentials()
-          .end((err, res) => {
-            if (err || res.body.status === 'failed') {
-              clearInterval(poll);
-              reject(err);
-            } else if (res.body.status === 'complete') {
-              clearInterval(poll);
-              resolve(res.body);
-            }
-          });
-      }, 500);
+      getApiToken(token => {
+        let poll = setInterval(() => {
+          request
+            .get(`${getApiPath()}/private/files/remote_upload?job_id=${jobId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .end((err, res) => {
+              if (err || res.body.status === 'failed') {
+                clearInterval(poll);
+                reject(err);
+              } else if (res.body.status === 'complete') {
+                clearInterval(poll);
+                resolve(res.body);
+              }
+            });
+        }, 500);
+      });
     });
   },
 

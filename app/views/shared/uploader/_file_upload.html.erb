@@ -24,26 +24,28 @@ $(function(){
       } else {
         $('#' + data.context).data('data', data);
 
-        $.ajax({
-          url: Utils.getApiPath() + '<%= signed_url_api_private_files_path(locale: nil) %>',
-          type: 'GET',
-          dataType: 'json',
-          data: {file: {name: file.name}, context: data.context},
-          xhrFields: {
-            withCredentials: true
-          },
-          success: function(data) {
-            form = $('.file_upload.<%= file_type %>');
-            form.find('input[name=key]').val(data.key);
-            form.find('input[name=policy]').val(data.policy);
-            form.find('input[name=signature]').val(data.signature);
+        Utils.getApiToken(function(token){
+          $.ajax({
+            url: Utils.getApiPath() + '<%= signed_url_api_private_files_path(locale: nil) %>',
+            type: 'GET',
+            dataType: 'json',
+            data: {file: {name: file.name}, context: data.context},
+            beforeSend: function(xhr){
+              xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            },
+            success: function(data) {
+              form = $('.file_upload.<%= file_type %>');
+              form.find('input[name=key]').val(data.key);
+              form.find('input[name=policy]').val(data.policy);
+              form.find('input[name=signature]').val(data.signature);
 
-            $('#' + data.context).data('data').submit();
-          },
-          error: function(data) {
-            context = decodeURIComponent($.urlParam(this.url, 'context'));
-            <%= file_type %>Functions.fail($('#' + context).data('data'));
-          }
+              $('#' + data.context).data('data').submit();
+            },
+            error: function(data) {
+              context = decodeURIComponent($.urlParam(this.url, 'context'));
+              <%= file_type %>Functions.fail($('#' + context).data('data'));
+            }
+          });
         });
       }
     },
@@ -76,24 +78,26 @@ $(function(){
       $(this).data('data', data);
       url = $(this).data('url');
 
-      $.ajax({
-        url: Utils.getApiPath() + '<%= api_private_files_path(locale: nil) %>',
-        type: 'POST',
-        dataType: 'json',
-        data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
-        xhrFields: {
-          withCredentials: true
-        },
-        success: function(data) {
-          //id = data.id;
-          //<%= file_type %>Functions.checkFileProcessed(id, data.context);
-          formData = $('#' + data.context).data('data');
-          <%= file_type %>Functions.fileuploadDone(formData, data);
-        },
-          error: function(data) {
-            context = decodeURIComponent($.urlParam(this.url, 'context'));
-            <%= file_type %>Functions.fail($('#' + context).data('data'));
-          }
+      Utils.getApiToken(function(token){
+        $.ajax({
+          url: Utils.getApiPath() + '<%= api_private_files_path(locale: nil) %>',
+          type: 'POST',
+          dataType: 'json',
+          data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
+          beforeSend: function(xhr){
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+          },
+          success: function(data) {
+            //id = data.id;
+            //<%= file_type %>Functions.checkFileProcessed(id, data.context);
+            formData = $('#' + data.context).data('data');
+            <%= file_type %>Functions.fileuploadDone(formData, data);
+          },
+            error: function(data) {
+              context = decodeURIComponent($.urlParam(this.url, 'context'));
+              <%= file_type %>Functions.fail($('#' + context).data('data'));
+            }
+        });
       });
     }
   });

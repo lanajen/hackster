@@ -7,32 +7,17 @@ injectTapEventPlugin();
 
 const App = React.createClass({
 
-  getInitialState() {
-    return {
-      csrfToken: null
-    };
-  },
-
   componentWillMount() {
-    if(this.state.csrfToken === null) {
-      let metaList, csrfToken, following;
+    let following;
 
-      if(document) {
-        metaList = document.getElementsByTagName('meta');
-        csrfToken = _.find(metaList, {name: 'csrf-token'}).content;
-
-        this.setState({csrfToken: csrfToken});
-
-        if(FollowersStore.isFetching === false) {
-          FollowersStore.populateStore(csrfToken);
-        }
-      }
+    if (FollowersStore.isFetching === false) {
+      FollowersStore.populateStore();
     }
   },
 
   render() {
     return (
-      <FollowButton csrfToken={this.state.csrfToken} {...this.props}/>
+      <FollowButton {...this.props}/>
     );
   }
 });

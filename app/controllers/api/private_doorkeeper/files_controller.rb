@@ -1,4 +1,8 @@
 # TODO: make it simpler/cleaner to use and move to V2
+# 1. remove file_type => let attachable set the correct file type (eg, in cover_image_id=)
+# 2. remove attachable_id and attachable_type. Instead set attachments from attachable itself (eg through cover_image_id= or images=)
+# 3. leave only two accepted params: caption or title, and remote_file_url
+# 4. allow for direct uploads...
 class Api::PrivateDoorkeeper::FilesController < Api::PrivateDoorkeeper::BaseController
   before_filter :doorkeeper_autorize_user_wihtout_scope!, only: [:show, :destroy]
 
