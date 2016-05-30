@@ -68,15 +68,6 @@
                           span.stat-figure> = number_with_delimiter @project.replications_count
                           = pluralize_without_count @project.replications_count, 'replication'
 
-              - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-                section#about-project.section-container.section-collapsible
-                  h2.section-title
-                    a.title.title-toggle href=''
-                      ' About this project
-                      i.fa.fa-chevron-down
-                      i.fa.fa-chevron-up
-                  .section-content.hljs-active.hljs-arduino
-                    .medium-editor= @description
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", site_user_name], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                 - if @hardware_parts.any?
@@ -109,6 +100,30 @@
                           - @tool_parts.each do |part|
                             = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
+              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
+                - if @software_parts.any?
+                  section#apps.section-container.section-collapsible
+                    h2.section-title
+                      a.title.title-toggle href=''
+                        ' Apps and online services
+                        i.fa.fa-chevron-down
+                        i.fa.fa-chevron-up
+                    .section-content
+                      table.sortable-table.table.table-hover.fields-container.parts-table
+                        tbody
+                          - @software_parts.each do |part|
+                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
+
+              - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                section#about-project.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      ' About this project
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content.hljs-active.hljs-arduino
+                    .medium-editor= @description
+
               - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                 - if @cad_widgets.any?
                   section#cad.section-container.section-collapsible
@@ -132,20 +147,6 @@
                     .section-content
                       - @schematic_widgets.each do |widget|
                         = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
-
-              - cache [I18n.locale, "project-#{@project.id}-software-parts", site_user_name], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
-                - if @software_parts.any?
-                  section#apps.section-container.section-collapsible
-                    h2.section-title
-                      a.title.title-toggle href=''
-                        ' Apps and online services
-                        i.fa.fa-chevron-down
-                        i.fa.fa-chevron-up
-                    .section-content
-                      table.sortable-table.table.table-hover.fields-container.parts-table
-                        tbody
-                          - @software_parts.each do |part|
-                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
                 - if @code_widgets.any?
@@ -363,14 +364,6 @@
                         li.active
                           a.smooth-scroll href="#content" data-offset='-40'
                             = @project.name
-                        li
-                          a.smooth-scroll href="#about-project"
-                            | About this project
-                        - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
-                          - @project.toc.each do |title|
-                            li.small-toc
-                              a.smooth-scroll href=id_for_toc(title)
-                                = title_for_toc title
                         - cache ["project-#{@project.id}-contents-hardware-parts"], tag: ["project-#{@project.id}-hardware-parts"], skip_digest: true do
                           - if @hardware_parts.any?
                             li
@@ -381,6 +374,19 @@
                             li
                               a.smooth-scroll href="#tools"
                                 | Necessary tools and machines
+                        - cache ["project-#{@project.id}-contents-software-parts"], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
+                          - if @software_parts.any?
+                            li
+                              a.smooth-scroll href="#apps"
+                                | Apps and online services
+                        li
+                          a.smooth-scroll href="#about-project"
+                            | About this project
+                        - cache [I18n.locale, "project-#{@project.id}-contents-widgets"], tag: ["project-#{@project.id}-widgets"], skip_digest: true do
+                          - @project.toc.each do |title|
+                            li.small-toc
+                              a.smooth-scroll href=id_for_toc(title)
+                                = title_for_toc title
                         - cache ["project-#{@project.id}-contents-cad"], tag: ["project-#{@project.id}-cad"], skip_digest: true do
                           - if @cad_widgets.any?
                             li
@@ -391,11 +397,6 @@
                             li
                               a.smooth-scroll href="#schematics"
                                 | Schematics
-                        - cache ["project-#{@project.id}-contents-software-parts"], tag: ["project-#{@project.id}-software-parts"], skip_digest: true do
-                          - if @software_parts.any?
-                            li
-                              a.smooth-scroll href="#apps"
-                                | Apps and online services
                         - cache ["project-#{@project.id}-contents-code"], tag: ["project-#{@project.id}-code"], skip_digest: true do
                           - if @code_widgets.any?
                             li
