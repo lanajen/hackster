@@ -4,7 +4,7 @@
   one_liner += '.' if one_liner !~ /(\.|\!)$/
   authors = (project.users.count == 1 ? project.users.first.name : project.users.map{|u| u.name.split(/ /)[0] }.to_sentence).strip
   platforms = project.platforms.map{|p| link_to(p.name, platform_home_url(p), target: '_blank').html_safe }.to_sentence
-  platforms = " With #{platforms}." if platforms.present?
+  platforms = " Published in #{platforms}." if platforms.present?
   image_url = project.decorate.cover_image(:cover_thumb)
 
   # "padding: 0 18px 9px 18px;"" instead of "padding: 0 9px 9px 9px;" below to compensate for missing padding in parent
