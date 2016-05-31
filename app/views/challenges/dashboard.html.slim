@@ -53,7 +53,7 @@ p= link_to 'Moderate contest entries', challenge_admin_entries_path(@challenge)
 
 - if @challenge.in_progress?
   - if @new_entries_count > 0
-    p= link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
+    p= link_to 'Moderate submitted entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :submitted).first), class: 'btn btn-sm btn-primary'
 
 - elsif @challenge.judging?
   p

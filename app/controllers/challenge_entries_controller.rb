@@ -85,7 +85,7 @@ class ChallengeEntriesController < ApplicationController
           flash[:notice] = "Changes saved."
           challenge_admin_entries_path(@challenge)
         else
-          if next_entry = @challenge.entries.where(workflow_state: :new).first
+          if next_entry = @challenge.entries.where(workflow_state: :submitted).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry needing moderation!"
