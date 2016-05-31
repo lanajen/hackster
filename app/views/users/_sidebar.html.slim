@@ -20,10 +20,6 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
-        - if !is_whitelabel? and @user.is?(:moderator)
-          p.user-categories
-            i.fa.fa-certificate
-            span Moderator
         - if !is_whitelabel? and members = PlatformMember.where(user_id: @user.id).includes(:group) and members.any?
           - members.each do |member|
             p.team-widget.user-communities
