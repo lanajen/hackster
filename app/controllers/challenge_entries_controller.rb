@@ -109,7 +109,10 @@ class ChallengeEntriesController < ApplicationController
       end
       redirect_to next_url
     elsif params[:current_action] == 'submitting'
-      if :category_id.in? @entry.errors.keys
+      if :user_full_name.in? @entry.errors.keys
+        flash[:alert] = "Please enter your first and last name"
+        redirect_to challenge_path(@challenge, submit: @entry.id)
+      elsif :category_id.in? @entry.errors.keys
         flash[:alert] = "Please select a category"
         redirect_to challenge_path(@challenge, submit: @entry.id)
       elsif @entry.errors.keys.select{|v| v =~ /cfield/ }.any?
