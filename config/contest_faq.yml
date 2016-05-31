@@ -52,3 +52,6 @@ project_locked:
   q: My project is locked and I can't edit it anymore. Why is that?
   a: >
     All projects entered in the <%= @challenge.self_label.downcase %> are locked after the submission deadline to ensure that they remain the same during the judging process. They are then unlocked after <%= @challenge.winners_label.downcase %> are announced.
+awaiting_moderation:
+  q: I submitted my project but it says "Awaiting moderation". Will it affect my eligibility?
+  a: As long as you submit your project before the deadline it doesn't matter when it is moderated. Just sit back and enjoy a well deserved break!
