@@ -23,7 +23,7 @@ class ProjectWorker < BaseWorker
   def update_platforms id
     return unless project = BaseArticle.find_by_id(id)
 
-    if project.pryvate?
+    if project.pryvate? or project.unlisted?
       project.platforms.destroy_all
     else
       # merge platform_tags (for back compatibility) and platforms from parts
