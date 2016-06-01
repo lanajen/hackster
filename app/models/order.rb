@@ -181,6 +181,7 @@ class Order < ActiveRecord::Base
     end
 
     def validate_shipping_country
+      return unless address
       return if address.country.in? WHITELISTED_COUNTRIES
 
       products = store_products.select{|p| p.charge_shipping? }

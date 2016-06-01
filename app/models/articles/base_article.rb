@@ -215,6 +215,7 @@ class BaseArticle < ActiveRecord::Base
       end
     end
     after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:after_workflow_update)
       notify_observers(:"after_#{to}")
     end
   end

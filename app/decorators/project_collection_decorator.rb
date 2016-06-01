@@ -22,6 +22,8 @@ class ProjectCollectionDecorator < ApplicationDecorator
       'Hidden'
     when 'featured'
       'Featured'
+    when 'unlisted'
+      'Unlisted'
     else
       'Unknown'
     end

@@ -29,6 +29,10 @@ class BaseArticleObserver < ActiveRecord::Observer
     BaseArticleObserverWorker.perform_in 1.second, 'after_rejected', record.id
   end
 
+  def after_workflow_update record
+    ProjectWorker.perform_async 'update_platforms', record.id
+  end
+
   def before_create record
     record.reset_counters assign_only: true
     record.last_edited_at = record.created_at

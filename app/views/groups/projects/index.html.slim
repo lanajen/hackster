@@ -20,8 +20,9 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
         li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', group_admin_projects_path(@group, q: params[:q])
         li*{ class: "#{'active' if params[:status] == 'featured'}" } = link_to 'Featured', group_admin_projects_path(@group, status: 'featured', q: params[:q])
         li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Hidden', group_admin_projects_path(@group, status: 'rejected', q: params[:q])
-        li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Showing', group_admin_projects_path(@group, status: 'approved', q: params[:q])
         li*{ class: "#{'active' if params[:status] == 'pending_review'}" } = link_to 'Pending review', group_admin_projects_path(@group, status: 'pending_review', q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Showing', group_admin_projects_path(@group, status: 'approved', q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'unlisted'}" } = link_to 'Unlisted', group_admin_projects_path(@group, status: 'unlisted', q: params[:q])
     .pull-right style='margin-right:5px'
       form.form-inline
         .form-group

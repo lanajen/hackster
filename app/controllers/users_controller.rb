@@ -102,9 +102,7 @@ class UsersController < ApplicationController
 
     @public_projects = @user.projects.publyc.own.for_thumb_display.order(made_public_at: :desc, created_at: :desc)
     if is_whitelabel?
-      @public_projects = @public_projects.with_group(current_platform)
-      ids = @user.projects.with_group(current_platform, all_moderation_states: true).pluck(:id)
-      @other_projects = @user.projects.where.not(id: ids).for_thumb_display
+      @public_projects = @public_projects.with_group(current_platform, all_moderation_states: true)
     end
   end
 

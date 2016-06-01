@@ -29,10 +29,10 @@
         .thumb-inner
           h4.ellipsis
             - if project.pryvate?
-              i.fa.fa-lock>
-            => link_to project.name, project_link, class: 'project-link-with-ref'
-            / - if project.external?
-              i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
+              i.fa.fa-lock.small
+            - elsif project.unlisted?
+              i.fa.fa-eye-slash.small
+            span= link_to project.name, project_link, class: 'project-link-with-ref'
           p
             => project.content_type_to_human
             - if project.external?
