@@ -14,7 +14,11 @@
           tbody
             - @order.order_lines.each do |line|
               tr
-                td= link_to line.store_product.source.name, line.store_product.source
+                td
+                  - if line.store_product.source
+                    = link_to line.store_product.source.name, line.store_product.source
+                  - else
+                    = line.store_product.name
                 td
                   - if line.store_product.unit_cost.zero?
                     | Free

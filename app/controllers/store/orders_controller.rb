@@ -7,9 +7,10 @@ class Store::OrdersController < Store::BaseController
     @order = Order.find params[:id]
     authorize! :read, @order
 
-    @product = @order.order_lines.first.store_product.source
-    @message_facebook = "I'm getting a free #{@product.name} thanks to Hackster.io!"
-    @message_twitter = "I'm getting a free #{@product.name} thanks to @hacksterio!"
+    @product = @order.order_lines.first.store_product
+    product_name = @product.source ? @product.source.name : @product.name
+    @message_facebook = "I'm getting a free #{product_name} thanks to Hackster.io!"
+    @message_twitter = "I'm getting a free #{product_name} thanks to @hacksterio!"
     @order = @order.decorate
   end
 

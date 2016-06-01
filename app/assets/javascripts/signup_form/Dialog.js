@@ -30,18 +30,15 @@ const Dialog = (initialProps) => {
 
   props.style = {
     position: 'fixed',
-    boxSizing: 'border-box',
     zIndex: '1000',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    overflow: 'auto',
     ...style
   }
 
   props.overlayStyle = {
-    boxSizing: 'border-box',
     position: 'relative',
     width: '800',
     margin: '0 auto 40px',
@@ -59,7 +56,6 @@ const Dialog = (initialProps) => {
     backgroundColor: '#ffffff',
     WebkitTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
     transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-    boxSizing: 'border-box',
     minHeight: 250,
     padding: '50px',
     ...wrapperStyle
