@@ -227,7 +227,7 @@ class BaseArticle < ActiveRecord::Base
 
   # beginning of search methods
   include AlgoliaSearchHelpers
-  has_algolia_index 'pryvate or !approved?'
+  has_algolia_index 'unpublished?'
 
   def to_indexed_json
     elements = Sanitize::Config::RELAXED[:elements].dup
