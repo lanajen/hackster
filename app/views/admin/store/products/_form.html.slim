@@ -3,6 +3,9 @@
   = f.association :source, collection: Part.approved.order(:name), label_method: :full_name
   = f.input :source_type, as: :hidden, input_html: { value: 'Part' }
   = f.input :name, hint: 'Leave empty unless you want it to be different from the related part name.'
+  = f.input :one_liner, hint: 'Leave empty unless you want it to be different from the related part name.'
+  - locals = { file_type: 'image', human_file_type: 'Image', attribute_type: 'image', image_version: 'thumb', model: 'store_product', model_type: 'StoreProduct', help_block: '', errors: @product.errors, image_data: @product.image ? { id: @product.image_id, image_link: @product.image.try(:imgix_url, :thumb) } : nil }
+  = react_component('ImageUploader', { locals: locals, S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}" })
   = f.input :unit_cost, hint: 'In reputation points'
   = f.input :available
   = f.input :width, hint: 'CM'

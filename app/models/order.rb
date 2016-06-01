@@ -7,6 +7,7 @@ class Order < ActiveRecord::Base
   INVALID_STATES = %w(new rejected).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
+  WHITELISTED_COUNTRIES = ['United States'].freeze
 
   belongs_to :address
   belongs_to :user
@@ -81,9 +82,10 @@ class Order < ActiveRecord::Base
     validate_address_is_present
     validate_at_least_one_order_line
     validate_has_enough_points
-    validate_order_limits
+    # validate_order_limits
     validate_products_in_stock
     validate_products_have_not_reached_limit
+    validate_shipping_country
 
     errors.empty?
   end
@@ -176,5 +178,12 @@ class Order < ActiveRecord::Base
           return
         end
       end
+    end
+
+    def validate_shipping_country
+      return if address.country.in? WHITELISTED_COUNTRIES
+
+      products = store_products.select{|p| p.charge_shipping? }
+      errors.add :base, "Unfortunately #{products.map{|p| '"' + (p.source ? p.source.name : p.name) + '"'}.to_sentence} cannot be shipped to your country. Please select another product." if products.any?
     end
 end

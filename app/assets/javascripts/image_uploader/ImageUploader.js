@@ -102,7 +102,7 @@ export default class ImageUploader extends Component {
       'challenge_idea': this._createStackedMarkup(locals, imagePreview, actions, dialog),
     };
 
-    let markup = markups[model]();
+    let markup = (markups[model] ? markups[model] : this._createInlineMarkup(locals, label, imagePreview, actions, dialog))();
     return (markup);
   }
 

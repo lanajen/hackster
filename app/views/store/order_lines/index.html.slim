@@ -12,7 +12,11 @@ h2.cart-title Your cart
             tbody
               - @order_lines.each do |line|
                 tr
-                  td= link_to line.store_product.source.name, line.store_product.source
+                  td
+                    - if line.store_product.source
+                      = link_to line.store_product.source.name, line.store_product.source
+                    - else
+                      = line.store_product.name
                   td
                     - if line.store_product.unit_cost.zero?
                       | Free
@@ -26,7 +30,7 @@ h2.cart-title Your cart
                   - if current_order.shipping_cost_in_currency
                     - if current_order.shipping_cost_in_currency > 0
                       = number_to_currency current_order.shipping_cost_in_currency
-                      small<= link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/639226-how-does-shipping-work', target: '_blank'
+                      small<= link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'https://hacksterio.freshdesk.com/support/solutions/folders/9000065753', target: '_blank'
                     - else
                       | Free
                   - else
@@ -66,12 +70,12 @@ h2.cart-title Your cart
       - if current_order.can_pass_order?
         .store-actions.text-center
           p After you place this order you will have #{pluralize number_with_delimiter(current_order.after_points), 'point'} left to redeem.
-          - if current_order.might_pay_duty?
+          /- if current_order.might_pay_duty?
             p.alert.alert-danger
               ' By placing this order you understand and agree that
               strong you may have to pay import taxes on reception of the package
               | .
-          - if current_order.high_risk?
+          /- if current_order.high_risk?
             p.alert.alert-danger
               ' Please note that we have had a high number of packages lost on their way to #{current_order.address.country}. There is no tracking once the package leaves the US, and we are not responsible for lost packages. By placing this order you understand and agree that
               strong this order is being shipped at your own risks and that Hackster, Inc. will not be responsible for losses

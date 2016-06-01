@@ -22,7 +22,11 @@ table.table.table-striped
   tbody
     - @products.each do |product|
       tr
-        td= link_to product.source.name, product.source
+        td
+          - if product.source
+            = link_to product.source.name, product.source
+          - else
+            = product.name
         td= product.orders_count
         td= product.in_stock
         td= product.available
