@@ -65,7 +65,7 @@
           - unless current_user.is? :confirmed_user
             .alert.alert-warning
               p
-                ' Please confirm your email address in order to be able to publish projects.
+                ' Please confirm your email address before you publish projects.
                 ' Haven't received the confirmation email?
                 = link_to 'Resend', new_user_confirmation_path, class: 'alert-link'
                 | . Contact us at help@hackster.io if you need help.
