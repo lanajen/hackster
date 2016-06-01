@@ -278,8 +278,10 @@ module UrlHelper
     if part.platform_id
       if defined?(is_whitelabel?) and is_whitelabel?
         client_part_url(part.slug, opts)
-      else
+      elsif part.platform
         platform_part_path(part.platform.user_name, part.slug, opts)
+      else
+        ''
       end
     else
       ''
