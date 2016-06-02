@@ -118,7 +118,7 @@ class Ability
     end
     cannot :publish, BaseArticle
     can :read, BaseArticle do |record|
-      record.visible_to?(@user) or (project.pryvate? and @user.is_staff?(project))
+      record.visible_to?(@user) or (record.pryvate? and @user.is_staff?(record))
     end
 
     can_manage_thread BuildLog

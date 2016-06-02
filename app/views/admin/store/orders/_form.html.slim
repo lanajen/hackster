@@ -13,9 +13,12 @@
             .row
               .col-xs-9
                 - if order_line.persisted?
-                  = order_line.store_product.source.name
+                  - if order_line.store_product.source
+                    = order_line.store_product.source.name
+                  - else
+                    = order_line.store_product.name
                 - else
-                  = f_line.input_field :store_product_id, collection: StoreProduct.available, label_method: proc{|s| s.source.name }
+                  = f_line.input_field :store_product_id, collection: StoreProduct.available, label_method: proc{|s| s.source ? s.source.name : s.name }
               .col-xs-3= f_line.link_to_remove 'Remove', class: 'btn btn-danger btn-sm'
   = f.link_to_add 'Add a new line', :order_lines, class: 'btn btn-success btn-sm'
   .form-group

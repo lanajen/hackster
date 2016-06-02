@@ -10,9 +10,9 @@ class Store::OrderLinesController < Store::BaseController
 
     name = @product.source ? @product.source.name : @product.name
     if current_order.add_to_cart @product
-      redirect_to store_cart_index_path, notice: "#{name} is now in your cart."
+      redirect_to store_cart_index_path, notice: "\"#{name}\" is now in your cart."
     else
-      redirect_to store_path, alert: "Couldn't add #{name} to your cart because #{@product.errors[:cart].to_sentence}"
+      redirect_to store_path, alert: "Couldn't add \"#{name}\" to your cart because #{@product.errors[:cart].to_sentence}"
     end
   end
 
@@ -23,6 +23,6 @@ class Store::OrderLinesController < Store::BaseController
     @order_line.destroy
 
     name = @order_line.store_product.source ? @order_line.store_product.source.name : @order_line.store_product.name
-    redirect_to store_cart_index_path, notice: "#{@order_line.store_product.source.name} was removed from your cart."
+    redirect_to store_cart_index_path, notice: "\"#{name}\" was removed from your cart."
   end
 end
