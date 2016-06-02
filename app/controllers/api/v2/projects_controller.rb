@@ -24,8 +24,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
 
   rescue => e
     message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
-    log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
-    NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+    AppLogger.new(message, '5xx', 'api/projects', e).log_and_notify_with_stdout
     render status: :internal_server_error, nothing: true
     raise e if Rails.env.development?
   end

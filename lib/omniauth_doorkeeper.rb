@@ -5,7 +5,7 @@ module OmniAuth
     class Doorkeeper < OmniAuth::Strategies::OAuth2
       option :name, 'doorkeeper'
       option :client_options, {
-        site:          'http://www.localhost.local:5000',
+        site:          APP_CONFIG['full_host'],
         authorize_url: 'oauth/authorize'
       }
       option :authorize_options, [:scope]
@@ -28,7 +28,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('http://api.localhost.local:5000/v1/me').parsed
+        @raw_info ||= access_token.get("#{APP_CONFIG['full_host']}/v2/me").parsed
       end
 
       def authorize_params
@@ -38,8 +38,6 @@ module OmniAuth
               params[v.to_sym] = request.params[v]
             end
           end
-
-          # params[:scope] ||= DEFAULT_SCOPE
         end
       end
 

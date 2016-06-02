@@ -1,7 +1,6 @@
 class Api::BaseDoorkeeperController < Api::BaseController
   protect_from_forgery with: :null_session  # disable CSRF token
   before_action :disable_cookies
-  skip_before_filter :set_signed_in_cookie
 
   rescue_from ApiForbidden do |exception|
     render status: :forbidden, nothing: true

@@ -48,8 +48,6 @@ class Ability
 
       can :read, Platform
 
-      can :read, Thought
-
       can :read, User
 
       member if @user.persisted?
@@ -217,11 +215,6 @@ class Ability
     cannot :request_access, Team
     can :request_access, Team do |team|
       @user.can? :join_team, team.project
-    end
-
-    can :create, Thought
-    can :manage, Thought do |thought|
-      @user.id == thought.user_id
     end
 
     can :update, User, id: @user.id

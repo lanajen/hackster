@@ -1,11 +1,6 @@
-class Api::BaseController < ApplicationController
-  skip_before_filter :authorize_site_access!
-  skip_before_filter :track_visitor
-  skip_after_filter :track_landing_page
-  skip_before_filter :verify_authenticity_token
-  skip_before_action :set_locale
-  skip_before_filter :ensure_valid_path_prefix
+class Api::BaseController < BaseController
   before_filter :allow_cors_requests
+  before_filter :mark_last_seen!
 
   def cors_preflight_check
     head(:ok)
@@ -42,15 +37,15 @@ class Api::BaseController < ApplicationController
       @current_platform = current_site.try(:platform)
     end
 
+    def host_is_whitelisted? host
+      host =~ Regexp.new("#{APP_CONFIG['default_domain']}$") or host.in? WHITELISTED_HOSTS
+    end
+
     def origin_uri
       return @origin_uri if @origin_uri
       referrer = request.referrer.presence || request.headers['HTTP_ORIGIN']  # browsers don't always send the referrer for privacy reasons
       @origin_uri = URI.parse(referrer)
     rescue URI::InvalidURIError
-    end
-
-    def host_is_whitelisted? host
-      host =~ Regexp.new("#{APP_CONFIG['default_domain']}$") or host.in? WHITELISTED_HOSTS
     end
 
     def private_api_methods with_credentials=true

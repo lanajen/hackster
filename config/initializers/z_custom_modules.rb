@@ -54,3 +54,5 @@ require File.join Rails.root, 'lib/has_ability'
 require File.join Rails.root, 'lib/active_record_destroy_async'
 
 require File.join Rails.root, 'lib/omniauth_doorkeeper'
+
+require File.join Rails.root, 'lib/mixpanel_methods'

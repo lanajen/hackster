@@ -1,8 +1,5 @@
-class ApplicationController < ActionController::Base
-  force_ssl if: :ssl_configured?
-
+class ApplicationController < BaseController
   include SocialLinkHelper
-  include UrlHelper
 
   include Rewardino::ControllerExtension
 
@@ -93,17 +90,6 @@ class ApplicationController < ActionController::Base
     return @current_site if @current_site
 
     redirect_to root_url(subdomain: ENV['SUBDOMAIN'], path_prefix: nil) and return unless @current_site = set_current_site(request.domain, request.subdomains[0], request.host) and @current_site.enabled?
-  end
-
-  def set_current_site domain, subdomain, host
-    if ENV['CLIENT_SUBDOMAIN'].present?
-      ClientSubdomain.find_by_subdomain(ENV['CLIENT_SUBDOMAIN'])
-    elsif domain == APP_CONFIG['default_domain']
-      site = ClientSubdomain.find_by_subdomain(subdomain)
-      site.present? and site.host == host ? site : nil
-    else
-      ClientSubdomain.find_by_domain(host)
-    end
   end
 
   def current_platform
@@ -289,11 +275,6 @@ class ApplicationController < ActionController::Base
       current_user ? current_user.ability : User.new.ability
     end
 
-    def default_url_options(options = {})
-      # pass in the locale we have in the URL because it's always the right one
-      { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http'), path_prefix: params[:path_prefix] }.merge options
-    end
-
     def disable_flash
       @no_flash = true
     end
@@ -396,25 +377,6 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def mark_last_seen! opts={}
-      controller = opts[:controller] || controller_path
-      action = opts[:action] || self.action_name
-      request_url = opts[:request_url] || request.original_url
-      referrer_url = opts[:referrer_url] || request.referrer.presence || request.headers['HTTP_ORIGIN']
-
-      opts = {
-        ip: request.ip,
-        time: Time.now.to_i,
-        event: "#{controller}##{action}",
-        referrer_url: referrer_url,
-        session_id: session.id,
-        landing_url: cookies[:landing_page],
-        initial_referrer: cookies[:initial_referrer],
-        request_url: request_url,
-      }
-      TrackerQueue.perform_async 'mark_last_seen', current_user.try(:id), opts if tracking_activated?
-    end
-
     def path_prefix_valid? path_prefix
       # path always valid when not a whitelabel or isn't configured with a prefix
       if is_whitelabel? and (ENV['CLIENT_SUBDOMAIN'].present? or request.host == current_site.host) and current_site.has_path_prefix?
@@ -424,60 +386,8 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def track_alias user=nil
-      old_distinct_id = current_mixpanel_user
-      new_distinct_id = set_current_mixpanel_user(user)
-      tracker.enqueue 'alias_user', new_distinct_id, old_distinct_id if tracking_activated?
-    end
-
-    def track_event event_name, properties={}, user=nil
-      properties.merge! signed_in: !!user_signed_in?
-      properties.merge! ref: params[:ref] if params[:ref]
-      tracker.enqueue 'record_event', event_name, current_mixpanel_user(user), properties if tracking_activated?
-    end
-
-    def track_user properties, user=nil
-      tracker.enqueue 'update_user', current_mixpanel_user(user), properties.merge({ ip: request.ip }) if tracking_activated?
-    end
-
-    def distinct_id_for user=nil
-      user ? "user_#{user.id}" : (request.session_options[:id].present? ? "session_#{request.session_options[:id]}" : nil)
-    end
-
-    def current_mixpanel_user user=nil
-      cookies[:mixpanel_user] ||= set_current_mixpanel_user(user)
-    end
-
-    def set_current_mixpanel_user user=nil
-      cookies[:mixpanel_user] = distinct_id_for(user || current_user)
-    end
-
-    def reset_current_mixpanel_user
-      cookies[:mixpanel_user] = distinct_id_for nil
-    end
-
     def returning_user?
       cookies[:visits].present? and JSON.parse(cookies[:visits]).size > 1
-    end
-
-    def tracking_activated?
-      Rails.env.production? and !current_user.try(:is?, :admin)
-    end
-
-    def tracker
-      @tracker ||= Tracker.new tracker_options
-    end
-
-    def tracker_options
-      {
-        # env: request.env,
-        env: {
-          'REMOTE_ADDR' => request.env['REMOTE_ADDR'],
-          'HTTP_X_FORWARDED_FOR' => request.env['HTTP_X_FORWARDED_FOR'],
-          # 'rack.session' => request.env['rack.session'],
-          'mixpanel_events' => request.env['mixpanel_events'],
-        }
-      }
     end
 
     def track_landing_page
@@ -661,18 +571,6 @@ class ApplicationController < ActionController::Base
       is_whitelabel? ? current_platform.user_name : 'hackster'
     end
 
-    def ssl_configured?
-      ssl_configured = APP_CONFIG['use_ssl']
-      # if is_whitelabel?
-      #   ssl_configured = (ssl_configured and !current_site.disable_https?)
-      # end
-      ssl_configured
-    end
-
-    def user_signed_in?
-      current_user and current_user.id
-    end
-
   protected
     def impressionist_async obj, message, opts
       if obj.kind_of? Hash
@@ -720,16 +618,6 @@ class ApplicationController < ActionController::Base
           @title ? "#{@title} - #{site_name}" : "#{site_name} - #{SLOGAN_NO_BRAND}"
         end
       end
-    end
-
-    def safe_page_params
-      return nil unless params[:page]
-
-      page = Integer params[:page]
-      raise ActiveRecord::RecordNotFound if page < 1
-      page
-    rescue
-      raise ActiveRecord::RecordNotFound
     end
 
     def set_view_paths

@@ -75,7 +75,7 @@ class ProjectCollection < ActiveRecord::Base
       if collectable.class.name == 'Platform'
         require_review! unless project.unlisted?
       else
-        approve!
+        update_attribute :workflow_state, :approved
       end
     end
 end
