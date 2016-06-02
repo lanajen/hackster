@@ -127,12 +127,24 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def update_workflow
-    if @entry.send "#{params[:event]}!"
-      flash[:notice] = "Entry #{event_to_human(params[:event])}."
-    else
-      flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+    respond_to do |format|
+      format.html do
+        if @entry.send "#{params[:event]}!"
+          flash[:notice] = "Entry #{event_to_human(params[:event])}."
+        else
+          flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+        end
+
+        redirect_to challenge_admin_entries_path(@challenge)
+      end
+      format.js do
+        if @entry.send "#{params[:event]}!"
+          render status: :ok, nothing: true
+        else
+          render status: :unprocessable_entity, nothing: true
+        end
+      end
     end
-    redirect_to challenge_admin_entries_path(@challenge)
   end
 
   def destroy

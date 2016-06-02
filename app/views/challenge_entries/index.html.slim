@@ -57,7 +57,7 @@ table.table.table-striped
               strong> #{field.label}:
               = entry.send("cfield#{i}")
           td= l entry.created_at
-          td= entry.workflow_state
+          td.workflow-state= entry.workflow_state
           td= entry.judging_notes.try(:truncate, 100)
           - if @challenge.activate_voting
             td= entry.votes_count
@@ -65,9 +65,9 @@ table.table.table-striped
           td
             - unless entry.new?
               - if entry.can_approve?
-                = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(@challenge, entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?', container: 'body' }
+                = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(@challenge, entry, event: 'approve', format: :js), class: 'btn btn-xs btn-success workflow-link', rel: 'tooltip', title: 'Approve', data: { container: 'body', challenge_id: @challenge.id, entry_id: entry.id }
               - if entry.can_disqualify?
-                = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(@challenge, entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?', container: 'body' }
+                = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(@challenge, entry, event: 'disqualify', format: :js), class: 'btn btn-xs btn-danger workflow-link', rel: 'tooltip', title: 'Disqualify', data: { container: 'body', challenge_id: @challenge.id, entry_id: entry.id }
             - if @challenge.judging?
               = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
             /- if current_user.is? :admin
@@ -77,3 +77,106 @@ table.table.table-striped
 
 .row
   .col-xs-12= will_paginate @entries
+
+javascript:
+  (function() {
+    var updateButton = function(link, event) {
+      var childrenOf = link.parentNode.children;
+      var linkToHide = childrenOf.length > 1
+       ? [].slice.call(childrenOf).filter(function(child) { return child.classList.contains('workflow-link') && child !== link })[0]
+       : null;
+
+      var eventToClassMap = {
+        approve: {
+          current: 'btn-success',
+          opposite: 'btn-danger',
+          title: 'Disqualify',
+          iconCurrent: 'fa-check',
+          iconOpposite: 'fa-times',
+          status: 'qualified'
+        },
+        disqualify: {
+          current: 'btn-danger',
+          opposite: 'btn-success',
+          title: 'Approve',
+          iconCurrent: 'fa-times',
+          iconOpposite: 'fa-check',
+          status: 'unqualified'
+        },
+       };
+
+      // Hide second link / button if it exists.
+      linkToHide ? linkToHide.classList.add('hide') : false;
+
+      // Swap classes, title for tooltip and toggle href event parameter.
+      link.classList.remove(eventToClassMap[event].current);
+      link.classList.add(eventToClassMap[event].opposite);
+      link.setAttribute('data-original-title', eventToClassMap[event].title);
+      link.setAttribute(
+        'href',
+        link.getAttribute('href')
+          .split('=')
+          .slice(0,1)
+          .concat(['=', eventToClassMap[event].title.toLowerCase()])
+          .join('')
+      );
+
+      // Update Icon.
+      var icon = link.firstChild;
+      icon.classList.remove(eventToClassMap[event].iconCurrent);
+      icon.classList.add(eventToClassMap[event].iconOpposite);
+
+      // Update Status row.
+      var status = [].slice.call(link.parentNode.parentNode.children).reduce(function(acc, child) {
+        if(child.classList.contains('workflow-state')) {
+          acc = child;
+        }
+        return acc;
+      }, null);
+
+      if(status) {
+        status.textContent = eventToClassMap[event].status
+      }
+    }
+
+    var updateEntry = function(link, event) {
+      $.ajax({
+        url: link.getAttribute('href'),
+        method: 'PUT',
+        beforeSend: function(xhr){
+          xhr.withCredentials = true;
+        },
+        data: {
+          authenticity_token: window.Utils.getCSRFToken(),
+          challenge_id: link.getAttribute('data-challenge-id'),
+          event: event,
+          id: link.getAttribute('data-entry-id'),
+        },
+        success: function(res) {
+          updateButton(link, event);
+        },
+        error: function(err) {
+          console.error('Update Entry Error', err);
+        }
+      });
+    }
+
+    var onWorkflowLinkClick = function(link, e) {
+      e.preventDefault();
+
+      var event = link.getAttribute('data-original-title').toLowerCase();
+      var message = event === 'approve'
+        ? 'Are you sure you want to approve this entry?'
+        : 'Are you sure you want to disqualify this entry?';
+      var confirmed = window.confirm(message);
+
+      if(confirmed) {
+        updateEntry(link, event);
+      }
+    }
+
+    var links = [].slice.call(document.querySelectorAll('.workflow-link'));
+    links.forEach(function(link) {
+      link.addEventListener('click', onWorkflowLinkClick.bind(this, link));
+    });
+  }());
