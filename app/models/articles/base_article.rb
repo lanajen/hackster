@@ -215,6 +215,7 @@ class BaseArticle < ActiveRecord::Base
       end
     end
     after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:after_workflow_update)
       notify_observers(:"after_#{to}")
     end
   end
@@ -227,7 +228,7 @@ class BaseArticle < ActiveRecord::Base
 
   # beginning of search methods
   include AlgoliaSearchHelpers
-  has_algolia_index 'pryvate or !approved?'
+  has_algolia_index 'unpublished?'
 
   def to_indexed_json
     elements = Sanitize::Config::RELAXED[:elements].dup

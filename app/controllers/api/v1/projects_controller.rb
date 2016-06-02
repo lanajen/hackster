@@ -1,5 +1,4 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
-
   def index
     set_surrogate_key_header 'api/projects'
     set_cache_control_headers
@@ -38,6 +37,10 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       else
         projects = projects.send(BaseArticle::FILTERS[by])
       end
+    end
+
+    if params[:type]
+      projects = projects.where("projects.type = ?", params[:type])
     end
 
     if params[:only_count]

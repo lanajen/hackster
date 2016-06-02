@@ -1,7 +1,7 @@
 - if @project.publyc?
-  a.project-switcher.previous href=next_project_path(@project, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset], dir: 'prev') title='Previous project' rel='nofollow'
+  a.project-switcher.previous.istooltip href=next_project_path(@project, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset], dir: 'prev') title='Previous project' rel='nofollow tooltip' data-container='body' data-placement='right'
     .inner
       i.fa.fa-chevron-left
-  a.project-switcher.next href=next_project_path(@project, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset], dir: 'next') title='Next project' rel='nofollow'
+  a.project-switcher.next.istooltip href=next_project_path(@project, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset], dir: 'next') title='Next project' rel='nofollow tooltip' data-container='body' data-placement='left'
     .inner
       i.fa.fa-chevron-right

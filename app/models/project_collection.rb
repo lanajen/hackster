@@ -17,13 +17,13 @@ class ProjectCollection < ActiveRecord::Base
   # scope :visible, -> { where(workflow_state: VALID_STATES) }
 
   workflow do
-    state :new do
-      event :approve, transitions_to: :approved
+    state :unlisted do
       event :require_review, transitions_to: :pending_review
     end
     state :pending_review do
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
+      event :unlist, transitions_to: :unlisted
     end
     state :featured do
       event :unfeature, transitions_to: :approved
@@ -31,9 +31,11 @@ class ProjectCollection < ActiveRecord::Base
     state :approved do
       event :feature, transitions_to: :featured
       event :reject, transitions_to: :rejected
+      event :unlist, transitions_to: :unlisted
     end
     state :rejected do
       event :approve, transitions_to: :approved
+      event :unlist, transitions_to: :unlisted
     end
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers 'after_status_updated', from if to.to_s.in? %w(approved rejected)
@@ -71,7 +73,7 @@ class ProjectCollection < ActiveRecord::Base
   private
     def update_status
       if collectable.class.name == 'Platform'
-        require_review!
+        require_review! unless project.unlisted?
       else
         approve!
       end

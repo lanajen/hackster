@@ -85,7 +85,7 @@ class ChallengeEntriesController < ApplicationController
           flash[:notice] = "Changes saved."
           challenge_admin_entries_path(@challenge)
         else
-          if next_entry = @challenge.entries.where(workflow_state: :new).first
+          if next_entry = @challenge.entries.where(workflow_state: :submitted).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry needing moderation!"
@@ -109,7 +109,10 @@ class ChallengeEntriesController < ApplicationController
       end
       redirect_to next_url
     elsif params[:current_action] == 'submitting'
-      if :category_id.in? @entry.errors.keys
+      if :user_full_name.in? @entry.errors.keys
+        flash[:alert] = "Please enter your first and last name"
+        redirect_to challenge_path(@challenge, submit: @entry.id)
+      elsif :category_id.in? @entry.errors.keys
         flash[:alert] = "Please select a category"
         redirect_to challenge_path(@challenge, submit: @entry.id)
       elsif @entry.errors.keys.select{|v| v =~ /cfield/ }.any?
@@ -124,12 +127,24 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def update_workflow
-    if @entry.send "#{params[:event]}!"
-      flash[:notice] = "Entry #{event_to_human(params[:event])}."
-    else
-      flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+    respond_to do |format|
+      format.html do
+        if @entry.send "#{params[:event]}!"
+          flash[:notice] = "Entry #{event_to_human(params[:event])}."
+        else
+          flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+        end
+
+        redirect_to challenge_admin_entries_path(@challenge)
+      end
+      format.js do
+        if @entry.send "#{params[:event]}!"
+          render status: :ok, nothing: true
+        else
+          render status: :unprocessable_entity, nothing: true
+        end
+      end
     end
-    redirect_to challenge_admin_entries_path(@challenge)
   end
 
   def destroy

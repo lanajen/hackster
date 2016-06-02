@@ -154,7 +154,10 @@
                               - if entry.new? and entry.user_id == current_user.id
                                 .project-contest-entry-submit
                                   ' Is your project complete?
-                                  = link_to 'Submit to contest', '', class: 'btn btn-primary btn-sm'
+                                  = link_to 'Submit to contest', 'javascript:void(0)', class: 'btn btn-primary btn-sm modal-open', data: { target: "#entry-submit-popup-#{entry.id}" }
+
+                                = content_for :js do
+                                  = render 'challenge_entries/submit_popup', entry: entry
 
                     - elsif @project.pryvate?
                       .alert.alert-warning.text-center

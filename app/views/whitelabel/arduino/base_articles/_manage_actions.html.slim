@@ -9,9 +9,9 @@
       - if @project.unpublished?
         span Public - Unpublished
       - elsif @project.pending_review?
-        span Public - Pending review
-      - else
         span Public
+      - else
+        span Public - Featured
     - else
       span
         / i.fa.fa-lock

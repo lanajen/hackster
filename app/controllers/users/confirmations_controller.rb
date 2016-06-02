@@ -25,7 +25,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     if resource.errors.empty?
       track_event 'Confirmed their email address'
       set_flash_message(:notice, :confirmed) if is_navigational_format?
-      sign_in resource_name, resource, bypass: user_signed_in?
+      sign_in resource_name, resource, force: true
       respond_with_navigational(resource){ redirect_to after_confirmation_path_for(resource_name, resource) }
     else
       message = "Error confirming account for user ID #{resource.id}: #{resource.errors.messages}"
@@ -44,7 +44,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       track_event 'Confirmed their email address'
       NotificationCenter.notify_via_email nil, :user, resource.id, 'registration_confirmation'
       set_flash_message :notice, :confirmed
-      sign_in resource_name, resource, bypass: user_signed_in?
+      sign_in resource_name, resource, force: true
       redirect_to after_confirmation_path_for resource_name, resource
     else
       message = "Error confirming account for user ID #{resource.id}: #{resource.errors.messages}"

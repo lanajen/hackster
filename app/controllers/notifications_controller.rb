@@ -12,7 +12,13 @@ class NotificationsController < ApplicationController
   end
 
   def update
-    if current_user.update_attributes params[:user]
+    if params[:unsubscribe]
+      current_user.unsubscribe_from_all
+    else
+      current_user.assign_attributes params[:user]
+    end
+
+    if current_user.save
       redirect_to current_user, notice: "Notification preferences saved."
     else
       render :edit

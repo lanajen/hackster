@@ -46,6 +46,18 @@ module.exports = {
     });
   },
 
+  getCSRFTokenFromApi() {
+    return new Promise((resolve, reject) => {
+      request
+        .get(`${getApiPath()}/private/csrf.txt`)
+        .set('Accept', 'text/plain')
+        .withCredentials()
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res.text);
+        });
+    });
+  },
+
   fetchCurrentUser() {
     return new Promise((resolve, reject) => {
       getApiToken(token => {

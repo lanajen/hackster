@@ -74,7 +74,10 @@
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
     - elsif @challenge.registration_open?
-      = link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta show-simplified-signup with-name", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
+      noscript
+        = link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta show-simplified-signup with-name", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
+
+      = react_component('SignupForm', { source: 'register_challenge', redirect_to: create_challenge_registrations_path(@challenge), id: @challenge.id, submit_action: _simplified_registrations_path, buttonClass: 'btn-primary btn-block btn-ellipsis btn-standout challenge-cta' })
 
     - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
 

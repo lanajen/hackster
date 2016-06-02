@@ -1,6 +1,5 @@
 module PlatformHelper
   def load_analytics
-
     @project_count = @platform.projects_count
     @external_project_count = @platform.projects.visible.external.approved.count
     @comment_count = @platform.projects.joins(:comments).count

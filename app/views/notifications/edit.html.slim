@@ -8,12 +8,19 @@
         = simple_form_for current_user, url: notifications_path, html: { method: :patch, class: 'form-vertical widget-form', autocomplete: "off" } do |f|
           = f.error_notification
           .clearfix
+            p.pull-left.small
+              | Don't like our emails?
+              br
+              => link_to 'Unsubscribe from all', "javascript:unsubscribeAll()", class: 'btn btn-primary btn-sm'
+              br
+              = link_to "Tell us how we could do better", 'mailto:ben@hackster.io?subject=Email feedback'
             p.pull-right
               => link_to 'Enable all', 'javascript:enableAll()'
               ' |
               => link_to 'Disable all', 'javascript:disableAll()'
           input name='user[email_subscriptions][]' value='' type='hidden'
           input name='user[web_subscriptions][]' value='' type='hidden'
+          input name='' value='1' type='hidden' class='unsubscribe'
           table.table
             thead
               th
@@ -51,4 +58,8 @@
     function disableAll() {
       $('input[type=checkbox]').prop('checked', false);
       $('#user_project_email_frequency_proxy').val('never');
+    }
+    function unsubscribeAll() {
+      $('.unsubscribe').attr('name', 'unsubscribe');
+      $('.form-vertical').submit()
     }

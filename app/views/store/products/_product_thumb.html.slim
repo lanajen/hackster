@@ -1,9 +1,9 @@
-- part = product.source.decorate
+- part = product.source ? product.source.decorate : nil
 .part-thumb
-  a.img-container href=url_for(part)
-    = image_tag(part.image(:medium))
-    .description= part.one_liner_or_description
-  h3= link_to product.decorate.name, part
+  a.img-container href=(part ? url_for(part) : nil)
+    = image_tag(part ? part.image(:medium) : product.image.try(:imgix_url, :medium))
+    .description= part ? part.one_liner_or_description : product.one_liner
+  h3= part ? link_to(product.decorate.name, part) : product.name
   .order
     - if product.in_stock?
       - if user_signed_in?
@@ -11,6 +11,8 @@
           = link_to 'Add to cart', "javascript:void(0)", onclick: "openModal('#actions-popup-#{product.id}');", class: 'btn btn-primary btn-sm'
         - else
           = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
+        - if product.charge_shipping?
+          strong.small< US only
       - else
         = link_to 'Login to add to cart', new_user_session_path(redirect_to: store_path), class: 'btn btn-primary btn-sm'
     - else

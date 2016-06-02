@@ -150,5 +150,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
 
     def social_profile_attributes
       SocialProfile::Builder.new(session['devise.provider'], session['devise.provider_data']).social_profile_attributes
+    rescue SocialProfile::Builder::UnknownProvider
+      render_404
     end
 end

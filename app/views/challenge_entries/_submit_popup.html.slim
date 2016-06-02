@@ -15,6 +15,13 @@
             abbr.istooltip title="Projects will be moderated upon entry. Incomplete projects will not qualify."
               | Please make sure your project is complete before you submit it.
 
+        - if current_user.full_name.blank?
+          .form-group
+            label
+              abbr> title="Required" *
+              | First and last name
+            = text_field_tag :"challenge_entry[user_full_name]", entry.user_full_name, class: 'form-control'
+
         - entry.challenge.challenge_entry_fields.each_with_index do |field, i|
           .form-group
             label

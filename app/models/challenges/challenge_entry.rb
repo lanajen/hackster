@@ -11,20 +11,23 @@ class ChallengeEntry < ActiveRecord::Base
   belongs_to :category, class_name: 'ChallengeCategory'
   belongs_to :challenge
   belongs_to :project, class_name: 'BaseArticle'
-  belongs_to :user
+  belongs_to :user, autosave: true
   has_and_belongs_to_many :prizes
   has_many :notifications, as: :notifiable, dependent: :delete_all
   has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
   attr_accessible :judging_notes, :prize_ids, :workflow_state, :category_id,
-    :project_id, :user_id
+    :project_id, :user_id, :user_full_name
+
+  attr_reader :user_full_name
 
   validates :project_id, uniqueness: { scope: :challenge_id, message: 'has already been submitted to the contest' }
   with_options unless: proc{|e| e.workflow_state == 'new' } do |entry|
     entry.validates :category_id, presence: true, if: proc{|e| e.challenge.activate_categories? }
     entry.validate :validate_custom_fields_presence
   end
+  validate :validate_user_full_name_presence
   after_initialize :set_extra_fields
 
   counters_column :counters_cache
@@ -107,7 +110,16 @@ class ChallengeEntry < ActiveRecord::Base
     end
   end
 
+  def user_full_name=(val)
+    @user_full_name = val
+    user.full_name = val if user
+  end
+
   private
+    def validate_user_full_name_presence
+      errors.add :user_full_name, 'is required' if user_full_name === ''
+    end
+
     def validate_custom_fields_presence
       challenge.challenge_entry_fields.each_with_index do |field, i|
         field_name = "cfield#{i}"

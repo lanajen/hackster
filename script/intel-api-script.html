@@ -1,28 +1,4 @@
-/javascript:
-  window.hckstr = (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0],
-      h = window.hckstr || {};
-    if (d.getElementById(id)) return h;
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "//www.localhost.local:5000/intel/embed.js?per_page=12";
-    fjs.parentNode.appendChild(js, fjs);
-
-    h._e = [];
-    h.ready = function(f) {
-      h._e.push(f);
-    };
-
-    return h;
-  }(document, "script", "hckstr-ejs"));
-
-/css:
-  .hackster-embed .project-thumb-details { padding-left: 0; padding-right: 0; }
-  .hackster-embed .project-thumb-bottom  { padding-left: 0; padding-right: 0; }
-
-<div id="hackster-projects" class="hckst-projects"></div>
-
-css:
+<style>
   .hckst-projects * {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -59,8 +35,11 @@ css:
   .hckst-project-card p {
     margin: 0 0 5px;
   }
+</style>
 
-javascript:
+<div id="hackster-projects" class="hckst-projects"></div>
+
+<script type="text/javascript">
   var hackster = {
     cardTemplate: function(data) {
       var output = "";
@@ -105,3 +84,4 @@ javascript:
   }
 
   window.onload = hackster.fetchProjects;
+</script>

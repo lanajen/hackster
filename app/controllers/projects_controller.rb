@@ -297,7 +297,7 @@ class ProjectsController < ApplicationController
 
   def update
     authorize! :update, @project
-    if params[:base_article] and params[:base_article][:discovery_settings] != @project.discovery_settings and params[:base_article][:discovery_settings] != 'private'
+    if params[:base_article] and params[:base_article][:discovery_settings] and params[:base_article][:discovery_settings] != @project.discovery_settings and params[:base_article][:discovery_settings] != 'private'
       authorize! :publish, @project
     end
 

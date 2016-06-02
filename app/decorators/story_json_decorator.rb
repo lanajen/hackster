@@ -50,7 +50,7 @@ module StoryJsonDecorator
             when 'br'
               "<br/>"
             else
-              attributes = item['attribs'] || {}
+              attributes = item['attribs'] || {}
               if item['tag'] == 'h3'
                 content = extract_content(item)
                 attributes['id'] = 'toc-' + content.downcase.gsub(/[^a-zA-Z0-9]$/, '').strip.gsub(/[^a-z]/, '-') if content

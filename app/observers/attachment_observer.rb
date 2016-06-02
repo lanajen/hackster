@@ -65,4 +65,6 @@ class AttachmentObserver < ActiveRecord::Observer
       record.attachable.update_attribute :updated_at, Time.now if record.attachable.respond_to? :updated_at
     end
   end
+
+  alias_method :after_update, :after_process
 end

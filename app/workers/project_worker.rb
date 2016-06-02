@@ -39,19 +39,23 @@ class ProjectWorker < BaseWorker
 
         platform = collection.collectable
 
-        case platform.moderation_level
-        when 'auto'
-          collection.approve! if collection.can_approve?
-        when 'hackster'
-          if project.approved?
+        if project.unlisted?
+          collection.unlist! if collection.can_unlist?
+        else
+          case platform.moderation_level
+          when 'auto'
             collection.approve! if collection.can_approve?
-          elsif project.rejected?
-            collection.reject! if collection.can_reject?
-          else
-            # do nothing
+          when 'hackster'
+            if project.approved?
+              collection.approve! if collection.can_approve?
+            elsif project.rejected?
+              collection.reject! if collection.can_reject?
+            else
+              collection.require_review! if collection.can_require_review?
+            end
+          when 'manual'
+            collection.require_review! if collection.can_require_review?
           end
-        when 'manual'
-          # do nothing
         end
       end
     end

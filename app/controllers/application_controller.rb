@@ -203,7 +203,10 @@ class ApplicationController < ActionController::Base
     def authorize_access! username, password
       headers['X-Password-Protected'] = 'true'
 
-      unless session[:site_username] == username && session[:site_password] == password
+      site_username = params[:site_username].presence || session[:site_username]
+      site_password = params[:site_password].presence || session[:site_password]
+
+      unless site_username == username && site_password == password
         if cookies[:site_username] == username && cookies[:site_password] == password
           session[:site_username] = cookies[:site_username]
           session[:site_password] = cookies[:site_password]

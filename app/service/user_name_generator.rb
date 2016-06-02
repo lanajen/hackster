@@ -3,22 +3,36 @@ class UserNameGenerator
 
   attr_accessor :user_name
 
-  def initialize
-    @user_name = generate_user_name
+  def initialize base=nil
+    @user_name = generate_user_name(base)
   end
 
   private
-    def generate_user_name
-      user_name_with_numbers = get_number_version(BASE_USER_NAME)
-      while SlugHistory.where(value: user_name_with_numbers).exists?
-        user_name_with_numbers = get_number_version(BASE_USER_NAME)
+    def base_user_name base=nil
+      if _name = format_as_user_name(base) and _name.present?
+        return _name, 1..3
+      else
+        return BASE_USER_NAME, 5..10
       end
-
-      user_name_with_numbers
     end
 
-    def get_number_version base_user_name
-      numbers = rand(5..10).times.map{ rand(9) }.join('')
-      "#{base_user_name}#{numbers}"
+    def format_as_user_name text
+      return unless text.present?
+
+      I18n.transliterate(text).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    end
+
+    def generate_user_name base=nil
+      _base, nums = base_user_name(base)
+      _name = _base.dup
+      while SlugHistory.where(value: _name).exists?
+        _name = get_number_version(_base, nums)
+      end
+      _name
+    end
+
+    def get_number_version base, nums
+      numbers = rand(nums).times.map{ rand(9) }.join('')
+      "#{base}#{numbers}"
     end
 end

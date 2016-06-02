@@ -6,6 +6,7 @@ class ChallengeCriticalWorker < BaseWorker
     entries = challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
 
     headers = ['ID', 'Project name', 'Project URL', 'Project created on', 'Authors', 'Entrant name', 'Entrant email', 'Tags', 'Completion', 'Views count', 'Respects count', 'Comments count', 'Replications count', 'Entry status']
+    headers += challenge.challenge_entry_fields.map(&:label)
     rows = [headers]
 
     entries.each do |entry|
@@ -25,6 +26,7 @@ class ChallengeCriticalWorker < BaseWorker
       row << project.comments_count
       row << (project.respond_to?(:replications_count) ? project.replications_count : '')
       row << entry.workflow_state
+      row += challenge.challenge_entry_fields.each_with_index.map{|f, i| entry.send("cfield#{i}").try(:gsub, /"/, '""') }
       rows << row
     end
 
@@ -57,13 +59,12 @@ class ChallengeCriticalWorker < BaseWorker
     challenge = Challenge.find challenge_id
     registrations = challenge.registrations.joins(:user).includes(:user).order("users.full_name ASC")
 
-    headers = ['Name', 'Email', 'Registration date']
-    headers += challenge.challenge_entry_fields.map(&:label)
+    headers = ['Name', 'Email', 'Registration date', 'Authorized sharing email with sponsor']
     rows = [headers]
     registrations.each do |registration|
       user = registration.user
       output = [user.name, user.email, registration.created_at.in_time_zone(PDT_TIME_ZONE)]
-      output += challenge.challenge_entry_fields.each_with_index.map{|f, i| idea.send("cfield#{i}").try(:gsub, /"/, '""') }
+      output << (registration.receive_sponsor_news? ? true : false)
       rows << output
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512180341) do
+ActiveRecord::Schema.define(version: 20160531221841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -281,6 +281,7 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.datetime "created_at",   null: false
   end
 
+  add_index "group_impressions", ["created_at"], name: "group_impressions_created_at_idx", using: :btree
   add_index "group_impressions", ["group_id"], name: "index_group_impressions_on_group_id", using: :btree
   add_index "group_impressions", ["session_hash"], name: "index_group_impressions_on_session_hash", using: :btree
 
@@ -341,6 +342,7 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.datetime "created_at",                      null: false
   end
 
+  add_index "impressions", ["created_at"], name: "impressions_created_at_idx", using: :btree
   add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
 
   create_table "jobs", force: :cascade do |t|
@@ -418,9 +420,6 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
-
-  add_index "mouser_submissions", ["user_id"], name: "index_mouser_submissions_on_user_id", using: :btree
-  add_index "mouser_submissions", ["vendor_user_name"], name: "index_mouser_submissions_on_vendor_user_name", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
@@ -507,6 +506,7 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.datetime "created_at",   null: false
   end
 
+  add_index "part_impressions", ["created_at"], name: "part_impressions_created_at_idx", using: :btree
   add_index "part_impressions", ["part_id"], name: "index_part_impressions_on_part_id", using: :btree
   add_index "part_impressions", ["session_hash"], name: "index_part_impressions_on_session_hash", using: :btree
 
@@ -636,6 +636,7 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.datetime "created_at",   null: false
   end
 
+  add_index "project_impressions", ["created_at"], name: "project_impressions_created_at_idx", using: :btree
   add_index "project_impressions", ["project_id"], name: "index_project_impressions_on_project_id", using: :btree
   add_index "project_impressions", ["session_hash"], name: "index_project_impressions_on_session_hash", using: :btree
 
@@ -672,14 +673,12 @@ ActiveRecord::Schema.define(version: 20160512180341) do
     t.string   "locale",                  limit: 2,   default: "en"
     t.string   "hid"
     t.hstore   "hproperties"
-    t.integer  "parent_id"
     t.integer  "origin_platform_id",                  default: 0,         null: false
   end
 
   add_index "projects", ["hid"], name: "index_projects_on_hid", using: :btree
   add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["origin_platform_id"], name: "index_projects_on_origin_platform_id", using: :btree
-  add_index "projects", ["parent_id"], name: "index_projects_on_parent_id", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree

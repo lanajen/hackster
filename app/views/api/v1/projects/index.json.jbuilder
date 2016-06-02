@@ -8,7 +8,6 @@ else
       json.partial! 'project', project: col.project
       json.collection_status col.workflow_state
       json.collection_added_at col.created_at
-      json.collection_updated_at col.updated_at
     end
     json.page @collections.current_page
     json.next_page @collections.next_page
