@@ -8,8 +8,12 @@
         = simple_form_for current_user, url: notifications_path, html: { method: :patch, class: 'form-vertical widget-form', autocomplete: "off" } do |f|
           = f.error_notification
           .clearfix
-            p.pull-left
-              => link_to 'Unsubscribe all', "javascript:unsubscribeAll()"
+            p.pull-left.small
+              | Don't like our emails?
+              br
+              => link_to 'Unsubscribe from all', "javascript:unsubscribeAll()", class: 'btn btn-primary btn-sm'
+              br
+              = link_to "Tell us how we could do better", 'mailto:ben@hackster.io?subject=Email feedback'
             p.pull-right
               => link_to 'Enable all', 'javascript:enableAll()'
               ' |
