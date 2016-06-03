@@ -18,6 +18,18 @@ class BaseController < ActionController::Base
       { locale: params[:locale], protocol: (APP_CONFIG['use_ssl'] ? 'https' : 'http'), path_prefix: params[:path_prefix] }.merge options
     end
 
+    def impressionist_async obj, message, opts
+      if obj.kind_of? Hash
+        obj_id = obj[:id]
+        obj_type = obj[:type]
+      else
+        obj_id = obj.id
+        obj_type = obj.class.to_s
+      end
+      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => (opts.delete(:referrer).presence || request.referer), 'HTTP_USER_AGENT' => request.user_agent, session_hash: (request.session_options[:id].presence || SecureRandom.hex(16)) }, (opts.delete(:action_name).presence || action_name), (opts.delete(:controller_name).presence || controller_name), params, obj_id, obj_type, message, opts
+    rescue
+    end
+
     def is_whitelabel?
       current_site.present?
     end
