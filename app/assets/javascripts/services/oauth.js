@@ -6,6 +6,20 @@ const clientToken = tokenKeyPrefix + '.client';
 const userToken = tokenKeyPrefix + '.user';
 let callbackQueue = [];
 
+let isLocalStorageSupported = function() {
+  if (!window || !window.localStorage)
+    return false;
+
+  try {
+    window.localStorage.setItem('testKey', '1');
+    window.localStorage.removeItem('testKey');
+    return true;
+  } catch (error) {
+    console.log('not working');
+    return false;
+  }
+}
+
 function fetchToken() {
   return new Promise((resolve, reject) => {
     request
@@ -28,7 +42,7 @@ function resolveCallbacks(token) {
 }
 
 function getToken(withUser) {
-  return window && window.localStorage
+  return isLocalStorageSupported()
     ? (withUser ? getFromLocalStorage(userToken) : getFromLocalStorage(userToken, clientToken))
     : document && document.cookie
     ? parseCookie(withUser)
@@ -50,7 +64,7 @@ function parseCookie(withUser) {
 }
 
 function setTokens(tokens) {
-  if (window && window.localStorage) {
+  if (isLocalStorageSupported()) {
     window.localStorage.setItem(clientToken, tokens.client_token);
     if (tokens.user_token)
       window.localStorage.setItem(userToken, tokens.user_token);
