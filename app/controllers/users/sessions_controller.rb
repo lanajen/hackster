@@ -25,10 +25,10 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def destroy
-    super
-
     # expire access tokens // should this be moved to the background?
     Doorkeeper::AccessToken.revoke_all_for(DOORKEEPER_APP_ID, current_user)
+
+    super
 
     if is_whitelabel? and current_site.has_javascript_on_logout?
       flash[:js] = current_site.javascript_on_logout
