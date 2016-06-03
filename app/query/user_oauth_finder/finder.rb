@@ -7,7 +7,7 @@ module UserOauthFinder
     def find_for_oauth provider, data
       resolver = begin
         "UserOauthFinder::Resolver::#{provider.camelize}".constantize
-      rescue NameError
+      rescue
         Resolver::Base
       end
 
