@@ -31,13 +31,13 @@ class UsersController < ApplicationController
     @public_projects = @user.projects.publyc.own.for_thumb_display.order(made_public_at: :desc, created_at: :desc).limit(3)
     @private_projects = @user.projects.pryvate.for_thumb_display.limit(3)
     @guest_projects = @user.projects.live.guest.for_thumb_display.limit(3)
-    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC').limit(3)
+    @respected_projects = @user.respected_projects.publyc.for_thumb_display.order('respects.created_at DESC').limit(3)
     @replicated_projects = @user.replicated_projects.limit(3)
 
     @public_query = @user.projects.publyc.own
     @private_query = @user.projects.pryvate
     @guest_query = @user.projects.live.guest
-    @respected_query = @user.respected_projects.indexable_and_external
+    @respected_query = @user.respected_projects.publyc
     @replicated_query = @user.replicated_projects
 
     if is_whitelabel?
@@ -159,7 +159,7 @@ class UsersController < ApplicationController
     title "#{@user.name}'s respected projects"
     meta_desc "#{@user.name}'s respected projects on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display.order('respects.created_at DESC')
+    @respected_projects = @user.respected_projects.publyc.for_thumb_display.order('respects.created_at DESC')
     if is_whitelabel?
       @respected_projects = @respected_projects.with_group(current_platform)
     end

@@ -437,6 +437,94 @@ div.arduino-bbq.bbq-overlap div.user-profile svg {
 
 /*  -- END CREATE TOOLBAR --  */
 
+
+
+
+
+/*
+=================
+NEW SPINNER
+=================
+*/
+.spinner,
+.spinner:before,
+.spinner:after {
+  border-radius: 50%;
+}
+.spinner:before,
+.spinner:after {
+  position: absolute;
+  content: '';
+}
+.spinner:before {
+  background: #ecf1f1;
+  width: 6em;
+  height: 12em;
+  border-radius: 12em 0 0 12em;
+  top: -1em;
+  left: -1em;
+  -webkit-transform-origin: 6em 6em;
+  transform-origin: 6em 6em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+
+.spinner {
+  color: #00979C;
+  font-size: 6px;
+  text-indent: -99999em;
+  margin: 20px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.spinner:after {
+  background: #ecf1f1;
+  width: 6em;
+  height: 12em;
+  border-radius: 0 12em 12em 0;
+  top: -1em;
+  left: 5em;
+  -webkit-transform-origin: 0px 6em;
+  transform-origin: 0px 6em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+@-webkit-keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+/*
+=================
+END NEW SPINNER
+=================
+*/
+
+
+
+
+
 section#projects-list a.btn.btn-info.btn-sm:active,
 section#projects-list a.btn.btn-info.btn-sm:focus {
   background-color: transparent;
@@ -1491,6 +1579,11 @@ div.pe-panel div.box div.form-group a[data-method="patch"] {
 .btn .caret, .btn-follow .caret {
   margin-left: 7px;
 }
+
+div.navbar a#new_project {
+  max-height: 34px;
+}
+
 .btn-primary, .btn-secondary {
   transition: all ease-out .1s;
   position: relative;
@@ -1504,8 +1597,10 @@ div.pe-panel div.box div.form-group a[data-method="patch"] {
   line-height: 13px;
   padding: 12px 20px 9px 20px;
   letter-spacing: 0.9px;
-  max-height: 34px;
+  max-height: none;
   font-family: 'Typonine Sans Pro';
+  word-break: break-word;
+  white-space: normal;
 }
 .btn-primary.add-project {
   height: 34px;
@@ -2142,6 +2237,41 @@ div.panel-heading h4 {
 
 
 /* COMPONENTS HOVER */
+
+
+  /*
+  ===================
+  FIX COMPONENT TABLE
+  ===================
+  */
+
+  section#components .part-body {
+      margin: 16px 0;
+      display: inline-block;
+  }
+
+  section#components .part-body .part-name a {
+      height: auto;
+      min-height: 0;
+      padding-top: 0;
+  }
+
+  section#components .part-body .part-comment td {
+      padding: 4px 10px 0 10px;
+  }
+
+  section#components .part-img img {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /*
+  ===================
+  END FIX COMPONENT TABLE
+  ===================
+  */
+
   .parts-table tr a {
     color: #879191;
     width: 100%;
