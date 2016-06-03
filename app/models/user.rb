@@ -185,8 +185,6 @@ class User < ActiveRecord::Base
   has_many :review_decisions
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
-  has_many :thoughts
-  has_many :thought_likes, class_name: 'Respect', through: :thoughts, source: :likes
   has_many :used_parts, -> { where("projects.guest_name = '' OR projects.guest_name IS NULL").uniq }, through: :projects, source: :parts
   has_many :user_activities
   has_many :voted_entries, source_type: 'ChallengeEntry', through: :respects, source: :respectable
@@ -263,7 +261,6 @@ class User < ActiveRecord::Base
   has_counter :respects, 'respects.count'
   has_counter :skill_tags, 'skill_tags.count'
   has_counter :suggested_platforms, 'suggested_platforms.count'
-  has_counter :thoughts, 'thoughts.count'
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   # hi!! new props should be created under hproperties

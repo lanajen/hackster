@@ -1,6 +1,6 @@
 class Api::V2::PartsController < Api::V2::BaseController
   before_filter :doorkeeper_authorize_without_scope!
-  before_filter :load_and_authorize_resource
+  before_filter :load_and_authorize_resource, only: [:create, :update, :destroy]
 
   def index
     if params[:q].present?
