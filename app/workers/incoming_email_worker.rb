@@ -4,7 +4,7 @@ class IncomingEmailWorker < BaseWorker
     comment = Comment.find_by_hid! comment_hid
 
     if user.can? :read, comment.commentable
-      IncomingEmail::Responder.new(user).post_message(comment, body)
+      IncomingEmail::Responder.new(user).post_comment(comment, body)
     end
   end
 end
