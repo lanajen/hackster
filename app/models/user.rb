@@ -226,7 +226,8 @@ class User < ActiveRecord::Base
   after_validation :reset_geocoding, if: proc{|u| (u.city_changed? or u.country_changed?) and u.full_location.blank? }
   before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :before_password_reset, if: proc{|u| u.encrypted_password_changed? }
-  before_save :ensure_authentication_token
+  before_save :generate_authentication_token, if: proc{|u| u.authentication_token.blank? }
+  before_save :generate_hid, if: proc{|u| u.hid.blank? }
   after_invitation_accepted :invitation_accepted
 
   set_roles :roles, ROLES
@@ -510,12 +511,6 @@ class User < ActiveRecord::Base
   # small hack to allow single emails to be invited multiple times
   def email_changed?
     being_invited? ? false : super
-  end
-
-  def ensure_authentication_token
-    if authentication_token.blank?
-      self.authentication_token = generate_authentication_token
-    end
   end
 
   def challenge_entries_for challenge
@@ -875,6 +870,7 @@ class User < ActiveRecord::Base
       UserWorker.perform_async 'revoke_api_tokens_for', id  # revoke all api tokens
       clear_reset_password_token  # reset the password token sent in emails
       self.authentication_token = generate_authentication_token  # reset auth_token used in emails
+      self.hid = generate_hid  # reset hid used in reply-to
       SessionManager.new(self).expire_all  # invalidate all existing sessions
     end
 
@@ -889,7 +885,20 @@ class User < ActiveRecord::Base
     def generate_authentication_token
       loop do
         token = Devise.friendly_token
-        break token unless User.where(authentication_token: token).first
+        unless User.where(authentication_token: token).exists?
+          self.authentication_token = token
+          break
+        end
+      end
+    end
+
+    def generate_hid
+      loop do
+        hid = Devise.friendly_token.downcase[0..15]
+        unless User.where(hid: hid).exists?
+          self.hid = hid
+          break
+        end
       end
     end
 

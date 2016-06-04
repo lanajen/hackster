@@ -1,5 +1,6 @@
 class BaseMailer < ActionMailer::Base
   DEFAULT_EMAIL = 'Hackster.io<help@hackster.io>'
+  REPLY_TO_DOMAIN = 'reply.hackster.io'
   add_template_helper ApplicationHelper
   add_template_helper UrlHelper
   default track_clicks: Rails.env.production?
@@ -93,6 +94,10 @@ class BaseMailer < ActionMailer::Base
       end
     end
 
+    def generate_reply_to_address user_hid, reply_to_hid
+      "#{user_hid}+#{reply_to_hid}@#{REPLY_TO_DOMAIN}"
+    end
+
     def headers
       @headers || {}
     end
@@ -136,6 +141,8 @@ class BaseMailer < ActionMailer::Base
         if recipient_variables.any?
           set_header :recipient_variables, recipient_variables
         end
+      else
+        context[:reply_to] = generate_reply_to_address recipient_or_recipients.hid, context[:reply_to_hid]
       end
 
       set_header :test_mode, !ENV['SEND_EMAILS']

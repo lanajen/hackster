@@ -114,6 +114,7 @@ HackerIo::Application.routes.draw do
         namespace :v2 do
           get 'me' => 'users#me'
           resources :comments, only: [:index, :create, :update, :destroy]
+          resources :emails, only: [:create]
           resources :likes, only: [:create] do
             delete '' => 'likes#destroy', on: :collection
           end

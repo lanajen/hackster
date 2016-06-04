@@ -30,11 +30,19 @@ class NotificationHandler
       if context.present?
         if context.include? :users
           return if context[:users].empty?
-          context[:users] = context[:users].uniq
+          context[:users].uniq!
           users_copy = context[:users].dup
           users_copy.each_slice(1000) do |users|
             context[:users] = users
             BulkMailer.deliver_email(users, context, find_template, opts).deliver_now!
+          end
+        elsif context.include? :s_users
+          return if context[:s_users].empty?
+          context[:s_users].uniq!
+          users_copy = context[:s_users].dup
+          users_copy.each do |user|
+            context[:user] = user
+            SingleMailer.deliver_email(user, context, find_template, opts).deliver_now!
           end
         elsif context.include? :user
           SingleMailer.deliver_email(context[:user], context, find_template, opts).deliver_now!
@@ -131,16 +139,17 @@ class NotificationHandler
           when BaseArticle
             comment.commentable
           end
-          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own')
+          context[:s_users] = project.users.with_subscription(notification_type, 'new_comment_own')
           if comment.has_parent?
             # finds the user who created the parent comment as well as everyone
             # who replied to it
-            context[:users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children(true).pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
+            context[:s_users] += User.joins(:comments).where(comments: { id: [comment.parent_id] + comment.parent.children(true).pluck(:id) }).with_subscription(notification_type, 'new_comment_commented')
           else
             # finds all the first level comments for commentable
-            context[:users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
+            context[:s_users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
           end
-          context[:users] -= [author]
+          context[:s_users] -= [author]
+          context[:reply_to_hid] = comment.hid
         when ReviewThread
           context[:thread] = commentable
           context[:project] = project = commentable.project

@@ -17,6 +17,7 @@ class Comment < ActiveRecord::Base
 
   accepts_nested_attributes_for :user
 
+  before_save :generate_hid, if: proc{|c| c.hid.blank? }
   before_save :parse_body, if: proc{|c| c.raw_body_changed?}
   # sanitize_text :body
   # register_sanitizer :newlines_to_br, :before_save, :body
@@ -129,6 +130,16 @@ class Comment < ActiveRecord::Base
         end
       end
       parent
+    end
+
+    def generate_hid
+      loop do
+        hid = Devise.friendly_token.downcase[0..15]
+        unless Comment.where(hid: hid).exists?
+          self.hid = hid
+          break
+        end
+      end
     end
 
     def parse_body

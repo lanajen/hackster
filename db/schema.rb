@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531221841) do
+ActiveRecord::Schema.define(version: 20160603222251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,10 +224,12 @@ ActiveRecord::Schema.define(version: 20160531221841) do
     t.string   "guest_name",       limit: 255
     t.text     "raw_body"
     t.boolean  "deleted",                      default: false
+    t.string   "hid",              limit: 16
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["deleted"], name: "index_comments_on_deleted", using: :btree
+  add_index "comments", ["hid"], name: "index_comments_on_hid", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "conversations", force: :cascade do |t|
@@ -413,12 +415,13 @@ ActiveRecord::Schema.define(version: 20160531221841) do
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
   create_table "mouser_submissions", force: :cascade do |t|
-    t.string   "workflow_state"
-    t.integer  "user_id",          null: false
+    t.string   "status"
+    t.string   "project_name"
+    t.integer  "user_id"
     t.integer  "project_id"
-    t.string   "vendor_user_name", null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.integer  "vendor_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -936,11 +939,13 @@ ActiveRecord::Schema.define(version: 20160531221841) do
     t.boolean  "private",                            default: false
     t.float    "latitude"
     t.float    "longitude"
+    t.string   "hid",                    limit: 16
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["enable_sharing"], name: "index_users_on_enable_sharing", using: :btree
+  add_index "users", ["hid"], name: "index_users_on_hid", using: :btree
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
   add_index "users", ["private"], name: "index_users_on_private", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
