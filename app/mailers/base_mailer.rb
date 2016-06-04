@@ -142,6 +142,7 @@ class BaseMailer < ActionMailer::Base
           set_header :recipient_variables, recipient_variables
         end
       else
+        recipient_or_recipients.save unless recipient_or_recipients.hid.present?
         context[:reply_to] = generate_reply_to_address recipient_or_recipients.hid, context[:reply_to_hid]
       end
 
