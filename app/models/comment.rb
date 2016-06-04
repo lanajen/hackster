@@ -134,7 +134,7 @@ class Comment < ActiveRecord::Base
 
     def generate_hid
       loop do
-        hid = Devise.friendly_token.downcase[0..15]
+        hid = Devise.friendly_token.downcase.gsub(/[^a-z0-9]/, '')[0..15]
         unless Comment.where(hid: hid).exists?
           self.hid = hid
           break

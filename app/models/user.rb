@@ -869,8 +869,8 @@ class User < ActiveRecord::Base
     def before_password_reset
       UserWorker.perform_async 'revoke_api_tokens_for', id  # revoke all api tokens
       clear_reset_password_token  # reset the password token sent in emails
-      self.authentication_token = generate_authentication_token  # reset auth_token used in emails
-      self.hid = generate_hid  # reset hid used in reply-to
+      self.authentication_token = nil  # reset auth_token used in emails
+      self.hid = nil  # reset hid used in reply-to
       SessionManager.new(self).expire_all  # invalidate all existing sessions
     end
 
@@ -894,7 +894,7 @@ class User < ActiveRecord::Base
 
     def generate_hid
       loop do
-        hid = Devise.friendly_token.downcase[0..15]
+        hid = Devise.friendly_token.downcase.gsub(/[^a-z0-9]/, '')[0..15]
         unless User.where(hid: hid).exists?
           self.hid = hid
           break

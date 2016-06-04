@@ -45,7 +45,7 @@ class AppLogger
     end
   end
 
-  def send_notification log_line, level
+  def send_notification log_line, level=:error
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, "#{level}_notification"
     self
   end

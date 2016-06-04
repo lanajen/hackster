@@ -5,6 +5,8 @@ class Api::V2::EmailsController < Api::V2::BaseController
     comment_hid = email_user_name[1]
     body = params[:'stripped-text']
 
+    AppLogger.new("Incoming email: user_hid: `#{user_hid}` // comment_hid: `#{comment_hid}` // body: `#{body}` // params: #{params}", 'notification', 'api/emails').log_and_notify(:info, true)
+
     if is_webhook_valid? and user_hid.present? and comment_hid.present? and body.present?
       IncomingEmailWorker.perform_async 'process', user_hid, comment_hid, body
       render status: :ok, nothing: true

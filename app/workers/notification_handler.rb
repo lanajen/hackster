@@ -129,6 +129,7 @@ class NotificationHandler
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
         author = context[:author] = comment.user
+        context[:reply_to_hid] = comment.hid
         commentable = comment.commentable
         case commentable
         when Feedback, Issue, BaseArticle
@@ -149,13 +150,12 @@ class NotificationHandler
             context[:s_users] += User.joins(:comments).where(comments: { id: comment.commentable.comments.where(parent_id: nil) }).with_subscription(notification_type, 'new_comment_commented')
           end
           context[:s_users] -= [author]
-          context[:reply_to_hid] = comment.hid
         when ReviewThread
           context[:thread] = commentable
           context[:project] = project = commentable.project
           context[:current_platform] = Platform.find(project.origin_platform_id) if project.has_platform?
           # if comment was posted by a project author, mail everyone else, otherwise mail project authors
-          context[:users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
+          context[:s_users] = if comment.user_id.in?(commentable.project.users.pluck('users.id'))
             commentable.participants.with_subscription(notification_type, 'updated_review') - commentable.project.users.with_subscription(notification_type, 'updated_review')
           else
             commentable.project.users.with_subscription(notification_type, 'updated_review').reorder(nil)  # user reorder(nil) so that uniq! doesn't fail (uniq! is used down the line)
@@ -292,6 +292,7 @@ class NotificationHandler
       when :receipt
         context[:model] = receipt = Receipt.find context_id
         message = context[:comment] = receipt.receivable
+        context[:reply_to_hid] = message.hid
         context[:conversation] = message.commentable
         context[:author] = message.user
         if receipt.user.subscribed_to?(notification_type, 'new_message')
