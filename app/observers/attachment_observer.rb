@@ -19,7 +19,7 @@ class AttachmentObserver < ActiveRecord::Observer
         Cashier.expire *keys
       end
     elsif record.attachable_type == 'Widget'
-      record.attachable.touch
+      record.attachable.try(:touch)
     elsif record.attachable_type == 'Part'
       case record.type
       when 'Image'
