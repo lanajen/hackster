@@ -1,4 +1,4 @@
-class Groups::ProjectsController < ApplicationController
+class Groups::ProjectsController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_group
   respond_to :html

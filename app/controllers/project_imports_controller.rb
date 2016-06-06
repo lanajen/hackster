@@ -1,4 +1,4 @@
-class ProjectImportsController < ApplicationController
+class ProjectImportsController < MainBaseController
   before_filter :authenticate_user!
 
   def new

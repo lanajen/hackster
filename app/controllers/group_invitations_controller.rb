@@ -1,4 +1,4 @@
-class GroupInvitationsController < ApplicationController
+class GroupInvitationsController < MainBaseController
   before_filter :authenticate_user!, except: [:index]
   before_filter :load_and_authorize_invitable, only: [:new, :create]
   before_filter :load_invitable, except: [:new, :create]

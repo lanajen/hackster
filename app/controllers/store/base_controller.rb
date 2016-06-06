@@ -1,4 +1,4 @@
-class Store::BaseController < ApplicationController
+class Store::BaseController < MainBaseController
   before_filter :authenticate_user!
   helper_method :current_order
   layout 'store'

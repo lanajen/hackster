@@ -1,4 +1,4 @@
-class ChatMessagesController < ApplicationController
+class ChatMessagesController < MainBaseController
   before_filter :authenticate_user!, except: [:incoming_slack]
   protect_from_forgery except: [:incoming_slack]
 

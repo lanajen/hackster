@@ -1,4 +1,4 @@
-class ChallengeEntriesController < ApplicationController
+class ChallengeEntriesController < MainBaseController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :destroy]
   before_filter :load_challenge, only: [:index, :create, :new]
   before_filter :load_entry, only: [:update]

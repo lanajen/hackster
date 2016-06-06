@@ -183,7 +183,7 @@
                     li
                       ' Made by
                       - if @project.guest_name.present?
-                        => @project.guest_name
+                        = @project.guest_name
                       - else
                         - if @project.team.full_name.present?
                           => @project.team.name

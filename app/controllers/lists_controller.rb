@@ -1,4 +1,4 @@
-class ListsController < ApplicationController
+class ListsController < MainBaseController
 
   before_filter :authenticate_user!, only: [:edit, :update]
   before_filter :load_list, only: [:show, :update]

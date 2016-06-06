@@ -1,4 +1,4 @@
-class ProjectCollectionsController < ApplicationController
+class ProjectCollectionsController < MainBaseController
   load_and_authorize_resource
 
   def edit

@@ -1,4 +1,4 @@
-class SplitController < ApplicationController
+class SplitController < MainBaseController
   def start_ab_test
     experiment = params[:experiment]
     control = params[:control]

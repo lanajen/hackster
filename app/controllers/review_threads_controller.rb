@@ -1,4 +1,4 @@
-class ReviewThreadsController < ApplicationController
+class ReviewThreadsController < MainBaseController
   include FilterHelper
 
   before_filter :authenticate_user!

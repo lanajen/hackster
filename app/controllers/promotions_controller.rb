@@ -1,4 +1,4 @@
-class PromotionsController < ApplicationController
+class PromotionsController < MainBaseController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_promotion, only: [:show, :update]
   layout 'group_shared', only: [:edit, :update, :show]

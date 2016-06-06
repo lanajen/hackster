@@ -1,4 +1,4 @@
-class ChallengeRegistrationsController < ApplicationController
+class ChallengeRegistrationsController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_challenge, only: [:create]
   before_filter :load_and_authorize_registration, only: [:destroy]

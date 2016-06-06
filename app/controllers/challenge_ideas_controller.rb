@@ -1,4 +1,4 @@
-class ChallengeIdeasController < ApplicationController
+class ChallengeIdeasController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :index, :update_workflow, :edit, :update, :destroy]
   before_filter :load_challenge, only: [:show, :create, :new, :edit, :update]
   before_filter :load_and_authorize_idea, only: [:update_workflow, :edit, :update]

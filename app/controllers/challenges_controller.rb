@@ -1,4 +1,4 @@
-class ChallengesController < ApplicationController
+class ChallengesController < MainBaseController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :dashboard]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :ideas, :idea, :idea_winners, :faq, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects, :ideas, :idea_winners, :faq]

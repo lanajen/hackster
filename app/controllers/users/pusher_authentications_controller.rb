@@ -1,4 +1,4 @@
-class Users::PusherAuthenticationsController < ApplicationController
+class Users::PusherAuthenticationsController < MainBaseController
   protect_from_forgery except: :create
 
   def create

@@ -1,4 +1,4 @@
-class Spark::UploadsController < ApplicationController
+class Spark::UploadsController < MainBaseController
   force_ssl if: :ssl_configured?
   before_filter :authenticate_user!
   before_filter :set_access_token

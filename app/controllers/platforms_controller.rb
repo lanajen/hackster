@@ -1,4 +1,4 @@
-class PlatformsController < ApplicationController
+class PlatformsController < MainBaseController
   include FilterHelper
   include GraphHelper
   include PlatformHelper

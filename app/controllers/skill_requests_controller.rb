@@ -1,4 +1,4 @@
-class SkillRequestsController < ApplicationController
+class SkillRequestsController < MainBaseController
   load_and_authorize_resource
 
   def index

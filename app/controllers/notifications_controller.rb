@@ -1,4 +1,4 @@
-class NotificationsController < ApplicationController
+class NotificationsController < MainBaseController
   before_filter :authenticate_user!
 
   def index

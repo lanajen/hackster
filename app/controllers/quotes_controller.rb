@@ -1,4 +1,4 @@
-class QuotesController < ApplicationController
+class QuotesController < MainBaseController
   def create
     @quote = Quote.new params[:quote]
 

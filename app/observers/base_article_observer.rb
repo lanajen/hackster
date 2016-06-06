@@ -80,7 +80,7 @@ class BaseArticleObserver < ActiveRecord::Observer
 
     cache_keys = []
 
-    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date difficulty duration content_type)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner guest_name platform_tags product_tags made_public_at license private workflow_state featured featured_date difficulty duration content_type)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       cache_keys << "project-#{record.id}-teaser"
     end
 

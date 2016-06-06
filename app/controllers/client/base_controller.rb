@@ -1,4 +1,4 @@
-class Client::BaseController < ApplicationController
+class Client::BaseController < MainBaseController
   before_filter :authenticate
 
   protected

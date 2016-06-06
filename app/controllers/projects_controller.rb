@@ -1,4 +1,4 @@
-class ProjectsController < ApplicationController
+class ProjectsController < MainBaseController
   before_filter :load_project_with_hid, only: [:show, :embed, :print, :update, :destroy]
   before_filter :load_project, only: [:redirect_to_slug_route]
   before_filter :ensure_project_belongs_to_platform, only: [:show, :embed, :print, :redirect_to_slug_route]

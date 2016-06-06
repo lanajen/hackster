@@ -1,4 +1,4 @@
-class GroupsController < ApplicationController
+class GroupsController < MainBaseController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_group, only: [:show, :update, :destroy]
   # layout 'group', only: [:edit, :update, :show]

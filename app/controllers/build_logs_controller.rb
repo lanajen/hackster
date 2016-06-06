@@ -1,4 +1,4 @@
-class BuildLogsController < ApplicationController
+class BuildLogsController < MainBaseController
   before_filter :authenticate_user!, except: [:index, :show]
   before_filter :load_project_with_hid, except: [:destroy, :show_redirect]
   before_filter :load_log, only: [:show]

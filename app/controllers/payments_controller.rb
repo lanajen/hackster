@@ -1,4 +1,4 @@
-class PaymentsController < ApplicationController
+class PaymentsController < MainBaseController
   def show
     @payment = Payment.find_by_safe_id! params[:safe_id]
   end

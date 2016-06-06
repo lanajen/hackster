@@ -1,4 +1,4 @@
-class ChannelsController < ApplicationController
+class ChannelsController < MainBaseController
   before_filter :authenticate_user!
 
   def show

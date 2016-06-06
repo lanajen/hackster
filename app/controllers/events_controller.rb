@@ -1,4 +1,4 @@
-class EventsController < ApplicationController
+class EventsController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update, :participants_list]
   before_filter :load_event, except: [:new, :create, :export]
   before_filter :load_hackathon, only: [:new, :create]

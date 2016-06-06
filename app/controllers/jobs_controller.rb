@@ -1,4 +1,4 @@
-class JobsController < ApplicationController
+class JobsController < MainBaseController
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
   skip_before_action :current_site

@@ -1,4 +1,4 @@
-class MembersController < ApplicationController
+class MembersController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_group, except: [:process_request, :destroy]
   respond_to :html

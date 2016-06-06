@@ -1,4 +1,4 @@
-class WikiPagesController < ApplicationController
+class WikiPagesController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_filter :load_group, except: [:destroy]
   before_filter :load_page, only: [:edit, :update, :destroy]

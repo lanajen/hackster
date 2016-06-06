@@ -1,4 +1,4 @@
-class CommentsController < ApplicationController
+class CommentsController < MainBaseController
   before_filter :authenticate_user!
   load_and_authorize_resource
   skip_load_resource only: [:create]

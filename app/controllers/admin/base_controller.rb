@@ -1,4 +1,4 @@
-class Admin::BaseController < ApplicationController
+class Admin::BaseController < MainBaseController
   newrelic_ignore
   include FilterHelper
   helper AdminHelper

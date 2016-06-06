@@ -1,4 +1,4 @@
-class Users::AddressesController < ApplicationController
+class Users::AddressesController < MainBaseController
   before_filter :authenticate_user!
 
   def index

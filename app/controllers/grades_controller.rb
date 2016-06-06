@@ -1,4 +1,4 @@
-class GradesController < ApplicationController
+class GradesController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_assignment
   before_filter :load_group, only: [:edit, :update]

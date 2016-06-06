@@ -1,4 +1,4 @@
-class PartsController < ApplicationController
+class PartsController < MainBaseController
   before_filter :load_platform_with_slug
   before_filter :load_part, only: [:show, :embed]
   load_resource except: [:index]

@@ -1,4 +1,4 @@
-class RespectsController < ApplicationController
+class RespectsController < MainBaseController
   before_filter :authenticate_user!
   before_filter :find_respectable
   respond_to :html, :json

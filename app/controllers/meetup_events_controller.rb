@@ -1,4 +1,4 @@
-class MeetupEventsController < ApplicationController
+class MeetupEventsController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
   before_filter :load_meetup_event, except: [:new, :create]
   before_filter :load_meetup, only: [:new, :create]

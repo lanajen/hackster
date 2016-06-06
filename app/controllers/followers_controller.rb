@@ -1,4 +1,4 @@
-class FollowersController < ApplicationController
+class FollowersController < MainBaseController
   before_filter :authenticate_user!, except: [:standalone_button]
   before_filter :load_followable, only: [:create]
   respond_to :html

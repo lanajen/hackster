@@ -1,4 +1,4 @@
-class VotesController < ApplicationController
+class VotesController < MainBaseController
   # before_filter :authenticate_user!  # TODO: find something better for anonymous votes than disabling all authentication
   before_filter :find_respectable
   respond_to :html, :json

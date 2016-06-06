@@ -1,4 +1,4 @@
-class HackathonsController < ApplicationController
+class HackathonsController < MainBaseController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_hackathon
   layout 'group_shared', except: [:update]

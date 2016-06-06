@@ -1,4 +1,4 @@
-class ExternalProjectsController < ApplicationController
+class ExternalProjectsController < MainBaseController
   before_filter :load_project_with_hid, only: [:show]
   before_filter :load_and_authorize_resource, only: [:edit, :update]
   respond_to :html

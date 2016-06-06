@@ -1,4 +1,4 @@
-class AssignmentsController < ApplicationController
+class AssignmentsController < MainBaseController
   before_filter :authenticate_user!, except: [:show, :embed]
   before_filter :load_assignment, only: [:show, :embed, :link]
   before_filter :load_promotion, only: [:new, :create]

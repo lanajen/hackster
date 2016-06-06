@@ -1,4 +1,4 @@
-class CodeFilesController < ApplicationController
+class CodeFilesController < MainBaseController
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
   before_filter :authenticate_user!, only: [:create]

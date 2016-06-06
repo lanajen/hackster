@@ -1,4 +1,4 @@
-class HelloWorldController < ApplicationController
+class HelloWorldController < MainBaseController
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
 

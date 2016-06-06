@@ -1,4 +1,4 @@
-class SitemapController < ApplicationController
+class SitemapController < MainBaseController
   DYNAMIC_CATEGORIES = %w(blog platforms lists parts projects product_tags external_projects users hacker_spaces)
   ALL_CATEGORIES = DYNAMIC_CATEGORIES + %w(static)
   PER_PAGE = 100

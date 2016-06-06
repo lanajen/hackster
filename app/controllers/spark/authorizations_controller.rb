@@ -1,4 +1,4 @@
-class Spark::AuthorizationsController < ApplicationController
+class Spark::AuthorizationsController < MainBaseController
   force_ssl if: :ssl_configured?
   before_filter :authenticate_user!
 

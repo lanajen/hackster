@@ -1,4 +1,4 @@
-class CoursesController < ApplicationController
+class CoursesController < MainBaseController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_course, only: [:show, :update]
   layout 'group_shared', only: [:edit, :update, :show]

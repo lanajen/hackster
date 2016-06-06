@@ -1,4 +1,4 @@
-class SparkfunWishlistsController < ApplicationController
+class SparkfunWishlistsController < MainBaseController
   before_filter :authenticate_user!, only: [:create]
 
   def create

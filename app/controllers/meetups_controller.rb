@@ -1,4 +1,4 @@
-class MeetupsController < ApplicationController
+class MeetupsController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :update]
   before_filter :load_meetup, only: [:show, :update]
   respond_to :html

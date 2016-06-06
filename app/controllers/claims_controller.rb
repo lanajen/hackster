@@ -1,4 +1,4 @@
-class ClaimsController < ApplicationController
+class ClaimsController < MainBaseController
   before_filter :authenticate_user!
 
   def create

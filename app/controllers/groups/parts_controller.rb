@@ -1,4 +1,4 @@
-class Groups::PartsController < ApplicationController
+class Groups::PartsController < MainBaseController
   before_filter :load_platform
   load_resource except: [:index]
 

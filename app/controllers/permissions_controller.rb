@@ -1,4 +1,4 @@
-class PermissionsController < ApplicationController
+class PermissionsController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_permissible
   respond_to :html

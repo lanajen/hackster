@@ -1,4 +1,4 @@
-class IssuesController < ApplicationController
+class IssuesController < MainBaseController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
   before_filter :load_project_with_hid
   before_filter :load_issue, only: [:show, :edit, :update, :destroy, :update_workflow]

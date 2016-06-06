@@ -1,4 +1,4 @@
-class ConversationsController < ApplicationController
+class ConversationsController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_conversation, only: [:show, :update, :destroy]
 

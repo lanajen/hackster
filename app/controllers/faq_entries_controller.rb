@@ -1,4 +1,4 @@
-class FaqEntriesController < ApplicationController
+class FaqEntriesController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_challenge, except: [:destroy]
   before_filter :load_faq_entry, only: [:edit, :update, :destroy]

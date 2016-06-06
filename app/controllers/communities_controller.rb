@@ -1,4 +1,4 @@
-class CommunitiesController < ApplicationController
+class CommunitiesController < MainBaseController
   before_filter :authenticate_user!, only: [:edit, :update]
   before_filter :load_community, only: [:show, :redirect_to_show, :update]
   layout 'group_shared', only: [:show]

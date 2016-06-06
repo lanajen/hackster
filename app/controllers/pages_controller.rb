@@ -1,4 +1,4 @@
-class PagesController < ApplicationController
+class PagesController < MainBaseController
   skip_before_filter :track_visitor, only: [:home, :hardwareweekend]
   skip_after_filter :track_landing_page, only: [:home, :hardwareweekend]
   before_filter :require_no_authentication, only: :arduino_unauthorized
@@ -134,12 +134,13 @@ class PagesController < ApplicationController
       end
       @suggestions = {
         'Arduino' => '/arduino',
-        'Spark Core' => '/particle',
+        'Particle Photon' => '/particle/products/photon',
         'Home automation' => '/l/home-automation',
+        'ESP8266' => '/esp',
         'Blinky lights' => '/l/lights',
         'Raspberry Pi' => '/raspberry-pi',
         'Wearables' => '/l/wearables',
-        'Intel Edison' => '/intel-edison',
+        'Intel Edison' => '/intel/products/intel-edison',
         'Animals' => '/l/animals',
       }
       render 'home_visitor'

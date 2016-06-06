@@ -1,4 +1,4 @@
-class SearchController < ApplicationController
+class SearchController < MainBaseController
 
   def search
     redirect_to tag_path(params[:q].gsub(/^#/, '')) and return if params[:q] and params[:q] =~ /^#/

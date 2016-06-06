@@ -1,4 +1,4 @@
-class AddressesController < ApplicationController
+class AddressesController < MainBaseController
   before_filter :authenticate_user!
   before_filter :load_and_authorize_entry, only: [:edit, :update, :destroy]
 

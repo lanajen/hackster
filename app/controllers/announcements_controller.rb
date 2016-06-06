@@ -1,4 +1,4 @@
-class AnnouncementsController < ApplicationController
+class AnnouncementsController < MainBaseController
   before_filter :authenticate_user!, except: [:index, :show]
   before_filter :load_platform, except: [:show_redirect, :destroy]
   before_filter :load_announcement, only: [:show]

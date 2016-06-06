@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class UsersController < MainBaseController
   include ScraperUtils
 
   before_filter :authenticate_user!, only: [:edit, :update, :after_registration, :after_registration_save, :toolbox, :toolbox_save]

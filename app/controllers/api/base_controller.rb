@@ -1,4 +1,4 @@
-class Api::BaseController < BaseController
+class Api::BaseController < ApplicationController
   before_filter :allow_cors_requests
   before_filter :mark_last_seen!
 
@@ -23,18 +23,16 @@ class Api::BaseController < BaseController
     end
 
     def current_site
-      return @current_site if @current_site
-
-      return unless origin_uri and host = origin_uri.host
-      domain = ActionDispatch::Http::URL.extract_domain(host, 1)
-      subdomains = ActionDispatch::Http::URL.extract_subdomains(host, 1)
-      @current_site = set_current_site domain, subdomains[0], host
+      @current_site ||= begin
+        return unless origin_uri and host = origin_uri.host
+        domain = ActionDispatch::Http::URL.extract_domain(host, 1)
+        subdomains = ActionDispatch::Http::URL.extract_subdomains(host, 1)
+        set_current_site domain, subdomains[0], host
+      end
     end
 
     def current_platform
-      return @current_platform if @current_platform
-
-      @current_platform = current_site.try(:platform)
+      @current_platform ||= current_site.try(:platform)
     end
 
     def host_is_whitelisted? host
@@ -42,9 +40,10 @@ class Api::BaseController < BaseController
     end
 
     def origin_uri
-      return @origin_uri if @origin_uri
-      referrer = request.referrer.presence || request.headers['HTTP_ORIGIN']  # browsers don't always send the referrer for privacy reasons
-      @origin_uri = URI.parse(referrer)
+      @origin_uri ||= begin
+        referrer = request.referrer.presence || request.headers['HTTP_ORIGIN']  # browsers don't always send the referrer for privacy reasons
+        URI.parse(referrer)
+      end
     rescue URI::InvalidURIError
     end
 
@@ -57,5 +56,15 @@ class Api::BaseController < BaseController
       else
         render status: :not_found, nothing: true
       end
+    end
+
+    def render_404(exception)
+      render nothing: true, status: 404
+    end
+
+    def render_500(exception)
+      super
+
+      render nothing: true, status: 500
     end
 end
