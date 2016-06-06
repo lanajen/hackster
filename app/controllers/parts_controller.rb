@@ -30,12 +30,45 @@ class PartsController < MainBaseController
       "Share your hardware projects made with #{@part.name} from #{@platform.name}."
     end
     meta_desc @meta_desc
-    @projects = @part.projects.publyc
+
+    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+
+
+    @projects = @part.projects
+
+    @projects = params[:show_all] ? @projects.published : @projects.indexable
+
+    if @by and @by.in? Project::FILTERS.keys
+      @projects = @projects.send(Project::FILTERS[@by], user: current_user, show_all: params[:show_all])
+      @by = case @by
+      when '7days'
+        '7 days of'
+      when '30days'
+        '30 days of'
+      when '1year'
+        '12 months of'
+      else
+        @by
+      end
+    end
+
+    if params[:sort]
+      @projects = @projects.send(Project::SORTING[params[:sort]], show_all: params[:show_all])
+    end
+
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+      @projects = @projects.where(difficulty: params[:difficulty])
+    end
+
+    if params[:type].try(:to_sym).in? Project.content_types(%w(Project)).values
+      @projects = @projects.with_type(params[:type])
+    end
 
     respond_to do |format|
       format.html do
         title "#{@part.full_name} projects"
-        @projects = @projects.magic_sort.paginate(page: safe_page_params)
+        @projects = @projects.for_thumb_display.paginate(page: safe_page_params)
         @part = @part.decorate
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
       end

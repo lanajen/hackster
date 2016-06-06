@@ -37,7 +37,95 @@
     - link = user_signed_in? ? new_project_path : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path, source: 'new_project')
     => link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
 
-  .btn-group.pull-left
+  .btn-group.btn-group-default.pull-left
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:by]
+        - when nil
+          ' All projects
+        - when '7days'
+          ' Last 7 days
+        - when '30days'
+          ' Last 30 days
+        - when '1year'
+          ' Last 12 months
+        span.caret
+      ul.dropdown-menu
+        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', part_path(@part, sort: params[:sort], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', part_path(@part, by: '7days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', part_path(@part, by: '30days', sort: params[:sort], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == '1year'}" } = link_to 'Last 12 months', part_path(@part, by: '1year', sort: params[:sort], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:sort]
+        - when 'updated'
+          ' Last updated
+        - when 'popular'
+          ' Most popular
+        - when 'recent'
+          ' Most recent
+        - when 'respected'
+          ' Most respected
+        - when 'trending'
+          ' Trending
+        span.caret
+      ul.dropdown-menu
+        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', part_path(@part, sort: 'updated', by: params[:by], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', part_path(@part, sort: 'popular', by: params[:by], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', part_path(@part, sort: 'recent', by: params[:by], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', part_path(@part, sort: 'respected', by: params[:by], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', part_path(@part, sort: 'trending', by: params[:by], difficulty: params[:difficulty], type: params[:type], show_all: params[:show_all])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:difficulty]
+        - when nil
+          ' Any difficulty
+        - when 'beginner'
+          ' Easy
+        - when 'intermediate'
+          ' Intermediate
+        - when 'advanced'
+          ' Advanced
+        - when 'hardcore'
+          ' Super hard
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'Any difficulty', part_path(@part, by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', part_path(@part, difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', part_path(@part, difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', part_path(@part, difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Super hard', part_path(@part, difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:type]
+        - when nil
+          ' Any type
+        - when 'getting_started'
+          ' Getting started guide
+        - when 'showcase'
+          ' Showcase
+        - when 'protip'
+          ' Protip
+        - when 'teardown'
+          ' Teardown
+        - when 'tutorial'
+          ' Tutorial
+        - when 'wip'
+          ' Work in progress
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'Any type', part_path(@part, by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+        li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', part_path(@part, type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', part_path(@part, type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', part_path(@part, type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', part_path(@part, type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', part_path(@part, type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', part_path(@part, type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+
+  /.btn-group.pull-left
     button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
       ' More products
       span.caret

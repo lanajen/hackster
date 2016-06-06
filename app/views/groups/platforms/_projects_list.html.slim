@@ -21,11 +21,11 @@ h1.section-title Community-built projects, powered by #{@platform.name}
           ' Last 12 months
         span.caret
       ul.dropdown-menu
-        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', platform_projects_path(@platform, sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to "Featured by #{@platform.name}", platform_projects_path(@platform, by: 'featured', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_projects_path(@platform, by: 'on_hackster', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_projects_path(@platform, by: '7days', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_projects_path(@platform, by: '30days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All projects', platform_projects_path(@platform, sort: params[:sort], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to "Featured by #{@platform.name}", platform_projects_path(@platform, by: 'featured', sort: params[:sort], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_projects_path(@platform, by: 'on_hackster', sort: params[:sort], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_projects_path(@platform, by: '7days', sort: params[:sort], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_projects_path(@platform, by: '30days', sort: params[:sort], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
 
     .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -42,11 +42,59 @@ h1.section-title Community-built projects, powered by #{@platform.name}
           ' Trending
         span.caret
       ul.dropdown-menu
-        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_projects_path(@platform, sort: 'updated', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_projects_path(@platform, sort: 'popular', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_projects_path(@platform, sort: 'recent', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_projects_path(@platform, sort: 'respected', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', platform_projects_path(@platform, sort: 'trending', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_projects_path(@platform, sort: 'updated', by: params[:by], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_projects_path(@platform, sort: 'popular', by: params[:by], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_projects_path(@platform, sort: 'recent', by: params[:by], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_projects_path(@platform, sort: 'respected', by: params[:by], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', platform_projects_path(@platform, sort: 'trending', by: params[:by], type: params[:type], difficulty: params[:difficulty], show_all: params[:show_all])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:difficulty]
+        - when nil
+          ' Any difficulty
+        - when 'beginner'
+          ' Easy
+        - when 'intermediate'
+          ' Intermediate
+        - when 'advanced'
+          ' Advanced
+        - when 'hardcore'
+          ' Super hard
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'Any difficulty', platform_projects_path(@platform, by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Easy', platform_projects_path(@platform, difficulty: 'beginner', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', platform_projects_path(@platform, difficulty: 'intermediate', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', platform_projects_path(@platform, difficulty: 'advanced', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Super hard', platform_projects_path(@platform, difficulty: 'hardcore', by: params[:by], sort: params[:sort], type: params[:type], show_all: params[:show_all])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        - case params[:type]
+        - when nil
+          ' Any type
+        - when 'getting_started'
+          ' Getting started guide
+        - when 'showcase'
+          ' Showcase
+        - when 'protip'
+          ' Protip
+        - when 'teardown'
+          ' Teardown
+        - when 'tutorial'
+          ' Tutorial
+        - when 'wip'
+          ' Work in progress
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:type] == nil}" } = link_to 'Any type', platform_projects_path(@platform, by: params[:by], sort: params[:sort], difficulty: params[:difficulty])
+        li*{ class: "#{'active' if params[:type] == 'getting_started'}" } = link_to 'Getting started guide', platform_projects_path(@platform, type: 'getting_started', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'showcase'}" } = link_to 'Showcase', platform_projects_path(@platform, type: 'showcase', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'protip'}" } = link_to 'Protip', platform_projects_path(@platform, type: 'protip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'teardown'}" } = link_to 'Teardown', platform_projects_path(@platform, type: 'teardown', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'tutorial'}" } = link_to 'Tutorial', platform_projects_path(@platform, type: 'tutorial', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
+        li*{ class: "#{'active' if params[:type] == 'wip'}" } = link_to 'Work in progress', platform_projects_path(@platform, type: 'wip', by: params[:by], sort: params[:sort], difficulty: params[:difficulty], show_all: params[:show_all])
 
 - if @projects.any?
   .row.project-list
