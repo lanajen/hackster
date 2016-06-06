@@ -50,6 +50,10 @@ class UserObserver < ActiveRecord::Observer
 
     # the unless condition is a hack to not trigger a purge when we're just updating the last_sent_projects_email_at prop
     FastlyWorker.perform_async 'purge', record.record_key unless record.changed == ['last_sent_projects_email_at', 'properties', 'updated_at']
+
+    if record.encrypted_password_changed?
+      NotificationCenter.notify_via_email nil, :user, record.id, 'password_changed_confirmation'
+    end
   end
 
   def before_update record
