@@ -1,0 +1,9 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> commented on <a href="<%= u.url_for([@context[:thread], only_path: false]) %>">the review of |project_name|</a>:</p>
+
+<p class="quote">|comment_body|</p>
+
+<p>To reply, just follow <a href="<%= u.url_for([@context[:thread], only_path: false]) %>">this link</a>.</p>
+
+<%= render 'signature' %>

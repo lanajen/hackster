@@ -1,0 +1,11 @@
+<p>Hello there,</p>
+
+<p>We are sorry to inform you that your application "|idea_name|" to receive free hardware for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> was not selected.</p>
+
+<% if @context[:challenge].open_for_submissions? %>
+  <p>
+    You are welcome to try again by withdrawing this application and submitting another one. Applications for free hardware are open until <%= l @context[:challenge].free_hardware_end_date.in_time_zone(PDT_TIME_ZONE) %> PT.
+  </p>
+<% end %>
+
+<%= render 'signature' %>

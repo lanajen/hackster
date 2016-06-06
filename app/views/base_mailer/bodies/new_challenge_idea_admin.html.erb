@@ -1,0 +1,7 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> submitted a <a href="<%= u.challenge_idea_url(@context[:challenge], @context[:idea], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">new idea</a> for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a>.</p>
+
+<p>You can moderate it by going to the <a href="<%= u.challenge_admin_ideas_url(@context[:challenge]) %>">ideas dashboard</a>.</p>
+
+<%= render 'signature' %>

@@ -62,6 +62,10 @@ class BaseMailer < ActionMailer::Base
         url.project_edit_team_url(project)
       when :slogan
         SLOGAN
+      when :trending_project_link
+        url.project_url(trending_project)
+      when :trending_project_name
+        trending_project.name
       when :update_preferences_link
         return false unless defined?(user) and user
         url.edit_notifications_url(user_email: user.email,
@@ -116,8 +120,8 @@ class BaseMailer < ActionMailer::Base
       if current_platform.present?
         prepend_view_path "app/views/whitelabel/#{current_platform.user_name}"
       end
-      subject = render template: "mailers/subjects/#{type}"
-      body = render template: "mailers/bodies/#{type}.html", locals: { u: url }, layout: layout
+      subject = render template: "base_mailer/subjects/#{type}"
+      body = render template: "base_mailer/bodies/#{type}.html", locals: { u: url }, layout: layout
       premailer = Premailer.new(substitute_in(body), with_html_string: true,
         warn_level: Premailer::Warnings::SAFE)
 
@@ -174,6 +178,10 @@ class BaseMailer < ActionMailer::Base
         end
       end
       text
+    end
+
+    def trending_project
+      @trending_project ||= Project.indexable.trending.first
     end
 
     def url

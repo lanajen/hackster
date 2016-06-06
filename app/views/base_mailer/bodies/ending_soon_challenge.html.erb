@@ -1,0 +1,15 @@
+<% days = ((@context[:challenge].end_date.to_i - DateTime.now.to_i) / 86400) %>
+
+<p>Hello there,</p>
+
+<p>This is to remind you that <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a> is ending in less than <%= days <= 1 ? 'a day' : "#{days} days" %>. Be sure to submit your entry as soon as possible!</p>
+
+<% if @context[:challenge].activate_free_hardware? %>
+  <p>Need hardware to participate? <a href="<%= u.new_challenge_idea_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">Apply to receive <%= @context[:challenge].free_hardware_label %></a>.</p>
+<% end %>
+
+<%= render 'signature' %>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? <a href="|unsubscribe_link:contest_reminder|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+</p>

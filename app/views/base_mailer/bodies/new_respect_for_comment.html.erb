@@ -1,0 +1,9 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> thanked you for <a href="<%= u.url_for([@context[:commentable], only_path: false]) %>#comment-|comment_id|">your comment</a>. You rock!</p>
+
+<%= render 'signature' %>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? <a href="|unsubscribe_link:new_like|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+</p>

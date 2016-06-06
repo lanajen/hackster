@@ -1,0 +1,19 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> has sent you a message:</p>
+
+<div class="quote">
+  <strong><%= @context[:conversation].subject %></strong>
+  <br/>
+  <%= raw @context[:comment].body %>
+</div>
+
+<p>To reply, just follow <a href="<%= u.conversation_url(@context[:conversation]) %>">this link</a>.</p>
+
+<p><strong>Please do not reply to this email, follow the link above instead.</strong></p>
+
+<%= render 'signature' %>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? <a href="|unsubscribe_link:new_comment_commented|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+</p>

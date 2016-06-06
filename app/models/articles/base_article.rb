@@ -26,7 +26,7 @@ class BaseArticle < ActiveRecord::Base
     'popular' => :most_popular,
     'recent' => :most_recent,
     'respected' => :most_respected,
-    'trending' => :magic_sort,
+    'trending' => :trending,
     'updated' => :last_updated,
   }
   TYPES = {
@@ -389,9 +389,6 @@ class BaseArticle < ActiveRecord::Base
     order(updated_at: :desc)
   end
 
-  def self.magic_sort opts={}
-    order(popularity_counter: :desc, created_at: :desc)
-  end
 
   def self.median_impressions
     indexable.median(:impressions_count)
@@ -432,6 +429,12 @@ class BaseArticle < ActiveRecord::Base
   def self.self_hosted opts={}
     where(type: 'Project')
   end
+
+  def self.trending opts={}
+    order(popularity_counter: :desc, created_at: :desc)
+  end
+
+  class << self; alias_method :magic_sort, :trending; end
 
   def self.unpublished
     where workflow_state: :unpublished

@@ -1,0 +1,9 @@
+<p>Hi!</p>
+
+<p>We've received a request to change the email address associated with your Hackster.io account. The new email will be <strong><%= @context[:user].unconfirmed_email %></strong>.</p>
+
+<p>To confirm the change please click the link below. If you didn't initiate the change or changed your mind, you can just discard this email.</p>
+
+<p><a href="|email_confirmation_link|">Confirm email change</a></p>
+
+<%= render 'signature' %>

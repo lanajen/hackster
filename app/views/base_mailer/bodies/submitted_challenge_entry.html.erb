@@ -1,0 +1,15 @@
+<p>Hello there,</p>
+
+<p>This is to confirm that we have received your entry (<a href="|project_link|">|project_name|</a>) for <a href="<%= u.challenge_url(@context[:challenge], utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">|challenge_name|</a>.</p>
+
+<p>It will now be reviewed in order to determine whether it is qualified to enter. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, utm_source: 'hackster', utm_medium: 'email', utm_campaign: @context[:email_template]) %>">the challenge rules</a> for more information.</p>
+
+<p>
+  Submissions are open until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.
+
+  <% if @context[:challenge].winners_announced_date %>
+    Winners will be announced on <%= l @context[:challenge].winners_announced_date, format: :long_date %>.
+  <% end %>
+</p>
+
+<%= render 'signature' %>
